@@ -1,0 +1,22 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Modern R for Forestry and Natural Resources Data"
+  subtitle: "Efficient Coding, Data Analysis, and AI-Assisted Debugging"
+  author: "Suborna Ahmed"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    repo-url: https://github.com/subornaa/modern-r-forestry-book
+    repo-actions: [edit, issue]
