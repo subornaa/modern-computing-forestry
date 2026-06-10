@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Suborna Ahmed">
+<meta name="dcterms.date" content="2026-05-22">
+
+<title>Chapter 1: Why R? Why Now? Setting Up Your Reproducible Workspace</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="ch01-setup (5222026)_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ch01-setup (5222026)_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="ch01-setup (5222026)_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="ch01-setup (5222026)_files/libs/quarto-html/popper.min.js"></script>
+<script src="ch01-setup (5222026)_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ch01-setup (5222026)_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ch01-setup (5222026)_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ch01-setup (5222026)_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ch01-setup (5222026)_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ch01-setup (5222026)_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ch01-setup (5222026)_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chapter 1: Why R? Why Now? Setting Up Your Reproducible Workspace</h1>
+<p class="subtitle lead">Install R, RStudio, and Quarto, set up a project, and write your first reproducible script.</p>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Dr.&nbsp;Suborna Ahmed </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Forest Resources Management, Faculty of Forestry, UBC
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 22, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About This Chapter
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Install R, RStudio, and Quarto, set up an RStudio Project with a logical folder layout, and write your first reproducible script using a real Canadian wildfire dataset.</p>
+</div>
+</div>
+<section id="sec-ch01-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-objectives">Learning Objectives</h2>
+<p>By the end of this chapter, you will be able to:</p>
+<ol type="1">
+<li>Explain why R is widely used in forestry and natural resources.</li>
+<li>Install R, RStudio, Quarto, <code>tidyverse</code> and other packages.</li>
+<li>Create an RStudio Project with a logical folder structure.</li>
+<li>Use the <code>here</code> package for portable, project-relative file paths.</li>
+<li>Render a first Quarto document that loads a real BC forestry dataset.</li>
+</ol>
+</section>
+<section id="sec-ch01-why" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-why">Why This Matters</h2>
+<p><strong>Our objective:</strong> Understand <em>why</em> this course uses R instead of manual tools or software, and <em>why</em> we care so much about reproducible workflows.</p>
+<p>R is the most widely used language for ecological and forestry data analysis, and it is <strong>free</strong> and <strong>open source</strong>. Equally important, R fits naturally into a <em>reproducible research</em> workflow: every analytical step is written down as code, anyone can re-run it, and your future self thanks you for organizing things properly today.</p>
+<p>Compared to Excel or Google Sheets, R works much faster on the kind of large datasets that forestry produces think of inventory plots with hundreds of thousands of trees, or wildfire records spanning decades. R can also be <strong>automated</strong>: instead of clicking through menus, you write a script once and re-run it any time the data is updated. And R produces publication-quality graphs and tables in the same workflow that does the analysis.</p>
+<p>Real examples of R in BC forestry and natural resources:</p>
+<ol type="1">
+<li><strong>UBC Faculty of Forestry</strong> researchers use R for tree-growth modelling, biodiversity analysis, and remote-sensing workflows.</li>
+<li><strong>Parks Canada and the BC Ministry of Forests</strong> use R to analyze long-term ecological monitoring data from permanent sample plots.</li>
+<li><strong>BC Wildfire Service</strong> uses R-based fire behaviour models and post-fire severity assessments to plan suppression and recovery.</li>
+<li><strong>Forest carbon accounting projects</strong> across Canada use R to convert tree inventory data into province-level greenhouse gas estimates.</li>
+</ol>
+</section>
+<section id="sec-ch01-data" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-data">Datasets Used in This Chapter</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Source</th>
+<th>Format</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nfdb_fires_2021_2024.csv</code></td>
+<td>Canadian National Forestry Database (NFDB), Natural Resources Canada</td>
+<td>CSV (attribute table from the NFDB polygon shapefile)</td>
+<td>Demo dataset for our first plot</td>
+</tr>
+<tr class="even">
+<td>R built-in <code>trees</code></td>
+<td>Base R</td>
+<td>data frame</td>
+<td>Comparison example only</td>
+</tr>
+</tbody>
+</table>
+<p>The NFDB wildfire dataset contains every reported wildfire in Canada from 2021 to 2024, with one row per fire and columns for the year, source agency (province), size in hectares, and cause. It is published openly at <a href="https://cwfis.cfs.nrcan.gc.ca/datamart" class="uri">https://cwfis.cfs.nrcan.gc.ca/datamart</a>. For this chapter we will focus on the 1,929 wildfires that occurred in British Columbia.</p>
+</section>
+<section id="sec-ch01-s1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-s1">Installation Walkthrough: R, RStudio, Quarto, tidyverse</h2>
+<p><strong>Our objective:</strong> Install the three tools (R, RStudio, Quarto) that everything in this course depends on, plus the <code>tidyverse</code> package collection.</p>
+<p>You only do this once on your computer. After this section, you will not need to install anything again for the rest of the course.</p>
+<section id="step-1-install-r" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-install-r">Step 1: Install R</h3>
+<p><strong>R</strong> is the <em>programming language</em> that runs your calculations. Download and install it from <a href="https://cloud.r-project.org/" class="uri">https://cloud.r-project.org/</a> and follow the instructions for your operating system:</p>
+<ul>
+<li><strong>Windows:</strong> Go directly to <a href="https://cloud.r-project.org/bin/windows/base/" class="uri">https://cloud.r-project.org/bin/windows/base/</a> and click the download link.</li>
+<li><strong>macOS:</strong> Go directly to <a href="https://cloud.r-project.org/bin/macosx/" class="uri">https://cloud.r-project.org/bin/macosx/</a> and download the most recent version. You will also need to install <a href="https://www.xquartz.org/">XQuartz</a> before installing R.</li>
+<li><strong>Linux:</strong> Go directly to <a href="https://cloud.r-project.org/" class="uri">https://cloud.r-project.org/</a> and follow the instructions for your specific distribution.</li>
+</ul>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>🔍 Why use the latest version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Install the latest stable release. Older R versions sometimes fail to install newer packages, which causes hours of frustration later.</p>
+</div>
+</div>
+</section>
+<section id="step-2-install-rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-install-rstudio">Step 2: Install RStudio</h3>
+<p><strong>RStudio</strong> is the editor for R and Quarto files (an <strong>IDE</strong> Integrated Development Environment) where you will actually write and run your R code. Download the free <strong>RStudio Desktop</strong> version from <a href="https://posit.co/downloads" class="uri">https://posit.co/downloads</a>.</p>
+<p>If you cannot install RStudio Desktop on your machine for any reason, the free <a href="https://posit.cloud/">Posit Cloud</a> is a fully functional online alternative. Note that on Posit Cloud you have to install <code>tidyverse</code> separately for every new project.</p>
+<p>Once you open RStudio, <img src="images/screen-rstudiopanes.png" class="img-fluid" alt="An example of the RStudio dashboard with names of panes in RStudio"></p>
+</section>
+<section id="step-3-install-quarto" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-install-quarto">Step 3: Install Quarto</h3>
+<p><strong>Quarto</strong> is the reporting tool that turns your R code into nicely formatted documents, slides, and books. Quarto is bundled with recent versions of RStudio, so if you installed RStudio in Step 2, you already have it.</p>
+<p>To confirm Quarto is installed, open RStudio and look for the <strong>Console</strong> pane and go to the <strong>Terminal</strong> tab for the command:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>quarto <span class="sc">--</span>version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If you see a version number, you are good to go. If not, download Quarto from <a href="https://quarto.org/docs/get-started/" class="uri">https://quarto.org/docs/get-started/</a>.</p>
+</section>
+<section id="step-4-install-the-tidyverse-package-collection" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-install-the-tidyverse-package-collection">Step 4: Install the <code>tidyverse</code> package collection</h3>
+<p><strong>Our objective:</strong> Install one set of packages that will do most of the heavy lifting in this course.</p>
+<p>The <a href="https://tidyverse.org/"><code>tidyverse</code></a> is a collection of R packages designed to work together for data science. Open RStudio, click the <strong>Console</strong> tab, and type:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>You only need to install a package once. After that, every time you start a new R session, you load it with:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The full set of packages inside <code>tidyverse</code> is shown below. You can load them all at once with <code>library(tidyverse)</code>, or load them one at a time if you prefer.</p>
+<div class="cell">
+<div id="tbl-ch01-tidyverse" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ch01-tidyverse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: The tidyverse package collection.
+</figcaption>
+<div aria-describedby="tbl-ch01-tidyverse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 22%">
+<col style="width: 66%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Package</th>
+<th style="text-align: left;">Load with</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ggplot2</td>
+<td style="text-align: left;">library(ggplot2)</td>
+<td style="text-align: left;">Creating graphs and visualizations</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dplyr</td>
+<td style="text-align: left;">library(dplyr)</td>
+<td style="text-align: left;">Manipulating data frames (filter, select, summarise)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tidyr</td>
+<td style="text-align: left;">library(tidyr)</td>
+<td style="text-align: left;">Reshaping and tidying tables (pivot_longer, pivot_wider)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">readr</td>
+<td style="text-align: left;">library(readr)</td>
+<td style="text-align: left;">Reading and writing CSV files efficiently</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">purrr</td>
+<td style="text-align: left;">library(purrr)</td>
+<td style="text-align: left;">Applying functions over lists and vectors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tibble</td>
+<td style="text-align: left;">library(tibble)</td>
+<td style="text-align: left;">A modern, friendlier version of data frames</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">stringr</td>
+<td style="text-align: left;">library(stringr)</td>
+<td style="text-align: left;">Working with text strings</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">forcats</td>
+<td style="text-align: left;">library(forcats)</td>
+<td style="text-align: left;">Working with categorical variables (factors)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lubridate</td>
+<td style="text-align: left;">library(lubridate)</td>
+<td style="text-align: left;">Handling dates and date-time data</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>We will also need to install a few more libraries</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"here"</span>, <span class="st">"janitor"</span>, <span class="st">"skimr"</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="st">"scales"</span>, <span class="st">"patchwork"</span>, <span class="st">"plotly"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="st">"sf"</span>, <span class="st">"terra"</span>, <span class="st">"tmap"</span>, <span class="st">"leaflet"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"gt"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">"learnr"</span>, <span class="st">"shiny"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/r_rstudio_quarto.png" class="img-fluid figure-img" style="width:95.0%" alt="Diagram showing R, RStudio, and Quarto and how they relate"></p>
+<figcaption>R is the engine, RStudio is the dashboard, and Quarto is the reporting tool. All three are free and work together.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔍 Loading <code>tidyverse</code> packages
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Loading <code>tidyverse</code> once with <code>library(tidyverse)</code> actually loads all nine packages above. You don’t need to remember each individual <code>library()</code> call.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-ch01-s2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-s2">From Spreadsheets to Reproducible Code</h2>
+<p><strong>Our objective:</strong> See <em>why</em> writing a short R script is more trustworthy than the same calculation in a spreadsheet.</p>
+<p>Before you write a single line of analysis, you need a workspace that supports this kind of work. This chapter sets up the foundation that every subsequent chapter relies on.</p>
+<p>Most natural-resource analyses begin in a spreadsheet. That is fine for data entry, but spreadsheets quickly become unreproducible: cells get edited by hand, formulas drift, and nobody remembers what was changed. R replaces that workflow with <strong>scripts</strong>, instructions that produce the same answer every time.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Three lines that show the philosophy</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tree_heights_m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">18.2</span>, <span class="fl">21.5</span>, <span class="fl">17.9</span>, <span class="fl">25.3</span>, <span class="fl">19.6</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>mean_height <span class="ot">&lt;-</span> <span class="fu">mean</span>(tree_heights_m)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>mean_height</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20.5</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>🔍 Let me cook–
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The line <code>mean_height &lt;- mean(tree_heights_m)</code> is a <em>recipe</em>: it always produces the same answer from the same data. A spreadsheet cell that shows the same number gives you no such guarantee someone could overwrite the formula tomorrow and you would never notice.</p>
+</div>
+</div>
+<section id="sec-ch01-s3" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ch01-s3">RStudio Projects and <code>here()</code></h3>
+<p><strong>Our objective:</strong> Organize all the files for one analysis (scripts, data, outputs) into a single folder that can be shared with anyone and never have to edit a file path again.</p>
+<p>An <strong>RStudio Project</strong> is a self-contained folder that keeps your scripts, data, and outputs together. Always start a new analysis by creating a Project: in RStudio, choose <strong>File → New Project</strong> and select the <strong>New Directory</strong>.</p>
+<p>In the <strong>Output</strong> pane select the <strong>Files</strong> tab, click the <img src="images/icon-newfile.png" class="img-fluid"> <strong>new file</strong> button and create an R Script. We can run code like the one below in the R script file, you can copy and the code below onto R studio.</p>
+<p>The <code>here</code> package will make your code more portable: it runs on your laptop, on a colleague’s computer, and on a server, with no path edits.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># here() always points to your project root</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">here</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:/Users/Peace Uychiaoco/Downloads/WL 2026 - Forestry Statistics/ch01-setup (5222026)"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># accesses the "nfdb_fires_2021_2024.csv" from the "data" folder in the same directory as your project</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"nfdb_fires_2021_2024.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:/Users/Peace Uychiaoco/Downloads/WL 2026 - Forestry Statistics/ch01-setup (5222026)/data/nfdb_fires_2021_2024.csv"</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>🔍 <code>setwd()</code> VS. <code>here()</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Compare this to <code>setwd("C:/Users/Jane/Desktop/...")</code> the code breaks the moment your project moves to a new machine, because nobody else has the same username or desktop layout. <code>here()</code> does not break. It just asks RStudio “where is the project I’m currently working on?” and builds the path from there.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-ch01-organize" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-organize">Organizing and Naming R Project Files</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>Folder,        <span class="sc">~</span>Contains,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data/"</span>,        <span class="st">"Raw and cleaned datasets"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/"</span>,           <span class="st">"Reusable functions"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"scripts/"</span>,     <span class="st">"Numbered analysis scripts"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"outputs/"</span>,     <span class="st">"Saved tables, figures, derived data"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"reports/"</span>,     <span class="st">"Quarto reports and rendered HTML/PDF"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"renv/"</span>,        <span class="st">"Locked package versions (added in Ch. 13)"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-ch01-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ch01-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Recommended folder layout for a forestry R project.
+</figcaption>
+<div aria-describedby="tbl-ch01-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Folder</th>
+<th style="text-align: left;">Contains</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">data/</td>
+<td style="text-align: left;">Raw and cleaned datasets</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R/</td>
+<td style="text-align: left;">Reusable functions</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">scripts/</td>
+<td style="text-align: left;">Numbered analysis scripts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">outputs/</td>
+<td style="text-align: left;">Saved tables, figures, derived data</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">reports/</td>
+<td style="text-align: left;">Quarto reports and rendered HTML/PDF</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">renv/</td>
+<td style="text-align: left;">Locked package versions (added in Ch. 13)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-ch01-viz" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-viz">Real Forestry Application</h2>
+<p><strong>Our objective:</strong> Confirm that everything we installed works, by loading a real BC wildfire dataset and producing a meaningful plot in one short script.</p>
+<p>This is the kind of plot a wildfire analyst or fire-ecology researcher might create as a first look at the data: how many fires happened each year in British Columbia between 2021 and 2024, and how many hectares did each one burn?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the wildfire data from the data/ folder</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fires <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"nfdb_fires_2021_2024.csv"</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only BC fires with a recorded size, and label the cause.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># NFDB cause codes: N = Natural (mostly lightning), H = Human,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># H-PB = Human - prescribed burn, U = Unknown.</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>bc_fires <span class="ot">&lt;-</span> fires <span class="sc">|&gt;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(SRC_AGENCY <span class="sc">==</span> <span class="st">"BC"</span>, SIZE_HA <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Cause =</span> <span class="fu">case_when</span>(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    CAUSE <span class="sc">==</span> <span class="st">"N"</span>    <span class="sc">~</span> <span class="st">"Natural (lightning)"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    CAUSE <span class="sc">==</span> <span class="st">"H"</span>    <span class="sc">~</span> <span class="st">"Human"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    CAUSE <span class="sc">==</span> <span class="st">"H-PB"</span> <span class="sc">~</span> <span class="st">"Prescribed burn"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>             <span class="sc">~</span> <span class="st">"Unknown"</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot: one point per fire, jittered by year, sized by hectares burned</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bc_fires, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(YEAR), <span class="at">y =</span> SIZE_HA, <span class="at">colour =</span> Cause)) <span class="sc">+</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Natural (lightning)"</span> <span class="ot">=</span> <span class="st">"#2D6A4F"</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"Human"</span>               <span class="ot">=</span> <span class="st">"#E76F51"</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"Prescribed burn"</span>     <span class="ot">=</span> <span class="st">"#F4A261"</span>,</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"Unknown"</span>             <span class="ot">=</span> <span class="st">"#8D99AE"</span>)) <span class="sc">+</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Fire size (hectares, log scale)"</span>,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"BC wildfires, 2021–2024"</span>,</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Each point is one fire; natural (lightning-caused) fires dominate"</span>,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">colour =</span> <span class="st">"Cause"</span>) <span class="sc">+</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-ch01-main" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch01-main-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ch01-setup--5222026-_files/figure-html/fig-ch01-main-1.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch01-main-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: BC wildfires from 2021 to 2024: number of fires per year, sized by area burned (hectares). Data: Canadian National Forestry Database.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>🔍 Data Interpretation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Two patterns stand out:</p>
+<ol type="1">
+<li><strong>Natural causes (mostly lightning)</strong> account for roughly 70% of BC wildfires in this period about 1,360 of the 1,920 fires shown. Human-caused fires are concentrated near urban-interface areas and tend to be smaller on average.</li>
+<li><strong>2023</strong> was a remarkable year. The cluster of large fires is visibly denser than in 2021 or 2022, matching what BC residents experienced on the ground.</li>
+</ol>
+<p>This is exactly the kind of quick, exploratory plot R is designed for. With one short script we have moved from a raw CSV to an interpretable picture and the script will produce the same picture every time, on any computer.</p>
+</div>
+</div>
+</section>
+<section id="sec-ch01-reporting" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-reporting">Notebook-to-Report Writing Guidance</h2>
+<p><strong>Our objective:</strong> Turn our graphs and analysis from R and <code>tidyverse</code> into an organized professional report through Quarto.</p>
+<section id="creating-a-quarto-document" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-quarto-document">Creating a Quarto Document</h3>
+<p>To create a Quarto file, go the <strong>Output</strong> pane and select the <strong>Files</strong> tab. Click the <img src="images/icon-newfile.png" class="img-fluid"> <strong>new file</strong> button and create a <img src="images/icon-newquarto.png" class="img-fluid"> Quarto Document.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>🔍 Creating files in R Projects
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There are many ways to create files on RStudio! However by creating files in the <strong>Output</strong> pane, you ensure that the file is saved within the same R Project folder. You can also manage the files you’re working on without having to open your file explorer at the same time.</p>
+</div>
+</div>
+<p>In a Quarto Document, you can create formatted text like you would in Microsoft Word or any other text editor. One of the many advantages of Quarto is that formatting can be done by coding. This makes <em>italic</em> text and other formatted text easier to detect while writing. Rather than selecting on a separate menu to create a header, you can write # to make the text into a header. You can read more formatting tips on Quarto’s website <a href="https://quarto.org/docs/authoring/markdown-basics.html">here</a>.</p>
+<pre><code>Basic text
+*Italic text*
+**Bold text**
+***Bold and Italic text***
+
+# Header 1
+
+## Header 2
+
+### Header 3</code></pre>
+<p>An important feature of Quarto is the ability to embed an R code. To embed R code in your Quarto document, go to the top-right of the <strong>Source</strong> pane and press <img src="images/icon-insertchunk.png" class="img-fluid"> insert chunk on the top-right. If you select <img src="images/icon-insertchunkr.png" class="img-fluid">, the following will appear.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/screen-rchunk.png" class="img-fluid figure-img" style="width:95.0%" alt="grey box surrounds text with \ with r inside curly brackets at the beginning of grey box"></p>
+<figcaption>R code chunk, you can insert your code in the empty space inside the grey box</figcaption>
+</figure>
+</div>
+<p>You can then insert the wildfire script we made earlier inside the grey box. When you share the Quarto document, the <code>ggplot2</code> graph created will be shown. While that would make the Quarto document really awesome, you need to ensure that the graph and code being reported is understandable and organized. In every chapter we will have a note with guidelines to remind you how to format your Quarto Document report.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>📝 From Notebook to Report
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When you turn this chapter’s analysis into a section of a professional report:</p>
+<ul>
+<li>Open with a one-paragraph <strong>methods</strong> statement describing what was done and on what data, with a citation to the data source.</li>
+<li>Show the summary table (<a href="#tbl-ch01-summary" class="quarto-xref">Table&nbsp;2</a>) with <code>echo: false</code> so the code is hidden but the result remains.</li>
+<li>Show the main figure (<a href="#fig-ch01-main" class="quarto-xref">Figure&nbsp;1</a>) with a complete caption and <code>echo: false</code>.</li>
+<li>Hide intermediate cleaning and wrangling steps with <code>#| include: false</code>.</li>
+<li>Close with 3–5 sentences interpreting the result for a non-technical audience (a manager, a regulator, an interdisciplinary collaborator).</li>
+</ul>
+</div>
+</div>
+<p>To export the Quarto document, you would click the <img src="images/icon-renderquarto.png" class="img-fluid"> <strong>Render</strong> button above the <strong>Source</strong> pane. This will create a formatted <code>.html</code> file that can be shared.</p>
+<p>With that, you have created an RStudio project, R file, a graph plot from a real forestry dataset, and a shareable Quarto document! You are now ready to dive into R programming.</p>
+</section>
+</section>
+<section id="sec-ch01-ai" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-ai">🤖 AI Support for This Chapter</h2>
+<section id="what-ai-does-well-here" class="level3">
+<h3 class="anchored" data-anchor-id="what-ai-does-well-here">What AI Does Well Here</h3>
+<ul>
+<li>Walk you through installation errors on Windows, macOS, or Linux.</li>
+<li>Explain the difference between R, RStudio, and Quarto in plain language.</li>
+<li>Suggest a folder structure for a specific kind of project (a thesis, a course, a paper).</li>
+<li>Help you write your first <code>ggplot2</code> call when you know what you want to show but not the syntax.</li>
+</ul>
+</section>
+<section id="useful-keywords-by-tool" class="level3">
+<h3 class="anchored" data-anchor-id="useful-keywords-by-tool">Useful Keywords by Tool</h3>
+<ul>
+<li><strong>ChatGPT / Claude</strong> keywords: <em>install error R macOS, R version compatibility, RStudio Pane, RStudio Project workflow, here package vs setwd</em></li>
+<li><strong>GitHub Copilot</strong> keywords: <em>(autocomplete in your scripts as you type best for boilerplate setup)</em></li>
+<li><strong>Gemini</strong> keywords: <em>Quarto installation tutorial, R for beginners environment setup</em></li>
+</ul>
+</section>
+<section id="example-prompt" class="level3">
+<h3 class="anchored" data-anchor-id="example-prompt">Example Prompt</h3>
+<blockquote class="blockquote">
+<p>“I just installed R 4.4.0 and RStudio on macOS Sonoma. When I run <code>install.packages(\"tidyverse\")</code> I get [paste exact error]. What is the cause and how do I fix it?”</p>
+</blockquote>
+</section>
+<section id="use-ai-responsibly" class="level3">
+<h3 class="anchored" data-anchor-id="use-ai-responsibly">⚠️ Use AI Responsibly</h3>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI sometimes recommends <code>setwd()</code> for setting working directories. Do <strong>not</strong> use <code>setwd()</code> in code that other people will run use <code>here()</code> instead. If AI suggests it, ask AI to rewrite the answer with the <code>here</code> package.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-ch01-quiz" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-quiz">✅ Guided Quiz</h2>
+<section id="question-1" class="level3">
+<h3 class="anchored" data-anchor-id="question-1">Question 1</h3>
+<p>Open RStudio. Identify the four panes by name and describe the primary purpose of each.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Check the <strong>View</strong> menu in RStudio it lists every pane by name.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="question-2" class="level3">
+<h3 class="anchored" data-anchor-id="question-2">Question 2</h3>
+<p>Create a new RStudio Project called <code>forestry-practice</code> with subfolders <code>data/</code>, <code>scripts/</code>, and <code>outputs/</code>. Inside it, create a script that uses <code>here()</code> to print the absolute path of <code>data/</code>.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>File → New Project → New Directory → New Project. Then <code>here::here("data")</code>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="question-3" class="level3">
+<h3 class="anchored" data-anchor-id="question-3">Question 3</h3>
+<p>Why is <code>setwd()</code> discouraged in shared analysis scripts? Provide an alternative.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Think about what happens when you send your project folder to a colleague who has a different username.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="question-4" class="level3">
+<h3 class="anchored" data-anchor-id="question-4">Question 4</h3>
+<p>Using the wildfire dataset and the plotting code in <a href="#fig-ch01-main" class="quarto-xref">Figure&nbsp;1</a> as a starting point, modify the code to show only fires larger than 1,000 ha. How many points remain in the plot, and which cause dominates?</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Add another <code>filter()</code> line: <code>filter(SIZE_HA &gt; 1000)</code>.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-ch01-outputs" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-outputs">Reusable Outputs</h2>
+<p>Files produced in this chapter for use in later chapters:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 38%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Contents</th>
+<th>Used In</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>forestry-r/</code></td>
+<td>Your project folder with subfolders and an empty README.md</td>
+<td>Every later chapter</td>
+</tr>
+<tr class="even">
+<td><code>data/nfdb_fires_2021_2024.csv</code></td>
+<td>Canadian NFDB wildfire records, 2021–2024</td>
+<td>Ch. 4 (cleaning), Ch. 8 (visualization), Ch. 10 (time series)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sec-ch01-reading" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ch01-reading">Further Reading</h2>
+<ul>
+<li><a href="https://r4ds.hadley.nz"><em>R for Data Science</em> (2e), Hadley Wickham et al.</a> is the canonical free reference for modern R.</li>
+<li><a href="https://quarto.org/docs/get-started/">Quarto Get Started Guide</a></li>
+<li><a href="https://www.tidyverse.org/blog/2017/12/workflow-vs-script/">Project-oriented workflow (Jenny Bryan)</a></li>
+<li><a href="https://cwfis.cfs.nrcan.gc.ca/datamart">Canadian National Forestry Database (NFDB)</a> the open-data source for the wildfire dataset used in this chapter.</li>
+<li><a href="https://www2.gov.bc.ca/gov/content/safety/wildfire-status/about-bcws/wildfire-statistics">BC Wildfire Service open data</a> BC-specific fire statistics and reports.</li>
+<li><a href="https://quarto.org/docs/authoring/markdown-basics.html">Quarto Formatting Options and Examples</a></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,18 @@
+---
+title: "icon-extractor"
+format: html
+---
+```{r}
+library(rsicons)
+icon("rstudio", height = 32)
+icon("application-x-r-project", height = 32)
+icon("newRMarkdownDoc", height = 32)
+icon("executeCode", height = 32)
+icon("insertChunk", height = 32)
+icon("insertChunkR", height = 32)
+icon("newSourceDoc", height = 32)
+icon("stock_new", height = 32)
+icon("knitDocument", height = 32)
+icon("", height = 32)
+```
+
