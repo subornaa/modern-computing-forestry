@@ -776,7 +776,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="One is the engine; the other is the dashboard you drive it from.||R runs the code; RStudio is the editor/IDE around it.||R = language/engine, RStudio = interface.">
   <div class="q">1. What is the difference between R and RStudio?</div>
   <ul class="qopts">
     <li data-correct="false">They are the same thing</li>
@@ -787,7 +787,7 @@ Explanations appear below each question.
   <div class="explanation">R does the computation. RStudio is the interface that lets you write, run, and organize R code more easily.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="What makes relative paths work for anyone who opens the folder?||A Project sets the working directory automatically.||So portable paths like data/file.xlsx work on any machine.">
   <div class="q">2. Why is it recommended to always work inside an RStudio Project?</div>
   <ul class="qopts">
     <li data-correct="false">RStudio refuses to run code without one</li>
@@ -798,7 +798,7 @@ Explanations appear below each question.
   <div class="explanation">The Project anchor lets you use portable file paths. Without it, you end up with absolute paths that break when the folder moves.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="Is installing a per-session or a per-machine action?||Downloading/installing happens once; loading is per session.||Once per machine.">
   <div class="q">3. <code>install.packages("tidyverse")</code> needs to be run —</div>
   <ul class="qopts">
     <li data-correct="false">At the top of every R script, every time</li>
@@ -809,7 +809,7 @@ Explanations appear below each question.
   <div class="explanation">Install is a one-time download. Loading the package (<code>library()</code>) is what you do every session.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="Loading is different from installing.||R forgets which packages are loaded when it restarts.||Once per R session, at the top of each script.">
   <div class="q">4. <code>library(tidyverse)</code> needs to be run —</div>
   <ul class="qopts">
     <li data-correct="false">Once per machine</li>
@@ -820,7 +820,7 @@ Explanations appear below each question.
   <div class="explanation">Loading a package is per-session. R forgets which packages are loaded when you restart it.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="here() builds a path from the project root.||The result is a path string, not the file contents.||An absolute path to the file.">
   <div class="q">5. What does <code>here("data", "bc_disturbance_reforestation.xlsx")</code> return?</div>
   <ul class="qopts">
     <li data-correct="false">The contents of the file</li>
@@ -831,7 +831,7 @@ Explanations appear below each question.
   <div class="explanation"><code>here()</code> builds a portable path. The result is an absolute path string that points to the file regardless of where the project lives on disk.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="Where can the whole group run the same project with no install?||It is RStudio running in the browser.||A free cloud RStudio.">
   <div class="q">6. Posit Cloud is —</div>
   <ul class="qopts">
     <li data-correct="false">A paid alternative to R</li>
@@ -842,7 +842,7 @@ Explanations appear below each question.
   <div class="explanation">Posit Cloud is RStudio running in your browser. Recommended for getting started with R because it avoids installation headaches.</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="It is not loaded by library(tidyverse).||It is the tidyverse-adjacent reader for .xlsx files.||readxl.">
   <div class="q">7. The function <code>read_excel()</code> comes from which package?</div>
   <ul class="qopts">
     <li data-correct="false">tidyverse</li>
@@ -853,7 +853,7 @@ Explanations appear below each question.
   <div class="explanation"><code>readxl</code> is the tidyverse-adjacent package for reading <code>.xlsx</code> and <code>.xls</code> files. It is not loaded by <code>library(tidyverse)</code> — you need <code>library(readxl)</code> separately.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="How do you select one column by name from a data frame?||Use the dollar sign.||bc$Reforestation_ha.">
   <div class="q">8. After loading the BC file with <code>bc &lt;- read_excel(...)</code>, how do you access just the <code>Reforestation_ha</code> column?</div>
   <ul class="qopts">
     <li data-correct="false">bc["Reforestation_ha"]</li>
@@ -864,7 +864,7 @@ Explanations appear below each question.
   <div class="explanation">The <code>$</code> is the column selector. Tab completion after <code>bc$</code> shows you every column name.</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="dim reports the shape — which number comes first?||Rows first, then columns.||37 rows and 8 columns.">
   <div class="q">9. <code>dim(bc)</code> returns <code>c(37, 8)</code>. What does that mean?</div>
   <ul class="qopts">
     <li data-correct="false">37 columns and 8 rows</li>
@@ -875,7 +875,7 @@ Explanations appear below each question.
   <div class="explanation"><code>dim()</code> returns rows first, then columns. Use <code>nrow()</code> or <code>ncol()</code> if you only want one of them.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="Same file, same operation — what should the totals be?||Nothing changed but the tool.||Identical.">
   <div class="q">10. You ran <code>sum(bc$Reforestation_ha)</code> in R and got a value. In Excel last chapter you also computed total reforestation. The two numbers should be —</div>
   <ul class="qopts">
     <li data-correct="false">Different — R rounds differently</li>
@@ -886,7 +886,7 @@ Explanations appear below each question.
   <div class="explanation">Whole point of the Excel-to-R bridge: the data did not change, the operation did not change, so the answer cannot change. If they differ, something is wrong.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="Which pipe is built into R 4.1+ and needs no package?||Not the older magrittr %>%.||The native pipe |> .">
   <div class="q">11. The native pipe in R is —</div>
   <ul class="qopts">
     <li data-correct="false">%&gt;%</li>
@@ -897,7 +897,7 @@ Explanations appear below each question.
   <div class="explanation"><code>|&gt;</code> is the native pipe, built into R 4.1+. <code>%&gt;%</code> is the older magrittr pipe, which still works but requires a package.</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="The pipe inserts the left value as the first argument of the right function.||So x flows into mean() as its argument.||mean(x).">
   <div class="q">12. <code>x |> mean()</code> is equivalent to —</div>
   <ul class="qopts">
     <li data-correct="false">x + mean()</li>
@@ -908,7 +908,7 @@ Explanations appear below each question.
   <div class="explanation">The pipe takes the thing on its left and inserts it as the first argument of the function on its right. Useful when chaining several operations.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="Read the error: the package was never installed (different from not loaded).||Install it first, then load it.||Run install.packages('tidyverse'), then library(tidyverse).">
   <div class="q">13. You see this error: <code>Error in library(tidyverse) : there is no package called 'tidyverse'</code>. What do you do?</div>
   <ul class="qopts">
     <li data-correct="false">Reinstall R</li>
@@ -919,7 +919,7 @@ Explanations appear below each question.
   <div class="explanation">R is telling you the package was never installed on this machine. Install once, then load. The error message itself names the package — read every word.</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="What anchors the working directory in a Project?||It is the folder containing the .Rproj file.||The project root folder.">
   <div class="q">14. Inside an RStudio Project, the working directory is —</div>
   <ul class="qopts">
     <li data-correct="false">Your Desktop</li>
@@ -930,7 +930,7 @@ Explanations appear below each question.
   <div class="explanation">The Project anchors the working directory. <code>here()</code> uses this anchor to resolve relative paths.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="Raw inputs have a dedicated folder.||Keep the download untouched there.||In data/.">
   <div class="q">15. Where should the raw <code>bc_disturbance_reforestation.xlsx</code> file live inside your RStudio Project?</div>
   <ul class="qopts">
     <li data-correct="false">In the project root</li>
@@ -941,7 +941,7 @@ Explanations appear below each question.
   <div class="explanation">Same folder structure as Chapter 1: raw files in <code>data/</code>, generated files in <code>outputs/</code>, scripts in <code>R/</code>, deliverables in <code>deliverables/</code>.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="The course prefers the arrow, not the equals sign.||It keeps assignment visually distinct from function arguments.||The &lt;- operator.">
   <div class="q">16. Which is the assignment operator preferred in this course?</div>
   <ul class="qopts">
     <li data-correct="false">=</li>
@@ -952,7 +952,7 @@ Explanations appear below each question.
   <div class="explanation"><code>&lt;-</code> is the conventional R assignment operator. <code>=</code> works in most cases but is also used for function arguments, so <code>&lt;-</code> keeps the two uses visually distinct. The keyboard shortcut is <strong>Alt+-</strong> (Windows) / <strong>Option+-</strong> (Mac).</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="glimpse is a compact, transposed overview of the data.||It lists each column with its type and first values.||A compact summary of every column's type and sample values.">
   <div class="q">17. <code>glimpse(bc)</code> shows you —</div>
   <ul class="qopts">
     <li data-correct="false">A pie chart of the data</li>
@@ -963,7 +963,7 @@ Explanations appear below each question.
   <div class="explanation"><code>glimpse()</code> is one of the most useful first-look functions. It shows every column, its type, and a preview of the values — like a richer version of Excel's status bar.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="Think total, average, the two extremes, and the middle value.||These mirror Excel's SUM, AVERAGE, MIN, MAX, MEDIAN.||sum, mean, min, max, median.">
   <div class="q">18. The five basic statistics from this chapter are —</div>
   <ul class="qopts">
     <li data-correct="false">add, subtract, multiply, divide, exponent</li>
@@ -974,7 +974,7 @@ Explanations appear below each question.
   <div class="explanation">Five base R functions — <code>sum()</code>, <code>mean()</code>, <code>min()</code>, <code>max()</code>, <code>median()</code> — directly equivalent to Excel's <code>SUM</code>, <code>AVERAGE</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="Are R error messages noise, or clues?||They name the function at fault and often suggest a fix.||They are informative — read every word.">
   <div class="q">19. Which is true about R errors?</div>
   <ul class="qopts">
     <li data-correct="false">They are random and impossible to read</li>
