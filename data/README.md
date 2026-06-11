@@ -45,14 +45,15 @@ download/build scripts in `../scripts/` and updates `clean/`.
   network (BC Data Catalogue). (URL: confirm.)
 - **Licence:** Open Government Licence — British Columbia.
 - **Used in:** Ch 6, 7, 8, 9, 11.
-- **⚠ Coverage caveat (verified 2026-06-10):** pollutant completeness is
+- **Coverage caveat (verified 2026-06-10):** pollutant completeness is
   uneven across stations — **PM2.5 has data for only 1 station**
   (“Vancouver International Airport #2”, 742 rows), whereas **O₃ and NO₂
   each have 8 stations** (O₃ 5,677 obs; NO₂ 5,826), NO 8, CO 7, PM10 6,
   SO₂ 4. `NOx`, `TEMP_MEAN`, `HUMIDITY`, `PRECIP_TOTAL` are entirely NA.
-  The “by station / by region” teaching examples need a multi-station
-  pollutant — **O₃ recommended** (8 stations + forestry-relevant: ozone
-  damages foliage). See `plan/plan.md` §10 Phase B.
+  Also: the file covers **January 2000 only** (one month).
+- **✅ Resolved:** the book's air-quality examples use **O₃** (8 stations,
+  5 regions; ozone is forestry-relevant — it injures foliage), grouped
+  by station / day / hour. Values are reported in **ppb**.
 
 ### `inter_air_van_weather.csv`
 - **What:** ECCC daily climate for Vancouver International Airport
