@@ -51,19 +51,19 @@ stations_sf <- stations |>
   st_as_sf(coords = c("lon", "lat"), crs = 4326)
 ```
 
-```{r compute-pm25}
-# Compute mean PM2.5 per station from the Ch 6 cleaned air-quality data
+```{r compute-o3}
+# Compute mean O₃ per station from the Ch 6 cleaned air-quality data
 airdata_clean <- read_csv(here("data", "airdata3.csv"),
                           show_col_types = FALSE) |>
-  filter(!is.na(PM25))
+  filter(!is.na(O3))
 
 station_means <- airdata_clean |>
   group_by(location) |>
-  summarise(mean_pm25 = mean(PM25, na.rm = TRUE),
+  summarise(mean_o3 = mean(O3, na.rm = TRUE),
             n_obs = n(),
             .groups = "drop")
 
-stations_pm25 <- stations_sf |>
+stations_o3 <- stations_sf |>
   left_join(station_means, by = "location")
 ```
 
@@ -123,14 +123,14 @@ stations_pm25 <- stations_sf |>
 
 ---
 
-# Exercise 4 — Colour by PM2.5
+# Exercise 4 — Colour by O₃
 
 ## 4a — Build the palette
 
 ```{r ex4a}
 # TODO: build a colour palette with colorNumeric().
 # Use palette = c("#52B788", "#B7791F", "#B05C50") (green to red),
-# domain = stations_pm25$mean_pm25, na.color = "grey50".
+# domain = stations_o3$mean_o3, na.color = "grey50".
 # Save as `pal`.
 
 ```
@@ -138,15 +138,15 @@ stations_pm25 <- stations_sf |>
 ## 4b — Build the map
 
 ```{r ex4b}
-# TODO: leaflet(stations_pm25) |> addTiles() |>
-#   addCircleMarkers(radius = ~ifelse(is.na(mean_pm25), 5, mean_pm25 + 4),
-#                    fillColor = ~pal(mean_pm25),
+# TODO: leaflet(stations_o3) |> addTiles() |>
+#   addCircleMarkers(radius = ~ifelse(is.na(mean_o3), 5, mean_o3 + 4),
+#                    fillColor = ~pal(mean_o3),
 #                    fillOpacity = 0.85,
 #                    color = "#1B4332",
 #                    weight = 1.5,
 #                    popup = ~location) |>
-#   addLegend("bottomright", pal = pal, values = ~mean_pm25,
-#             title = "Mean PM2.5 (μg/m³)", opacity = 1)
+#   addLegend("bottomright", pal = pal, values = ~mean_o3,
+#             title = "Mean O₃ (ppb)", opacity = 1)
 
 ```
 
@@ -157,9 +157,9 @@ stations_pm25 <- stations_sf |>
 ```{r ex5}
 # TODO: rebuild the map from Ex 4 with rich HTML popups using paste0():
 #   popup = ~paste0("<b>", location, "</b><br>",
-#                   "Mean PM2.5: ",
-#                   ifelse(is.na(mean_pm25), "no data",
-#                          paste0(round(mean_pm25, 1), " μg/m³")), "<br>",
+#                   "Mean O₃: ",
+#                   ifelse(is.na(mean_o3), "no data",
+#                          paste0(round(mean_o3, 1), " ppb")), "<br>",
 #                   "N observations: ", ifelse(is.na(n_obs), "0", n_obs))
 
 ```
@@ -225,14 +225,14 @@ stations_pm25 <- stations_sf |>
 
 ## Palette choice and rationale
 
-> *What colour palette did your group choose for PM2.5, and why?*
+> *What colour palette did your group choose for O₃, and why?*
 
 ## The capstone map
 
 ```{r group-capstone}
 # TODO: build the chapter capstone map here.
 # - Stations + buffers
-# - Colour by mean PM2.5 with a matching legend
+# - Colour by mean O₃ with a matching legend
 # - Layers control (at least two basemaps + two overlay groups)
 # - Informative popups
 

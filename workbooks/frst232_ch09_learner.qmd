@@ -42,12 +42,18 @@ station_regions <- tribble(
   "North Vancouver Second Narrows",   "North Shore",
   "Pitt Meadows Airport",             "North-East Sector",
   "Port Coquitlam North",             "North-East Sector",
-  "Port Moody Rocky Point Park",      "North-East Sector"
+  "Port Moody Rocky Point Park",      "North-East Sector",
+  "Richmond South",                   "South of Fraser",
+  "Tsawwassen",                       "South of Fraser",
+  "Vancouver Clark Drive",            "Vancouver",
+  "Vancouver International Airport #2","South of Fraser",
+  "Vancouver Kitsilano",              "Vancouver",
+  "West Vancouver Lions Gate",        "North Shore"
 )
 
 airdata_clean <- read_csv(here("data", "airdata3.csv"),
                           show_col_types = FALSE) |>
-  filter(!is.na(PM25)) |>
+  filter(!is.na(O3)) |>
   mutate(date_parsed = mdy(Date),
          day = day(date_parsed)) |>
   left_join(station_regions, by = "location") |>
@@ -92,21 +98,21 @@ airdata_clean <- read_csv(here("data", "airdata3.csv"),
 ## 3a — binwidth = 1
 
 ```{r ex3a}
-# TODO: histogram of airdata_clean$PM25 with binwidth = 1.
+# TODO: histogram of airdata_clean$O3 with binwidth = 1.
 
 ```
 
 ## 3b — binwidth = 5
 
 ```{r ex3b}
-# TODO: histogram of airdata_clean$PM25 with binwidth = 5.
+# TODO: histogram of airdata_clean$O3 with binwidth = 5.
 
 ```
 
 ## 3c — binwidth = 0.5
 
 ```{r ex3c}
-# TODO: histogram of airdata_clean$PM25 with binwidth = 0.5.
+# TODO: histogram of airdata_clean$O3 with binwidth = 0.5.
 
 ```
 
@@ -120,7 +126,7 @@ airdata_clean <- read_csv(here("data", "airdata3.csv"),
 # Exercise 4 — Boxplot with coord_flip
 
 ```{r ex4}
-# TODO: boxplot of PM25 by region. Add coord_flip() so the region
+# TODO: boxplot of O3 by region. Add coord_flip() so the region
 # names read horizontally.
 
 ```
@@ -133,7 +139,7 @@ airdata_clean <- read_csv(here("data", "airdata3.csv"),
 # Exercise 5 — Faceted time series
 
 ```{r ex5}
-# TODO: plot PM25 over date_parsed, one panel per station, using
+# TODO: plot O3 over date_parsed, one panel per station, using
 # facet_wrap(~ location, scales = "free_y").
 
 ```

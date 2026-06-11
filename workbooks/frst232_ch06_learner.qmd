@@ -124,28 +124,28 @@ and the rendered `.html`.
 
 ---
 
-# Exercise 4 — Filter to non-missing PM2.5
+# Exercise 4 — Filter to non-missing O₃
 
 ```{r ex4}
-# TODO: starting from airdata_step3, keep only rows where PM25 is
+# TODO: starting from airdata_step3, keep only rows where O3 is
 # NOT missing. Save as `airdata_step4`.
-# Hint: filter(!is.na(PM25))
+# Hint: filter(!is.na(O3))
 # Then report nrow(airdata_step4).
 
 ```
 
 ---
 
-# Exercise 5 — `case_when()` for PM2.5 bands
+# Exercise 5 — `case_when()` for O₃ bands
 
 ```{r ex5}
-# TODO: starting from airdata_step4, add a column `pm25_band`:
-#   PM25 < 10  -> "low"
-#   PM25 < 25  -> "moderate"
-#   PM25 < 50  -> "high"
+# TODO: starting from airdata_step4, add a column `o3_band`:
+#   O3 < 10  -> "low"
+#   O3 < 20  -> "moderate"
+#   O3 < 30  -> "high"
 #   TRUE       -> "very high"
 # Save as `airdata_step5`.
-# Then call count(airdata_step5, pm25_band).
+# Then call count(airdata_step5, o3_band).
 
 ```
 
@@ -167,7 +167,13 @@ station_regions <- tribble(
   "North Vancouver Second Narrows",   "North Shore",
   "Pitt Meadows Airport",             "North-East Sector",
   "Port Coquitlam North",             "North-East Sector",
-  "Port Moody Rocky Point Park",      "North-East Sector"
+  "Port Moody Rocky Point Park",      "North-East Sector",
+  "Richmond South",                   "South of Fraser",
+  "Tsawwassen",                       "South of Fraser",
+  "Vancouver Clark Drive",            "Vancouver",
+  "Vancouver International Airport #2","South of Fraser",
+  "Vancouver Kitsilano",              "Vancouver",
+  "West Vancouver Lions Gate",        "North Shore"
 )
 station_regions
 ```
@@ -205,9 +211,9 @@ station_regions
 ```{r ex8}
 # TODO: group airdata_clean by location, then summarise with:
 #   n_obs = n()
-#   mean_pm25 = mean(PM25, na.rm = TRUE)
-#   max_pm25  = max(PM25, na.rm = TRUE)
-# Then arrange(desc(mean_pm25)).
+#   mean_o3 = mean(O3, na.rm = TRUE)
+#   max_o3  = max(O3, na.rm = TRUE)
+# Then arrange(desc(mean_o3)).
 # Print the result.
 
 ```
@@ -234,13 +240,13 @@ Use this section for your group-lab submission.
 
 > *List your group members here.*
 
-## Highest-PM2.5 station (Task 5 of the group lab)
+## Highest-O₃ station (Task 5 of the group lab)
 
-> *Type the station name and its mean PM2.5 here.*
+> *Type the station name and its mean O₃ here.*
 
 ## One-sentence interpretation
 
-> *Why might that station have higher PM2.5? Use your knowledge
+> *Why might that station have higher O₃? Use your knowledge
 > of Metro Vancouver geography.*
 
 ---

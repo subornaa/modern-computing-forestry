@@ -63,7 +63,13 @@ station_regions <- tribble(
   "North Vancouver Second Narrows",   "North Shore",
   "Pitt Meadows Airport",             "North-East Sector",
   "Port Coquitlam North",             "North-East Sector",
-  "Port Moody Rocky Point Park",      "North-East Sector"
+  "Port Moody Rocky Point Park",      "North-East Sector",
+  "Richmond South",                   "South of Fraser",
+  "Tsawwassen",                       "South of Fraser",
+  "Vancouver Clark Drive",            "Vancouver",
+  "Vancouver International Airport #2","South of Fraser",
+  "Vancouver Kitsilano",              "Vancouver",
+  "West Vancouver Lions Gate",        "North Shore"
 )
 
 airdata_clean <- read_csv(here("data", "airdata3.csv"),
@@ -74,11 +80,11 @@ airdata_clean <- read_csv(here("data", "airdata3.csv"),
          year = year(date_parsed),
          month = month(date_parsed),
          day = day(date_parsed)) |>
-  filter(!is.na(PM25)) |>
-  mutate(pm25_band = case_when(
-    PM25 < 10  ~ "low",
-    PM25 < 25  ~ "moderate",
-    PM25 < 50  ~ "high",
+  filter(!is.na(O3)) |>
+  mutate(o3_band = case_when(
+    O3 < 10  ~ "low",
+    O3 < 20  ~ "moderate",
+    O3 < 30  ~ "high",
     TRUE       ~ "very high"
   )) |>
   left_join(station_regions, by = "location")
@@ -94,8 +100,8 @@ Write a single `summarise()` call on `airdata_clean` that returns:
 
 - `n_obs` (row count via `n()`),
 - `n_stations` (via `n_distinct(location)`),
-- `mean_pm25`, `median_pm25`, `sd_pm25`,
-- `min_pm25`, `max_pm25`.
+- `mean_o3`, `median_o3`, `sd_o3`,
+- `min_o3`, `max_o3`.
 
 Remember `na.rm = TRUE` for the numeric aggregations.
 
@@ -105,15 +111,15 @@ Remember `na.rm = TRUE` for the numeric aggregations.
 ```
 
 > *Write a one-sentence interpretation here.* What is the overall
-> mean PM2.5 across the cleaned tibble, and how does it compare
+> mean O₃ across the cleaned tibble, and how does it compare
 > to the maximum?
 
 ---
 
 # Exercise 2 — By-station summary
 
-Group by `location`, summarise `n_obs`, `mean_pm25`, `median_pm25`,
-and `max_pm25`. Sort descending by `mean_pm25`. Use
+Group by `location`, summarise `n_obs`, `mean_o3`, `median_o3`,
+and `max_o3`. Sort descending by `mean_o3`. Use
 `.groups = "drop"`.
 
 ```{r ex2}
@@ -122,14 +128,14 @@ and `max_pm25`. Sort descending by `mean_pm25`. Use
 ```
 
 > *Write your answer here.* Which station has the **highest**
-> mean PM2.5 in this month? Which has the lowest?
+> mean O₃ in this month? Which has the lowest?
 
 ---
 
 # Exercise 3 — By-day summary
 
 Group by `day` (the day-of-month integer). Summarise `n_obs` and
-`mean_pm25` per day. Sort descending by `mean_pm25`.
+`mean_o3` per day. Sort descending by `mean_o3`.
 
 ```{r ex3}
 # TODO: write the by-day summarise pipeline.
@@ -137,35 +143,35 @@ Group by `day` (the day-of-month integer). Summarise `n_obs` and
 ```
 
 > *Write your answer here.* Which day in January 2000 had the
-> **highest provincial mean PM2.5** across all stations? How
+> **highest provincial mean O₃** across all stations? How
 > many observations support that mean?
 
 ---
 
 # Exercise 4 — Cross-tabulation with `pivot_wider()`
 
-Build a cross-tab: rows are `region`, columns are `pm25_band`,
+Build a cross-tab: rows are `region`, columns are `o3_band`,
 values are counts. Use `values_fill = 0` so empty cells show 0.
 
 ```{r ex4}
-# TODO: count by region and pm25_band, then pivot_wider.
+# TODO: count by region and o3_band, then pivot_wider.
 # Hint:
 #   airdata_clean |>
-#     count(region, pm25_band) |>
-#     pivot_wider(names_from = pm25_band, values_from = n,
+#     count(region, o3_band) |>
+#     pivot_wider(names_from = o3_band, values_from = n,
 #                 values_fill = 0)
 
 ```
 
 > *Write your answer here.* Which region has the most "high"
-> or "very high" PM2.5 hours? Which region had the fewest?
+> or "very high" O₃ hours? Which region had the fewest?
 
 ---
 
 # Exercise 5 — `across()` for multiple pollutants
 
 Group by `region`. Use `across()` to compute the mean of every
-listed pollutant in one summarise call: `PM25`, `PM10`, `O3`,
+listed pollutant in one summarise call: `O3`, `PM10`, `O3`,
 `NO2`.
 
 ```{r ex5}
@@ -173,7 +179,7 @@ listed pollutant in one summarise call: `PM25`, `PM10`, `O3`,
 # Hint:
 #   airdata_clean |>
 #     group_by(region) |>
-#     summarise(across(c(PM25, PM10, O3, NO2),
+#     summarise(across(c(O3, PM10, O3, NO2),
 #                      \(x) mean(x, na.rm = TRUE)),
 #               .groups = "drop")
 
@@ -184,10 +190,10 @@ listed pollutant in one summarise call: `PM25`, `PM10`, `O3`,
 
 ---
 
-# Exercise 6 — 90th-percentile PM2.5 per station
+# Exercise 6 — 90th-percentile O₃ per station
 
-Group by `location`. Use `quantile(PM25, 0.9, na.rm = TRUE)` to
-compute the 90th-percentile PM2.5 per station. Arrange descending.
+Group by `location`. Use `quantile(O3, 0.9, na.rm = TRUE)` to
+compute the 90th-percentile O₃ per station. Arrange descending.
 
 ```{r ex6}
 # TODO: write the per-station 90th-percentile pipeline.
@@ -195,7 +201,7 @@ compute the 90th-percentile PM2.5 per station. Arrange descending.
 ```
 
 > *Write your answer here.* The 90th percentile tells you the
-> level that PM2.5 stays *below* 90% of the time. Which station
+> level that O₃ stays *below* 90% of the time. Which station
 > has the highest 90th-percentile reading? How does this ranking
 > compare to the mean ranking from Exercise 2?
 
@@ -219,8 +225,8 @@ once in R, once in Excel.
 Open `outputs/airdata3_clean.csv` in Excel. Build a PivotTable:
 
 - **Rows**: `region`
-- **Columns**: `pm25_band`
-- **Values**: `Count of PM25`
+- **Columns**: `o3_band`
+- **Values**: `Count of O3`
 
 Take a screenshot of the PivotTable.
 
