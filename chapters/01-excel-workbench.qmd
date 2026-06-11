@@ -842,7 +842,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="What do you need to understand before the numbers can mean anything?||Which sheet records the source, licence, and citation? That context comes first.||The reading order runs from context, to the column dictionary, to the data itself.">
   <div class="q">1. Which sheet should you read first when you open <code>bc_disturbance_reforestation.xlsx</code>?</div>
   <ul class="qopts">
     <li data-correct="true">About</li>
@@ -853,7 +853,7 @@ Explanations appear below each question.
   <div class="explanation">Read About first — it tells you the source, licence, and citation. Then ReadMe (variable dictionary). Then Data. Reading in the wrong order means you start computing before you know what the columns mean.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="Re-read what the About sheet says about who published it.||It is an open-government source, not a commercial or personal one.||Think BC Data Catalogue.">
   <div class="q">2. Where does the dataset come from?</div>
   <ul class="qopts">
     <li data-correct="false">A textbook publisher</li>
@@ -864,7 +864,7 @@ Explanations appear below each question.
   <div class="explanation">Every dataset in this book is openly licensed and comes from a public source. This one is from Environmental Reporting BC and is distributed through the BC Data Catalogue under the Open Government Licence — British Columbia.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="What has one row per column of the Data sheet?||It tells you each column's meaning, units, and type.||That description is also called a data dictionary.">
   <div class="q">3. The ReadMe sheet is best understood as —</div>
   <ul class="qopts">
     <li data-correct="false">A backup copy of the data</li>
@@ -875,7 +875,7 @@ Explanations appear below each question.
   <div class="explanation">The ReadMe sheet (also called a data dictionary) has one row per column of the Data sheet — explaining what each column measures, its units, its type, and any notes.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="Ask: does formatting change what is stored, or only what is shown?||A formula on the cell still uses the full-precision number.||Display is not the same as value.">
   <div class="q">4. True or false: when you change the <em>display format</em> of a cell from "general" to "two decimals", the underlying value also changes.</div>
   <ul class="qopts">
     <li data-correct="false">True</li>
@@ -884,7 +884,7 @@ Explanations appear below each question.
   <div class="explanation">Display format is independent of value. The cell still holds <code>216304.919</code> even when it shows <code>216,304.92</code>. Formulas always operate on the underlying value, not the display.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="What two kinds of disturbance does the file track separately?||'Total' usually means the parts added together.||Check it on one row: harvested plus natural.">
   <div class="q">5. <code>Total_Disturbance_ha</code> should equal —</div>
   <ul class="qopts">
     <li data-correct="false">Just <code>Harvested_ha</code></li>
@@ -895,7 +895,7 @@ Explanations appear below each question.
   <div class="explanation">By definition, total disturbance is harvested area plus naturally disturbed area. Always verify this kind of identity on at least one row — it is a cheap way to confirm the data was assembled correctly.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="Which modifier key, held with an arrow, moves by blocks rather than one cell at a time?||It jumps to the next non-empty cell in the arrow's direction.||It is Ctrl held with an Arrow key.">
   <div class="q">6. What is the keyboard shortcut to jump to the edge of the data in Excel?</div>
   <ul class="qopts">
     <li data-correct="false">Ctrl + Tab</li>

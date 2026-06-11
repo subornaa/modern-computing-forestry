@@ -1,0 +1,107 @@
+<!-- Guided-Answer quiz enhancements (book-level, applied to every chapter).
+     Layered on top of each chapter's existing .quiz markup + click script:
+       1. Non-colour feedback: ✓ Correct / ✗ Incorrect text via CSS ::after
+          (reuses the .correct / .wrong classes the inline script already sets),
+          so correctness is never conveyed by colour alone (WCAG 1.4.1).
+       2. Keyboard operation: options become focusable and answerable with
+          Enter or Space, with a visible focus ring (WCAG 2.1.1).
+       3. Progressive "Guided Answer" hints: any .quiz with a data-hints
+          attribute ("hint 1||hint 2||...") gets a "Need a hint?" button that
+          reveals hints one at a time before the learner commits to an answer. -->
+<style>
+  .quiz ul.qopts li { position: relative; }
+  .quiz ul.qopts li:focus,
+  .quiz ul.qopts li:focus-visible {
+    outline: 3px solid #1B4332;
+    outline-offset: 2px;
+  }
+  /* Text labels so feedback is not colour-only */
+  .quiz ul.qopts li.correct::after {
+    content: " \2713 Correct";
+    font-weight: 700;
+    color: #1B4332;
+    margin-left: 0.4em;
+  }
+  .quiz ul.qopts li.wrong::after {
+    content: " \2717 Incorrect";
+    font-weight: 700;
+    color: #7A2E26;
+    margin-left: 0.4em;
+  }
+  .quiz .hint-btn {
+    background: #fff;
+    color: #1B4332;
+    border: 1px solid #2D6A4F;
+    padding: 0.4em 0.9em;
+    margin: 0.4em 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  .quiz .hint-btn:hover { background: #E8F1E9; }
+  .quiz .hint-list { margin: 0.3em 0 0.2em; padding: 0; list-style: none; }
+  .quiz .hint-list li {
+    margin: 0.35em 0;
+    padding: 0.5em 0.8em;
+    background: #FFF8E8;
+    border-left: 3px solid #B7791F;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+</style>
+<script>
+(function () {
+  document.querySelectorAll('.quiz').forEach(function (q) {
+    // --- 1 & 2: keyboard-accessible options ---
+    q.querySelectorAll('ul.qopts li').forEach(function (opt) {
+      if (!opt.hasAttribute('tabindex')) opt.setAttribute('tabindex', '0');
+      if (!opt.hasAttribute('role')) opt.setAttribute('role', 'button');
+      opt.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          opt.click(); // reuse the chapter's existing click handler
+        }
+      });
+    });
+
+    // --- 3: progressive Guided-Answer hints ---
+    var raw = q.getAttribute('data-hints');
+    if (!raw) return;
+    var hints = raw.split('||').map(function (h) { return h.trim(); })
+                   .filter(function (h) { return h.length; });
+    if (!hints.length) return;
+
+    var list = document.createElement('ul');
+    list.className = 'hint-list';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'hint-btn';
+    var shown = 0;
+    function label() {
+      btn.textContent = shown === 0
+        ? 'Need a hint?'
+        : (shown < hints.length ? 'Next hint (' + shown + '/' + hints.length + ')'
+                                : 'All hints shown');
+    }
+    label();
+    btn.addEventListener('click', function () {
+      if (shown >= hints.length) return;
+      var li = document.createElement('li');
+      li.textContent = hints[shown];
+      list.appendChild(li);
+      shown += 1;
+      label();
+      if (shown >= hints.length) btn.disabled = true;
+    });
+
+    // Insert the hint control just before the explanation (or at the end).
+    var exp = q.querySelector('.explanation');
+    var opts = q.querySelector('ul.qopts');
+    if (opts && opts.parentNode) {
+      opts.parentNode.insertBefore(btn, exp || null);
+      opts.parentNode.insertBefore(list, exp || null);
+    }
+  });
+})();
+</script>
