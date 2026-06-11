@@ -200,6 +200,7 @@ the output appears on the slide where the chunk lives:
 #| echo: false
 #| fig.width: 8
 #| fig.height: 4.5
+#| fig-alt: "Bar chart of BC reforested area in hectares by fiscal year, used as a slide figure."
 library(tidyverse)
 library(readxl)
 library(here)

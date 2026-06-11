@@ -320,6 +320,7 @@ all annoyances that GeoPackage fixes.
 the same as any other geom — no new grammar to learn:
 
 ```{r geom-sf-basic}
+#| fig-alt: "Map of Metro Vancouver air-quality monitoring station point locations, drawn with geom_sf on latitude/longitude axes."
 ggplot(stations_sf) +
   geom_sf(size = 3, colour = "#2D6A4F") +
   labs(title = "Metro Vancouver Air-Quality Monitoring Stations") +
@@ -332,6 +333,7 @@ ggplot(stations_sf) +
 ## Adding the buffer as a layer
 
 ```{r geom-sf-with-buffer}
+#| fig-alt: "Map of the Metro Vancouver stations with a shaded 5 km circular buffer around the Burnaby South station, and each station point labelled."
 ggplot() +
   geom_sf(data = burnaby_buffer |> st_transform(4326),
           fill = "#52B788", alpha = 0.3, colour = "#1B4332") +

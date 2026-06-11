@@ -161,6 +161,7 @@ two series:
 #| echo: false
 #| fig.width: 7
 #| fig.height: 3.5
+#| fig-alt: "Line chart previewing an Excel time-series chart: BC total-disturbance and reforestation area in hectares across fiscal years, one coloured line per series."
 bc |>
   pivot_longer(c(Total_Disturbance_ha, Reforestation_ha),
                names_to = "series", values_to = "ha") |>
@@ -335,6 +336,7 @@ behind it).
 #| echo: false
 #| fig.width: 7
 #| fig.height: 3.5
+#| fig-alt: "Bar chart previewing an Excel PivotChart: total area in hectares by Ontario forest type (PFTName), sorted from largest to smallest."
 ontario |>
   group_by(PFTName) |>
   summarise(total_ha = sum(SumOfTotalHa), .groups = "drop") |>

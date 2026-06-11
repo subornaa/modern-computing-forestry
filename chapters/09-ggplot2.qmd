@@ -104,6 +104,7 @@ A ggplot call says, *"Take this tibble, map these columns to
 these visual properties, and draw these shapes."*
 
 ```{r minimal-ggplot}
+#| fig-alt: "Line chart of BC reforested area in hectares by fiscal year, 1987 to 2023, fluctuating from year to year."
 bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
                  sheet = "Data")
 
@@ -123,6 +124,7 @@ Three things to notice:
 # `geom_point()` — scatter plot
 
 ```{r geom-point}
+#| fig-alt: "Scatter plot of BC annual harvested area against natural-disturbance area; most years cluster at low values with a few high natural-disturbance outliers."
 ggplot(bc, aes(x = Harvested_ha, y = Natural_Disturbance_ha)) +
   geom_point()
 ```
@@ -135,6 +137,7 @@ wildfire spike.
 ## Mapping a third variable to colour
 
 ```{r point-colour}
+#| fig-alt: "Scatter plot of harvested area versus natural-disturbance area, points coloured by fiscal year along a continuous colour gradient."
 ggplot(bc, aes(x = Harvested_ha,
                y = Natural_Disturbance_ha,
                colour = Fiscal_Year)) +
@@ -147,6 +150,7 @@ variable like year gets a gradient legend.
 # `geom_line()` — time series
 
 ```{r line-multiple-series}
+#| fig-alt: "Line chart with three series — harvested, natural-disturbance, and reforested area in hectares — plotted against fiscal year, each in its own colour."
 # First reshape to long format so each series is a row
 bc_long <- bc |>
   select(Fiscal_Year, Harvested_ha,
@@ -175,12 +179,14 @@ The two bar geoms are confused often. The rule:
 - `geom_bar()` — you give it `x` values and it **counts** them.
 
 ```{r col-vs-bar}
+#| fig-alt: "Bar chart of BC reforested area in hectares for each fiscal year, 1987 to 2023."
 # geom_col — you supply the y value
 ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
   geom_col(fill = "#2D6A4F")
 ```
 
 ```{r geom-bar-count}
+#| fig-alt: "Bar chart counting disturbance events by type in a small sample, with fire the most frequent category."
 # geom_bar — it counts for you
 # Build a small tibble with one row per disturbance event
 events <- tibble(
@@ -197,6 +203,7 @@ have required a numeric column to use as height.
 # `geom_histogram()` — distribution of one variable
 
 ```{r histogram}
+#| fig-alt: "Histogram of hourly ozone readings in parts per billion; the distribution is strongly right-skewed, with most hours low and a long tail of higher values."
 airdata_clean <- read_csv(here("data", "airdata3.csv"),
                           show_col_types = FALSE) |>
   filter(!is.na(O3))
@@ -214,6 +221,7 @@ obvious.
 # `geom_boxplot()` — distributions by group
 
 ```{r boxplot}
+#| fig-alt: "Box plots of hourly ozone in parts per billion for each Metro Vancouver region, comparing medians, interquartile ranges, and outliers across regions."
 # First add a region column (from the Ch 6 lookup)
 station_regions <- tribble(
   ~location,                          ~region,
@@ -251,6 +259,7 @@ chart is much faster than reading a summary table.
 # `geom_smooth()` — a fitted trend
 
 ```{r smooth}
+#| fig-alt: "Scatter plot of reforested area by fiscal year with a loess trend curve and a shaded 95 percent confidence band."
 ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
   geom_point() +
   geom_smooth(method = "loess", se = TRUE)
@@ -281,6 +290,7 @@ When you have one chart you want repeated for each group, use
 `facet_wrap()`:
 
 ```{r facet-wrap}
+#| fig-alt: "Small-multiple histograms of hourly ozone in parts per billion, one panel per Metro Vancouver region."
 ggplot(airdata_region, aes(x = O3)) +
   geom_histogram(binwidth = 2, fill = "#2D6A4F", colour = "white") +
   facet_wrap(~ region)
@@ -298,6 +308,7 @@ A scientific or professional chart needs labels, formatted
 axes, and a clean theme:
 
 ```{r polish}
+#| fig-alt: "Polished bar chart titled BC Reforestation Area 1987 to 2023, showing reforested hectares per fiscal year with a comma-formatted y-axis, title, subtitle, and source caption."
 ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
   geom_col(fill = "#2D6A4F") +
   scale_y_continuous(labels = label_comma()) +
@@ -374,6 +385,7 @@ tibble(
 A single chart that uses several of this chapter's tools:
 
 ```{r composite}
+#| fig-alt: "Faceted line chart of hourly ozone over January 2000, one panel per region, with a separate coloured line for each monitoring station."
 airdata_region <- airdata_clean |>
   mutate(date_parsed = mdy(Date)) |>
   left_join(station_regions, by = "location") |>
