@@ -472,6 +472,47 @@ zoom out to BC, zoom in to a station, click for the popup, toggle
 the buffers off, switch to satellite. **One R block, full
 dashboard.**
 
+# A real interactive map: CSRD parks
+
+The maps above used the synthetic station tibble so you could see
+each piece in isolation. Here is the real thing — the **Columbia
+Shuswap Regional District parks** layer from Chapter 10, as a live
+interactive map you can pan, zoom, and click:
+
+```{r csrd-leaflet}
+parks <- st_read(here("data", "csrd_parks.geojson"), quiet = TRUE)
+
+pal <- colorFactor("viridis", domain = parks$ParkType)
+
+leaflet(parks) |>
+  addProviderTiles("CartoDB.Positron") |>
+  addCircleMarkers(
+    radius      = 5,
+    color       = ~pal(ParkType),
+    fillOpacity = 0.85,
+    stroke      = FALSE,
+    label       = ~ParkName,
+    popup       = ~paste0("<b>", ParkName, "</b><br>",
+                          "Type: ",   ParkType, "<br>",
+                          "Status: ", ParkStatus)
+  ) |>
+  addLegend("bottomright", pal = pal, values = ~ParkType,
+            title = "Park type", opacity = 1)
+```
+
+*Map: Columbia Shuswap Regional District park locations, coloured
+by park type. Source: CSRD Open Data. Non-interactive description:
+the parks are distributed across the CSRD — clustering near Salmon
+Arm and following the Shuswap Lake and Columbia River corridors. A
+static `geom_sf` version carrying the same information appears in
+Chapter 10 for readers who cannot use the interactive widget.*
+
+This is the interactive counterpart to the static map in Chapter
+10 — **same data, same question, two presentation choices.** Use
+the interactive version when exploration helps (a reader wants to
+find a specific park); use the static version when the map must
+work in print, in a PDF, or for a screen-reader user.
+
 # Active learning
 
 ## Activity 1 — Minimal map

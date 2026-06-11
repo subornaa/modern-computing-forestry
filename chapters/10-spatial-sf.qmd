@@ -347,6 +347,53 @@ Notice: the buffer was computed in BC Albers (metric), then
 reprojected back to WGS84 for plotting alongside the lat/lon
 stations. **Always reproject before combining layers.**
 
+# A real spatial file: the CSRD parks layer
+
+Everything so far used a small synthetic tibble. Now we read a
+**real** open-data file: the **park point locations** published
+by the Columbia Shuswap Regional District (CSRD). It is a single
+GeoJSON file — no shapefile bundle, no repository clone. (The
+download is scripted in `scripts/download_csrd_parks.R`.)
+
+```{r csrd-read}
+parks <- st_read(here("data", "csrd_parks.geojson"), quiet = TRUE)
+
+# Always inspect after reading
+nrow(parks)                  # how many features?
+st_geometry_type(parks)[1]   # points, lines, or polygons?
+st_crs(parks)$input          # which CRS did the file declare?
+st_bbox(parks)               # bounding box (here: degrees, WGS84)
+```
+
+The file has `r nrow(parks)` park points in WGS84. Before any
+distance or area work we reproject to **BC Albers (EPSG:3005)**,
+exactly as we did for the stations:
+
+```{r csrd-reproject}
+parks_bcalbers <- parks |> st_transform(3005)
+st_crs(parks_bcalbers)$Name   # confirm the reprojection
+st_bbox(parks_bcalbers)       # bounding box now in metres
+```
+
+Now a **static thematic map**, coloured by park type, using the
+`geom_sf()` grammar from above:
+
+```{r csrd-map}
+#| fig-alt: "Map of Columbia Shuswap Regional District park point
+#|   locations coloured by park type, spread across the region."
+ggplot(parks) +
+  geom_sf(aes(colour = ParkType), size = 2, alpha = 0.85) +
+  scale_colour_viridis_d() +
+  labs(title = "CSRD parks by type",
+       colour = "Park type",
+       caption = "Source: Columbia Shuswap Regional District Open Data") +
+  theme_minimal()
+```
+
+This is the static counterpart to the interactive `leaflet` map
+you will build in Chapter 11 — the same data, the same question,
+two presentation choices.
+
 # Downloading BC data — the BC Data Catalogue
 
 Most BC forestry spatial data is freely available from the **BC

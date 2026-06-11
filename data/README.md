@@ -61,9 +61,20 @@ download/build scripts in `../scripts/` and updates `clean/`.
   precipitation, snow, gust).
 - **Source:** Environment and Climate Change Canada — daily climate data.
   Reproducibly downloadable via `scripts/download_eccc_yvr_climate.R`
-  (to be written). 
+  (ECCC web stationID 51442, year 2000, daily timeframe).
 - **Licence:** ECCC open data.
-- **Used in:** Ch 8, 9 (air + weather join).
+- **Used in:** Ch 8 (air + weather many-to-one join), Ch 9.
+
+### `csrd_parks.geojson`
+- **What:** Columbia Shuswap Regional District park point locations.
+  66 POINT features, WGS 84, fields incl. `ParkName`, `ParkType`,
+  `ParkStatus`, `Address`, `Manager`.
+- **Source:** CSRD Open Data Portal (ArcGIS Hub) — "Park Locations"
+  feature layer. Reproducibly downloadable via
+  `scripts/download_csrd_parks.R`.
+- **Licence:** open (CSRD Open Data terms).
+- **Used in:** Ch 10 (read / inspect CRS+bbox / reproject to BC Albers /
+  static `geom_sf` map), Ch 11 (interactive `leaflet` map).
 
 ### `nfdb_fires_2021_2024.csv`
 - **What:** Per-fire point records, 2021–2024 (7,361 fires). Columns
@@ -79,8 +90,7 @@ download/build scripts in `../scripts/` and updates `clean/`.
 - **Built by:** `scripts/build_wildfire_summary.R` (re-runnable).
 - **Note:** 2023 dominates (≈16.5M ha) — Canada’s record wildfire season.
 
-## Datasets still to add (Phase B)
-- **`csrd_parks.geojson`** — Columbia Shuswap Regional District Open Data,
-  Parks (66 points). Needed for Ch 10/11 live maps. Download URL: confirm.
-- **`scripts/download_eccc_yvr_climate.R`** — ECCC bulk-download utility
-  that regenerates `inter_air_van_weather.csv`.
+## Download / build scripts (`../scripts/`)
+- **`build_wildfire_summary.R`** — derives `clean/canada_annual_wildfire_*`.
+- **`download_eccc_yvr_climate.R`** — regenerates `inter_air_van_weather.csv`.
+- **`download_csrd_parks.R`** — regenerates `csrd_parks.geojson`.
