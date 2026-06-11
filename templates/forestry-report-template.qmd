@@ -1,0 +1,105 @@
+---
+title: "Forestry Data Analysis — <your title here>"
+subtitle: "<one-line description of the question>"
+author: "<your name / group>"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true   # one self-contained file, works offline
+    fig-cap-location: bottom
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+# library(sf)        # uncomment if your analysis is spatial
+# library(leaflet)   # uncomment for an interactive map
+```
+
+# The question
+
+State, in one or two sentences, the forestry / natural-resources
+question this report answers. A good question is specific and
+answerable from the data (e.g., *"How has the share of
+clearcutting-with-reserves changed by decade in BC?"*).
+
+# Data and provenance
+
+| Property | Value |
+|---|---|
+| File(s) | `<filename>` |
+| Source | `<agency / catalogue + URL>` |
+| Licence | `<e.g., Open Government Licence — BC>` |
+| Retrieved | `<YYYY-MM-DD>` |
+| Rows × columns | `<n × m>` |
+
+# Import
+
+```{r import}
+# raw <- read_excel(here("data", "<file>.xlsx"), sheet = "Data")
+# raw <- read_csv(here("data", "<file>.csv"), show_col_types = FALSE)
+```
+
+# Cleaning log
+
+Document every transformation in prose *and* code — anyone should be
+able to reproduce your analysis-ready dataset from the raw file.
+
+```{r clean}
+# clean <- raw |>
+#   select(...) |>
+#   filter(...) |>
+#   mutate(...)
+```
+
+- *Step 1 —* what you changed and why.
+- *Step 2 —* …
+
+# Summary
+
+Report group sizes (`n()`) beside every mean.
+
+```{r summary}
+# clean |>
+#   group_by(<group>) |>
+#   summarise(n = n(), mean_value = mean(<var>, na.rm = TRUE), .groups = "drop") |>
+#   kable()
+```
+
+# Figure
+
+```{r figure}
+#| fig-alt: "<one-sentence description of what the chart shows, for screen readers>"
+# ggplot(clean, aes(x = ..., y = ...)) +
+#   geom_...() +
+#   labs(title = "...", x = "...", y = "...", caption = "Source: ...") +
+#   theme_minimal()
+```
+
+# Map (optional)
+
+```{r map}
+#| fig-alt: "<description of the map>"
+# parks <- st_read(here("data", "<layer>.geojson"), quiet = TRUE)
+# ggplot(parks) + geom_sf(aes(colour = <attr>)) + theme_minimal()
+```
+
+# Discussion
+
+What does the result mean for forestry / natural-resource management?
+What are the limitations of the data?
+
+# AI acknowledgement
+
+If generative AI substantially contributed to code or writing here,
+acknowledge it in one line (e.g., *"Draft code generated with an AI
+assistant; revised and verified by the team."*).
+
+# References
+
+<List sources used, including the dataset and any documentation.>

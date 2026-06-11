@@ -1,4 +1,16 @@
+---
+nocite: |
+  @wickham2023r, @wickham2016ggplot2, @lovelace2019geocomputation,
+  @pebesma2018sf, @quarto, @kimmerer2013braiding, @atleo2011tsawalk,
+  @fnigc_ocap, @gida_care, @bcfnfc
+---
+
 # References {.unnumbered}
+
+The works below are cited throughout the book. They mix the canonical
+R / data-science literature with spatial, forestry, and Indigenous
+knowledge sources. Individual chapters list additional *Reading* in
+their final sections.
 
 ::: {#refs}
 :::

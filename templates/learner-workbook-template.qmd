@@ -1,0 +1,62 @@
+---
+title: "FRST 232 — Chapter NN Learner Workbook"
+subtitle: "<chapter topic> — your working copy"
+author: "<your name>"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+```
+
+> **How to use this workbook.** Each `# TODO` is a task. Replace the
+> placeholder with your own code, then render (the **Render** button)
+> to check it works. Keep the prose notes — they are part of the
+> deliverable. Submit the rendered `.html` (and the `.qmd`) to the
+> course site.
+
+# Warm-up
+
+```{r warmup}
+# TODO: load the chapter's dataset with read_csv()/read_excel() + here()
+
+```
+
+# Exercise 1 — <short title>
+
+*Goal:* <what this exercise practises>.
+
+```{r ex1}
+# TODO: your code here
+
+```
+
+*Your answer in words:* <one or two sentences interpreting the result>.
+
+# Exercise 2 — <short title>
+
+```{r ex2}
+# TODO
+
+```
+
+# Exercise 3 — <short title>
+
+```{r ex3}
+# TODO
+
+```
+
+# Reflection
+
+- What was the hardest step, and how did you debug it?
+- If you used an AI assistant, what did you ask, and how did you
+  verify its answer?
