@@ -906,7 +906,7 @@ Explanations appear below each question.
   <div class="explanation"><code>Ctrl + Arrow</code> jumps to the next non-empty cell in that direction — usually the edge of your data block.</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="Which BC year had a record natural disturbance?||Think wildfire season.||2017.">
   <div class="q">7. The fiscal year with the largest <code>Natural_Disturbance_ha</code> in the BC dataset is —</div>
   <ul class="qopts">
     <li data-correct="false">1987</li>
@@ -917,7 +917,7 @@ Explanations appear below each question.
   <div class="explanation">2017 was BC's record wildfire season — 218,275 ha of natural disturbance. It dominates the time series. Always look at the extremes of your data; the outliers tell you something about how the world worked that year.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="Raw, untouched downloads get their own folder.||Not outputs or deliverables.||data/.">
   <div class="q">8. Which folder is the right place to store the raw, untouched copy of a downloaded dataset?</div>
   <ul class="qopts">
     <li data-correct="true"><code>data/</code></li>
@@ -928,7 +928,7 @@ Explanations appear below each question.
   <div class="explanation">Raw data goes in <code>data/</code> and is never edited in place. Cleaning produces files that go in <code>outputs/</code>. Anything you submit goes in <code>deliverables/</code>.</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="Freezing rows is a viewing option under one menu.||Look under View.||View, Freeze Panes, Freeze Top Row.">
   <div class="q">9. To freeze the top row so it stays visible while you scroll, which menu path do you use?</div>
   <ul class="qopts">
     <li data-correct="false">Home → Format → Freeze</li>
@@ -939,7 +939,7 @@ Explanations appear below each question.
   <div class="explanation"><strong>View → Freeze Panes → Freeze Top Row</strong> keeps row 1 in view while you scroll down.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="The comparison uses the stored values, not what is displayed.||The underlying numbers differ slightly.||FALSE.">
   <div class="q">10. Two cells both display <code>100,000</code>. Cell A's underlying value is <code>100000</code>; cell B's is <code>99999.999999</code>. The formula <code>=A1=B1</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">TRUE</li>
@@ -950,7 +950,7 @@ Explanations appear below each question.
   <div class="explanation">The comparison operates on the <em>values</em>, not the displays. The cells look identical but are not equal. Always remember: display ≠ value.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="Which format sorts correctly even when treated as plain text?||Year first, then month, then day, zero-padded.||ISO 8601 (yyyy-mm-dd).">
   <div class="q">11. Which date format sorts correctly both as text and as a date?</div>
   <ul class="qopts">
     <li data-correct="false"><code>15/09/2024</code></li>
@@ -961,7 +961,7 @@ Explanations appear below each question.
   <div class="explanation">ISO 8601 (<code>yyyy-mm-dd</code>) is the only date format that sorts correctly when treated as text. It is also unambiguous across regions (no day/month confusion).</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="Count only counts numeric cells.||Cells stored as text are skipped.||Some cells are stored as text and are not counted.">
   <div class="q">12. The status bar at the bottom of an Excel window shows <code>Sum</code>, <code>Average</code>, and <code>Count</code> when you select a numeric range. If <code>Count</code> is lower than the number of cells you selected, what is the most likely reason?</div>
   <ul class="qopts">
     <li data-correct="false">A sum that matches the visible total</li>
@@ -972,7 +972,7 @@ Explanations appear below each question.
   <div class="explanation"><code>Count</code> only counts numeric cells. If you selected 37 cells but the status bar says <code>Count: 35</code>, two are stored as text and are being silently skipped by aggregation formulas.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="Never edit the original download in place.||Keep it untouched; save any changes separately.||Keep it unchanged in data/ and save edits elsewhere.">
   <div class="q">13. When you download <code>bc_disturbance_reforestation.xlsx</code>, what should you do with the raw file?</div>
   <ul class="qopts">
     <li data-correct="false">Open it and immediately start editing</li>
@@ -983,7 +983,7 @@ Explanations appear below each question.
   <div class="explanation">Always keep the raw downloaded file unchanged. Save any cleaned or modified version with a different name (and ideally in a different folder, like <code>outputs/</code>) so you can always go back to the original.</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="Documentation should travel with the data itself.||A sheet inside the workbook, one row per column.||A ReadMe (data dictionary) sheet.">
   <div class="q">14. Which approach is best for documenting the meaning of every column in a workbook?</div>
   <ul class="qopts">
     <li data-correct="false">Write a long email when you share the file</li>
@@ -994,7 +994,7 @@ Explanations appear below each question.
   <div class="explanation">A ReadMe sheet travels with the data. Emails get lost. Headers are rarely self-explanatory.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="It is not the calendar year.||It starts in spring and ends the next spring.||April 1 to March 31.">
   <div class="q">15. The fiscal year in BC for forestry reporting runs —</div>
   <ul class="qopts">
     <li data-correct="false">January 1 to December 31</li>
@@ -1005,7 +1005,7 @@ Explanations appear below each question.
   <div class="explanation">BC fiscal years run April–March. The fiscal year is named by its starting year — "Fiscal Year 2023" means April 2023 through March 2024.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="Total means add every value in the column.||Reforestation is column H, rows 2 to 38.||=SUM(H2:H38).">
   <div class="q">16. Which formula on the Data sheet computes the total reforestation across all 37 fiscal years?</div>
   <ul class="qopts">
     <li data-correct="false"><code>=AVERAGE(H2:H38)</code></li>
@@ -1016,7 +1016,7 @@ Explanations appear below each question.
   <div class="explanation"><code>SUM</code> adds every value in the range. <code>Reforestation_ha</code> is column H in this file. <code>AVERAGE</code> would give the mean per year, not the total.</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="Re-running the same formula proves nothing.||Get to the answer a different way and compare.||Recompute it another way (or against a published total).">
   <div class="q">17. Which of these is the most reliable way to <em>verify</em> a number you computed?</div>
   <ul class="qopts">
     <li data-correct="false">Run the same formula twice</li>
@@ -1027,7 +1027,7 @@ Explanations appear below each question.
   <div class="explanation">Verification means producing the same number a <em>second way</em>. Running the same formula twice just confirms that the formula has not been edited — not that it is correct.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="The course mantra — three verbs, in order.||Look before you compute; check after.||Inspect first, compute second, verify always.">
   <div class="q">18. The three habits of a good data analyst, in order, are —</div>
   <ul class="qopts">
     <li data-correct="false">Compute first, plot second, write last</li>
@@ -1038,7 +1038,7 @@ Explanations appear below each question.
   <div class="explanation">Inspect (know your data before you compute). Compute (write the formulas). Verify (cross-check the answer). These three habits, applied every time, prevent more bugs than any single tool ever invented.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="DBH is a standard forestry tree measurement.||Forestry uses metric units for tree diameter.||Centimetres (cm).">
   <div class="q">19. You receive a file with a column called <code>DBH</code>. The ReadMe says "Diameter at breast height". What unit should you assume?</div>
   <ul class="qopts">
     <li data-correct="false">Centimetres — it is the most common</li>
