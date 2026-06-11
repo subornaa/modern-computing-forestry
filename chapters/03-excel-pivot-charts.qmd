@@ -692,7 +692,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="Is the x-axis a set of categories, or time?||One quantity changing over time calls for a particular geometry.||A line chart.">
   <div class="q">1. You want to show how BC reforestation has changed from 1987 to 2023. Which chart type is best?</div>
   <ul class="qopts">
     <li data-correct="false">Pie chart</li>
@@ -703,7 +703,7 @@ Explanations appear below each question.
   <div class="explanation">Time series with a single quantity over time → line chart. Pie shows share of a whole; scatter shows X vs Y relationships; stacked bar shows composition.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="Where do labels go down the side versus across the top?||Plus the numbers being aggregated and a whole-table filter.||Rows, Columns, Values, Filters.">
   <div class="q">2. A PivotTable is built from a tidy table. What four field zones does it use?</div>
   <ul class="qopts">
     <li data-correct="false">Headers, Values, Footer, Title</li>
@@ -714,7 +714,7 @@ Explanations appear below each question.
   <div class="explanation">Rows go down the left, Columns go across the top, Values are the numeric quantities being aggregated, Filters apply to the whole pivot.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="Is a PivotTable a live view or a snapshot?||A snapshot must be told to re-read the data.||Right-click the PivotTable and choose Refresh.">
   <div class="q">3. You change the underlying Data sheet after building a PivotTable. What must you do for the PivotTable to show the new numbers?</div>
   <ul class="qopts">
     <li data-correct="false">Nothing — the PivotTable updates automatically</li>
@@ -725,7 +725,7 @@ Explanations appear below each question.
   <div class="explanation">PivotTables are <em>snapshots</em>, not live views. Forgetting to refresh after a data change is the most common silent bug in PivotTable-based reporting.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="What is a PivotChart connected to?||It mirrors a PivotTable and updates when the table changes.||A chart wired to a PivotTable.">
   <div class="q">4. A PivotChart is —</div>
   <ul class="qopts">
     <li data-correct="false">A type of chart that does not need data</li>
@@ -736,7 +736,7 @@ Explanations appear below each question.
   <div class="explanation">PivotChart and its PivotTable are linked — change one and the other follows. This is why pivot-based charts are easier to keep current than hand-built charts.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="A title should make a claim the chart supports, not just name the axes.||Avoid 'Chart 1' or 'Y vs X'.||The one-sentence claim about the trend.">
   <div class="q">5. Which chart title is better?</div>
   <ul class="qopts">
     <li data-correct="false">"Chart 1"</li>
@@ -747,7 +747,7 @@ Explanations appear below each question.
   <div class="explanation">A good title is a one-sentence claim the chart supports. If you cannot write such a claim, the chart is probably the wrong chart for your question.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="What does one interior cell aggregate?||It sums the value for rows matching BOTH the row and column label.||Total hectares for that one (forest type, seral stage) combination.">
   <div class="q">6. In a PivotTable summarizing the Ontario file, you put <code>PFTName</code> in Rows, <code>SERAL_NAME</code> in Columns, and <code>SumOfTotalHa</code> in Values with aggregation <code>Sum</code>. One cell shows 178,000. That number is —</div>
   <ul class="qopts">
     <li data-correct="false">The total area of all forest types</li>
@@ -758,7 +758,7 @@ Explanations appear below each question.
   <div class="explanation">Each interior cell of the PivotTable is the sum of <code>SumOfTotalHa</code> for the rows that match both the row label and the column label.</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="Think of a panel of clickable buttons.||It filters the PivotTable/PivotChart visually.||A visual filter panel.">
   <div class="q">7. A Slicer is best understood as —</div>
   <ul class="qopts">
     <li data-correct="false">A new chart type</li>
@@ -769,7 +769,7 @@ Explanations appear below each question.
   <div class="explanation">Slicers are visual filters. They are excellent for presentations because non-technical readers can explore the data by clicking buttons.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="You need a SUM with TWO conditions.||SUMIF takes only one criterion; you need the plural form.||SUMIFS with both PFTName and SERAL_NAME.">
   <div class="q">8. Which Excel formula recreates a PivotTable cell that sums <code>SumOfTotalHa</code> for "Jack Pine" × "Mature" combinations?</div>
   <ul class="qopts">
     <li data-correct="false">=SUM(SumOfTotalHa)</li>
@@ -780,7 +780,7 @@ Explanations appear below each question.
   <div class="explanation"><code>SUMIFS</code> sums one range subject to multiple criteria — exactly what a PivotTable cell does. <code>COUNTIFS</code> would return a row count, not a sum.</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="Are people better at comparing angles or lengths?||With many categories, ranking slices by angle is hard.||A sorted bar chart is easier to read.">
   <div class="q">9. Why is a pie chart usually a bad choice for comparing forest type areas across 8 forest types?</div>
   <ul class="qopts">
     <li data-correct="false">Excel cannot draw pie charts</li>
@@ -791,7 +791,7 @@ Explanations appear below each question.
   <div class="explanation">The eye compares lengths much better than angles. For 8 categories, a sorted bar chart lets the reader rank values at a glance.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="Check the file's source note.||It is provincial open data, not commercial.||Government of Ontario open data.">
   <div class="q">10. Where does the Ontario forest statistics file come from?</div>
   <ul class="qopts">
     <li data-correct="false">A textbook</li>
@@ -802,7 +802,7 @@ Explanations appear below each question.
   <div class="explanation">Both datasets in this chapter are open government data. The Ontario file is from the Ministry of Natural Resources and Forestry, published under the Open Government Licence — Ontario.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="Which BC year had a record natural disturbance?||Think wildfire season.||2017.">
   <div class="q">11. You build a column chart of <code>Natural_Disturbance_ha</code> by <code>Fiscal_Year</code>. One year's column is much taller than every other. Which year?</div>
   <ul class="qopts">
     <li data-correct="false">1987</li>
@@ -813,7 +813,7 @@ Explanations appear below each question.
   <div class="explanation">2017 was BC's record wildfire season — 218,275 ha. Always look at the chart extremes; the outlier tells you something about the world.</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="You want a stand-alone image any reader can open without Excel.||CSV and TXT are data formats; XLSX needs Excel.||PNG (or SVG).">
   <div class="q">12. When exporting a PivotChart for a report, which file format is best?</div>
   <ul class="qopts">
     <li data-correct="false">XLSX</li>
@@ -824,7 +824,7 @@ Explanations appear below each question.
   <div class="explanation">PNG (or SVG) is a stand-alone image that any reader can open without Excel. CSV and TXT are data formats, not image formats.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="What does a reader need to trust and trace a chart?||A short description and where the data came from.||A one-sentence description plus the data source.">
   <div class="q">13. A chart caption should always include —</div>
   <ul class="qopts">
     <li data-correct="false">The Excel version you used</li>
@@ -835,7 +835,7 @@ Explanations appear below each question.
   <div class="explanation">A good caption tells the reader what the chart shows and where the data came from. Date or version is also useful.</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="Which part does the dollar sign lock — the letter (column) or the number (row)?||$ before A locks the column; the row is free to move.||Column locked, row moves as you copy down.">
   <div class="q">14. What does the <em>mixed reference</em> <code>$A2</code> mean in a formula copied across a grid?</div>
   <ul class="qopts">
     <li data-correct="false">Both the row and column are locked</li>
@@ -846,7 +846,7 @@ Explanations appear below each question.
   <div class="explanation">The <code>$</code> before <code>A</code> locks the column. When you copy the formula down, <code>$A2</code> becomes <code>$A3</code>, <code>$A4</code>, etc. When you copy it right, it stays <code>$A2</code>.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="The aggregation controls the interior values, not the labels.||Count replaces totals with how many rows fall in each group.||Interior values change from total hectares to row counts.">
   <div class="q">15. In a PivotTable, switching the Value aggregation from <code>Sum</code> to <code>Count</code> changes —</div>
   <ul class="qopts">
     <li data-correct="false">The colors of the cells</li>
@@ -857,7 +857,7 @@ Explanations appear below each question.
   <div class="explanation">The aggregation function controls what the interior cells display. <code>Sum</code> adds the values; <code>Count</code> counts how many rows fall in the group.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="Slicer, PivotTable, and PivotChart are linked.||Filtering the table filters the chart too.||The chart filters to show only Jack Pine, in sync.">
   <div class="q">16. You add a Slicer for <code>PFTName</code> to your PivotTable. You click "Jack Pine". What happens to the PivotChart wired to the same PivotTable?</div>
   <ul class="qopts">
     <li data-correct="false">Nothing — slicers do not affect charts</li>
@@ -868,7 +868,7 @@ Explanations appear below each question.
   <div class="explanation">Slicers, PivotTables, and PivotCharts are linked. A slicer filters the PivotTable, and the chart follows automatically.</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="Which R verbs aggregate a value within each category?||Group first, then summarise with a sum.||group_by() |> summarise(sum(...)).">
   <div class="q">17. What is the closest R equivalent of an Excel PivotTable cell built with <code>Sum</code>?</div>
   <ul class="qopts">
     <li data-correct="false">read_excel(...)</li>
@@ -879,7 +879,7 @@ Explanations appear below each question.
   <div class="explanation">A PivotTable aggregating by a category is conceptually <code>group_by()</code> followed by <code>summarise()</code>. This is the bridge to Chapter 7.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="Raw inputs, generated outputs, and final submissions live in different folders.||A generated chart image is an output, not raw data.||outputs/ (or deliverables/ for the final submission).">
   <div class="q">18. The PNG file you submit for the chapter assignment should live in which folder of your project?</div>
   <ul class="qopts">
     <li data-correct="false">data/</li>
@@ -890,7 +890,7 @@ Explanations appear below each question.
   <div class="explanation"><code>data/</code> is for raw input files only. Generated files like PNG charts go in <code>outputs/</code>, and the version you actually submit goes in <code>deliverables/</code>.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="How do you make a chart auditable?||Trace it: caption to ReadMe to Data column.||Point to the ReadMe entry for the exact variable named in the caption.">
   <div class="q">19. A reader asks "which column did your chart come from?" You should answer by —</div>
   <ul class="qopts">
     <li data-correct="false">Guessing from the chart title</li>
