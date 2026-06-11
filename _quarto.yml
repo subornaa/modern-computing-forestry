@@ -5,11 +5,43 @@ project:
 book:
   title: "Modern R for Forestry and Natural Resources Data"
   subtitle: "Efficient Coding, Data Analysis, and AI-Assisted Debugging"
-  author: "Suborna Ahmed"
+  author: "Dr. Suborna Ahmed"
+  date: today
+  cover-image: cover.png
+  repo-url: https://github.com/subornaa/modern-computing-forestry
+  repo-actions: [edit, issue]
   chapters:
     - index.qmd
-    - intro.qmd
+    - part: "Front matter"
+      chapters:
+        - frontmatter/land-acknowledgment.qmd
+        - frontmatter/indigenous-data-sovereignty.qmd
+        - frontmatter/accessibility.qmd
+        - frontmatter/edi-commitment.qmd
+        - frontmatter/how-to-use.qmd
+    - part: "Excel foundations"
+      chapters:
+        - chapters/01-excel-workbench.qmd
+        - chapters/02-excel-clean-summarize.qmd
+        - chapters/03-excel-pivot-charts.qmd
+    - part: "R foundations"
+      chapters:
+        - chapters/04-r-getting-started.qmd
+        - chapters/05-import-inspect-quarto.qmd
+        - chapters/06-dplyr-cleaning.qmd
+    - part: "Summarise, combine, visualize"
+      chapters:
+        - chapters/07-summarise-by-group.qmd
+        - chapters/08-joins-reshape.qmd
+        - chapters/09-ggplot2.qmd
+    - part: "Spatial data & communication"
+      chapters:
+        - chapters/10-spatial-sf.qmd
+        - chapters/11-leaflet-maps.qmd
+        - chapters/12-presentations-portfolio.qmd
+        - chapters/13-wrapup-final-exam.qmd
     - references.qmd
+    - glossary.qmd
 
 bibliography: references.bib
 
@@ -18,5 +50,12 @@ format:
     theme: cosmo
     toc: true
     toc-depth: 2
-    repo-url: https://github.com/subornaa/modern-r-forestry-book
-    repo-actions: [edit, issue]
+    lang: en
+    fig-cap-location: bottom
+    linkcolor: "#1B4332"
+    code-copy: true
+
+execute:
+  freeze: auto
+  warning: true
+  error: false

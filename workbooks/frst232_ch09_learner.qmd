@@ -1,0 +1,203 @@
+---
+title: "Chapter 9 — Learner Exercises"
+subtitle: "Visualize Forestry Data with ggplot2"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# About this file {.unnumbered}
+
+Learner workbook for Chapter 9. Each exercise has one or more
+`# TODO` chunks. Render when done; submit the `.qmd`, the
+rendered `.html`, and the PNG from Exercise 6.
+
+```{r load-data}
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+station_regions <- tribble(
+  ~location,                          ~region,
+  "Burnaby South",                    "Burrard Peninsula",
+  "Coquitlam Douglas College",        "North-East Sector",
+  "Langley Central",                  "Fraser Valley West",
+  "Maple Ridge Golden Ears School",   "North-East Sector",
+  "New Westminster Sapperton Park",   "Burrard Peninsula",
+  "North Delta",                      "South of Fraser",
+  "North Vancouver Second Narrows",   "North Shore",
+  "Pitt Meadows Airport",             "North-East Sector",
+  "Port Coquitlam North",             "North-East Sector",
+  "Port Moody Rocky Point Park",      "North-East Sector"
+)
+
+airdata_clean <- read_csv(here("data", "airdata3.csv"),
+                          show_col_types = FALSE) |>
+  filter(!is.na(PM25)) |>
+  mutate(date_parsed = mdy(Date),
+         day = day(date_parsed)) |>
+  left_join(station_regions, by = "location") |>
+  filter(!is.na(region))
+```
+
+---
+
+# Exercise 1 — Bar chart
+
+```{r ex1}
+# TODO: build a bar chart of bc$Reforestation_ha by bc$Fiscal_Year.
+# Use geom_col() with fill = "#2D6A4F" (dark green).
+
+```
+
+---
+
+# Exercise 2 — Three-line chart
+
+## 2a — Reshape to long format
+
+```{r ex2a}
+# TODO: select Fiscal_Year, Harvested_ha, Natural_Disturbance_ha,
+# Reforestation_ha from `bc`. Pivot longer with names_to = "series"
+# and values_to = "area_ha". Save as `bc_long`.
+
+```
+
+## 2b — Plot
+
+```{r ex2b}
+# TODO: plot bc_long with x = Fiscal_Year, y = area_ha,
+# colour = series, using geom_line(linewidth = 1).
+
+```
+
+---
+
+# Exercise 3 — Histogram with three binwidths
+
+## 3a — binwidth = 1
+
+```{r ex3a}
+# TODO: histogram of airdata_clean$PM25 with binwidth = 1.
+
+```
+
+## 3b — binwidth = 5
+
+```{r ex3b}
+# TODO: histogram of airdata_clean$PM25 with binwidth = 5.
+
+```
+
+## 3c — binwidth = 0.5
+
+```{r ex3c}
+# TODO: histogram of airdata_clean$PM25 with binwidth = 0.5.
+
+```
+
+## 3d — Choose
+
+> *Write your answer here.* Which binwidth shows the
+> distribution shape most clearly? Why?
+
+---
+
+# Exercise 4 — Boxplot with coord_flip
+
+```{r ex4}
+# TODO: boxplot of PM25 by region. Add coord_flip() so the region
+# names read horizontally.
+
+```
+
+> *Write your answer here.* Which region has the highest median?
+> The widest spread?
+
+---
+
+# Exercise 5 — Faceted time series
+
+```{r ex5}
+# TODO: plot PM25 over date_parsed, one panel per station, using
+# facet_wrap(~ location, scales = "free_y").
+
+```
+
+---
+
+# Exercise 6 — Polish and save
+
+```{r ex6-build}
+# TODO: take any chart from Exercises 1-5. Add labs(title, subtitle,
+# x, y, caption). Apply theme_minimal(base_size = 12). Save the
+# completed plot in a variable called `my_plot`.
+
+```
+
+```{r ex6-save}
+#| eval: false
+# TODO: save my_plot to outputs/ as a 7x5 inch PNG with dpi = 300.
+# Use ggsave() and here().
+
+```
+
+---
+
+# Exercise 7 — Smooth trend
+
+```{r ex7}
+# TODO: scatter plot of Reforestation_ha vs Fiscal_Year with
+# geom_point() and geom_smooth(method = "lm") overlaid.
+
+```
+
+> *Write your answer here.* Is the trend increasing or decreasing?
+> By roughly how many hectares per year?
+
+---
+
+# Group lab — Build a chart that tells a story
+
+## Group members
+
+> *List your group members here.*
+
+## The question
+
+> *Type your group's chosen question here.*
+
+## The chart
+
+```{r group-chart}
+# TODO: build the group's chart here.
+
+```
+
+## The one-sentence caption
+
+> *Write the headline finding here.*
+
+---
+
+# Done
+
+When everything renders cleanly, submit:
+
+1. This `.qmd` source.
+2. The rendered `.html`.
+3. The PNG file from Exercise 6.

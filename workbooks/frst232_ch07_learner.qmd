@@ -1,0 +1,284 @@
+---
+title: "Chapter 7 — Learner Exercises"
+subtitle: "Summarize Forestry Data Overall and by Group"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+# If any of these fail, run:
+#   install.packages(c("tidyverse", "lubridate", "here", "knitr"))
+library(tidyverse)
+library(lubridate)
+library(here)
+library(knitr)
+```
+
+# About this file {.unnumbered}
+
+This is the learner workbook for Chapter 7. Code chunks marked
+`# TODO` are where you fill in your own R code.
+
+**Folder structure expected** (same as Chapters 4–6):
+
+```
+frst232/
+├── frst232.Rproj
+├── data/
+│   └── airdata3.csv                                     ← from Ch 6
+├── outputs/
+│   └── airdata3_clean.csv                               ← from Ch 6 (optional)
+├── R/
+└── frst232_ch07_learner.qmd                             ← this file
+```
+
+You will start from `airdata_clean` — the same tibble you built
+in Chapter 6. The first chunk below rebuilds the Chapter 6
+pipeline so this file can render on its own.
+
+---
+
+# Setup — rebuild the cleaned tibble
+
+```{r ch6-pipeline}
+# This chunk reproduces the Chapter 6 cleaning so the rest of
+# the document can run. If you completed Chapter 6, you can
+# alternatively load outputs/airdata3_clean.csv directly.
+
+station_regions <- tribble(
+  ~location,                          ~region,
+  "Burnaby South",                    "Burrard Peninsula",
+  "Coquitlam Douglas College",        "North-East Sector",
+  "Langley Central",                  "Fraser Valley West",
+  "Maple Ridge Golden Ears School",   "North-East Sector",
+  "New Westminster Sapperton Park",   "Burrard Peninsula",
+  "North Delta",                      "South of Fraser",
+  "North Vancouver Second Narrows",   "North Shore",
+  "Pitt Meadows Airport",             "North-East Sector",
+  "Port Coquitlam North",             "North-East Sector",
+  "Port Moody Rocky Point Park",      "North-East Sector"
+)
+
+airdata_clean <- read_csv(here("data", "airdata3.csv"),
+                          show_col_types = FALSE) |>
+  select(-starts_with("Unnamed"), -any_of("...1")) |>
+  select(where(\(col) !all(is.na(col)))) |>
+  mutate(date_parsed = mdy(Date),
+         year = year(date_parsed),
+         month = month(date_parsed),
+         day = day(date_parsed)) |>
+  filter(!is.na(PM25)) |>
+  mutate(pm25_band = case_when(
+    PM25 < 10  ~ "low",
+    PM25 < 25  ~ "moderate",
+    PM25 < 50  ~ "high",
+    TRUE       ~ "very high"
+  )) |>
+  left_join(station_regions, by = "location")
+
+dim(airdata_clean)
+```
+
+---
+
+# Exercise 1 — Overall summary
+
+Write a single `summarise()` call on `airdata_clean` that returns:
+
+- `n_obs` (row count via `n()`),
+- `n_stations` (via `n_distinct(location)`),
+- `mean_pm25`, `median_pm25`, `sd_pm25`,
+- `min_pm25`, `max_pm25`.
+
+Remember `na.rm = TRUE` for the numeric aggregations.
+
+```{r ex1}
+# TODO: write the overall summarise() call here.
+
+```
+
+> *Write a one-sentence interpretation here.* What is the overall
+> mean PM2.5 across the cleaned tibble, and how does it compare
+> to the maximum?
+
+---
+
+# Exercise 2 — By-station summary
+
+Group by `location`, summarise `n_obs`, `mean_pm25`, `median_pm25`,
+and `max_pm25`. Sort descending by `mean_pm25`. Use
+`.groups = "drop"`.
+
+```{r ex2}
+# TODO: write the by-station summarise pipeline.
+
+```
+
+> *Write your answer here.* Which station has the **highest**
+> mean PM2.5 in this month? Which has the lowest?
+
+---
+
+# Exercise 3 — By-day summary
+
+Group by `day` (the day-of-month integer). Summarise `n_obs` and
+`mean_pm25` per day. Sort descending by `mean_pm25`.
+
+```{r ex3}
+# TODO: write the by-day summarise pipeline.
+
+```
+
+> *Write your answer here.* Which day in January 2000 had the
+> **highest provincial mean PM2.5** across all stations? How
+> many observations support that mean?
+
+---
+
+# Exercise 4 — Cross-tabulation with `pivot_wider()`
+
+Build a cross-tab: rows are `region`, columns are `pm25_band`,
+values are counts. Use `values_fill = 0` so empty cells show 0.
+
+```{r ex4}
+# TODO: count by region and pm25_band, then pivot_wider.
+# Hint:
+#   airdata_clean |>
+#     count(region, pm25_band) |>
+#     pivot_wider(names_from = pm25_band, values_from = n,
+#                 values_fill = 0)
+
+```
+
+> *Write your answer here.* Which region has the most "high"
+> or "very high" PM2.5 hours? Which region had the fewest?
+
+---
+
+# Exercise 5 — `across()` for multiple pollutants
+
+Group by `region`. Use `across()` to compute the mean of every
+listed pollutant in one summarise call: `PM25`, `PM10`, `O3`,
+`NO2`.
+
+```{r ex5}
+# TODO: write the across() summarise pipeline.
+# Hint:
+#   airdata_clean |>
+#     group_by(region) |>
+#     summarise(across(c(PM25, PM10, O3, NO2),
+#                      \(x) mean(x, na.rm = TRUE)),
+#               .groups = "drop")
+
+```
+
+> *Write your answer here.* Which pollutant has the highest
+> regional variability (largest difference between regions)?
+
+---
+
+# Exercise 6 — 90th-percentile PM2.5 per station
+
+Group by `location`. Use `quantile(PM25, 0.9, na.rm = TRUE)` to
+compute the 90th-percentile PM2.5 per station. Arrange descending.
+
+```{r ex6}
+# TODO: write the per-station 90th-percentile pipeline.
+
+```
+
+> *Write your answer here.* The 90th percentile tells you the
+> level that PM2.5 stays *below* 90% of the time. Which station
+> has the highest 90th-percentile reading? How does this ranking
+> compare to the mean ranking from Exercise 2?
+
+---
+
+# Exercise 7 — PivotTable parity
+
+This exercise asks you to **verify the same numbers two ways** —
+once in R, once in Excel.
+
+## 7a — Save the cleaned tibble to CSV
+
+```{r ex7a}
+# TODO: save airdata_clean to outputs/airdata3_clean.csv using
+# write_csv() and here().
+
+```
+
+## 7b — Open in Excel
+
+Open `outputs/airdata3_clean.csv` in Excel. Build a PivotTable:
+
+- **Rows**: `region`
+- **Columns**: `pm25_band`
+- **Values**: `Count of PM25`
+
+Take a screenshot of the PivotTable.
+
+## 7c — Confirm parity
+
+> *Write your answer here.* Do the cell counts in your Excel
+> PivotTable match the cell counts in your Exercise 4
+> `pivot_wider()` result? They should match to the unit. If they
+> do not, which row × column cell differs, and what might be the
+> cause?
+
+---
+
+# Group lab — Summary report
+
+Use this section for your group-lab submission.
+
+## Group members
+
+> *List your group members here.*
+
+## The question your group chose
+
+> *Type the one forestry question your group is answering.*
+
+## The pipeline
+
+```{r group-pipeline}
+# TODO: paste the dplyr pipeline that answers your group's question.
+
+```
+
+## The one-sentence caption
+
+> *Write the headline finding of your summary table in one
+> sentence.*
+
+---
+
+# Cleaning log addendum
+
+If your Chapter 6 cleaning log was for the cleaning steps, this
+chapter's log entries are for the **summarising steps**:
+
+| Date | Step | What I did | Why |
+|---|---|---|---|
+| TODO | 1 | Built overall summary | Establish baseline numbers. |
+| TODO | 2 | Grouped by location | Compare across stations. |
+| TODO | 3 | TODO | TODO |
+
+---
+
+# Done
+
+When everything above runs without error, click **Render**.
+Submit:
+
+1. This `.qmd` source file.
+2. The rendered `.html`.
+3. The PivotTable screenshot from Exercise 7.
+4. The group-lab worksheet section.

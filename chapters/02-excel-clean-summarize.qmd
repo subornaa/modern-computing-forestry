@@ -1,0 +1,1266 @@
+---
+title: "Clean and Summarize Data in Excel"
+---
+
+```{r setup-ch02}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+library(janitor)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- **Sort** and **filter** large tables to surface unusual records.
+- Detect **duplicate rows** on a single column and on a composite
+  key.
+- Use **structured tables** (`Ctrl+T`) to keep formulas connected
+  to the data as it grows.
+- Compute **single-cell summary statistics** — `SUM`, `AVERAGE`,
+  `MEDIAN`, `MIN`, `MAX`, `COUNT`, `COUNTA`, `STDEV`.
+- Use **relative, absolute, and mixed cell references** safely so
+  a copied formula does what you expect.
+- Apply **conditional aggregation** with `SUMIF`, `COUNTIF`, and
+  `AVERAGEIF` (and their plural counterparts).
+- Use **conditional logic** with `IF`, nested `IF`, and `IFS` to
+  recode values into categories.
+- **Look up** values from a reference table with `VLOOKUP` and
+  `XLOOKUP`.
+- Maintain a **cleaning log** that documents every change you made
+  to the data.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. The raw workbook **`on_forest_statistics_1.xlsx`** placed in
+   your `chapter02/data/` folder, **unchanged from the Ontario Open
+   Data download**.
+2. A working copy you may modify, saved as
+   **`on_forest_statistics_1_clean.xlsx`** in your
+   `chapter02/outputs/` folder, containing:
+   - the dataset converted to a **structured table** with a
+     meaningful name,
+   - a one-page **cleaning log sheet**,
+   - a `size_class` column built with `IFS`, and
+   - a small **forest-type lookup** sheet wired to the Data sheet
+     with `XLOOKUP`.
+3. A short **group-lab worksheet** (or screenshot) submitted to the
+   course site.
+
+This list is the same as the rubric for the chapter assignment.
+Keep it in view while you work.
+:::
+
+# Why a cleaning log matters
+
+Real data arrives messy. Duplicate stems. Inconsistent species
+labels. Missing measurements. Unit ambiguity. The discipline
+introduced in this chapter — *document every change, never edit
+data silently* — is the foundation of every later chapter.
+
+A **cleaning log** is a separate sheet (or document) that records
+every change you made between the raw file and your analysis-ready
+version:
+
+| Date | Step | What I changed | Why |
+|---|---|---|---|
+| 2026-09-15 | 1 | Converted Data sheet into a structured table named `ontario_data` | Self-documenting formulas; auto-extends. |
+| 2026-09-15 | 2 | Added a `size_class` column using `IFS` | Group small / medium / large areas for later summaries. |
+| 2026-09-15 | 3 | Built a `codes` sheet mapping forest-type codes to plain-English names | Future joins / lookups need a clean reference. |
+| 2026-09-15 | 4 | Verified the composite key has no duplicates | Confirms the file is a true cross-classification. |
+
+Keep the cleaning log next to your data forever. When someone asks
+*"why is your number different from the official report?"* — the
+answer is in the cleaning log.
+
+::: {.callout-warning}
+## The two cardinal sins of data cleaning
+
+1. **Editing raw data in place.** Once you change a cell, the
+   original is gone. Always work on a *copy* of the raw file.
+2. **Cleaning without a log.** Without documentation, your numbers
+   become impossible to defend.
+
+A cleaning log is your audit trail. It protects you when a manager,
+reviewer, or collaborator questions your numbers months later.
+:::
+
+# The dataset for this chapter
+
+This chapter uses one openly licensed Excel workbook from the
+**Government of Ontario Open Data Catalogue**, alongside the BC
+silviculture file you met in Chapter 1.
+
+```{r ontario-summary}
+#| echo: false
+ontario <- read_excel(here("data", "on_forest_statistics_1.xlsx"),
+                      sheet = "Data")
+
+tibble(
+  Property = c("File name", "Source", "Catalogue page",
+               "Licence", "Rows in this teaching extract",
+               "Columns", "Coverage", "Time period"),
+  Value = c(
+    "`on_forest_statistics_1.xlsx`",
+    "Government of Ontario — *Forest Resources of Ontario 2021*",
+    "<https://data.ontario.ca/dataset/forest-resources-of-ontario-2021>",
+    "Open Government Licence — Ontario",
+    as.character(nrow(ontario)),
+    as.character(ncol(ontario)),
+    "Region 3E only (teaching subset of the multi-region file)",
+    "Snapshot for 2021"
+  )
+) |> kable()
+```
+
+::: {.callout-important}
+## Where the data comes from — and what to do with it
+
+This dataset is published by the **Government of Ontario** and
+distributed through the **Ontario Open Data Catalogue**. Two rules
+(same as Chapter 1):
+
+1. **Keep the raw downloaded file unchanged.** Save the file as
+   `on_forest_statistics_1.xlsx` exactly as you downloaded it. Do
+   not sort it, edit it, or save over it.
+2. **Save any cleaned or modified version separately** as
+   `on_forest_statistics_1_clean.xlsx` in your `outputs/` folder.
+
+The teaching extract in this book is **Region 3E only**. If you
+need the full multi-region file (all landscape guide regions),
+download it directly from the catalogue URL above.
+:::
+
+## Why this dataset matters for forestry
+
+Where the BC silviculture file (Chapter 1) was a **time series** of
+provincial totals, this Ontario file is a **cross-classification** —
+every row is one combination of region × ownership × seral stage ×
+forest type × age class, with the total area for that cell.
+
+This shape is what a working forester sees most often:
+
+- The Government of Ontario uses cross-classified tables like this
+  to track stand structure across the landbase.
+- BC's *Vegetation Resources Inventory* (VRI) and the National
+  Forest Inventory both produce summary tables with the same
+  shape.
+- Any FRPA, FMP, or sustainable-forest-management plan eventually
+  rolls up to a table like this.
+
+Learning to navigate, summarize, and recode a cross-classified
+file is one of the most transferable skills in forestry data work.
+
+## The columns
+
+| Column | Type | What it represents |
+|---|---|---|
+| `landscape_guide_region` | text | Ontario landscape guide region (here: 3E only) |
+| `own_group` | text | Ownership group (here: CRN = Crown only) |
+| `LGDS` | text | Seral stage code (P / S / I / M / L) |
+| `SERAL_NAME` | text | Human-readable seral stage name |
+| `PFT` | text | Provincial forest type code (3-letter) |
+| `PFTName` | text | Human-readable forest type name |
+| `AC_10` | number (year) | Age-class midpoint, in 10-year bins |
+| `SumOfTotalHa` | number | Total area in hectares for that combination |
+
+# Sorting
+
+Click any cell inside the data, then choose **Data → Sort**.
+
+A dialog opens. Choose:
+
+- **Column**: `SumOfTotalHa`
+- **Sort On**: Values
+- **Order**: Largest to Smallest
+
+Click OK. The largest cell rises to the top — a mature Conifer
+Lowland area of over 300,000 ha. Look at the context: `MCL`,
+`Mature`, an age class around 135. Does it make sense for a Region
+3E mature lowland that has been growing for over a century? Yes —
+old conifer lowland covers much of northern Ontario.
+
+## Multi-key sort
+
+Sort by `PFTName` (A→Z), then by `AC_10` (smallest to largest),
+then by `SumOfTotalHa` (largest to smallest). Use **Data → Sort →
+Add Level**.
+
+Now the table reads like a story: for each forest type, you see
+every age class in order, and within each age class the largest
+area is on top. This is the human equivalent of `group_by() |>
+arrange()` in R, which you will meet in Chapter 7.
+
+::: {.callout-tip}
+## Sorting changes the file
+
+Unlike filtering, sorting **rearranges** the underlying rows. To
+recover the original order:
+
+- Add an `original_row_number` column before sorting (formula:
+  `=ROW()` in the first row, dragged down), **or**
+- Convert your data into a **structured table** first (next
+  section) — sorts on a table do not destroy original order if
+  you have an `original_row_number` column.
+:::
+
+# Filtering
+
+Two ways: **AutoFilter** and **Slicers**.
+
+## AutoFilter
+
+Click any cell in your data, then **Data → Filter**. Each column
+gets a dropdown arrow.
+
+Click the arrow on `PFTName`, uncheck *Select All*, and check only
+"Jack Pine". The view collapses to roughly two dozen rows. **The
+data is unchanged** — you have only *hidden* rows, not deleted
+them.
+
+To re-show everything, click the arrow again and choose *Clear
+Filter From*.
+
+## Multiple filter criteria
+
+Click the arrow on `SumOfTotalHa`. Choose **Number Filters →
+Greater Than**. Type `50000`. The view filters to rows where the
+area exceeds 50,000 hectares.
+
+You can stack column filters: first filter `PFTName = "Jack Pine"`,
+*then* filter `SumOfTotalHa > 5000`. Excel shows only the rows
+matching **both** conditions — equivalent to
+`filter(PFTName == "Jack Pine" & SumOfTotalHa > 5000)` in R.
+
+## Slicers (with structured tables)
+
+Slicers are visual filter panels. They only work on **structured
+tables** (next section). Click any cell in a structured table,
+then **Table Design → Insert Slicer**. Check which fields you
+want.
+
+Slicers are clickable buttons sitting beside the table. They are
+visual, fun, and dangerous: a slicer can be on without the viewer
+noticing. The number changes but the title does not. Always check
+the slicer state before trusting a screenshot.
+
+# Structured tables (`Ctrl+T`)
+
+Excel's most undersold feature.
+
+Click any cell in your data. Press **Ctrl+T** (Cmd+T on Mac).
+Confirm *"My table has headers"*. Click OK.
+
+What changed:
+
+- The data became a *structured table* with a name (default
+  `Table1`, which you should rename in the **Table Design** ribbon
+  — try `ontario_data`).
+- Headers got a coloured band.
+- AutoFilter is automatically on.
+- Formulas that reference table columns use *column names* instead
+  of cell ranges:
+
+```text
+=AVERAGE(ontario_data[SumOfTotalHa])
+```
+
+Compare to the un-tabled version:
+
+```text
+=AVERAGE(H2:H180)
+```
+
+The structured version is **self-documenting** and
+**self-resizing**. If you add a row at the bottom, the formula
+automatically includes it.
+
+::: {.callout-tip}
+## Always start with Ctrl+T
+
+When you open any new Excel file, the first thing to do is
+convert each sheet's data into a structured table. The benefits
+compound: slicers work, formulas are readable, growth is
+automatic, and references are stable.
+:::
+
+## Renaming the table
+
+Click anywhere in the table. Look at the **Table Design** ribbon.
+In the leftmost field labelled *Table Name*, type a meaningful
+name:
+
+- ✅ `ontario_data`
+- ✅ `bc_silviculture`
+- ❌ `Table1`, `Sheet1!_FilterDatabase`
+
+Use snake_case (lowercase with underscores). No spaces, no special
+characters. This matches the R convention you will meet in
+Chapter 4.
+
+# Detecting duplicates
+
+A real summary table should have **one row per combination** of
+the grouping columns. If two rows have the same combination,
+something went wrong upstream.
+
+## On a single column
+
+Select the column you want to check (e.g., `PFTName`). Choose
+**Home → Conditional Formatting → Highlight Cells Rules →
+Duplicate Values**. Duplicate values get highlighted.
+
+For the Ontario file, every `PFTName` appears many times (because
+the file has many seral × age combinations per forest type). That
+is expected — not a bug. Duplicates on a *single* column only
+signal a problem when the column should be a *unique key*.
+
+## On a composite key
+
+In a cross-classification like this file, the natural unique key
+is `(landscape_guide_region, own_group, LGDS, PFTName, AC_10)`. A
+composite key. To detect duplicates on it:
+
+Add a helper column `composite_key` next to the data:
+
+```text
+=A2 & "|" & B2 & "|" & C2 & "|" & F2 & "|" & G2
+```
+
+The `|` separator prevents false collisions between, say, `"AB" +
+"C"` and `"A" + "BC"`. If any concatenated key appears twice, the
+cell highlights when you apply **Conditional Formatting →
+Highlight Cells Rules → Duplicate Values** to the helper column.
+
+```{r duplicate-check}
+#| echo: false
+dup_count <- ontario |>
+  count(landscape_guide_region, own_group, LGDS, PFTName, AC_10) |>
+  filter(n > 1) |>
+  nrow()
+
+cat(sprintf(
+  "Verification in R: %d duplicate key combinations in the Ontario file.\n",
+  dup_count))
+```
+
+For this file, the answer is zero. Good — the upstream pipeline is
+clean.
+
+## Removing duplicates
+
+If you do find duplicates and want to remove them, **Data → Remove
+Duplicates**. A dialog asks which columns to use as the key.
+Always work on a copy. Document the removal in your cleaning log
+with row counts before and after.
+
+# Summary formulas — the essentials
+
+The seven most-used aggregating functions:
+
+| Formula | What it does | Example |
+|---|---|---|
+| `=SUM(range)` | Adds every numeric value | `=SUM(H2:H180)` |
+| `=AVERAGE(range)` | Arithmetic mean (sum ÷ count) | `=AVERAGE(H2:H180)` |
+| `=MEDIAN(range)` | Middle value when sorted; robust to outliers | `=MEDIAN(H2:H180)` |
+| `=MIN(range)` | Smallest numeric value | `=MIN(H2:H180)` |
+| `=MAX(range)` | Largest numeric value | `=MAX(H2:H180)` |
+| `=COUNT(range)` | Number of *numeric* values | `=COUNT(H2:H180)` |
+| `=COUNTA(range)` | Number of *non-empty* values (text + numeric) | `=COUNTA(A2:A180)` |
+| `=STDEV(range)` | Standard deviation (sample) | `=STDEV(H2:H180)` |
+
+The distinction between `COUNT` and `COUNTA` matters: `COUNT` skips
+text cells. If your column should have 179 numeric entries and
+`COUNT` says 177, two cells contain text or are blank.
+
+## Worked examples on the Ontario file
+
+```{r ontario-formulas-verify}
+#| echo: false
+tibble(
+  Statistic = c("Total area covered (sum of SumOfTotalHa)",
+                "Mean area per combination",
+                "Median area per combination",
+                "Maximum combination",
+                "Number of rows"),
+  Value = c(
+    paste0(format(round(sum(ontario$SumOfTotalHa) / 1e6, 2), nsmall = 2), " million ha"),
+    paste0(format(round(mean(ontario$SumOfTotalHa)), big.mark = ","), " ha"),
+    paste0(format(round(median(ontario$SumOfTotalHa)), big.mark = ","), " ha"),
+    paste0(format(round(max(ontario$SumOfTotalHa)), big.mark = ","), " ha"),
+    as.character(nrow(ontario))
+  )
+) |> kable()
+```
+
+Look at the gap between mean and median. The mean is much larger —
+a few very large rows pull the average up. The median is closer to
+the *typical* combination. Both numbers are correct; they answer
+different questions.
+
+# Conditional aggregation: SUMIF, COUNTIF, AVERAGEIF
+
+What if you want the sum, count, or average **only for rows that
+match a condition**?
+
+## `COUNTIF(range, criterion)`
+
+How many rows describe Jack Pine?
+
+```text
+=COUNTIF(F2:F180, "Jack Pine")
+```
+
+The criterion can be a number, text, a comparison, or a wildcard:
+
+| Criterion | Matches |
+|---|---|
+| `50000` | Exact 50000 |
+| `">50000"` | Greater than 50000 |
+| `"<>0"` | Anything not zero |
+| `"Jack*"` | Text starting with "Jack" |
+| `"*pine*"` | Text containing "pine" (case-insensitive) |
+
+## `SUMIF(criterion_range, criterion, sum_range)`
+
+What is the total area of "Mature" forest in Region 3E?
+
+```text
+=SUMIF(D2:D180, "Mature", H2:H180)
+```
+
+Read it: *"sum the `SumOfTotalHa` values for rows where
+`SERAL_NAME` equals 'Mature'"*.
+
+## `AVERAGEIF(criterion_range, criterion, average_range)`
+
+What is the average area for "Jack Pine" combinations?
+
+```text
+=AVERAGEIF(F2:F180, "Jack Pine", H2:H180)
+```
+
+## `SUMIFS`, `COUNTIFS`, `AVERAGEIFS` — multiple criteria
+
+The plural versions allow multiple criteria. The argument order
+is different — the sum range comes **first**, then criterion
+pairs:
+
+```text
+=SUMIFS(H2:H180, F2:F180, "Jack Pine", D2:D180, "Mature")
+```
+
+Read it: *"sum the `SumOfTotalHa` values for rows where `PFTName`
+is 'Jack Pine' AND `SERAL_NAME` is 'Mature'"*.
+
+::: {.callout-tip}
+## When to use these vs a PivotTable
+
+For a one-off number, `SUMIF` is fastest. For a whole table of
+numbers (cross-classification across multiple categories), a
+PivotTable is the right tool. We will meet PivotTables in
+Chapter 3.
+:::
+
+# Safe cell references: the dollar sign
+
+Type `=B2 + C2` in cell `D2`. Copy down. `D3` becomes `=B3 + C3`.
+`D4` becomes `=B4 + C4`. The references **moved** with the
+formula. That is a **relative** reference.
+
+Type `=B2 + $C$2` in cell `D2`. Copy down. `D3` becomes `=B3 +
+$C$2`. `D4` becomes `=B4 + $C$2`. The first part moves; the
+second part **stays put**. The dollar signs locked it. That is an
+**absolute** reference.
+
+You can mix:
+
+- `$A1` — column locked, row moves.
+- `A$1` — row locked, column moves.
+- `$A$1` — both locked.
+
+## A worked bug
+
+A common bug: you want to divide every value by the total. You
+write `=H2 / H180` in cell `I2`, where `H180` is the grand total.
+Copy down. `I3` becomes `=H3 / H181`. But `H181` is empty. Every
+percentage below the first is wrong.
+
+The fix is `=H2 / $H$180`. The denominator stays put.
+
+::: {.callout-tip}
+## A keyboard shortcut worth memorizing
+
+While editing a cell reference, press **F4** to cycle through:
+
+`$A$1` → `A$1` → `$A1` → `A1` → `$A$1` → ...
+
+This is the fastest way to add or remove dollar signs.
+:::
+
+# Conditional logic: IF, nested IF, IFS
+
+## `IF(condition, value_if_true, value_if_false)`
+
+Basic form. Returns one of two values based on a logical test.
+
+```text
+=IF(H2 > 1000, "large", "small")
+```
+
+## Nested `IF` — multiple categories
+
+Add a `size_class` column on the Ontario file based on
+`SumOfTotalHa`:
+
+```text
+=IF(H2 < 1000, "small",
+    IF(H2 < 50000, "medium", "large"))
+```
+
+This **nested IF** evaluates left to right. If the first condition
+is true, return "small". Otherwise check the second. Otherwise
+return "large".
+
+## `IFS` — cleaner for many conditions
+
+Available in Excel 2019+:
+
+```text
+=IFS(H2 < 1000, "small",
+     H2 < 50000, "medium",
+     TRUE, "large")
+```
+
+`IFS` evaluates each pair left to right. The first matching
+condition returns its value. The trailing `TRUE` is a catch-all
+for "everything else". Without it, unmatched rows return `#N/A`.
+
+```{r case-when-verify}
+#| echo: false
+ontario |>
+  mutate(size_class = case_when(
+    SumOfTotalHa < 1000  ~ "small",
+    SumOfTotalHa < 50000 ~ "medium",
+    TRUE                 ~ "large"
+  )) |>
+  count(size_class) |>
+  kable()
+```
+
+## `AND`, `OR`, `NOT` — combining conditions
+
+```text
+=IF(AND(H2 > 1000, F2 = "Jack Pine"), "flag", "")
+```
+
+Use `AND` when *all* conditions must be true. Use `OR` when *any*
+condition can be true. Use `NOT` to reverse a condition.
+
+# Lookups: VLOOKUP and XLOOKUP
+
+Suppose you have a small reference sheet mapping forest-type
+codes to plain-English names:
+
+| Code | Name |
+|---|---|
+| PJK | Jack Pine |
+| MCU | Conifer Upland |
+| MCL | Conifer Lowland |
+| MIX | Mixedwood |
+| POP | Poplar |
+| BWT | White Birch |
+| PWR | Red and White Pine |
+| TOL | Tolerant Hardwoods |
+
+Place this on a new sheet called `codes`. Your data uses the code
+in column E. In column I you want the plain-English name.
+
+## `XLOOKUP` (Excel 2019+, recommended)
+
+```text
+=XLOOKUP(E2, codes!A:A, codes!B:B, "unknown")
+```
+
+Arguments: *value to find, where to look, what to return, default
+if not found*. Clear and modern.
+
+## `VLOOKUP` (everywhere)
+
+```text
+=VLOOKUP(E2, codes!A:B, 2, FALSE)
+```
+
+Arguments: *value to find, table range starting with the lookup
+column, column number to return, exact match*. The `FALSE` at
+the end forces exact match — **always include it**. The default
+of `TRUE` (approximate match) silently returns the wrong value if
+the lookup table is unsorted.
+
+::: {.callout-important}
+## When lookups go wrong
+
+- **Missing key** — `#N/A`. Either the value is missing, or the
+  key is misspelled. Wrap with `IFERROR` to flag rather than
+  crash: `=IFERROR(VLOOKUP(...), "missing")`.
+- **Duplicate key** — silently returns the *first* match. Always
+  check that your lookup table has each key exactly once with
+  `=COUNTIF(codes!A:A, "PJK")` (should return 1).
+- **Wrong type** — looking up `"123"` (text) against `123`
+  (number) fails. Inspect both sides.
+- **Trailing spaces** — `"PJK "` does not match `"PJK"`. Use
+  `=TRIM(...)` to clean strings first.
+:::
+
+# Putting it together — a worked cleaning sequence
+
+You receive a colleague's spreadsheet. Here is a complete
+cleaning sequence:
+
+| Step | Action | Excel feature |
+|---|---|---|
+| 1 | Make a working copy of the raw file | File → Save As (with `_clean` suffix) |
+| 2 | Open the working copy | — |
+| 3 | Convert data to structured table | Ctrl+T, rename in Table Design |
+| 4 | Apply `TRIM` to text columns to remove stray spaces | Helper column with `=TRIM(A2)` |
+| 5 | Check for duplicates on the natural key | Conditional Formatting on composite key |
+| 6 | Investigate missing values column by column | `=COUNTBLANK(...)` per column |
+| 7 | Apply `IFS` to recode messy categories | New column with recoded values |
+| 8 | Look up reference values where needed | `XLOOKUP` against reference sheet |
+| 9 | Compute summary statistics | `SUMIF`, `COUNTIF`, `AVERAGEIF` |
+| 10 | Write the cleaning log | New sheet, document every change |
+
+Each step is reversible because we are working on a copy and
+never modifying the raw values directly. Every step is documented
+in the log. **This is what reproducible Excel looks like.**
+
+# Active learning
+
+These short activities are designed to be done alongside the
+chapter.
+
+## Activity 1 — Find duplicates in the Ontario file
+
+Apply the duplicate-detection technique to the Ontario file. Use
+the natural composite key. Report how many duplicates you found.
+
+```{r act1-verify}
+#| echo: false
+dup_n <- ontario |>
+  count(landscape_guide_region, own_group, LGDS, PFTName, AC_10) |>
+  filter(n > 1) |>
+  nrow()
+cat(sprintf("Verification: %d duplicates on the natural key (should be zero).\n", dup_n))
+```
+
+## Activity 2 — Mature area by forest type
+
+Using `SUMIF` (or `SUMIFS`), compute the total area of *mature*
+forest in Region 3E for each forest type.
+
+```{r act2-verify}
+#| echo: false
+ontario |>
+  filter(SERAL_NAME == "Mature") |>
+  group_by(PFTName) |>
+  summarise(mature_ha = sum(SumOfTotalHa), .groups = "drop") |>
+  arrange(desc(mature_ha)) |>
+  mutate(mature_ha = comma(round(mature_ha))) |>
+  kable()
+```
+
+## Activity 3 — Classify and count
+
+On the Ontario file, add the `size_class` column from the
+conditional-logic section. Then count rows in each class. Compare
+with your neighbour.
+
+## Activity 4 — Multi-criteria SUMIFS
+
+Compute the total area where `PFTName = "Jack Pine"` **AND**
+`SERAL_NAME = "Mature"` **AND** `AC_10 >= 95` (older mature jack
+pine).
+
+```{r act4-verify}
+#| echo: false
+ans <- ontario |>
+  filter(PFTName == "Jack Pine", SERAL_NAME == "Mature", AC_10 >= 95) |>
+  summarise(total_ha = sum(SumOfTotalHa)) |>
+  pull()
+cat(sprintf("Verification: %s ha of older mature jack pine.\n",
+            format(round(ans), big.mark = ",")))
+```
+
+## Activity 5 — Build a lookup
+
+Build a reference sheet `codes` with the 8 forest-type codes
+(`PJK`, `MCU`, `MCL`, etc.) and their plain-English names.
+Then use `XLOOKUP` (or `VLOOKUP`) to retrieve the name from the
+`PFT` column of the Data sheet. Compare your retrieved column to
+the existing `PFTName` column.
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Clean and summarize the Ontario forest file together
+
+Work in groups of 3 or 4. Use one shared copy of
+`on_forest_statistics_1.xlsx`.
+
+**Task 1 — Save a working copy.** Save the workbook as
+`on_forest_statistics_1_clean.xlsx` in your `outputs/` folder. The
+raw file in `data/` should remain unchanged.
+
+**Task 2 — Make it a structured table.** Convert the Data sheet
+into a structured table. Rename it to `ontario_data`. Confirm
+that autofilter dropdowns appear in the header row.
+
+**Task 3 — Add a `size_class` column.** Use `IFS` (or nested
+`IF`) to classify each row's `SumOfTotalHa` into
+`small` / `medium` / `large` using the thresholds 1,000 and
+50,000. Then use `COUNTIF` to count how many rows fall in each
+class. Compare across groups.
+
+**Task 4 — One conditional aggregation.** As a group, choose
+**one** of these:
+
+- Total area of *Jack Pine* in Region 3E (use `SUMIF`)
+- Average area for *Mature* combinations (use `AVERAGEIF`)
+- Count of rows where `SumOfTotalHa > 100,000` (use `COUNTIF`)
+
+Write the formula. Confirm the result with a sanity check.
+
+**Task 5 — Submit.** Submit either a short worksheet (a one-page
+document with your group's answers to Tasks 1–4) **or** a
+screenshot of the cleaned workbook showing the structured table
+and the new `size_class` column. Include all group members'
+names on the submission.
+
+This lab is designed to fit comfortably inside a single hands-on
+session.
+:::
+
+# Exercises
+
+These are the take-home exercises that go with this chapter.
+
+1. Open `on_forest_statistics_1.xlsx`. Filter to `LGDS = "M"`
+   (Mature). What is the total area, in hectares, of mature forest
+   in Region 3E? Use `SUMIF`.
+
+2. Open `bc_disturbance_reforestation.xlsx` (from Chapter 1). Add
+   a `Decade` column using `=FLOOR(A2, 10)`. Then use `AVERAGEIF`
+   to compute the mean `Harvested_ha` per decade.
+
+3. Build a `codes` lookup sheet on the Ontario file with the eight
+   forest-type codes and their plain-English names. Add a
+   `PFTName_check` column that uses `XLOOKUP` to retrieve the name
+   from the code. Use `IF` to flag any mismatches between the
+   looked-up name and the existing `PFTName` column.
+
+4. Compute the *coefficient of variation* (standard deviation
+   divided by mean) of `SumOfTotalHa` on the Ontario file. Why
+   might this be useful alongside the mean?
+
+5. Apply conditional formatting to the `SumOfTotalHa` column with
+   a three-colour scale: green for small, yellow for medium, red
+   for large. Take a screenshot and submit.
+
+6. Write a one-page cleaning log for the changes you made to the
+   working copy of the Ontario file. Use the format shown at the
+   top of this chapter. Submit the log next to the workbook.
+
+7. **Optional, harder.** Build a small summary table on a new
+   sheet of the Ontario file using only `SUMIFS` and `COUNTIFS`
+   (no PivotTable yet — that's Chapter 3). Rows = forest type,
+   columns = seral stage, values = sum of `SumOfTotalHa` and
+   count of combinations.
+
+# Optional, advanced
+
+Items in this section are not required for the main path.
+
+## Custom number formats
+
+Beyond standard formats, Excel supports custom format codes. For
+example, the custom format `#,##0 "ha"` displays `216,305 ha`.
+The `"ha"` is part of the format, not the value — formulas still
+treat the cell as a plain number.
+
+## `INDEX` / `MATCH` — the classic lookup combo
+
+`VLOOKUP` and `XLOOKUP` cover most cases. For old-Excel
+compatibility or for *left-of-lookup-column* returns (which
+`VLOOKUP` cannot do), use `INDEX` / `MATCH`:
+
+```text
+=INDEX(codes!B:B, MATCH(E2, codes!A:A, 0))
+```
+
+`MATCH(E2, codes!A:A, 0)` returns the row number of the match.
+`INDEX(codes!B:B, n)` returns the value in column B at that row.
+Combining them gives you a fully flexible lookup.
+
+# A glimpse of Chapter 7: From Excel to R
+
+In Chapter 7 (Summarize forestry data overall and by group) you
+will do exactly what this chapter does — but in R. The Excel moves
+you learned here map directly to R commands:
+
+| What you did in Excel (Ch 2) | What you will do in R (Ch 6–7) |
+|---|---|
+| `=SUMIF(D2:D180, "Mature", H2:H180)` | `ontario \|> filter(SERAL_NAME == "Mature") \|> summarise(sum(SumOfTotalHa))` |
+| `=COUNTIF(F2:F180, "Jack Pine")` | `ontario \|> filter(PFTName == "Jack Pine") \|> nrow()` |
+| `=SUMIFS(H, F, "Jack Pine", D, "Mature")` | `ontario \|> filter(PFTName == "Jack Pine", SERAL_NAME == "Mature") \|> summarise(sum(SumOfTotalHa))` |
+| `=IFS(H2<1000, "small", H2<50000, "medium", TRUE, "large")` | `mutate(size_class = case_when(SumOfTotalHa < 1000 ~ "small", SumOfTotalHa < 50000 ~ "medium", TRUE ~ "large"))` |
+| `=VLOOKUP(E2, codes!A:B, 2, FALSE)` | `ontario \|> left_join(codes, by = "PFT")` |
+| Structured table named `ontario_data` | `ontario` (the tibble) |
+| Cleaning log on a separate sheet | A Markdown chunk in the same `.qmd` file |
+
+**The intent is identical.** The R version is scriptable and
+shareable; the Excel version is visible and forgiving. By the
+time you reach Chapter 7, this whole chapter's logic will be
+familiar — you will just be writing it in a different language.
+
+# Self-assessment quiz {#sec-quiz-ch02}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q {
+  font-weight: 600;
+  color: #1B4332;
+  margin-bottom: 0.6em;
+}
+.quiz ul.qopts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em;
+  margin: 0.3em 0;
+  background: white;
+  border: 1px solid #d8e4d8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct {
+  background: #C8E6C9;
+  border-color: #2D6A4F;
+  font-weight: 600;
+}
+.quiz ul.qopts li.wrong {
+  background: #FFCDD2;
+  border-color: #B05C50;
+}
+.quiz .explanation {
+  display: none;
+  margin-top: 0.7em;
+  padding: 0.7em 1em;
+  background: #FFF8E8;
+  border-left: 3px solid #B7791F;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%;
+  min-height: 4.5em;
+  padding: 0.6em;
+  border: 1px solid #d8e4d8;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95em;
+  resize: vertical;
+  margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F;
+  color: white;
+  border: none;
+  padding: 0.45em 0.9em;
+  margin-top: 0.5em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none;
+  margin-top: 0.6em;
+  padding: 0.6em 0.9em;
+  background: #FFF8E8;
+  border-left: 3px solid #B7791F;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-style: italic;
+}
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. In the formula <code>=B2 / $C$38</code>, what does the dollar sign do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Marks the cell as currency</li>
+    <li data-correct="true">Locks the reference so it does not move when the formula is copied</li>
+    <li data-correct="false">Indicates an error</li>
+    <li data-correct="false">Nothing — Excel ignores it</li>
+  </ul>
+  <div class="explanation"><code>$C$38</code> stays as <code>$C$38</code> when copied. Without the dollar signs, the reference shifts relative to the formula's new position.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Which function returns the <em>number of non-empty</em> cells in a range, including text cells?</div>
+  <ul class="qopts">
+    <li data-correct="false">COUNT</li>
+    <li data-correct="true">COUNTA</li>
+    <li data-correct="false">COUNTIF</li>
+    <li data-correct="false">LEN</li>
+  </ul>
+  <div class="explanation"><code>COUNTA</code> counts every non-empty cell (text + numeric + dates). <code>COUNT</code> only counts numeric cells.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. To check that a lookup key appears <strong>exactly once</strong> in a reference table, which formula is best?</div>
+  <ul class="qopts">
+    <li data-correct="false">=VLOOKUP(A2, codes!A:B, 2, FALSE)</li>
+    <li data-correct="true">=COUNTIF(codes!A:A, A2) — should return 1</li>
+    <li data-correct="false">=IF(A2 = codes!A2, "OK", "not OK")</li>
+    <li data-correct="false">=ISNUMBER(VLOOKUP(...))</li>
+  </ul>
+  <div class="explanation">If the result is 1, the lookup is safe. If it is 2 or more, your <code>VLOOKUP</code> would silently return the first match.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. A cleaning log should record:</div>
+  <ul class="qopts">
+    <li data-correct="false">Only the final cleaned data</li>
+    <li data-correct="true">Every change you made between raw and clean, with a reason</li>
+    <li data-correct="false">Only changes you cannot reverse</li>
+    <li data-correct="false">The data dictionary</li>
+  </ul>
+  <div class="explanation">A cleaning log captures <strong>every</strong> change with a reason. This is what lets you defend your numbers months later.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. Which function is best for recoding the value in a cell to one of several exact-match labels (e.g., "P" → "Pre-sapling", "S" → "Sapling")?</div>
+  <ul class="qopts">
+    <li data-correct="false">VLOOKUP</li>
+    <li data-correct="false">A long chain of nested IF</li>
+    <li data-correct="true">IFS (or SWITCH)</li>
+    <li data-correct="false">SUMIF</li>
+  </ul>
+  <div class="explanation"><code>IFS</code> is designed for exact-match recoding. Cleaner and more readable than a long chain of nested <code>IF</code>.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. You apply AutoFilter to hide rows where <code>SumOfTotalHa &lt; 1000</code>. The other rows are not deleted — they are just hidden. True or false?</div>
+  <ul class="qopts">
+    <li data-correct="true">True — AutoFilter hides; it does not delete</li>
+    <li data-correct="false">False — AutoFilter deletes the hidden rows</li>
+  </ul>
+  <div class="explanation">AutoFilter is reversible. Sorting, by contrast, <strong>rearranges</strong> the rows permanently.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. The formula <code>=SUMIFS(H2:H180, F2:F180, "Jack Pine", D2:D180, "Mature")</code> does what?</div>
+  <ul class="qopts">
+    <li data-correct="false">Sums every numeric value in column H</li>
+    <li data-correct="true">Sums the H values for rows where column F is "Jack Pine" AND column D is "Mature"</li>
+    <li data-correct="false">Returns "Jack Pine" if column D is "Mature"</li>
+    <li data-correct="false">Counts the rows that match both conditions</li>
+  </ul>
+  <div class="explanation"><code>SUMIFS</code> sums the first range, subject to one or more criterion ranges.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. What is the main advantage of converting your data into a structured table (Ctrl+T) before writing formulas?</div>
+  <ul class="qopts">
+    <li data-correct="false">It makes Excel faster</li>
+    <li data-correct="true">Formulas use column names instead of cell ranges, and they auto-extend when rows are added</li>
+    <li data-correct="false">It encrypts the data</li>
+    <li data-correct="false">It is required for sorting</li>
+  </ul>
+  <div class="explanation">Structured tables make formulas self-documenting (<code>=AVERAGE(tbl[col])</code> instead of <code>=AVERAGE(H2:H180)</code>) and self-extending.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. Where does the Ontario dataset come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A private consulting firm</li>
+    <li data-correct="true">The Government of Ontario, distributed through the Ontario Open Data Catalogue</li>
+    <li data-correct="false">A textbook publisher</li>
+    <li data-correct="false">A research paper</li>
+  </ul>
+  <div class="explanation">The file is from the Ministry of Natural Resources and Forestry, published under the Open Government Licence — Ontario.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. The Ontario file in this chapter is a <strong>cross-classification</strong>. That means —</div>
+  <ul class="qopts">
+    <li data-correct="false">It has only one column of data</li>
+    <li data-correct="true">Each row is one unique combination of categorical variables, with one numeric value</li>
+    <li data-correct="false">The data is encrypted</li>
+    <li data-correct="false">It is sorted by region</li>
+  </ul>
+  <div class="explanation">Every row is one unique combination of region × ownership × seral stage × forest type × age class, with the total area for that cell.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. What is the natural composite key for the Ontario file?</div>
+  <ul class="qopts">
+    <li data-correct="false">PFTName alone</li>
+    <li data-correct="false">SumOfTotalHa alone</li>
+    <li data-correct="true">landscape_guide_region, own_group, LGDS, PFTName, AC_10</li>
+    <li data-correct="false">There is no key</li>
+  </ul>
+  <div class="explanation">The combination of region, ownership, seral stage, forest type, and age class uniquely identifies each row. If any combination repeats, something went wrong upstream.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. Press <strong>F4</strong> while editing a cell reference. What does it do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Closes the file</li>
+    <li data-correct="true">Cycles the reference through absolute / mixed / relative forms ($A$1 → A$1 → $A1 → A1)</li>
+    <li data-correct="false">Inserts a function</li>
+    <li data-correct="false">Triggers AutoFilter</li>
+  </ul>
+  <div class="explanation">F4 is the fastest way to add or remove dollar signs.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. After cleaning the Ontario file, what should the file be named and where should it live?</div>
+  <ul class="qopts">
+    <li data-correct="false">Overwrite on_forest_statistics_1.xlsx in data/</li>
+    <li data-correct="true">Save as on_forest_statistics_1_clean.xlsx in outputs/</li>
+    <li data-correct="false">Email it to yourself</li>
+    <li data-correct="false">Delete the original</li>
+  </ul>
+  <div class="explanation">The raw file should stay unchanged in <code>data/</code>. The cleaned version goes in <code>outputs/</code> with a clear suffix.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. <code>=AVERAGEIF(D2:D180, "Mature", H2:H180)</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The total area of mature forest</li>
+    <li data-correct="true">The mean SumOfTotalHa for rows where SERAL_NAME = "Mature"</li>
+    <li data-correct="false">The number of mature rows</li>
+    <li data-correct="false">The largest mature area</li>
+  </ul>
+  <div class="explanation"><code>AVERAGEIF</code> averages the third range, subject to the criterion. Use <code>SUMIF</code> for total, <code>COUNTIF</code> for count.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. Which is true about <code>=VLOOKUP(A2, codes!A:B, 2, TRUE)</code>?</div>
+  <ul class="qopts">
+    <li data-correct="false">It is the safest form of VLOOKUP</li>
+    <li data-correct="true">The TRUE means approximate match — dangerous if the lookup table is unsorted; can silently return the wrong value</li>
+    <li data-correct="false">It returns an error if the key is missing</li>
+    <li data-correct="false">It looks up the value in column B</li>
+  </ul>
+  <div class="explanation">Always use <code>FALSE</code> (exact match) for VLOOKUP unless you really mean approximate. The default of <code>TRUE</code> is dangerous.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. The mean of <code>SumOfTotalHa</code> in the Ontario file is much larger than the median. What does this tell you?</div>
+  <ul class="qopts">
+    <li data-correct="false">The data is wrong</li>
+    <li data-correct="true">The distribution is right-skewed — a few very large rows pull the mean up</li>
+    <li data-correct="false">The data is sorted</li>
+    <li data-correct="false">Half the rows are missing</li>
+  </ul>
+  <div class="explanation">When mean &gt; median by a lot, the distribution is right-skewed. The median is the more honest measure of a "typical" row in this case.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. You convert your Ontario data to a structured table named <code>ontario_data</code>. Which formula references the SumOfTotalHa column correctly?</div>
+  <ul class="qopts">
+    <li data-correct="false">=AVERAGE(SumOfTotalHa)</li>
+    <li data-correct="true">=AVERAGE(ontario_data[SumOfTotalHa])</li>
+    <li data-correct="false">=AVERAGE("SumOfTotalHa")</li>
+    <li data-correct="false">=AVERAGE(@SumOfTotalHa)</li>
+  </ul>
+  <div class="explanation">Structured-table syntax uses <code>table_name[column_name]</code>. Self-documenting and self-extending.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. Which of these does NOT cause a VLOOKUP to fail?</div>
+  <ul class="qopts">
+    <li data-correct="false">A trailing space in the lookup key</li>
+    <li data-correct="false">The key is numeric but the lookup column is text</li>
+    <li data-correct="true">The lookup table is on the same sheet as the data</li>
+    <li data-correct="false">The exact-match flag is missing or TRUE</li>
+  </ul>
+  <div class="explanation">VLOOKUP works regardless of which sheet the lookup table is on. Trailing spaces, type mismatches, and the approximate-match default are the real culprits.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. Why is sorting a structured table different from sorting a plain range?</div>
+  <ul class="qopts">
+    <li data-correct="false">Structured tables cannot be sorted</li>
+    <li data-correct="true">Structured tables keep formulas connected to the right columns even after rows are rearranged</li>
+    <li data-correct="false">Sorting a structured table makes Excel slower</li>
+    <li data-correct="false">There is no difference</li>
+  </ul>
+  <div class="explanation">Structured-table column references stay valid through sorts and filters because they refer to column names, not cell ranges.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one formula you wrote this chapter that did not work the first time. What was wrong, and how did you find out?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common answers: <em>VLOOKUP returned #N/A because of a trailing space in the lookup key</em> · <em>SUMIFS gave 0 because the criterion was a number formatted as text</em> · <em>a relative reference shifted incorrectly when copied down because I forgot the dollar signs on the denominator</em> · <em>IFS returned #N/A on some rows because the final TRUE catch-all was missing</em>.</div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') {
+              o.classList.add('correct');
+            }
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"In Excel, my formula `=VLOOKUP(A2, codes!A:B, 2, FALSE)`
+  returns `#N/A` for some rows. The values in column A look the
+  same as in the codes sheet. What are the three most common
+  reasons VLOOKUP fails when the values look right?"*
+
+- *"Explain step by step what this formula does:
+  `=IFS(C2 < 1000, "small", C2 < 50000, "medium", TRUE, "large")`"*
+
+- *"I want to write a `SUMIFS` that adds up the `SumOfTotalHa`
+  column whenever `PFTName` is one of `{Jack Pine, Mixedwood,
+  Poplar}`. Can I do this in a single formula?"*
+
+## Verifying AI's answers
+
+After AI tells you why your `VLOOKUP` fails, **check**:
+
+1. Are there trailing spaces? `=LEN(A2)` and `=LEN(codes!A2)`
+   should match.
+2. Are both values the same type? `=ISTEXT(A2)` and
+   `=ISTEXT(codes!A2)`.
+3. Is the case the same? VLOOKUP is case-insensitive in Excel,
+   but worth eliminating.
+
+AI's answer is a *starting point*, not the final answer. Always
+verify against the data.
+
+## When not to use AI
+
+- Do not use AI to *write the cleaning log for you*. The log is a
+  record of *your* decisions.
+- Do not use AI to *invent* lookup values that are not in the
+  reference table. If a value is missing, document the gap.
+:::
+
+# Reading
+
+- Microsoft Excel official documentation on [VLOOKUP](https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1).
+- Microsoft Excel official documentation on [XLOOKUP](https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929).
+- Ontario open-data dataset page: <https://data.ontario.ca/dataset/forest-resources-of-ontario-2021>
+- Open Government Licence — Ontario: <https://www.ontario.ca/page/open-government-licence-ontario>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- This chapter is heavier than Chapter 1. Plan to spread it
+  across multiple sessions.
+- The main path covers seven skills: sort, filter, structured
+  tables, summary formulas, conditional aggregation, conditional
+  logic, lookups. The cleaning log ties them together.
+- **Custom number formats** and **INDEX/MATCH** are moved to the
+  *Optional, advanced* section. Touch on them only if your group
+  is moving quickly or already comfortable.
+- The group lab is the central hands-on deliverable. Plan for
+  one full session.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. Raw `on_forest_statistics_1.xlsx` in `chapter02/data/`,
+   unchanged.
+2. Working `on_forest_statistics_1_clean.xlsx` in
+   `chapter02/outputs/` containing a structured table, a cleaning
+   log sheet, a `size_class` column built with `IFS`, and a small
+   `codes` lookup sheet wired with `XLOOKUP`.
+3. Group-lab worksheet or screenshot.
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `on_forest_statistics_1.xlsx` | The raw open-data workbook (About + ReadMe + Data). Place in `data/`. |
+| `on_forest_statistics_1_learner.xlsx` | Learner-facing exercises workbook with blanks and formula prompts. Distribute through the course site. |
+| `on_forest_statistics_1_solutions.xlsx` | Instructor solutions with completed formulas and worked answers. **Do not distribute to learners.** |
+| `quiz_ch02.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
+
+## Suggested grading guidance for the group lab
+
+| Task | Weight | What to look for |
+|---|---|---|
+| Save working copy (Task 1) | 10 % | Cleaned file in `outputs/`; raw file untouched. |
+| Structured table (Task 2) | 20 % | Table named meaningfully; autofilter present. |
+| size_class column (Task 3) | 30 % | `IFS` formula correct; counts in each class confirmed. |
+| Conditional aggregation (Task 4) | 30 % | Correct formula AND a sanity check. |
+| Submission (Task 5) | 10 % | Worksheet or screenshot is legible; group members named. |
+
+## Common stumbling points
+
+- Some learners forget the trailing `TRUE` in `IFS` and get
+  `#N/A` on rows that don't match any explicit condition.
+- Some try to write a structured-table formula by typing the
+  column name without the table prefix. The right form is
+  `ontario_data[SumOfTotalHa]`, not `SumOfTotalHa` alone.
+- A few will edit the raw `on_forest_statistics_1.xlsx` in place.
+  Remind them often that the raw file stays unchanged.
+- *Excel-to-R bridge:* The "A glimpse of Chapter 7" section at
+  the end of this chapter previews how the same logic appears in
+  R. Refer to it when learners ask why we are still in Excel —
+  the bridge is concrete and forward-pointing.
+:::

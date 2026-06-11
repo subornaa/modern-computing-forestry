@@ -1,0 +1,179 @@
+---
+title: "Chapter 10 — Learner Exercises"
+subtitle: "Spatial Data in R with sf"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+# If sf is not installed:
+#   install.packages(c("sf", "tidyverse", "here"))
+library(tidyverse)
+library(sf)
+library(here)
+library(knitr)
+```
+
+# About this file {.unnumbered}
+
+Learner workbook for Chapter 10. Code chunks marked `# TODO`
+are where you write your own R code. Render the document when
+done.
+
+```{r stations-tibble}
+# The Metro Vancouver air-quality station coordinates.
+stations <- tribble(
+  ~location,                          ~lon,        ~lat,
+  "Burnaby South",                    -122.985,    49.215,
+  "Coquitlam Douglas College",        -122.798,    49.252,
+  "Langley Central",                  -122.660,    49.105,
+  "Maple Ridge Golden Ears School",   -122.620,    49.215,
+  "New Westminster Sapperton Park",   -122.890,    49.235,
+  "North Delta",                      -122.910,    49.135,
+  "North Vancouver Second Narrows",   -123.015,    49.295,
+  "Pitt Meadows Airport",             -122.700,    49.215,
+  "Port Coquitlam North",             -122.770,    49.265,
+  "Port Moody Rocky Point Park",      -122.860,    49.290
+)
+```
+
+---
+
+# Exercise 1 — Build the sf object
+
+```{r ex1}
+# TODO: convert `stations` into an sf point object with CRS = 4326.
+# Save as `stations_sf`. Use st_as_sf(coords = c("lon", "lat"), crs = 4326).
+# Then print stations_sf and confirm:
+#   - nrow(stations_sf) is 10
+#   - st_crs(stations_sf)$Name says "WGS 84"
+
+```
+
+---
+
+# Exercise 2 — Reproject to BC Albers
+
+```{r ex2}
+# TODO: reproject stations_sf to BC Albers (EPSG:3005).
+# Save as `stations_bcalbers`. Then call st_bbox(stations_bcalbers)
+# to see the bounding box. What are the units now (numbers in the
+# millions, or in degrees)?
+
+```
+
+> *Write your answer here.* What are the units of the bounding
+> box after reprojecting to BC Albers? Why is this useful?
+
+---
+
+# Exercise 3 — Pairwise distances
+
+```{r ex3}
+# TODO: compute the pairwise distance matrix in metres using
+# st_distance() on stations_bcalbers.
+# Then convert to kilometres and find the longest pair.
+# Hint:
+#   distance_matrix <- st_distance(stations_bcalbers)
+#   dist_df <- as_tibble(distance_matrix, .name_repair = ~ stations$location) |>
+#     mutate(from = stations$location) |>
+#     pivot_longer(-from, names_to = "to", values_to = "distance_m") |>
+#     mutate(distance_km = as.numeric(distance_m) / 1000) |>
+#     filter(from != to)
+
+```
+
+> *Write your answer here.* Which pair of stations has the
+> longest distance, and roughly how many km is it?
+
+---
+
+# Exercise 4 — Buffer + intersection
+
+```{r ex4-buffer}
+# TODO: build a 7.5 km buffer around Burnaby South (in BC Albers).
+# Save as `burnaby_buffer`.
+
+```
+
+```{r ex4-intersect}
+# TODO: use st_intersection() to find which OTHER stations fall
+# inside burnaby_buffer.
+# Print the list of station names.
+
+```
+
+---
+
+# Exercise 5 — Plot with geom_sf
+
+```{r ex5}
+# TODO: build a ggplot with TWO geom_sf layers:
+#   1) burnaby_buffer (reproject back to WGS84 for plotting), fill green and transparent
+#   2) stations_sf, all 10 points, drawn on top
+# Add labs(title, caption) and theme_minimal().
+
+```
+
+---
+
+# Exercise 6 — Save as GeoJSON
+
+```{r ex6}
+#| eval: false
+# TODO: write stations_sf to outputs/stations.geojson using st_write().
+
+```
+
+---
+
+# Exercise 7 — Area of a buffer
+
+```{r ex7}
+# TODO: compute the area of burnaby_buffer in hectares.
+# Hint: as.numeric(st_area(burnaby_buffer)) / 10000
+# Confirm it is approximately pi * 5000^2 / 10000 = 7,854 ha
+# (or for 7.5 km buffer: pi * 7500^2 / 10000 = ~17,671 ha)
+
+```
+
+---
+
+# Group lab — Build a station map together
+
+## Group members
+
+> *List your group members here.*
+
+## Buffer radius chosen
+
+> *Type the radius (in km) your group selected, and why.*
+
+## The map
+
+```{r group-map}
+# TODO: build the group's buffer-and-points map here, with all 10
+# stations and all 10 buffers visible.
+
+```
+
+## Caption
+
+> *Write a one-sentence caption explaining what the chart shows.*
+
+---
+
+# Done
+
+Submit:
+
+1. This `.qmd` source.
+2. The rendered `.html`.
+3. The PNG of your map (from Exercise 5 or the group map).

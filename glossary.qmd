@@ -1,0 +1,34 @@
+# Glossary {.unnumbered}
+
+::: {.callout-note}
+This plain-language glossary is being expanded (an accessibility
+and ESL-support goal of the project). Terms are defined on first
+use within each chapter; this page collects the most common ones
+in one place.
+:::
+
+**Tibble** — a modern kind of data frame (table) used by the
+tidyverse. Each column is a variable; each row is an
+observation.
+
+**Pipe (`|>`)** — the native R operator that passes the result
+on its left into the function on its right, so a workflow reads
+left to right, top to bottom.
+
+**Data dictionary** — a short document, one row per column, that
+records each variable's name, meaning, units, and type.
+
+**Cleaning log** — a transparent record of every change made to
+raw data on the way to an analysis-ready dataset.
+
+**CRS (coordinate reference system)** — the system that ties
+spatial coordinates to locations on Earth (e.g., WGS 84, BC
+Albers). Reprojecting converts data from one CRS to another.
+
+**Quarto** — the open-source publishing system that combines
+prose, code, and output into a single rendered report
+(HTML, PDF, Word, slides).
+
+**Open Government Licence (OGL)** — the licence under which BC,
+Ontario, and federal open data are released, permitting reuse
+with attribution.

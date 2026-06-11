@@ -1,0 +1,295 @@
+---
+title: "Chapter 12 — Learner Exercises"
+subtitle: "Group Presentations and Portfolio Outputs"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(here)
+library(knitr)
+```
+
+# About this file {.unnumbered}
+
+Learner workbook for Chapter 12. This chapter is a **synthesis
+chapter** — most exercises ask you to produce *additional* files
+beyond this `.qmd`. Track what you create as you go and submit
+the whole bundle at the end.
+
+---
+
+# Exercise 1 — Convert a chapter to slides
+
+Pick any chapter learner `.qmd` you have already rendered as
+HTML — for example `frst232_ch09_learner.qmd`.
+
+**Steps:**
+
+1. Copy the file to `frst232_ch09_slides.qmd` (keep the
+   original `.qmd` intact).
+2. Open the copy. In the YAML header, change `format: html`
+   to:
+   ```yaml
+   format:
+     revealjs:
+       theme: simple
+       slide-number: true
+       embed-resources: true
+   ```
+3. Render. Open the resulting HTML — it is now a slide deck.
+
+> *Write your answer here.* When the rendered output opened,
+> which sections were the most natural slides? Which were
+> uncomfortably long (a single section taking 4+ slides because
+> of vertical overflow)?
+
+---
+
+# Exercise 2 — One idea per slide
+
+Take the rendered HTML from Exercise 1. For each slide that has
+**more than 50 words of body text or more than one chart**, edit
+the source `.qmd` to split it into two slides.
+
+> *Write your answer here.* How many original slides did you
+> split, and into how many new ones? Did the deck feel clearer
+> after the split?
+
+---
+
+# Exercise 3 — Slide separators
+
+In your converted file, introduce a clear three-section structure
+using `# Section Title` (h1) section dividers:
+
+1. `# Background`
+2. `# Methods and Results`
+3. `# Conclusion`
+
+Each h1 creates a section-divider slide. Each h2 (`## Slide
+title`) underneath creates a content slide in that section.
+
+```{r ex3-note}
+# (No code needed — this is structural editing in your .qmd.)
+```
+
+> *Write your answer here.* How does the section-divider
+> structure change the audience's mental map of the talk?
+
+---
+
+# Exercise 4 — Speaker notes and incremental reveals
+
+Take any one slide and:
+
+- Add a `::: {.notes}` block with 2–3 talking points only you
+  will see.
+- Convert a bullet list on the same slide into a
+  `::: {.incremental}` block so the bullets appear one at a
+  time.
+
+Re-render and confirm:
+
+- Pressing **S** during the live preview opens presenter mode
+  with your notes visible.
+- The bullets appear one at a time as you advance.
+
+---
+
+# Exercise 5 — Two-column layout
+
+Build a new slide with a two-column layout. Left column: a chart
+(any chart from your earlier work). Right column: three bullet
+takeaways.
+
+Use the syntax:
+
+````markdown
+## My comparison slide
+
+::: {.columns}
+::: {.column width="50%"}
+[chart chunk or image here]
+:::
+::: {.column width="50%"}
+- Takeaway 1
+- Takeaway 2
+- Takeaway 3
+:::
+:::
+````
+
+---
+
+# Exercise 6 — Build the portfolio scaffold
+
+In your `frst232/` project root, create three new files:
+
+## 6a — `_quarto.yml`
+
+```yaml
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "FRST 232 — Your Name"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: chapters/ch06.qmd
+        text: Cleaning
+      - href: chapters/ch09.qmd
+        text: Charts
+      - href: chapters/ch11.qmd
+        text: Maps
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+```
+
+## 6b — `index.qmd`
+
+```markdown
+---
+title: "FRST 232 Portfolio"
+---
+
+# About
+
+A collection of forestry data analyses for FRST 232 (UBC).
+
+## Highlights
+
+- [Cleaning the BC air-quality file](chapters/ch06.html)
+- [Visualising reforestation trends](chapters/ch09.html)
+- [Interactive station map](chapters/ch11.html)
+
+## Licence
+
+© 2026 Your Name · CC BY 4.0 for content · MIT for code
+```
+
+## 6c — Copy chapter sources
+
+Copy your rendered chapter `.qmd` files into `chapters/`:
+
+```
+chapters/
+├── ch06.qmd
+├── ch09.qmd
+└── ch11.qmd
+```
+
+Then run **`quarto render`** in the terminal from the project
+root. Confirm a `docs/` folder appears with `index.html` and
+the chapter pages.
+
+---
+
+# Exercise 7 — Write a CITATION.md
+
+Run these commands in the R console:
+
+```{r ex7-citation}
+#| eval: false
+citation("tidyverse")
+citation("readxl")
+citation("dplyr")
+citation("ggplot2")
+citation("sf")
+citation("leaflet")
+citation("lubridate")
+citation("here")
+```
+
+Create `CITATION.md` in your project root and paste the output
+of each command (or just the BibTeX/plain-text reference).
+
+Also list your **data sources** at the top of the file:
+
+```markdown
+## Data
+
+- Environmental Reporting BC, *Trends in Silviculture in BC*.
+  Open Government Licence — BC.
+  https://catalogue.data.gov.bc.ca/...
+- Environmental Reporting BC, BC Air Data.
+- Government of Ontario, *Forest Resources of Ontario 2021*.
+```
+
+---
+
+# Exercise 8 — Publish to Quarto Pub (optional but recommended)
+
+From the project root in the terminal:
+
+```bash
+quarto publish quarto-pub
+```
+
+Sign in when prompted. The command produces a public URL like
+`yourname.quarto.pub/frst232/`.
+
+> *Write your answer here.* What is your published URL? Share it
+> with a classmate and ask them to confirm it loads on their
+> computer.
+
+---
+
+# Group lab — In-class presentation
+
+The lab session IS the in-class presentations. Use this section
+of your `.qmd` to track your group's preparation.
+
+## Group members
+
+> *List your group members here.*
+
+## Topic chosen
+
+> *Type your group's chosen analysis topic (e.g., "Ch 6
+> cleaning of the BC air-quality file").*
+
+## Slide structure (8 required slides)
+
+1. Title slide — members, date
+2. The question — one sentence
+3. The data — source, licence, row/column counts
+4. The method — show the actual R code (≤ 10 lines)
+5. The result — one chart, table, or map
+6. Interpretation — headline + nuance
+7. Limitations — what the analysis does NOT show
+8. Acknowledgements — citations of data and packages
+
+## Peer-evaluation forms
+
+> Keep your filled-in peer-eval forms for the other three groups
+> in this section after the lab.
+
+---
+
+# Done
+
+Submit at the end of the chapter:
+
+1. This `.qmd` source.
+2. The revealjs `.qmd` from Exercise 1 (renamed
+   `frst232_ch12_slides.qmd`).
+3. The rendered revealjs HTML.
+4. Your `_quarto.yml`, `index.qmd`, and at least three chapter
+   pages.
+5. Your `CITATION.md`.
+6. The Quarto Pub URL (optional).

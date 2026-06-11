@@ -1,0 +1,734 @@
+---
+title: "Reshape and Combine Forestry Datasets Safely"
+---
+
+```{r setup-ch08}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Explain **tidy data**: one row per observation, one column per
+  variable, one cell per value.
+- Use **`pivot_longer()`** to reshape a wide tibble (one column
+  per group) into long format (one row per observation).
+- Use **`pivot_wider()`** as the inverse (you met this in
+  Chapter 7) and choose between long and wide thoughtfully.
+- Combine two tibbles **side by side** with the four join
+  verbs: `left_join()`, `inner_join()`, `right_join()`,
+  `full_join()`.
+- Use the **filtering joins** `semi_join()` and `anti_join()` to
+  keep or drop rows based on whether they match a reference.
+- Combine two tibbles **end to end** with `bind_rows()` (stack)
+  and `bind_cols()` (side-by-side without matching).
+- Diagnose join problems: missing matches, duplicate keys,
+  mismatched data types.
+- Build a multi-source forestry analysis that combines the BC
+  silviculture, Ontario forest stats, and BC air-quality files.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **rendered Quarto HTML report**
+   (`frst232_ch08_learner.html`) containing:
+   - A `pivot_longer()` example reshaping a wide BC summary into
+     long format.
+   - All four join types demonstrated on a small worked example,
+     with a one-sentence explanation of what each kept or dropped.
+   - A `bind_rows()` example combining the BC silviculture and
+     Ontario forest stats files into a single national tibble.
+   - A short **join diagnostic** table showing key match counts.
+2. The corresponding **`.qmd` source file**.
+3. A short **group-lab worksheet** (or screenshot) submitted to
+   the course site.
+:::
+
+# Where we are
+
+Through Chapter 7 you cleaned, summarised, and reshaped one
+dataset at a time. **Chapter 8 is about combining multiple
+datasets** — joining a main table to a reference table, stacking
+files from different provinces, reshaping summary tables for
+plotting.
+
+These are the verbs that turn a folder of files into a single
+analysis.
+
+# Tidy data, briefly
+
+Three rules:
+
+1. **One row per observation.**
+2. **One column per variable.**
+3. **One cell per value.**
+
+Most cleaning headaches come from violations of these rules.
+The BC silviculture file (Ch 1) is tidy — each row is a fiscal
+year, each column is a measured quantity. The Ontario file
+(Ch 2) is also tidy — each row is a region × ownership × seral ×
+forest-type × age combination.
+
+A file where each *column* is a year (e.g., `ha_2018`, `ha_2019`,
+`ha_2020`) is **not tidy** — the column name encodes a variable
+(year). You convert it to tidy with `pivot_longer()`.
+
+# Excel-to-R bridge — reshape and combine
+
+| Excel pattern | dplyr / tidyr verb |
+|---|---|
+| `VLOOKUP` or `XLOOKUP` | `left_join()` |
+| Copy-paste-append from two sheets | `bind_rows()` |
+| Copy-paste-side-by-side from two sheets (same row count) | `bind_cols()` (rarely used) |
+| Unpivot in Power Query | `pivot_longer()` |
+| Pivot in Power Query | `pivot_wider()` |
+| "Keep only matched rows" | `inner_join()` |
+| "Show me rows in A that have no match in B" | `anti_join()` |
+| "Show me rows in A that DO have a match in B (but don't join)" | `semi_join()` |
+| Compare two sheets to find new entries | `anti_join(new, old, by = "key")` |
+| Find duplicates | `count(key) |> filter(n > 1)` |
+
+# `pivot_longer()` — the inverse of `pivot_wider()`
+
+In Chapter 7 you used `pivot_wider()` to turn a summary tibble
+into a cross-tab. `pivot_longer()` is the reverse: take a wide
+table and convert it to long format.
+
+## A worked example with the BC silviculture file
+
+```{r build-wide}
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+# Build a small wide summary: rows = fiscal year, columns = disturbance types
+bc_wide <- bc |>
+  select(Fiscal_Year, Harvested_ha, Natural_Disturbance_ha, Total_Disturbance_ha)
+head(bc_wide)
+```
+
+This is **wide format**: each disturbance type is its own column.
+To plot all three on the same chart (Chapter 9), you need long
+format:
+
+```{r pivot-longer}
+bc_long <- bc_wide |>
+  pivot_longer(
+    cols      = c(Harvested_ha, Natural_Disturbance_ha, Total_Disturbance_ha),
+    names_to  = "disturbance_type",
+    values_to = "area_ha"
+  )
+head(bc_long, 9)
+```
+
+What we did:
+
+- `cols` lists which columns to pivot.
+- `names_to` is the name of the new column that will hold the
+  original column names.
+- `values_to` is the name of the new column that will hold the
+  values.
+
+Result: 3 columns × `r nrow(bc_wide)` rows became `r ncol(bc_wide) - 1`
+columns × `r nrow(bc_wide) * 3` rows. The data is identical, the
+shape is different.
+
+::: {.callout-tip}
+## When to use long vs wide
+
+- **Long format** is what `ggplot2`, `dplyr`, and most statistics
+  functions want. Use it for analysis.
+- **Wide format** is what humans want to read. Use it for tables
+  in a report and for cross-tabs.
+
+Convert between them with `pivot_longer()` and `pivot_wider()`.
+They are inverses: `data |> pivot_longer(...) |> pivot_wider(...)`
+returns the original (modulo column ordering).
+:::
+
+# The four mutating joins
+
+You met `left_join()` in Chapter 6. Now the other three.
+
+## Set up a small worked example
+
+```{r setup-join}
+# Five fictitious silviculture plots
+plots <- tribble(
+  ~plot_id, ~district,        ~area_ha,
+  "P001",   "Vancouver",      12.0,
+  "P002",   "Vancouver",       8.5,
+  "P003",   "Squamish",       21.2,
+  "P004",   "Squamish",       15.0,
+  "P005",   "Nanaimo",         9.7
+)
+
+# Reference table — district → biogeoclimatic zone
+districts <- tribble(
+  ~district,    ~bec_zone,
+  "Vancouver",  "CWHdm",
+  "Squamish",   "CWHvm",
+  "Sunshine Coast", "CWHvh"      # district NOT in plots
+)
+
+plots
+districts
+```
+
+## `left_join()` — keep all rows of the left tibble
+
+```{r left-join}
+left_join(plots, districts, by = "district")
+```
+
+Every row of `plots` is kept. `bec_zone` is filled in where the
+district matches; `NA` where it does not (Nanaimo).
+
+## `inner_join()` — keep only matched rows
+
+```{r inner-join}
+inner_join(plots, districts, by = "district")
+```
+
+Only rows present in **both** tibbles survive. Nanaimo drops
+(no match in `districts`); Sunshine Coast drops (no match in
+`plots`).
+
+## `right_join()` — keep all rows of the right tibble
+
+```{r right-join}
+right_join(plots, districts, by = "district")
+```
+
+Sunshine Coast appears (with NA for the plot columns). Equivalent
+to `left_join(districts, plots, by = "district")`.
+
+## `full_join()` — keep everything
+
+```{r full-join}
+full_join(plots, districts, by = "district")
+```
+
+Both unmatched sides appear: Nanaimo with NA `bec_zone`,
+Sunshine Coast with NA plot columns.
+
+## A picture of all four
+
+| Join | Keeps |
+|---|---|
+| `left_join(A, B)` | **All of A** + matched from B |
+| `inner_join(A, B)` | **Only matched** rows (both sides) |
+| `right_join(A, B)` | **All of B** + matched from A |
+| `full_join(A, B)` | **All of A and all of B** + matched |
+
+For most lookups, **`left_join` is the default**. Use it unless
+you have a specific reason to drop unmatched rows.
+
+# The filtering joins
+
+These two **never add columns** — they only keep or drop rows.
+
+## `semi_join()` — "keep rows in A that have a match in B"
+
+```{r semi-join}
+semi_join(plots, districts, by = "district")
+```
+
+Returns plots in districts that exist in the reference table.
+No new columns are added; the join is used as a filter.
+
+## `anti_join()` — "keep rows in A that have NO match in B"
+
+```{r anti-join}
+anti_join(plots, districts, by = "district")
+```
+
+Returns plots in districts that do **not** exist in the
+reference table — exactly the rows you might need to chase down
+or add to your reference.
+
+This pair is invaluable for **data audits**. *"Which plots have
+no district info? Which districts in my reference table are
+unused?"*
+
+# Joining on multiple keys
+
+When a single column does not uniquely identify rows, join on
+multiple columns:
+
+```r
+left_join(measurements, reference, by = c("plot_id", "year"))
+```
+
+When the column names differ across the two tibbles:
+
+```r
+left_join(measurements, reference,
+          by = c("plot_id" = "plot", "year" = "yr"))
+```
+
+`by = c("col_A" = "col_B")` reads *"match column `col_A` in
+measurements to column `col_B` in reference"*.
+
+# `bind_rows()` — stack tibbles end to end
+
+When you have two tibbles with **the same (or compatible)
+columns**, stack them vertically:
+
+```{r bind-rows-setup}
+# Pretend we received the BC file as two separate halves
+bc_pre2005 <- bc |> filter(Fiscal_Year < 2005)
+bc_post2005 <- bc |> filter(Fiscal_Year >= 2005)
+
+nrow(bc_pre2005); nrow(bc_post2005)
+
+# Stack them
+bc_recombined <- bind_rows(bc_pre2005, bc_post2005)
+nrow(bc_recombined)
+identical(arrange(bc, Fiscal_Year), arrange(bc_recombined, Fiscal_Year))
+```
+
+`bind_rows()` matches columns by **name** — column order does not
+matter. Missing columns in one tibble become `NA` in the result.
+
+## Tagging the source
+
+When stacking files from different provinces, add a column
+recording where each row came from:
+
+```{r bind-rows-tagged}
+bc_tagged <- bc |>
+  select(Fiscal_Year, Harvested_ha) |>
+  mutate(province = "BC")
+
+# Build a tiny Ontario-style sample
+ontario_sample <- tribble(
+  ~Fiscal_Year, ~Harvested_ha,
+  2018,        160000,
+  2019,        158000,
+  2020,        155000
+) |>
+  mutate(province = "ON")
+
+combined <- bind_rows(bc_tagged, ontario_sample)
+combined |> tail(6)
+```
+
+The `province` column now lets you `group_by(province)` and
+compute per-province summaries — exactly the kind of analysis
+that requires combining multiple files.
+
+# `bind_cols()` — stack side by side (rarely the right answer)
+
+`bind_cols()` glues tibbles **horizontally**:
+
+```r
+bind_cols(tibble_a, tibble_b)
+```
+
+This requires that both tibbles have **the same number of rows in
+the same order**. There is **no key matching**. If the rows are
+not aligned, you silently get garbage.
+
+::: {.callout-warning}
+## `bind_cols()` vs `left_join()`
+
+`bind_cols()` glues by row position; `left_join()` matches by
+key. **Always prefer `left_join()`** for combining columns from
+two sources — even if you "know" the rows are in the same order.
+Order assumptions silently break the day someone re-sorts one of
+the files.
+:::
+
+# Join diagnostics — what every join should print
+
+Before trusting a join, run two checks:
+
+```r
+# 1. How many rows did the join produce vs the original?
+nrow(plots)
+nrow(left_join(plots, districts, by = "district"))
+
+# 2. How many rows in A failed to match in B?
+anti_join(plots, districts, by = "district") |> nrow()
+```
+
+If `left_join` returns **more rows than the left tibble**, your
+reference table has **duplicate keys** — and your join is
+silently fanning out (one row in A matching several in B).
+
+If `anti_join` returns rows you did not expect, your reference
+table is **missing entries** — those plots will have `NA` in the
+joined columns.
+
+Both are common bugs. Both are caught in seconds by the two-line
+diagnostic.
+
+# A complete worked example — multi-source forestry analysis
+
+Combine three files into a single analysis: the BC silviculture
+file from Chapter 1, the Ontario forest stats file from Chapter 2,
+and the BC air-quality file from Chapter 6.
+
+```{r combined}
+#| eval: false
+# Read all three
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data") |>
+  mutate(province = "BC", source = "silviculture")
+
+ontario <- read_excel(here("data", "on_forest_statistics_1.xlsx"),
+                      sheet = "Data") |>
+  mutate(province = "ON", source = "forest_stats")
+
+# Stack the two harvest-area summaries from different schemas
+# (we need to pick comparable columns first)
+bc_harvest <- bc |>
+  select(province, year = Fiscal_Year, area_ha = Harvested_ha)
+
+ontario_harvest <- ontario |>
+  group_by(year = 2021) |>
+  summarise(area_ha = sum(SumOfTotalHa, na.rm = TRUE)) |>
+  mutate(province = "ON")
+
+combined_harvest <- bind_rows(bc_harvest, ontario_harvest)
+combined_harvest |> tail(5)
+```
+
+This is the **shape of a working analyst's day**: take three
+files, line up the columns, stack them, and produce a single
+comparable summary. Every step is in code; no copy-paste; fully
+reproducible.
+
+# Active learning
+
+## Activity 1 — Pivot longer
+
+Take `bc |> select(Fiscal_Year, Harvested_ha, Natural_Disturbance_ha)`
+and pivot it longer. How many rows does the result have? (Hint:
+`nrow(bc) × 2`.)
+
+## Activity 2 — All four joins
+
+Using the `plots` and `districts` tribbles from the chapter, run
+all four join types and report the row count of each. Confirm
+the table in *"A picture of all four"* describes what you see.
+
+## Activity 3 — Filtering joins
+
+Use `anti_join` to find plots with no biogeoclimatic-zone match.
+Then use `semi_join` to keep only plots that *do* have a match.
+What is the relationship between the two row counts?
+
+## Activity 4 — Bind rows with tags
+
+Take the first 5 rows and last 5 rows of `bc`. Tag them with a
+`half` column ("first" / "last"). Stack them with `bind_rows`.
+Group by `half` and summarise the mean reforestation.
+
+## Activity 5 — Detect duplicate keys
+
+Add an extra row to `districts` that duplicates Vancouver but
+gives a different `bec_zone`. Run a `left_join`. What does the
+row count of the result tell you?
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Combine three forestry sources
+
+Work in groups of 3 or 4. The lab builds one combined tibble
+from the BC silviculture, Ontario forest stats, and BC
+air-quality files.
+
+**Task 1 — Inventory.** Each member loads all three files. As a
+group, list which columns are comparable across files (e.g.,
+`year`, `area_ha`).
+
+**Task 2 — Select comparable columns.** Write `select()` calls
+that produce a uniform schema (e.g., `province`, `year`,
+`area_ha`) for each of the BC and Ontario files. The air-quality
+file is the odd one out; pick a different summary axis for it.
+
+**Task 3 — Stack with `bind_rows()`.** Combine the BC and
+Ontario harvest summaries into one tibble. Tag each row with
+the province.
+
+**Task 4 — Diagnose.** Run `count(province)` to confirm both
+provinces appear. Run `colSums(is.na(combined))` to check for
+unexpected NAs after the bind.
+
+**Task 5 — Reflect.** Discuss: what did you have to *decide*
+during the column-matching that the code itself cannot decide
+for you? (Hint: units, time aggregation, scope.)
+
+**Task 6 — Submit.** Each group submits:
+- the combined tibble (printed as a `kable` table in the qmd),
+- a one-paragraph note describing the decisions made in Task 5,
+- all group members' names.
+:::
+
+# Exercises
+
+1. **Pivot wider then longer.** Take `bc_long` (built in the
+   chapter), pivot it wider, then pivot it longer again. Confirm
+   you get back the original.
+
+2. **Inner join row count.** Use the `plots` and `districts`
+   tribbles. What is `nrow(inner_join(plots, districts, by =
+   "district"))`? Confirm by counting matched districts manually.
+
+3. **Find unmatched districts.** Add three more rows to `plots`
+   with district names that do not exist in `districts`. Use
+   `anti_join()` to find them.
+
+4. **Join on two keys.** Build a tiny `measurements` tibble with
+   `plot_id`, `year`, and `dbh_cm`. Build a `species` tibble
+   with `plot_id`, `year`, and `species_code`. Join on both
+   keys at once.
+
+5. **Bind rows from a folder.** Create two BC silviculture
+   sub-extracts: one for 1987-2004, one for 2005-2023. Stack
+   them with `bind_rows`. Confirm the result is identical to
+   the original full file.
+
+6. **Tag and combine.** Build a `province` column for both `bc`
+   and a small `ontario` sample (the totals from your Chapter 2
+   work). Combine and compute mean harvest per province.
+
+7. **Diagnostic before trust.** For your final combined tibble,
+   run `colSums(is.na(combined))`. Are there unexpected NAs?
+   Trace each unexpected column back to which file lacks that
+   variable.
+
+8. **Optional, harder.** Use `pivot_longer()` followed by
+   `pivot_wider()` to *transpose* a small summary tibble (rows
+   become columns and vice versa). Try it on a 3 × 3 summary
+   you build by hand.
+
+# Optional, advanced
+
+## `left_join` with multiple matches — fan-out
+
+If the right tibble has duplicate keys, every match fans out
+into multiple rows:
+
+```r
+districts_dup <- tribble(
+  ~district,    ~bec_zone,
+  "Vancouver",  "CWHdm",
+  "Vancouver",  "CWHxm"           # duplicate key!
+)
+
+left_join(plots, districts_dup, by = "district")
+# Now Vancouver plots appear TWICE in the result.
+```
+
+This is rarely what you want for a lookup. The fix is to
+deduplicate the reference table first:
+
+```r
+districts_dedup <- districts_dup |> distinct(district, .keep_all = TRUE)
+```
+
+## `relationship` argument in dplyr ≥ 1.1
+
+dplyr 1.1 introduced `relationship = "one-to-one"` (or `"one-to-many"`,
+etc.) on joins. Use it to make join cardinality assumptions
+**explicit** — the code errors loudly if the actual data
+violates the assumption.
+
+```r
+left_join(plots, districts, by = "district",
+          relationship = "many-to-one")
+```
+
+If `districts` accidentally has duplicate keys, the join now
+errors instead of silently fanning out. Adopt this for any
+production analysis.
+
+# A glimpse of Chapter 9: From combined data to charts
+
+Now that you can build a clean, combined tibble, the next step
+is to **visualise** it. Chapter 9 covers `ggplot2`:
+
+| Excel chart | ggplot2 geom |
+|---|---|
+| Column / bar chart | `geom_col()` / `geom_bar()` |
+| Line chart | `geom_line()` |
+| Scatter plot | `geom_point()` |
+| Histogram | `geom_histogram()` |
+| Box plot | `geom_boxplot()` |
+| Small multiples (multiple charts side by side) | `facet_wrap()` |
+
+The chapter walks through the **grammar of graphics**: aesthetics
+(`x`, `y`, `color`, `size`, `shape`) mapped to data columns,
+geoms that draw the shapes, and themes that polish the look.
+
+The chart you will build at the end of Chapter 9 is one that
+tells a story from the cleaned and combined data you produced
+in this chapter.
+
+# Self-assessment quiz {#sec-quiz-ch08}
+
+Click the answer you think is correct.
+
+```{=html}
+<style>
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1"><div class="q">1. The three rules of tidy data are —</div><ul class="qopts"><li data-correct="false">one row per file, one column per chapter, one cell per number</li><li data-correct="true">one row per observation, one column per variable, one cell per value</li><li data-correct="false">one row per year, one column per province, one cell per measurement</li><li data-correct="false">there are no rules</li></ul><div class="explanation">These three rules underpin every tidyverse verb.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. <code>pivot_longer()</code> turns —</div><ul class="qopts"><li data-correct="false">a long tibble into a wide tibble</li><li data-correct="true">a wide tibble (one column per group) into a long tibble (one row per group × observation)</li><li data-correct="false">a tibble into a chart</li><li data-correct="false">a CSV into an Excel file</li></ul><div class="explanation">It is the inverse of <code>pivot_wider()</code>.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. <code>left_join(A, B, by = "key")</code> returns —</div><ul class="qopts"><li data-correct="false">Only rows that match in both A and B</li><li data-correct="true">All rows of A, with B's columns filled in where the key matches and NA where it does not</li><li data-correct="false">All rows of B with A's columns</li><li data-correct="false">A random sample</li></ul><div class="explanation">A is the "left" tibble — it is preserved. B's matched columns are appended.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. <code>inner_join(A, B)</code> returns —</div><ul class="qopts"><li data-correct="false">All rows of A</li><li data-correct="true">Only rows where the key matches in both tibbles</li><li data-correct="false">All rows of B</li><li data-correct="false">An error</li></ul><div class="explanation">Inner join drops unmatched rows from both sides.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. <code>full_join(A, B)</code> returns —</div><ul class="qopts"><li data-correct="false">Only rows in both</li><li data-correct="true">All rows from A and all rows from B, with NA where one side has no match</li><li data-correct="false">A vector of TRUE/FALSE</li><li data-correct="false">A random subset</li></ul><div class="explanation">Full join preserves everything.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. <code>anti_join(A, B, by = "key")</code> returns —</div><ul class="qopts"><li data-correct="false">All rows of A and B combined</li><li data-correct="true">Only rows of A whose key has NO match in B (and adds no columns)</li><li data-correct="false">Only matched rows</li><li data-correct="false">A summary</li></ul><div class="explanation">Useful for data audits — "which entries in my data have no entry in the reference table?"</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>semi_join(A, B, by = "key")</code> returns —</div><ul class="qopts"><li data-correct="false">All rows of A plus all of B's columns</li><li data-correct="true">Only rows of A whose key DOES match in B (and adds no columns)</li><li data-correct="false">An error</li><li data-correct="false">A logical vector</li></ul><div class="explanation">A filtering join — keep A's rows that have a partner in B, without taking B's columns.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. To stack two tibbles end to end (same columns), you use —</div><ul class="qopts"><li data-correct="false">bind_cols()</li><li data-correct="true">bind_rows()</li><li data-correct="false">left_join()</li><li data-correct="false">pivot_wider()</li></ul><div class="explanation"><code>bind_rows()</code> matches columns by name and stacks rows.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>bind_cols(A, B)</code> requires —</div><ul class="qopts"><li data-correct="false">Matching key columns</li><li data-correct="true">That both tibbles have the same number of rows in the same order</li><li data-correct="false">That both tibbles share at least one column</li><li data-correct="false">Nothing — it always works</li></ul><div class="explanation"><code>bind_cols()</code> glues by row position with no key matching. Risky — almost always prefer <code>left_join()</code>.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. <code>left_join</code> returned more rows than the left tibble has. This means —</div><ul class="qopts"><li data-correct="false">The join worked correctly</li><li data-correct="true">The right tibble has duplicate keys, and the join silently fanned out</li><li data-correct="false">There is a bug in dplyr</li><li data-correct="false">R is broken</li></ul><div class="explanation">When the right tibble has duplicate keys, each row in the left tibble matches multiple rows in the right — fan-out. The fix is to deduplicate the reference table.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. To join on TWO key columns at once —</div><ul class="qopts"><li data-correct="false">Run two separate joins</li><li data-correct="true">left_join(A, B, by = c("plot_id", "year"))</li><li data-correct="false">pivot_wider() first</li><li data-correct="false">It is not possible</li></ul><div class="explanation"><code>by</code> can take a vector of multiple column names.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. To join on differently-named keys: column "plot_id" in A and "plot" in B —</div><ul class="qopts"><li data-correct="false">left_join(A, B, by = "plot_id")</li><li data-correct="true">left_join(A, B, by = c("plot_id" = "plot"))</li><li data-correct="false">Rename one of them first</li><li data-correct="false">It is not possible</li></ul><div class="explanation">Named character vector: <code>c("name_in_A" = "name_in_B")</code>.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. <code>pivot_longer(cols = c(a, b, c), names_to = "var", values_to = "val")</code> on a tibble of 10 rows produces —</div><ul class="qopts"><li data-correct="false">10 rows</li><li data-correct="true">30 rows (10 × 3 columns pivoted)</li><li data-correct="false">3 rows</li><li data-correct="false">An error</li></ul><div class="explanation">Each row contributes one new row per pivoted column.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. Tidy ggplot2 plotting prefers data in —</div><ul class="qopts"><li data-correct="false">Wide format</li><li data-correct="true">Long format</li><li data-correct="false">Either, depending</li><li data-correct="false">CSV format</li></ul><div class="explanation"><code>ggplot2</code>'s grammar maps columns to aesthetics. One row per observation maps cleanly. Wide data usually needs a <code>pivot_longer</code> before plotting.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. The Excel function VLOOKUP is closest to —</div><ul class="qopts"><li data-correct="false">filter()</li><li data-correct="true">left_join()</li><li data-correct="false">pivot_wider()</li><li data-correct="false">bind_rows()</li></ul><div class="explanation">VLOOKUP attaches a value from a reference table to your main data based on a key — exactly what <code>left_join()</code> does.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. The "copy-paste-append" pattern in Excel (stacking two sheets of the same shape) is closest to —</div><ul class="qopts"><li data-correct="false">left_join()</li><li data-correct="true">bind_rows()</li><li data-correct="false">pivot_longer()</li><li data-correct="false">summarise()</li></ul><div class="explanation"><code>bind_rows()</code> stacks tibbles by name-matched columns.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. A "data audit" question — *"which entries in my data have no entry in the reference table?"* — is answered by —</div><ul class="qopts"><li data-correct="false">inner_join()</li><li data-correct="false">left_join()</li><li data-correct="true">anti_join(main_data, reference, by = "key")</li><li data-correct="false">summarise()</li></ul><div class="explanation"><code>anti_join</code> returns exactly the rows you cannot match.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. After <code>left_join()</code>, you see NAs in the right-tibble columns. What does that mean?</div><ul class="qopts"><li data-correct="false">The data is corrupted</li><li data-correct="true">Some rows in the left tibble had no matching key in the right tibble</li><li data-correct="false">The wrong column was joined</li><li data-correct="false">Nothing</li></ul><div class="explanation">An expected outcome — <code>left_join</code> preserves all left rows and inserts NA for unmatched ones. Use <code>anti_join</code> to enumerate which rows had no match.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. The "stack files from multiple provinces into one analysis" workflow uses —</div><ul class="qopts"><li data-correct="false">A join</li><li data-correct="true">bind_rows() with a province column added to each file before binding</li><li data-correct="false">pivot_wider()</li><li data-correct="false">summarise()</li></ul><div class="explanation">Same schema, different sources → stack with <code>bind_rows()</code>. Always add a tagging column first so you can group by source later.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Of the verbs in this chapter, which one most changes how you would approach a multi-file analysis you have done in Excel before? Why?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>left_join replaces all my VLOOKUPs — no silent first-match bugs</em> · <em>anti_join is a magic word for "what is missing?" — Excel had no clean equivalent</em> · <em>bind_rows means I can stop maintaining a 12-sheet "master" workbook by hand</em> · <em>pivot_longer reframes what "data" means — I used to live in wide; now I see why long is the analyst's format</em>.</div></div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"My `left_join` returned 50 rows but the left tibble has 30
+  rows. What does that mean and how do I fix it?"*
+
+- *"How do I find which rows in tibble A have no matching key
+  in tibble B? Show me with `anti_join`."*
+
+- *"My pivot_longer call returns an error: 'columns must be
+  numeric'. What is wrong?"*
+:::
+
+# Reading
+
+- *R for Data Science* — chapter 19 *Joins*, chapter 5 *Data
+  tidying*. Free at <https://r4ds.hadley.nz/>.
+- The dplyr two-table verbs vignette:
+  <https://dplyr.tidyverse.org/articles/two-table.html>
+- Jenny Bryan's join cheatsheet (PDF):
+  <https://stat545.com/join-cheatsheet.html>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- Spend most time on **left_join + anti_join** — together they
+  cover 80% of real join needs. The other join types are easier
+  once those two are solid.
+- The **join diagnostics** habit is the most transferable skill
+  in this chapter. Insist learners run row counts before
+  trusting any join.
+- `bind_cols()` is mentioned for completeness but **almost
+  always wrong**. Highlight the warning callout.
+
+## Materials provided
+
+| File | Purpose |
+|---|---|
+| `frst232_ch08_learner.qmd` | Quarto starter with TODO chunks. |
+| `frst232_ch08_solutions.qmd` | Completed solutions. **Do not distribute.** |
+| `quiz_ch08.html` | Standalone interactive quiz. |
+
+## Sample numbers
+
+| Quantity | Approximate value |
+|---|---|
+| `nrow(bc_wide)` | 37 |
+| `nrow(bc_long)` after `pivot_longer` on 3 cols | 111 |
+| Plot–district `left_join` row count | 5 |
+| Plot–district `inner_join` row count | 4 |
+| Plot–district `full_join` row count | 6 |
+| Plot–district `anti_join` row count (plots→districts) | 1 (Nanaimo) |
+
+## Common stumbling points
+
+- **Confusing `left_join` and `bind_rows`.** Walk through
+  *side-by-side (more columns) vs end-to-end (more rows)*.
+- **Forgetting `by = "..."`.** dplyr will try to guess the
+  join key from common column names — sometimes wrong. Insist
+  on explicit `by` for every join.
+- **Fan-out from duplicate keys.** Teach the row-count check
+  before trusting any join.
+- **`bind_rows` column-name mismatch.** Same data with different
+  column names will produce extra columns full of NA. Use
+  `rename()` first to harmonise.
+:::

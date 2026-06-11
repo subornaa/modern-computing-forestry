@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 9 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 9 — Self-Assessment Quiz</h1>
+<p><em>Visualize Forestry Data with ggplot2 · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1"><div class="q">1. The three core pieces of a ggplot are —</div><ul class="qopts"><li data-correct="false">data, file, output</li><li data-correct="true">data, aesthetic mappings, geometric objects</li><li data-correct="false">x, y, title</li><li data-correct="false">colour, size, theme</li></ul><div class="explanation">Data + aes() + geom_*() are the minimum.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. <code>aes()</code> in ggplot2 stands for and does what?</div><ul class="qopts"><li data-correct="false">"aesthetic" — sets the chart's colours</li><li data-correct="true">"aesthetic mapping" — maps columns in your tibble to visual properties of the chart</li><li data-correct="false">"area + estimate + scale" — a statistical function</li><li data-correct="false">"axis encoding system" — sets the axes</li></ul><div class="explanation">aes() connects data columns to visual properties.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. ggplot layers are added with —</div><ul class="qopts"><li data-correct="false">the pipe |></li><li data-correct="true">the + sign</li><li data-correct="false">commas inside ggplot()</li><li data-correct="false">a separate function for each layer</li></ul><div class="explanation">Read + as "and also draw".</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. <code>geom_col()</code> requires you to supply —</div><ul class="qopts"><li data-correct="false">Only x</li><li data-correct="true">Both x and y (the y value is the bar height)</li><li data-correct="false">A colour palette</li><li data-correct="false">Nothing — it counts for you</li></ul><div class="explanation"><code>geom_col</code> uses your y values as bar heights.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. <code>geom_bar()</code> (with no y aesthetic) draws —</div><ul class="qopts"><li data-correct="false">Lines</li><li data-correct="true">Bars whose heights are the counts of each x value</li><li data-correct="false">Empty bars</li><li data-correct="false">A histogram</li></ul><div class="explanation">Use geom_bar when you have raw events to count; geom_col when you have pre-computed counts.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. <code>geom_histogram(binwidth = 2)</code> on a numeric column —</div><ul class="qopts"><li data-correct="false">Plots two bars</li><li data-correct="true">Buckets the values into 2-unit-wide bins and plots the count in each bin</li><li data-correct="false">Plots the first 2 values</li><li data-correct="false">Returns an error</li></ul><div class="explanation">binwidth controls bucket size.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>geom_boxplot()</code> shows —</div><ul class="qopts"><li data-correct="false">The mean</li><li data-correct="true">The median (line in box), interquartile range (box), and outliers (dots)</li><li data-correct="false">The sum</li><li data-correct="false">A linear regression</li></ul><div class="explanation">Robust five-number summary — line in box is the median, not the mean.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. <code>facet_wrap(~ region)</code> produces —</div><ul class="qopts"><li data-correct="false">A single chart</li><li data-correct="true">One panel per unique value of region (small multiples)</li><li data-correct="false">An error</li><li data-correct="false">A chart with region on the x-axis</li></ul><div class="explanation">Faceting creates small-multiple panels.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. For plotting three time series on one chart, the data should be in —</div><ul class="qopts"><li data-correct="false">Wide format (one column per series)</li><li data-correct="true">Long format (one row per series × time, with a 'series' column for the colour mapping)</li><li data-correct="false">Either, no difference</li><li data-correct="false">A list, not a tibble</li></ul><div class="explanation">Long format lets you map colour = series and draw all lines in one call.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. To save a ggplot as a PNG file, use —</div><ul class="qopts"><li data-correct="false">save_plot()</li><li data-correct="true">ggsave("outputs/myplot.png", width = 7, height = 5)</li><li data-correct="false">writePNG()</li><li data-correct="false">export()</li></ul><div class="explanation"><code>ggsave</code> infers the format from the extension.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. <code>labs(title = "...", x = "...")</code> does what?</div><ul class="qopts"><li data-correct="false">Adds new data</li><li data-correct="true">Adds or replaces chart labels (title, axis labels, captions)</li><li data-correct="false">Sets the colour palette</li><li data-correct="false">Saves the file</li></ul><div class="explanation"><code>labs()</code> is the consolidated labels function.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. <code>geom_smooth(method = "lm")</code> overlays —</div><ul class="qopts"><li data-correct="false">A loess smoother</li><li data-correct="true">A linear regression line plus its confidence band</li><li data-correct="false">A boxplot</li><li data-correct="false">A histogram</li></ul><div class="explanation">method = "lm" fits a straight line; method = "loess" fits a flexible curve.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. <code>theme_minimal()</code> is —</div><ul class="qopts"><li data-correct="false">A required base layer for every chart</li><li data-correct="true">One of several built-in clean themes; an alternative to the default grey-background theme</li><li data-correct="false">A colour palette</li><li data-correct="false">A way to hide the chart</li></ul><div class="explanation">Other built-ins: theme_classic, theme_bw, theme_void.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. <code>scale_y_continuous(labels = label_comma())</code> does what?</div><ul class="qopts"><li data-correct="false">Logs the y-axis</li><li data-correct="true">Adds thousands separators to y-axis labels (8,264,063 instead of 8264063)</li><li data-correct="false">Reverses the axis</li><li data-correct="false">Adds a legend</li></ul><div class="explanation">From the scales package.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. Mapping a third variable to colour is done inside —</div><ul class="qopts"><li data-correct="false">labs()</li><li data-correct="true">aes(colour = third_variable)</li><li data-correct="false">theme(colour = ...)</li><li data-correct="false">geom_*(colour = ...)</li></ul><div class="explanation">Inside aes() MAPS a column to colour (legend appears). Outside aes() SETS a constant colour (no legend).</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. <code>geom_line()</code> connects points —</div><ul class="qopts"><li data-correct="false">In a random order</li><li data-correct="true">In the order of the x aesthetic</li><li data-correct="false">By their colour</li><li data-correct="false">Counter-clockwise</li></ul><div class="explanation">If data is not sorted by x, the line zig-zags.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. <code>position = "dodge"</code> on a bar chart —</div><ul class="qopts"><li data-correct="false">Stacks bars</li><li data-correct="true">Places bars side by side instead of on top of each other</li><li data-correct="false">Hides the bars</li><li data-correct="false">Reorders the bars</li></ul><div class="explanation">Default is "stack"; "dodge" produces grouped bars.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. <code>facet_grid(rows ~ cols)</code> produces —</div><ul class="qopts"><li data-correct="false">A single chart</li><li data-correct="true">A two-dimensional grid of small multiples</li><li data-correct="false">A pie chart</li><li data-correct="false">A scatter plot</li></ul><div class="explanation">facet_grid forces a rows × cols layout.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. Pie charts in ggplot2 require <code>coord_polar()</code> and are —</div><ul class="qopts"><li data-correct="false">Strongly recommended for forestry data</li><li data-correct="true">Usually replaced by a bar chart, because angles are harder to compare than lengths</li><li data-correct="false">The default chart type</li><li data-correct="false">Impossible to make</li></ul><div class="explanation">A bar chart of the same data is almost always clearer than a pie.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Which Excel chart type did you use most often before this chapter? Which ggplot2 geom replaces it? What changes about how you make charts?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>I used Excel bar charts most — geom_col replaces them, and now every label is in code I can re-run</em> · <em>I never used boxplots in Excel because they were hard; in ggplot they are one line</em> · <em>The biggest change is faceting — small multiples are trivial in ggplot</em>.</div></div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

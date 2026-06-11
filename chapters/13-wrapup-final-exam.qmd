@@ -1,0 +1,58 @@
+---
+title: "Wrap-up and Final-Exam Preparation"
+---
+
+::: {.callout-important}
+## Chapter in development
+
+This chapter is being authored (Phase C of the production plan).
+It will review the full reproducible pipeline and walk through a
+complete end-to-end case study on one open course dataset, used
+as both review and final-exam practice. The structure below is
+the outline; prose and worked code are coming.
+:::
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Trace the full reproducible workflow taught in this book —
+  **import → clean → summarize → reshape → join → visualize →
+  map → render → explain** — on a single forestry dataset.
+- Reproduce a complete analysis from a clean project, from raw
+  file to rendered Quarto report.
+- Prepare for the final exam (R, tidyverse, ggplot2, and spatial
+  mapping).
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip}
+## What you will produce
+
+A complete **end-to-end case study walkthrough** on any one of
+the course datasets: start from the raw file, document cleaning,
+summarize by group, join metadata, produce one figure and one
+map, and render a Quarto report.
+:::
+
+# The full pipeline at a glance
+
+*(To be written.)* A consolidated review of each stage with a
+pointer back to the chapter that introduced it.
+
+# End-to-end case study
+
+*(To be written.)* A single worked example threading the whole
+workflow on one open dataset.
+
+# Final exam preparation
+
+*(To be written.)* The Guided-Answer debugging ladder — read the
+error, identify the object / function / data step, inspect the
+data, reduce to a minimal example, test one fix, document the
+verification — and a sample exam walkthrough.
+
+# Where to go next
+
+*(To be written.)* Future learning paths: statistical modelling,
+spatial data science, time series, and reproducible research.

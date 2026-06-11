@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 1 Self-Assessment Quiz</title>
+<style>
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif;
+  max-width: 800px;
+  margin: 2em auto;
+  padding: 0 1.5em;
+  color: #2C3E2F;
+  line-height: 1.55;
+}
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note {
+  background: #FFF8E8;
+  border-left: 4px solid #B7791F;
+  padding: 1em 1.5em;
+  border-radius: 6px;
+  margin-bottom: 2em;
+}
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q {
+  font-weight: 600;
+  color: #1B4332;
+  margin-bottom: 0.6em;
+}
+.quiz ul.qopts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em;
+  margin: 0.3em 0;
+  background: white;
+  border: 1px solid #d8e4d8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct {
+  background: #C8E6C9;
+  border-color: #2D6A4F;
+  font-weight: 600;
+}
+.quiz ul.qopts li.wrong {
+  background: #FFCDD2;
+  border-color: #B05C50;
+}
+.quiz .explanation {
+  display: none;
+  margin-top: 0.7em;
+  padding: 0.7em 1em;
+  background: #FFF8E8;
+  border-left: 3px solid #B7791F;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%;
+  min-height: 4.5em;
+  padding: 0.6em;
+  border: 1px solid #d8e4d8;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95em;
+  resize: vertical;
+  margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F;
+  color: white;
+  border: none;
+  padding: 0.45em 0.9em;
+  margin-top: 0.5em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none;
+  margin-top: 0.6em;
+  padding: 0.6em 0.9em;
+  background: #FFF8E8;
+  border-left: 3px solid #B7791F;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-style: italic;
+}
+.quiz .sample.show { display: block; }
+code {
+  background: #F0F5F1;
+  color: #1B4332;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+.progress {
+  position: sticky;
+  top: 0;
+  background: white;
+  border-bottom: 1px solid #d8e4d8;
+  padding: 0.5em 0;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+  color: #2D6A4F;
+}
+</style>
+</head>
+<body>
+
+<h1>Chapter 1 — Self-Assessment Quiz</h1>
+<p><em>Excel as a Data-Analysis Workbench · 20 questions</em></p>
+
+<div class="preview-note">
+<strong>How this works:</strong> click an option in each question. The right
+answer turns green, wrong answers turn red (with the correct one revealed),
+and an explanation appears below. The last question is a reflection
+question — write your own answer in the text box, then click "Show common
+answers" if you want to compare. Your progress is shown in the bar at the
+top.
+</div>
+
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<h2>Self-assessment quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="q">1. Which sheet should you read first when you open <code>bc_disturbance_reforestation.xlsx</code>?</div>
+  <ul class="qopts">
+    <li data-correct="true">About</li>
+    <li data-correct="false">Data</li>
+    <li data-correct="false">ReadMe</li>
+    <li data-correct="false">It does not matter</li>
+  </ul>
+  <div class="explanation">Read About first — it tells you the source, licence, and citation. Then ReadMe (variable dictionary). Then Data. Reading in the wrong order means you start computing before you know what the columns mean.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Where does the dataset come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A textbook publisher</li>
+    <li data-correct="true">The BC Government, distributed through the BC Data Catalogue</li>
+    <li data-correct="false">A personal blog</li>
+    <li data-correct="false">A private consulting firm</li>
+  </ul>
+  <div class="explanation">Every dataset in this book is openly licensed and comes from a public source. This one is from Environmental Reporting BC and is distributed through the BC Data Catalogue under the Open Government Licence — British Columbia.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. The ReadMe sheet is best understood as —</div>
+  <ul class="qopts">
+    <li data-correct="false">A backup copy of the data</li>
+    <li data-correct="true">A data dictionary describing each column</li>
+    <li data-correct="false">A blank sheet for personal notes</li>
+    <li data-correct="false">The location of cleaned data</li>
+  </ul>
+  <div class="explanation">The ReadMe sheet (also called a data dictionary) has one row per column of the Data sheet — explaining what each column measures, its units, its type, and any notes.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. True or false: when you change the <em>display format</em> of a cell from "general" to "two decimals", the underlying value also changes.</div>
+  <ul class="qopts">
+    <li data-correct="false">True</li>
+    <li data-correct="true">False</li>
+  </ul>
+  <div class="explanation">Display format is independent of value. The cell still holds <code>216304.919</code> even when it shows <code>216,304.92</code>. Formulas always operate on the underlying value, not the display.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. <code>Total_Disturbance_ha</code> should equal —</div>
+  <ul class="qopts">
+    <li data-correct="false">Just <code>Harvested_ha</code></li>
+    <li data-correct="false">Just <code>Natural_Disturbance_ha</code></li>
+    <li data-correct="true"><code>Harvested_ha + Natural_Disturbance_ha</code></li>
+    <li data-correct="false"><code>Reforestation_ha</code></li>
+  </ul>
+  <div class="explanation">By definition, total disturbance is harvested area plus naturally disturbed area. Always verify this kind of identity on at least one row — it is a cheap way to confirm the data was assembled correctly.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. What is the keyboard shortcut to jump to the edge of the data in Excel?</div>
+  <ul class="qopts">
+    <li data-correct="false">Ctrl + Tab</li>
+    <li data-correct="true">Ctrl + Arrow</li>
+    <li data-correct="false">Ctrl + Shift + V</li>
+    <li data-correct="false">F1</li>
+  </ul>
+  <div class="explanation"><code>Ctrl + Arrow</code> jumps to the next non-empty cell in that direction — usually the edge of your data block.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. The fiscal year with the largest <code>Natural_Disturbance_ha</code> in the BC dataset is —</div>
+  <ul class="qopts">
+    <li data-correct="false">1987</li>
+    <li data-correct="false">2010</li>
+    <li data-correct="true">2017</li>
+    <li data-correct="false">2023</li>
+  </ul>
+  <div class="explanation">2017 was BC's record wildfire season — 218,275 ha of natural disturbance. It dominates the time series. Always look at the extremes of your data; the outliers tell you something about how the world worked that year.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. Which folder is the right place to store the raw, untouched copy of a downloaded dataset?</div>
+  <ul class="qopts">
+    <li data-correct="true"><code>data/</code></li>
+    <li data-correct="false"><code>outputs/</code></li>
+    <li data-correct="false"><code>deliverables/</code></li>
+    <li data-correct="false"><code>shared/</code></li>
+  </ul>
+  <div class="explanation">Raw data goes in <code>data/</code> and is never edited in place. Cleaning produces files that go in <code>outputs/</code>. Anything you submit goes in <code>deliverables/</code>.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. To freeze the top row so it stays visible while you scroll, which menu path do you use?</div>
+  <ul class="qopts">
+    <li data-correct="false">Home → Format → Freeze</li>
+    <li data-correct="true">View → Freeze Panes → Freeze Top Row</li>
+    <li data-correct="false">Data → Outline → Group</li>
+    <li data-correct="false">Insert → Header & Footer</li>
+  </ul>
+  <div class="explanation"><strong>View → Freeze Panes → Freeze Top Row</strong> keeps row 1 in view while you scroll down.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. Two cells both display <code>100,000</code>. Cell A's underlying value is <code>100000</code>; cell B's is <code>99999.999999</code>. The formula <code>=A1=B1</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">TRUE</li>
+    <li data-correct="true">FALSE</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">100,000</li>
+  </ul>
+  <div class="explanation">The comparison operates on the <em>values</em>, not the displays. The cells look identical but are not equal. Always remember: display ≠ value.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. Which date format sorts correctly both as text and as a date?</div>
+  <ul class="qopts">
+    <li data-correct="false"><code>15/09/2024</code></li>
+    <li data-correct="false"><code>September 15, 2024</code></li>
+    <li data-correct="true"><code>2024-09-15</code> (ISO 8601)</li>
+    <li data-correct="false"><code>9/15/24</code></li>
+  </ul>
+  <div class="explanation">ISO 8601 (<code>yyyy-mm-dd</code>) is the only date format that sorts correctly when treated as text. It is also unambiguous across regions (no day/month confusion).</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. The status bar at the bottom of an Excel window shows <code>Sum</code>, <code>Average</code>, and <code>Count</code> when you select a numeric range. If <code>Count</code> is lower than the number of cells you selected, what is the most likely reason?</div>
+  <ul class="qopts">
+    <li data-correct="false">A sum that matches the visible total</li>
+    <li data-correct="true">Some cells in the range are stored as text and being skipped</li>
+    <li data-correct="false">An average is close to the median</li>
+    <li data-correct="false">Excel is calculating slowly</li>
+  </ul>
+  <div class="explanation"><code>Count</code> only counts numeric cells. If you selected 37 cells but the status bar says <code>Count: 35</code>, two are stored as text and are being silently skipped by aggregation formulas.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. When you download <code>bc_disturbance_reforestation.xlsx</code>, what should you do with the raw file?</div>
+  <ul class="qopts">
+    <li data-correct="false">Open it and immediately start editing</li>
+    <li data-correct="true">Keep it unchanged in a <code>data/</code> folder; save any cleaned version separately</li>
+    <li data-correct="false">Delete the original after copying values</li>
+    <li data-correct="false">Email it to yourself as a backup</li>
+  </ul>
+  <div class="explanation">Always keep the raw downloaded file unchanged. Save any cleaned or modified version with a different name (and ideally in a different folder, like <code>outputs/</code>) so you can always go back to the original.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. Which approach is best for documenting the meaning of every column in a workbook?</div>
+  <ul class="qopts">
+    <li data-correct="false">Write a long email when you share the file</li>
+    <li data-correct="false">Trust that the column headers are self-explanatory</li>
+    <li data-correct="true">A dedicated ReadMe sheet in the workbook with one row per column</li>
+    <li data-correct="false">A separate Word document</li>
+  </ul>
+  <div class="explanation">A ReadMe sheet travels with the data. Emails get lost. Headers are rarely self-explanatory.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. The fiscal year in BC for forestry reporting runs —</div>
+  <ul class="qopts">
+    <li data-correct="false">January 1 to December 31</li>
+    <li data-correct="true">April 1 to March 31 of the following calendar year</li>
+    <li data-correct="false">July 1 to June 30</li>
+    <li data-correct="false">September 1 to August 31</li>
+  </ul>
+  <div class="explanation">BC fiscal years run April–March. The fiscal year is named by its starting year — "Fiscal Year 2023" means April 2023 through March 2024.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Which formula on the Data sheet computes the total reforestation across all 37 fiscal years?</div>
+  <ul class="qopts">
+    <li data-correct="false"><code>=AVERAGE(H2:H38)</code></li>
+    <li data-correct="true"><code>=SUM(H2:H38)</code></li>
+    <li data-correct="false"><code>=COUNT(H2:H38)</code></li>
+    <li data-correct="false"><code>=MAX(H2:H38)</code></li>
+  </ul>
+  <div class="explanation"><code>SUM</code> adds every value in the range. <code>Reforestation_ha</code> is column H in this file. <code>AVERAGE</code> would give the mean per year, not the total.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. Which of these is the most reliable way to <em>verify</em> a number you computed?</div>
+  <ul class="qopts">
+    <li data-correct="false">Run the same formula twice</li>
+    <li data-correct="true">Recompute the number a different way (a different formula, or against a published total) and see if you get the same answer</li>
+    <li data-correct="false">Round it and check that it looks reasonable</li>
+    <li data-correct="false">Ask AI whether it looks right</li>
+  </ul>
+  <div class="explanation">Verification means producing the same number a <em>second way</em>. Running the same formula twice just confirms that the formula has not been edited — not that it is correct.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The three habits of a good data analyst, in order, are —</div>
+  <ul class="qopts">
+    <li data-correct="false">Compute first, plot second, write last</li>
+    <li data-correct="true">Inspect first, compute second, verify always</li>
+    <li data-correct="false">Read the question, write the code, send the answer</li>
+    <li data-correct="false">Open the file, sum the column, copy to email</li>
+  </ul>
+  <div class="explanation">Inspect (know your data before you compute). Compute (write the formulas). Verify (cross-check the answer). These three habits, applied every time, prevent more bugs than any single tool ever invented.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. You receive a file with a column called <code>DBH</code>. The ReadMe says "Diameter at breast height". What unit should you assume?</div>
+  <ul class="qopts">
+    <li data-correct="false">Centimetres — it is the most common</li>
+    <li data-correct="false">Millimetres — for precision</li>
+    <li data-correct="false">Inches — the column name sounds American</li>
+    <li data-correct="true">Do not assume — check the ReadMe more carefully, or ask the data provider</li>
+  </ul>
+  <div class="explanation">Never assume units. Cm is most common for DBH in Canadian forestry, but it can be mm or inches depending on the source. Getting the unit wrong by a factor of 10 silently changes every later calculation.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one thing you noticed about <code>bc_disturbance_reforestation.xlsx</code> that surprised you — a column, a value, a pattern, anything.</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Things learners typically notice: <em>the 2017 wildfire spike dwarfs every other year of natural disturbance</em> · <em>clearcutting-with-reserves was near-zero in the 1980s and grew through the 1990s — that is a real BC policy shift</em> · <em>reforestation is bigger than the total annual harvest for most years (because both planted and naturally regenerated area count)</em> · <em>the units are hectares — about the size of two football fields, which makes the numbers easier to visualize</em>.</div>
+</div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') {
+              o.classList.add('correct');
+            }
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1177 @@
+---
+title: "Excel as a Data-Analysis Workbench"
+---
+
+```{r setup-ch01}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Open a real BC Government Excel workbook and orient yourself to
+  its contents on first read.
+- Read the **About**, **ReadMe**, and **Data** sheets in the right
+  order, and explain why that order matters.
+- Identify each column's **type** (text, number, date) and
+  **unit** (hectares, year).
+- Use **freeze panes** and a few keyboard shortcuts to move through
+  a multi-column file without losing context.
+- Apply **basic number formats** that distinguish display from value.
+- Write a few **simple formulas** (`SUM`, `AVERAGE`, `MIN`, `MAX`)
+  and **check whether the results make sense**.
+- Set up a clean **project folder structure** that separates raw
+  data from cleaned files.
+
+# Expected output for this chapter {.unnumbered}
+
+At the end of this chapter, each learner (or group) will produce:
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. The raw workbook **`bc_disturbance_reforestation.xlsx`** placed in
+   your `chapter01/data/` folder, **unchanged from the BC Data
+   Catalogue download**.
+2. A working copy you may modify, saved as
+   **`bc_disturbance_reforestation_clean.xlsx`** in your
+   `chapter01/outputs/` folder, containing:
+   - a completed *About / ReadMe / Data* structure,
+   - one short **data dictionary entry** in your own words for any
+     column you choose, and
+   - the five **simple formulas** from this chapter computed in any
+     empty cell.
+3. A short **group-lab worksheet** (or screenshot) submitted to the
+   course site.
+
+This list is the same as the rubric for the chapter assignment. Keep
+it in view while you work.
+:::
+
+# Why we start with Excel
+
+Excel has flaws. It hides decisions in invisible mouse clicks. It is
+hard to reproduce. It is hard to version-control. We will spend most
+of this book moving away from it.
+
+We still start with Excel deliberately. The interface is forgiving.
+Mistakes are visible. There is no console to fight. And the
+fundamental discipline we want learners to leave the course with —
+*inspect first, compute second, verify always* — is easier to teach
+when the data is sitting on the screen in plain sight.
+
+When we move to R in Chapter 4, we will use **the same dataset** we
+analyse in Excel here. The continuity is the point: R is not a fresh
+start; it is a more honest version of what you already do. (See *A
+glimpse of Chapter 4* at the end of this chapter for a preview.)
+
+## What "data analysis" actually means
+
+People say *"data analysis"* to mean different things. In this
+course it means a sequence of five repeatable steps:
+
+1. **Inspect** the file. Know what is in it before computing
+   anything.
+2. **Document** the file. Write a data dictionary you can defend.
+3. **Clean** the file. Remove what is wrong, document what was
+   removed.
+4. **Summarize** the file. Compute the numbers that answer your
+   question.
+5. **Communicate** the result. Tell the story with a chart, a
+   table, or a sentence.
+
+Chapter 1 covers steps 1 and 2 — *inspect* and *document*. The rest
+of the book builds the other three steps on top of that foundation.
+
+# The dataset for this chapter
+
+This chapter uses one real, openly licensed Excel workbook from the
+**BC Government / BC Data Catalogue**:
+
+```{r dataset-summary}
+#| echo: false
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+tibble(
+  Property = c("File name", "Source", "Catalogue page",
+               "Licence", "Rows of data", "Columns",
+               "Time span", "Spatial coverage", "Unit"),
+  Value = c(
+    "`bc_disturbance_reforestation.xlsx`",
+    "Environmental Reporting BC — *Trends in Silviculture in B.C.*",
+    "<https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c->",
+    "Open Government Licence — British Columbia",
+    as.character(nrow(bc)),
+    as.character(ncol(bc)),
+    paste0(min(bc$Fiscal_Year), "–", max(bc$Fiscal_Year), " (fiscal years)"),
+    "Province of British Columbia",
+    "Hectares (ha)"
+  )
+) |> kable()
+```
+
+The file is **directly downloadable** from the BC Data Catalogue.
+You do not need an account. There is no shapefile bundle to manage.
+It is one Excel file with three sheets.
+
+## Why this dataset matters for forestry
+
+This is not a textbook dataset. Every number was published by the
+BC Ministry of Forests under the **Trends in Silviculture in B.C.**
+program. It is the same indicator that the province uses to track
+whether reforestation is keeping pace with the area being harvested
+and lost to natural disturbance.
+
+A working forester or natural-resources analyst in BC will encounter
+this dataset (or one with the same structure) within a few months of
+starting any monitoring or reporting role. Learning to read it now
+is real, applicable work.
+
+The dataset captures the story of BC silviculture from 1987 onward:
+
+- The shift in harvest practice from straight clearcutting toward
+  **clearcutting-with-reserves** through the 1990s — a real policy
+  change visible in the columns.
+- BC's record-breaking **2017 wildfire season**, which dominates the
+  natural-disturbance column.
+- Steady growth in **reforestation** that, by the 2020s, exceeds
+  total disturbance in most years.
+
+::: {.callout-important}
+## Where the data comes from — and what to do with it
+
+This dataset is published by the BC Government and distributed
+through the **BC Data Catalogue**. Two rules:
+
+1. **Keep the raw downloaded file unchanged.** Save the file as
+   `bc_disturbance_reforestation.xlsx` exactly as you downloaded
+   it. Do not sort it, edit it, or save over it. The raw file is
+   your point of reference if anything later goes wrong.
+2. **Save any cleaned or modified version separately.** Use a
+   different file name (typically
+   `bc_disturbance_reforestation_clean.xlsx`) and a different
+   folder. That way you can always go back to the original.
+
+This is the single most important habit in this chapter.
+:::
+
+::: {.callout-tip}
+## Why this dataset is right for this chapter
+
+- **It is real.** Every number was published by the BC Ministry of
+  Forests. You can verify any value against the official indicator
+  page.
+- **It is small.** 37 rows × 8 columns. You can scroll through
+  every row and inspect every cell.
+- **It has no missing values.** Cleaning comes later in the book.
+- **The columns mean something.** Every column has a forestry
+  meaning we can talk about.
+- **It tells a story** — see *Why this dataset matters for forestry*
+  above.
+:::
+
+## What the dataset measures
+
+Each row is one **fiscal year** in BC. Each column is one
+**area-based forestry indicator** — harvested area, naturally
+disturbed area, reforested area. Units are always hectares (ha).
+
+A fiscal year in BC runs from **April 1 to March 31** of the
+following calendar year. So "Fiscal Year 2023" means April 2023
+through March 2024.
+
+# Project folder structure
+
+Before you open the file, set up where it will live. The way you
+organize files now saves a hundred *"where is that file?"* moments
+later.
+
+Create this folder on your computer (or on Posit Cloud):
+
+```
+frst232/
+├── chapter01/
+│   ├── data/                                Raw data files — never edit anything in here.
+│   │   └── bc_disturbance_reforestation.xlsx
+│   ├── outputs/                             Cleaned or modified files you produce.
+│   │   └── bc_disturbance_reforestation_clean.xlsx   (you save this yourself)
+│   ├── notes/                               Lecture notes, screenshots.
+│   └── deliverables/                        What you submit to the course site.
+└── shared/
+    ├── data_dictionaries/                   ReadMe sheets you have written.
+    └── references/                          Course PDFs, papers, links.
+```
+
+Three rules:
+
+1. **Never edit raw data in place.** Always work on a copy that
+   lives in `outputs/`.
+2. **Use lowercase, snake_case names.** `bc_disturbance_reforestation.xlsx`
+   — not `BC Disturbance Data (Final).xlsx`. Spaces and capitals
+   cause problems when you move to R in Chapter 4.
+3. **One folder per chapter.** Easier to find things in a dozen
+   small folders than in one huge dump.
+
+::: {.callout-tip}
+## Where the file goes in this course
+
+For every code chunk in this book to work, the data file should
+live at:
+
+```
+your_project_root/data/bc_disturbance_reforestation.xlsx
+```
+
+When you see `here("data", "bc_disturbance_reforestation.xlsx")`
+in a later chapter, that is the path it refers to.
+:::
+
+# The three-sheet pattern: About, ReadMe, Data
+
+Download `bc_disturbance_reforestation.xlsx` from the BC Data
+Catalogue and place it in your `data/` folder. Open the file. You
+will see three tabs at the bottom:
+
+- **About** — *what is this file?* Source, publisher, licence,
+  citation, retrieval date.
+- **ReadMe** — *what does each column mean?* One row per variable,
+  with description, unit, and notes.
+- **Data** — the actual 37 rows of data.
+
+**Read these tabs in order. Always.** Reading the Data sheet
+before reading About means computing something before you know
+what it measures.
+
+## About sheet
+
+The About sheet answers *where did this file come from?*. Typical
+fields:
+
+| Field | Example value |
+|---|---|
+| Dataset | *Indicator Summary Data: Trends in Silviculture in B.C.* |
+| Publisher | Resource Practices Branch, Ministry of Forests, B.C. |
+| Source URL | catalogue.data.gov.bc.ca/... |
+| Licence | Open Government Licence — British Columbia |
+| Cite as | Environmental Reporting BC, *Trends in Silviculture in B.C.* |
+| Retrieved | 2026-05-24 |
+
+The point of the About sheet is **provenance**. A reader who finds
+this file two years from now needs to know where it came from and
+under what licence they can use it.
+
+## ReadMe sheet
+
+The ReadMe sheet answers *what does each column mean?*:
+
+```{r readme-preview}
+#| echo: false
+read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+           sheet = "ReadMe", skip = 3) |>
+  setNames(c("Variable", "Description", "Unit", "Notes")) |>
+  kable()
+```
+
+One row per column. Notice how the unit (hectares) appears in
+every numeric row. Never assume the unit; check it.
+
+::: {.callout-tip}
+## A pattern to keep forever
+
+Every dataset you create for this course should ship with About
+and ReadMe sheets like these. They cost an hour to write and
+save many hours of *"what does this column mean?"* arguments
+later.
+:::
+
+## Data sheet
+
+The Data sheet holds the 37 rows of forestry indicators. We will
+inspect it next.
+
+# Inspecting the Data sheet
+
+Open the Data sheet. Before computing anything, answer these five
+questions:
+
+1. **How many rows of data are there?** (Ignore the header.)
+2. **How many columns?**
+3. **What is the earliest and latest year?**
+4. **Pick one column.** What does it measure, and in what units?
+5. **Look at the first row.** Does anything look unexpected?
+
+For this file:
+
+```{r five-questions}
+#| echo: false
+tibble(
+  Question = c("Rows of data",
+               "Columns",
+               "Earliest fiscal year",
+               "Latest fiscal year",
+               "Maximum Natural_Disturbance_ha (and its year)"),
+  Answer = c(
+    as.character(nrow(bc)),
+    as.character(ncol(bc)),
+    as.character(min(bc$Fiscal_Year)),
+    as.character(max(bc$Fiscal_Year)),
+    sprintf("%s ha in %d",
+            format(max(bc$Natural_Disturbance_ha), big.mark = ","),
+            bc$Fiscal_Year[which.max(bc$Natural_Disturbance_ha)])
+  )
+) |> kable()
+```
+
+The 2017 spike in `Natural_Disturbance_ha` is BC's record-breaking
+wildfire season. The dataset would look like a flat trend without
+it. The 2017 row alone is a lesson in why you *always look at the
+extremes* of every column.
+
+## The eight columns, one by one
+
+| Column | Type | What it measures |
+|---|---|---|
+| `Fiscal_Year` | Integer year | The fiscal year the row describes (April–March, named by starting year). |
+| `Clearcutting_ha` | Number (hectares) | Area harvested using the clearcutting silvicultural system. |
+| `Clearcutting_with_reserves_ha` | Number (hectares) | Area harvested using clearcutting **with reserves** — some trees left standing. |
+| `Partial_cutting_ha` | Number (hectares) | Area harvested using partial cutting (shelterwood, selection, etc.). |
+| `Harvested_ha` | Number (hectares) | Sum of the three harvest types above. |
+| `Natural_Disturbance_ha` | Number (hectares) | Area disturbed by natural causes (fire, pest, wind). |
+| `Total_Disturbance_ha` | Number (hectares) | Total harvested + naturally disturbed area. |
+| `Reforestation_ha` | Number (hectares) | Area planted or naturally regenerated that year. |
+
+::: {.callout-tip}
+## A small sanity check
+
+`Total_Disturbance_ha` is the sum of `Harvested_ha` and
+`Natural_Disturbance_ha`. Pick any one row — say row 38 (year
+2023) — and check that the formula `=E38 + F38 = G38` evaluates
+to `TRUE`. If it does, the dataset is internally consistent.
+:::
+
+# Data types — and why they matter
+
+Every cell in Excel has a **type**. The three you care about for
+this chapter:
+
+| Type | Example | Default alignment |
+|---|---|---|
+| Number | `216304.919` | right |
+| Date | `2024-09-15` | right |
+| Text | `Vancouver` | left |
+
+Excel guesses the type when you open a file. Most of the time it
+guesses right. But sometimes a number arrives stored as text
+(maybe because of an extra apostrophe or a stray space) and is
+then silently skipped when you `SUM` the column.
+
+A quick test: select a numeric column and look at the status bar
+at the bottom of the Excel window. It usually shows `Sum`,
+`Average`, and `Count`. If `Count` matches your row count but
+`Sum` is suspiciously small, some cells are stored as text.
+
+# Navigation: freeze panes and a few shortcuts
+
+A 37-row file does not need navigation tricks. A 37 000-row file
+does. Learn these now while the file is small.
+
+## Freeze panes
+
+Click row 2 (the row below the header). Then choose
+**View → Freeze Panes → Freeze Top Row**. The header row stays
+visible while you scroll.
+
+For wider files, select cell B2 and choose **View → Freeze Panes →
+Freeze Panes**. Both the first row and the first column stay
+visible.
+
+## A few keyboard shortcuts
+
+| Shortcut | What it does |
+|---|---|
+| `Ctrl + Arrow` | Jump to the edge of the data |
+| `Ctrl + Home` | Jump to A1 |
+| `Ctrl + End` | Jump to the last cell of the used range |
+| `Ctrl + F` | Find |
+| `Ctrl + ;` | Insert today's date as a value |
+
+Learning a handful of shortcuts saves real time on bigger files.
+
+# Number formats: display vs value
+
+A single cell carries two pieces of information:
+
+- The **value** (what the cell contains).
+- The **display format** (how the value is shown).
+
+These are different. Changing the format never changes the value.
+
+## A worked example
+
+Type `216304.919` into a cell. The cell displays `216304.919`.
+
+Now right-click the cell → **Format Cells → Number**. Set decimal
+places to 0. The cell now displays `216,305`. The underlying value
+is still `216304.919`, just rounded for display.
+
+Try **Format Cells → Currency** with two decimals. The cell shows
+`$216,304.92`. Same underlying value.
+
+Try **Format Cells → Custom** with the code `0 "ha"`. The cell
+shows `216305 ha`. The string `"ha"` is part of the *format*, not
+the value — formulas referencing this cell still treat it as a
+plain number.
+
+## Why this matters
+
+Two cells can display the same thing but have different values.
+If cell A holds `100000` and cell B holds `99999.999999`, both can
+be formatted to display `100,000`. But `=A1=B1` returns `FALSE`.
+
+This is the single most common silent bug in Excel-based analysis.
+**Always be aware of the underlying value, not just the display.**
+
+::: {.callout-tip}
+## Two formats worth knowing
+
+- `#,##0` — thousands separator, no decimals. Use for hectares.
+- `yyyy-mm-dd` — ISO 8601 date format. Sorts correctly as text
+  *and* as a date. Universally readable across regions.
+:::
+
+# Writing simple formulas
+
+The five most-used aggregating formulas. Type each in any empty
+cell on the Data sheet.
+
+| Formula | What it does |
+|---|---|
+| `=SUM(H2:H38)` | Adds every value in column H (Reforestation_ha) |
+| `=AVERAGE(G2:G38)` | Mean Total_Disturbance_ha across all rows |
+| `=MIN(F2:F38)` | Smallest Natural_Disturbance_ha |
+| `=MAX(F2:F38)` | Largest Natural_Disturbance_ha |
+| `=COUNT(A2:A38)` | Number of rows with a numeric year |
+
+On this file:
+
+```{r expected-values}
+#| echo: false
+tibble(
+  Formula = c("=SUM(H2:H38)", "=AVERAGE(G2:G38)",
+              "=MIN(F2:F38)", "=MAX(F2:F38)", "=COUNT(A2:A38)"),
+  Result = c(
+    paste0(format(round(sum(bc$Reforestation_ha)), big.mark = ","), " ha"),
+    paste0(format(round(mean(bc$Total_Disturbance_ha)), big.mark = ","), " ha"),
+    paste0(format(round(min(bc$Natural_Disturbance_ha)), big.mark = ","), " ha"),
+    paste0(format(round(max(bc$Natural_Disturbance_ha)), big.mark = ","), " ha"),
+    "37"
+  )
+) |> kable()
+```
+
+# Checking whether values make sense
+
+Before you trust any number you compute, run a sanity check.
+
+## Three quick checks
+
+1. **Range check.** A mean should sit between the min and the max.
+   If `MIN = 50,000`, `MAX = 250,000`, and your `AVERAGE` says
+   `400,000`, something is wrong.
+2. **Identity check.** If the dataset claims `Total_Disturbance_ha
+   = Harvested_ha + Natural_Disturbance_ha`, pick one row and
+   verify the identity.
+3. **Order-of-magnitude check.** BC reforests roughly 200 000 ha
+   per year. If your computed mean comes out at 20,000 or
+   2,000,000, you have likely selected the wrong column or
+   misformatted the result.
+
+These three checks take seconds and catch most bugs.
+
+::: {.callout-tip}
+## Read the value, not the display
+
+After you write a formula, click the result cell and look at the
+formula bar. If the formula says `=SUM(B2:B38)` but you wanted
+column H, you have selected the wrong column. Always read the
+formula, not just the answer.
+:::
+
+# Building a data dictionary
+
+A data dictionary is a separate sheet that lists every column
+with:
+
+- **Variable** name (exactly as it appears in the data).
+- **Description** in plain English — what does it measure?
+- **Unit** of measurement, always.
+- **Type** (number, text, date).
+- **Notes** — anything a future reader should know.
+
+The ReadMe sheet of `bc_disturbance_reforestation.xlsx` already
+has one. Look at it.
+
+## How to build your own
+
+In any new workbook:
+
+1. Add a new sheet, name it `ReadMe`.
+2. In row 1, type the column headers: `Variable`, `Description`,
+   `Unit`, `Type`, `Notes`.
+3. In row 2 onward, add one row per column from your Data sheet.
+4. Be **specific**. *"Reforestation, in hectares"* is okay. *"Area
+   planted or naturally regenerated in that fiscal year, in
+   hectares"* is better.
+
+::: {.callout-warning}
+## Test your dictionary
+
+After you write a dictionary, hand the workbook to someone who
+has never seen the data and ask them to compute one statistic
+from it without asking you any questions. If they can, your
+dictionary is good. If they ask what a column means, the
+dictionary needs work.
+:::
+
+# The three habits: inspect first, compute second, verify always
+
+If you take only one thing from this chapter, take this.
+
+## Inspect first
+
+Before you compute *any* number, look at the data. Open the file.
+Read the About sheet. Read the ReadMe. Scroll through a few rows.
+Find the extremes — the largest, the smallest, the oldest, the
+newest.
+
+This takes a few minutes and catches more bugs than any other
+practice in data analysis.
+
+## Compute second
+
+Only after you have inspected do you start typing formulas. You
+should be able to **predict** what your formula will return
+before you press Enter. If the answer surprises you, that
+surprise is information — either the data is interesting or the
+formula is wrong.
+
+## Verify always
+
+Every time you compute a number, verify it against something:
+
+- **Against a published total.** If the BC Ministry says the
+  total reforestation in 2020 was X, your formula should equal X.
+- **Against a sanity check.** A mean cannot be larger than the
+  max or smaller than the min.
+- **Against a second method.** If you computed it with `SUM`,
+  also compute it with a PivotTable (Chapter 3). If both agree,
+  trust the number.
+
+# Active learning
+
+These short activities are designed to be done alongside the
+chapter. Pick whichever match the pace of your session.
+
+## Activity 1 — Read the About sheet aloud
+
+In pairs, one learner reads the About sheet, the other listens
+and asks one clarifying question. Switch.
+
+The point is **slowing down**. Force yourself to read the
+metadata before the data.
+
+## Activity 2 — Five-question inspection
+
+On your own, write your answers to the five inspection questions
+from the *Inspecting the Data sheet* section. Compare with a
+partner.
+
+## Activity 3 — Write five simple formulas
+
+In the workbook, type each formula from the *Writing simple
+formulas* section into an empty cell. Confirm each result matches
+the expected value in the table.
+
+## Activity 4 — Verify one identity
+
+On any one row of the Data sheet, verify that
+`Harvested_ha + Natural_Disturbance_ha = Total_Disturbance_ha`.
+Use a formula like `=E2 + F2 - G2`. The result should be 0 (or
+very close — Excel sometimes shows tiny non-zero values for
+floating-point reasons).
+
+## Activity 5 — Build a one-row data dictionary
+
+Pick any column from the Data sheet. Write a one-sentence
+description for it without looking at the ReadMe. Then compare
+with the ReadMe. How close did you get?
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Inspect a real BC dataset together
+
+Work in groups of 3 or 4. Use one shared copy of
+`bc_disturbance_reforestation.xlsx` (one machine per group, or
+share the screen).
+
+**Task 1 — Inspect the workbook.** Open the file. Take turns
+reading the About sheet, the ReadMe sheet, and the Data sheet.
+Each group member should be able to answer:
+
+- Where did this file come from?
+- What does each column measure?
+- How many rows are there?
+
+**Task 2 — Small data dictionary task.** As a group, pick **two
+columns** of the Data sheet and write your own one-sentence
+description of each in your own words. Compare your descriptions
+to the ReadMe sheet's descriptions.
+
+**Task 3 — Compute one or two summary values.** As a group,
+choose one of these:
+
+- Mean `Reforestation_ha` across all 37 fiscal years.
+- Maximum `Natural_Disturbance_ha` and the year it happened.
+- Total `Harvested_ha` across all 37 fiscal years.
+
+Write the formula on the Data sheet. Confirm the result with a
+quick sanity check (does it sit between the min and max for that
+column?).
+
+**Task 4 — Verify one formula.** Pick any row of the Data sheet.
+Verify that
+`Harvested_ha + Natural_Disturbance_ha = Total_Disturbance_ha`.
+Use a formula like `=E10 + F10 - G10`. The result should be 0.
+
+**Task 5 — Submit.** Submit either a short worksheet (a one-page
+document with your group's answers to Tasks 1–4) **or** a
+screenshot of the Data sheet showing all of your group's
+formulas. Include all group members' names on the submission.
+
+This lab is designed to fit comfortably inside a single
+hands-on session.
+:::
+
+# Exercises
+
+These are the take-home exercises that go with this chapter.
+
+1. Download `bc_disturbance_reforestation.xlsx` from the BC Data
+   Catalogue. Place it in the `data/` folder of your project.
+   Open it and read the About sheet aloud.
+
+2. In one sentence, write down what
+   `Clearcutting_with_reserves_ha` measures **in your own words**,
+   without looking at the ReadMe sheet. Then compare with the
+   ReadMe.
+
+3. Find the fiscal year with the smallest `Total_Disturbance_ha`.
+   What year was it, and what was the value? *(Hint:
+   `=MIN(...)` finds the value; sort the table or scan to find
+   the year.)*
+
+4. Add a new column `F_to_D` (reforestation-to-disturbance ratio)
+   = `Reforestation_ha / Total_Disturbance_ha`. In what fraction
+   of fiscal years was reforestation *greater than* total
+   disturbance?
+
+5. Set up the folder structure from the *Project folder
+   structure* section above. Place a copy of the BC silviculture
+   file in `chapter01/data/`. Take a screenshot of your folder
+   structure.
+
+6. Save a cleaned copy of the workbook (rename it
+   `bc_disturbance_reforestation_clean.xlsx`) into the
+   `chapter01/outputs/` folder. The raw file in `chapter01/data/`
+   should remain unchanged.
+
+7. Apply ISO date format (`yyyy-mm-dd`) to any date in any file.
+   Sort by that column. Confirm the sort works correctly.
+
+# Optional, advanced
+
+Items in this section are not required for the main path through
+the chapter. Read them once you are comfortable with the basics
+above.
+
+## Named ranges
+
+You can give a range of cells a name and refer to it by that
+name in formulas:
+
+- Select cells A2:A38 (the `Fiscal_Year` column).
+- Type `years` into the Name Box (left of the formula bar).
+- Press Enter.
+
+Now anywhere in the workbook you can write `=MAX(years)` instead
+of `=MAX(A2:A38)`. The formula is self-documenting. Manage named
+ranges with **Formulas → Name Manager** (or `Ctrl + F3`).
+
+Skip named ranges in Chapter 1 if you find them overwhelming —
+the chapter does not depend on them. Chapter 2 will show
+**structured tables**, which solve the same problem more cleanly.
+
+## Custom number formats
+
+Beyond the standard formats, Excel supports custom format codes.
+For example, the custom format `0.000 "ha"` displays
+`216304.919 ha`. The `"ha"` is part of the format, not the value.
+
+This is useful for at-a-glance unit labels, but use sparingly —
+too much custom formatting can make a workbook harder for a
+collaborator to read.
+
+# A glimpse of Chapter 4: From Excel to R
+
+In Chapter 4 we will install R and re-open *this same file*
+reproducibly. The Excel moves you learned in this chapter map
+directly to R commands you will meet later. Here is a preview:
+
+| What you did in Excel | What you will do in R (Ch 4–5) |
+|---|---|
+| Open the file by double-clicking | `read_excel(here("data", "bc_disturbance_reforestation.xlsx"), sheet = "Data")` |
+| Look at the status bar `Count` | `dim(bc)` and `nrow(bc)` |
+| Status-bar `Sum` of column H | `sum(bc$Reforestation_ha)` |
+| Status-bar `Average` of column G | `mean(bc$Total_Disturbance_ha)` |
+| Scan the Data sheet visually | `glimpse(bc)` and `summary(bc)` |
+| Apply `MIN` and `MAX` | `range(bc$Natural_Disturbance_ha)` |
+
+**The numbers will be exactly the same.** Same dataset, same
+columns, same answers — but the R version is scriptable,
+shareable, and reproducible.
+
+You do not need to remember any of this now. The point is just to
+see that R is not a fresh start. Everything you learn in Chapters
+1–3 transfers directly. Chapter 4 will walk through each step in
+detail.
+
+# Self-assessment quiz {#sec-quiz-ch01}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q {
+  font-weight: 600;
+  color: #1B4332;
+  margin-bottom: 0.6em;
+}
+.quiz ul.qopts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em;
+  margin: 0.3em 0;
+  background: white;
+  border: 1px solid #d8e4d8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct {
+  background: #C8E6C9;
+  border-color: #2D6A4F;
+  font-weight: 600;
+}
+.quiz ul.qopts li.wrong {
+  background: #FFCDD2;
+  border-color: #B05C50;
+}
+.quiz .explanation {
+  display: none;
+  margin-top: 0.7em;
+  padding: 0.7em 1em;
+  background: #FFF8E8;
+  border-left: 3px solid #B7791F;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%;
+  min-height: 4.5em;
+  padding: 0.6em;
+  border: 1px solid #d8e4d8;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95em;
+  resize: vertical;
+  margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F;
+  color: white;
+  border: none;
+  padding: 0.45em 0.9em;
+  margin-top: 0.5em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none;
+  margin-top: 0.6em;
+  padding: 0.6em 0.9em;
+  background: #FFF8E8;
+  border-left: 3px solid #B7791F;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-style: italic;
+}
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. Which sheet should you read first when you open <code>bc_disturbance_reforestation.xlsx</code>?</div>
+  <ul class="qopts">
+    <li data-correct="true">About</li>
+    <li data-correct="false">Data</li>
+    <li data-correct="false">ReadMe</li>
+    <li data-correct="false">It does not matter</li>
+  </ul>
+  <div class="explanation">Read About first — it tells you the source, licence, and citation. Then ReadMe (variable dictionary). Then Data. Reading in the wrong order means you start computing before you know what the columns mean.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Where does the dataset come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A textbook publisher</li>
+    <li data-correct="true">The BC Government, distributed through the BC Data Catalogue</li>
+    <li data-correct="false">A personal blog</li>
+    <li data-correct="false">A private consulting firm</li>
+  </ul>
+  <div class="explanation">Every dataset in this book is openly licensed and comes from a public source. This one is from Environmental Reporting BC and is distributed through the BC Data Catalogue under the Open Government Licence — British Columbia.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. The ReadMe sheet is best understood as —</div>
+  <ul class="qopts">
+    <li data-correct="false">A backup copy of the data</li>
+    <li data-correct="true">A data dictionary describing each column</li>
+    <li data-correct="false">A blank sheet for personal notes</li>
+    <li data-correct="false">The location of cleaned data</li>
+  </ul>
+  <div class="explanation">The ReadMe sheet (also called a data dictionary) has one row per column of the Data sheet — explaining what each column measures, its units, its type, and any notes.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. True or false: when you change the <em>display format</em> of a cell from "general" to "two decimals", the underlying value also changes.</div>
+  <ul class="qopts">
+    <li data-correct="false">True</li>
+    <li data-correct="true">False</li>
+  </ul>
+  <div class="explanation">Display format is independent of value. The cell still holds <code>216304.919</code> even when it shows <code>216,304.92</code>. Formulas always operate on the underlying value, not the display.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. <code>Total_Disturbance_ha</code> should equal —</div>
+  <ul class="qopts">
+    <li data-correct="false">Just <code>Harvested_ha</code></li>
+    <li data-correct="false">Just <code>Natural_Disturbance_ha</code></li>
+    <li data-correct="true"><code>Harvested_ha + Natural_Disturbance_ha</code></li>
+    <li data-correct="false"><code>Reforestation_ha</code></li>
+  </ul>
+  <div class="explanation">By definition, total disturbance is harvested area plus naturally disturbed area. Always verify this kind of identity on at least one row — it is a cheap way to confirm the data was assembled correctly.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. What is the keyboard shortcut to jump to the edge of the data in Excel?</div>
+  <ul class="qopts">
+    <li data-correct="false">Ctrl + Tab</li>
+    <li data-correct="true">Ctrl + Arrow</li>
+    <li data-correct="false">Ctrl + Shift + V</li>
+    <li data-correct="false">F1</li>
+  </ul>
+  <div class="explanation"><code>Ctrl + Arrow</code> jumps to the next non-empty cell in that direction — usually the edge of your data block.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. The fiscal year with the largest <code>Natural_Disturbance_ha</code> in the BC dataset is —</div>
+  <ul class="qopts">
+    <li data-correct="false">1987</li>
+    <li data-correct="false">2010</li>
+    <li data-correct="true">2017</li>
+    <li data-correct="false">2023</li>
+  </ul>
+  <div class="explanation">2017 was BC's record wildfire season — 218,275 ha of natural disturbance. It dominates the time series. Always look at the extremes of your data; the outliers tell you something about how the world worked that year.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. Which folder is the right place to store the raw, untouched copy of a downloaded dataset?</div>
+  <ul class="qopts">
+    <li data-correct="true"><code>data/</code></li>
+    <li data-correct="false"><code>outputs/</code></li>
+    <li data-correct="false"><code>deliverables/</code></li>
+    <li data-correct="false"><code>shared/</code></li>
+  </ul>
+  <div class="explanation">Raw data goes in <code>data/</code> and is never edited in place. Cleaning produces files that go in <code>outputs/</code>. Anything you submit goes in <code>deliverables/</code>.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. To freeze the top row so it stays visible while you scroll, which menu path do you use?</div>
+  <ul class="qopts">
+    <li data-correct="false">Home → Format → Freeze</li>
+    <li data-correct="true">View → Freeze Panes → Freeze Top Row</li>
+    <li data-correct="false">Data → Outline → Group</li>
+    <li data-correct="false">Insert → Header & Footer</li>
+  </ul>
+  <div class="explanation"><strong>View → Freeze Panes → Freeze Top Row</strong> keeps row 1 in view while you scroll down.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. Two cells both display <code>100,000</code>. Cell A's underlying value is <code>100000</code>; cell B's is <code>99999.999999</code>. The formula <code>=A1=B1</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">TRUE</li>
+    <li data-correct="true">FALSE</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">100,000</li>
+  </ul>
+  <div class="explanation">The comparison operates on the <em>values</em>, not the displays. The cells look identical but are not equal. Always remember: display ≠ value.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. Which date format sorts correctly both as text and as a date?</div>
+  <ul class="qopts">
+    <li data-correct="false"><code>15/09/2024</code></li>
+    <li data-correct="false"><code>September 15, 2024</code></li>
+    <li data-correct="true"><code>2024-09-15</code> (ISO 8601)</li>
+    <li data-correct="false"><code>9/15/24</code></li>
+  </ul>
+  <div class="explanation">ISO 8601 (<code>yyyy-mm-dd</code>) is the only date format that sorts correctly when treated as text. It is also unambiguous across regions (no day/month confusion).</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. The status bar at the bottom of an Excel window shows <code>Sum</code>, <code>Average</code>, and <code>Count</code> when you select a numeric range. If <code>Count</code> is lower than the number of cells you selected, what is the most likely reason?</div>
+  <ul class="qopts">
+    <li data-correct="false">A sum that matches the visible total</li>
+    <li data-correct="true">Some cells in the range are stored as text and being skipped</li>
+    <li data-correct="false">An average is close to the median</li>
+    <li data-correct="false">Excel is calculating slowly</li>
+  </ul>
+  <div class="explanation"><code>Count</code> only counts numeric cells. If you selected 37 cells but the status bar says <code>Count: 35</code>, two are stored as text and are being silently skipped by aggregation formulas.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. When you download <code>bc_disturbance_reforestation.xlsx</code>, what should you do with the raw file?</div>
+  <ul class="qopts">
+    <li data-correct="false">Open it and immediately start editing</li>
+    <li data-correct="true">Keep it unchanged in a <code>data/</code> folder; save any cleaned version separately</li>
+    <li data-correct="false">Delete the original after copying values</li>
+    <li data-correct="false">Email it to yourself as a backup</li>
+  </ul>
+  <div class="explanation">Always keep the raw downloaded file unchanged. Save any cleaned or modified version with a different name (and ideally in a different folder, like <code>outputs/</code>) so you can always go back to the original.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. Which approach is best for documenting the meaning of every column in a workbook?</div>
+  <ul class="qopts">
+    <li data-correct="false">Write a long email when you share the file</li>
+    <li data-correct="false">Trust that the column headers are self-explanatory</li>
+    <li data-correct="true">A dedicated ReadMe sheet in the workbook with one row per column</li>
+    <li data-correct="false">A separate Word document</li>
+  </ul>
+  <div class="explanation">A ReadMe sheet travels with the data. Emails get lost. Headers are rarely self-explanatory.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. The fiscal year in BC for forestry reporting runs —</div>
+  <ul class="qopts">
+    <li data-correct="false">January 1 to December 31</li>
+    <li data-correct="true">April 1 to March 31 of the following calendar year</li>
+    <li data-correct="false">July 1 to June 30</li>
+    <li data-correct="false">September 1 to August 31</li>
+  </ul>
+  <div class="explanation">BC fiscal years run April–March. The fiscal year is named by its starting year — "Fiscal Year 2023" means April 2023 through March 2024.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Which formula on the Data sheet computes the total reforestation across all 37 fiscal years?</div>
+  <ul class="qopts">
+    <li data-correct="false"><code>=AVERAGE(H2:H38)</code></li>
+    <li data-correct="true"><code>=SUM(H2:H38)</code></li>
+    <li data-correct="false"><code>=COUNT(H2:H38)</code></li>
+    <li data-correct="false"><code>=MAX(H2:H38)</code></li>
+  </ul>
+  <div class="explanation"><code>SUM</code> adds every value in the range. <code>Reforestation_ha</code> is column H in this file. <code>AVERAGE</code> would give the mean per year, not the total.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. Which of these is the most reliable way to <em>verify</em> a number you computed?</div>
+  <ul class="qopts">
+    <li data-correct="false">Run the same formula twice</li>
+    <li data-correct="true">Recompute the number a different way (a different formula, or against a published total) and see if you get the same answer</li>
+    <li data-correct="false">Round it and check that it looks reasonable</li>
+    <li data-correct="false">Ask AI whether it looks right</li>
+  </ul>
+  <div class="explanation">Verification means producing the same number a <em>second way</em>. Running the same formula twice just confirms that the formula has not been edited — not that it is correct.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The three habits of a good data analyst, in order, are —</div>
+  <ul class="qopts">
+    <li data-correct="false">Compute first, plot second, write last</li>
+    <li data-correct="true">Inspect first, compute second, verify always</li>
+    <li data-correct="false">Read the question, write the code, send the answer</li>
+    <li data-correct="false">Open the file, sum the column, copy to email</li>
+  </ul>
+  <div class="explanation">Inspect (know your data before you compute). Compute (write the formulas). Verify (cross-check the answer). These three habits, applied every time, prevent more bugs than any single tool ever invented.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. You receive a file with a column called <code>DBH</code>. The ReadMe says "Diameter at breast height". What unit should you assume?</div>
+  <ul class="qopts">
+    <li data-correct="false">Centimetres — it is the most common</li>
+    <li data-correct="false">Millimetres — for precision</li>
+    <li data-correct="false">Inches — the column name sounds American</li>
+    <li data-correct="true">Do not assume — check the ReadMe more carefully, or ask the data provider</li>
+  </ul>
+  <div class="explanation">Never assume units. Cm is most common for DBH in Canadian forestry, but it can be mm or inches depending on the source. Getting the unit wrong by a factor of 10 silently changes every later calculation.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one thing you noticed about <code>bc_disturbance_reforestation.xlsx</code> that surprised you — a column, a value, a pattern, anything.</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Things learners typically notice: <em>the 2017 wildfire spike dwarfs every other year of natural disturbance</em> · <em>clearcutting-with-reserves was near-zero in the 1980s and grew through the 1990s — that is a real BC policy shift</em> · <em>reforestation is bigger than the total annual harvest for most years (because both planted and naturally regenerated area count)</em> · <em>the units are hectares — about the size of two football fields, which makes the numbers easier to visualize</em>.</div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') {
+              o.classList.add('correct');
+            }
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## When to use AI in this chapter
+
+- Ask AI to **define** a forestry term that appears in the ReadMe
+  but is new to you. *"What does 'silvicultural system' mean?"*
+- Ask AI to **explain** an Excel formula. Paste the formula
+  verbatim and ask what it does.
+
+## When *not* to use AI in this chapter
+
+- AI is not the source of truth for what a BC dataset measures.
+  The BC indicator page is. Use the ReadMe and the source URL
+  first.
+- Do not paste an exercise question into AI and copy the answer
+  back. The point of an exercise is the thinking, not the result.
+:::
+
+# Reading
+
+- *About* and *ReadMe* sheets of `bc_disturbance_reforestation.xlsx`.
+- BC Government silviculture indicator background:
+  <https://www.env.gov.bc.ca/soe/indicators/land/silviculture.html>
+- BC Data Catalogue dataset page:
+  <https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c->
+- Open Government Licence — British Columbia:
+  <https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- This chapter is deliberately beginner-friendly. The main path
+  covers six skills: inspecting About / ReadMe / Data; identifying
+  columns, units, and types; writing five simple formulas;
+  checking whether values make sense; building a one-row data
+  dictionary; setting up a folder structure.
+- **Named ranges** and **custom number formats** are moved to the
+  *Optional, advanced* section. Touch on them only if your group
+  is moving quickly.
+- The group lab is the central hands-on deliverable. Plan to give
+  learners time to complete all five tasks in one session.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. Raw `bc_disturbance_reforestation.xlsx` in `chapter01/data/`,
+   unchanged.
+2. Working `bc_disturbance_reforestation_clean.xlsx` in
+   `chapter01/outputs/` containing About / ReadMe / Data,
+   a one-row data dictionary entry, and the five chapter formulas.
+3. Group-lab worksheet or screenshot.
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `bc_disturbance_reforestation.xlsx` | The raw open-data workbook (About + ReadMe + Data). Place in `data/`. |
+| `bc_disturbance_reforestation_learner.xlsx` | Learner-facing exercises workbook with blanks and formula prompts. Distribute through the course site. |
+| `bc_disturbance_reforestation_solutions.xlsx` | Instructor solutions with completed formulas and worked answers. **Do not distribute to learners.** |
+| `quiz_ch01.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
+
+## Suggested grading guidance for the group lab
+
+| Task | Weight | What to look for |
+|---|---|---|
+| Inspect workbook (Task 1) | 20 % | Group can articulate source, columns, row count. |
+| Data dictionary (Task 2) | 20 % | Two columns described in own words; compared with ReadMe. |
+| Summary value (Task 3) | 30 % | Correct formula AND a sanity check. |
+| Verify identity (Task 4) | 20 % | `Harvested + Natural = Total` confirmed on at least one row. |
+| Submission (Task 5) | 10 % | Worksheet or screenshot is legible; group members named. |
+
+## Common stumbling points
+
+- Some learners try to compute the answer to Task 3 from the
+  Summary sheet of the solutions file. Hide that file.
+- Learners often write `=E2+F2=G2` and expect to see a number;
+  they get `TRUE`/`FALSE` instead. That is correct — point out
+  the difference between a comparison and an arithmetic
+  expression.
+- Some learners edit the raw
+  `bc_disturbance_reforestation.xlsx` in place. Remind them that
+  the raw file should stay unchanged.
+- *Excel-to-R bridge:* If learners ask why we are starting in
+  Excel "if we are going to move to R anyway", the answer is
+  twofold: (a) the column meanings and forestry context are
+  easier to learn with the data sitting visible on screen, and
+  (b) Chapter 4 deliberately uses the *same file* to make the
+  transition explicit. The "A glimpse of Chapter 4" table at the
+  end of this chapter is the preview of that bridge.
+:::

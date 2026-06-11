@@ -1,0 +1,1229 @@
+---
+title: "Import and Inspect Forestry Data with R and Quarto"
+---
+
+```{r setup-ch05}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Explain what a **vector** is in R and recognize the four
+  atomic types: logical, integer, double, character.
+- Use `c()` to combine values into a vector, and apply
+  vectorized functions (`sum`, `mean`, `length`) directly to a
+  vector.
+- Distinguish a **tibble** from a **data.frame** and explain why
+  the tidyverse uses tibbles.
+- Identify column types from `glimpse()` output (`<int>`,
+  `<dbl>`, `<chr>`, `<lgl>`, `<date>`).
+- Import an Excel file with `readxl::read_excel()` and a CSV file
+  with `readr::read_csv()`.
+- Inspect a tibble with `dim()`, `names()`, `glimpse()`,
+  `summary()`, `head()`, and `tail()`.
+- Count missing values per column with `colSums(is.na(...))` and
+  distinguish `NA` from `0`.
+- Write a small **data dictionary** in Quarto next to the code
+  that produced it.
+- Render a complete **Quarto HTML report** that another reader
+  could open without R.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **rendered Quarto HTML report** named
+   `frst232_ch05_learner.html`, containing:
+   - The result of importing both
+     `bc_disturbance_reforestation.xlsx` and
+     `on_forest_statistics_1.xlsx`.
+   - `dim()`, `names()`, and `glimpse()` output for each file.
+   - A **missing-value summary** for each file (one cell per
+     column showing how many `NA` values it has).
+   - A **data dictionary table** for the BC file, written by you
+     in Markdown.
+   - A short prose paragraph (two or three sentences) describing
+     what is in each file.
+2. The corresponding **`.qmd` source file**.
+3. Notification that you have completed the **Excel midterm** in
+   the lab session for this chapter (see *Lab session — Excel
+   midterm* below).
+4. A short **group peer-review worksheet** of another learner's
+   rendered HTML.
+
+This list is the same as the rubric for the chapter assignment.
+Keep it in view while you work.
+:::
+
+# Where we are in the course
+
+In Chapter 4 you:
+
+- Installed R, RStudio, and Quarto (or set up Posit Cloud).
+- Created the `frst232/` project with `data/`, `outputs/`, `R/`,
+  `notes/`.
+- Imported `bc_disturbance_reforestation.xlsx` with
+  `readxl::read_excel()`.
+- Computed five statistics (`sum`, `mean`, `min`, `max`,
+  `median`) on `bc$Reforestation_ha`.
+- **Confirmed those numbers match the values you saw in Excel
+  for Chapter 1.**
+
+Chapter 5 deepens the R fundamentals: vectors, tibbles, column
+types, missing values, and your first full **Quarto report**.
+
+# Excel-to-R bridge — the inspection moves
+
+From Chapter 4 you already know:
+
+| Excel inspection | R command | Returns |
+|---|---|---|
+| Status-bar `Count` | `dim(bc)` / `nrow(bc)` | Row and column count |
+| Status-bar `Sum` | `sum(bc$ColumnName)` | Sum of one column |
+| Status-bar `Average` | `mean(bc$ColumnName)` | Mean of one column |
+
+This chapter adds three more — the *missing-value* and *type*
+moves that Excel cannot do cleanly:
+
+| Excel pattern | R command | Returns |
+|---|---|---|
+| "Cells: blank or text? Hard to tell." | `glimpse(bc)` | Each column with type **and** first values |
+| "Count = 35 but 37 rows? Two cells are text." | `colSums(is.na(bc))` | Number of missing values per column |
+| "Format Cells → Number / Text" | `class(bc$ColumnName)` | The type ("numeric", "character", etc.) |
+
+By the end of this chapter, every move you used to do by *looking*
+at Excel is now a scripted R call.
+
+# Vectors — the building block
+
+Almost everything in R is a **vector**: an ordered sequence of
+values, all of the same type.
+
+```{r vectors}
+# A vector of numbers
+years <- c(1987, 1988, 1989, 1990, 1991)
+years
+
+# A vector of text
+species <- c("Pl", "Fd", "Sx")
+species
+
+# A vector of TRUE/FALSE values
+is_old <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+is_old
+```
+
+The `c()` function (**c** for *combine*) is how you build a
+vector. Type the values, comma-separated, inside `c(...)`.
+
+## The four atomic types
+
+Every value in R has a type. The four most common:
+
+| Type | Examples | R shorthand |
+|---|---|---|
+| **logical** | `TRUE`, `FALSE`, `NA` | `<lgl>` |
+| **integer** | `1L`, `2L`, `2026L` | `<int>` |
+| **double** | `1`, `3.14`, `-2.5` | `<dbl>` |
+| **character** | `"Vancouver"`, `"Pl"` | `<chr>` |
+
+Numbers without an `L` suffix are `<dbl>` (double-precision) by
+default. Most numeric R work uses doubles.
+
+## Vectorized operations
+
+Most R functions work on a *whole vector at once*, not one
+element at a time:
+
+```{r vectorized}
+ha <- c(220000, 180000, 250000, 190000)
+
+# Each of these acts on the whole vector
+sum(ha)
+mean(ha)
+min(ha)
+max(ha)
+length(ha)
+
+# Arithmetic is vectorized too — element-by-element
+ha / 1000      # convert each value to thousands of hectares
+ha + 1000      # add 1000 to every value
+ha > 200000    # comparison returns a logical vector
+```
+
+That last result — `ha > 200000` returns a vector of
+`TRUE`/`FALSE` — is the bedrock of every filter and condition you
+will write in R.
+
+## Subsetting with `[`
+
+You can pull out specific positions from a vector with square
+brackets:
+
+```{r subsetting}
+ha[1]                 # first value
+ha[c(1, 3)]           # first and third values
+ha[ha > 200000]       # only values greater than 200,000
+```
+
+That third example reads: *"return the elements of `ha` where
+`ha > 200000` is TRUE"*. This is the **logical-vector
+subsetting** pattern — the conceptual ancestor of `dplyr::filter()`
+which you will meet in Chapter 6.
+
+# Tibbles — vectors arranged in columns
+
+A **tibble** is a tidyverse-flavored data.frame: a rectangular
+table where every column is a vector and all columns have the
+same length.
+
+When you ran:
+
+```r
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+```
+
+…in Chapter 4, R built a tibble called `bc`. Each column of `bc`
+is a vector. The whole tibble is a list of vectors that R prints
+as a rectangle.
+
+```{r tibble-demo}
+#| echo: false
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+print(bc, n = 6)
+```
+
+Look at the top of the printout. Just below the column names, you
+see things like `<dbl>`, `<dbl>`, ... — the column types. **A
+tibble always shows its column types when printed.** That alone
+is reason enough to use tibbles over base R data.frames.
+
+## Tibble vs data.frame
+
+For most purposes, a tibble *is* a data.frame. The differences
+that matter for this course:
+
+| Feature | data.frame | tibble |
+|---|---|---|
+| Prints | All rows by default (slow on big data) | First 10 rows only |
+| Column types | Hidden until you ask | Always shown |
+| Subset with `[, "col"]` | Returns a vector | Returns a tibble |
+| Created by | `read.csv()`, `data.frame()` | `read_excel()`, `read_csv()`, `tibble()` |
+
+You can always convert: `as_tibble(df)` and `as.data.frame(tib)`.
+For tidyverse work, stay with tibbles.
+
+# Importing files
+
+Two import functions cover almost every real-world file:
+
+## `readxl::read_excel()`
+
+```{r read-excel}
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+```
+
+Arguments to remember:
+
+- The first argument is the **file path** — always build it with
+  `here()`.
+- `sheet = ` names the sheet to read. If you skip it, `read_excel`
+  reads the first sheet.
+- `skip = 3` skips the first 3 rows (useful when the file has a
+  banner or title above the headers).
+- `na = c("", "NA", "n/a")` tells `read_excel` which strings to
+  treat as missing.
+
+## `readr::read_csv()`
+
+```r
+# Example (you do not need to run this; we use it in Chapter 6).
+airdata <- read_csv(here("data", "airdata3.csv"))
+```
+
+Arguments to remember:
+
+- The first argument is the file path.
+- `col_types = ` can lock in column types if `read_csv` guesses
+  wrong (advanced — leave it off for now).
+- `na = c("", "NA", "-9999")` is useful for fields that use
+  sentinel values for missing.
+
+## Other readr siblings (briefly)
+
+- `read_tsv()` — tab-separated.
+- `read_delim()` — generic, any delimiter.
+
+All readr functions return a tibble. All accept a file path as
+the first argument.
+
+# Inspecting a tibble — the six moves
+
+Whenever you load a new file, run these six commands. They take
+seconds and catch most problems.
+
+```{r six-moves}
+dim(bc)         # rows and columns
+nrow(bc)        # rows only
+ncol(bc)        # columns only
+names(bc)       # column names
+head(bc, 3)     # first three rows
+tail(bc, 3)     # last three rows
+```
+
+```{r glimpse-summary}
+glimpse(bc)     # every column, type, and first values
+summary(bc)     # min / quartiles / mean / max for each numeric column
+```
+
+Each one answers a different question:
+
+| What you want to know | Use |
+|---|---|
+| How many rows × columns? | `dim()` |
+| Just rows | `nrow()` |
+| Just columns | `ncol()` |
+| The column names | `names()` |
+| What the first / last rows look like | `head()` / `tail()` |
+| Column types + a preview of values | `glimpse()` |
+| Distributions of numeric columns | `summary()` |
+
+`glimpse()` is the single most valuable function in this list.
+Make it your default first move on any tibble.
+
+# Column types — and why they matter
+
+In the `glimpse(bc)` output above, you see types like `<dbl>`
+next to each column name. The type tells you *what R thinks
+this column contains*.
+
+| Type | Means | Example |
+|---|---|---|
+| `<int>` | integer (whole numbers, no decimals) | `1987L`, `2L` |
+| `<dbl>` | double (any real number) | `216304.919` |
+| `<chr>` | character (text) | `"Vancouver"` |
+| `<lgl>` | logical | `TRUE` / `FALSE` |
+| `<fct>` | factor (categorical with a fixed set of levels) | rare on imported files |
+| `<date>` | date | `2024-09-15` |
+
+If `read_excel` reads `Fiscal_Year` as `<dbl>` but you want it as
+`<int>`, you can coerce after import:
+
+```{r coerce}
+bc$Fiscal_Year <- as.integer(bc$Fiscal_Year)
+class(bc$Fiscal_Year)
+```
+
+Most of the time the inferred types are fine. The only case
+where it matters is when something *looks* numeric but
+arrives as text (often because of an extra space or a stray
+character).
+
+## How to spot a type bug
+
+If you compute `sum(bc$Reforestation_ha)` and get the wrong
+answer — or an error message like *"non-numeric argument to
+binary operator"* — the column is probably character. Check:
+
+```{r class-check}
+class(bc$Reforestation_ha)
+```
+
+If it returns `"character"`, fix it:
+
+```r
+bc$Reforestation_ha <- as.numeric(bc$Reforestation_ha)
+```
+
+# Missing values — `NA` is its own thing
+
+In R, missing values are represented by `NA`. `NA` is **not**
+zero. It is **not** an empty string. It is its own thing: a
+flag meaning *"we do not know this value"*.
+
+## Counting NAs in one column
+
+```{r is-na-vector}
+is.na(bc$Reforestation_ha)            # logical vector — TRUE for each NA
+sum(is.na(bc$Reforestation_ha))       # how many NAs in this column
+```
+
+`is.na()` returns a logical vector of the same length as its
+input — `TRUE` for each `NA`, `FALSE` for each real value. Sum
+that vector to count the missing values (`TRUE` is treated as
+`1`, `FALSE` as `0`).
+
+## Counting NAs in every column at once
+
+```{r colsums-isna}
+colSums(is.na(bc))
+```
+
+This is the **fastest missing-value audit in R**. One line.
+Every column. Always run it after import.
+
+```{r colsums-isna-out}
+#| echo: false
+colSums(is.na(bc)) |>
+  tibble::enframe(name = "column", value = "n_missing") |>
+  kable()
+```
+
+For the BC silviculture file, every column shows `0` — there are
+no missing values, which matches what you saw in Excel for
+Chapter 1. (The Ontario file is the same — we will check in the
+exercises.)
+
+## `NA` vs `0` — a habit worth forming
+
+| Situation | What to record |
+|---|---|
+| The variable was measured and the value really is zero | `0` |
+| The variable was not measured | `NA` |
+| The plot did not exist that year | `NA` |
+| The measurement was below the detection limit | depends — see your data dictionary |
+
+Mixing these up is a silent bug class. *"Mean reforestation"*
+including 12 unmeasured years coded as `0` will be 12 zeros
+pulled into the average. Coded as `NA`, they would be skipped
+(if you use `na.rm = TRUE`).
+
+# Skipping `NA` in calculations
+
+```{r na-rm}
+# If a column had NAs, the default behaviour is:
+mean(c(1, 2, NA, 4))    # returns NA
+
+# Add na.rm = TRUE to skip missing values:
+mean(c(1, 2, NA, 4), na.rm = TRUE)   # returns 7/3 = 2.33
+```
+
+`na.rm = TRUE` is available on every aggregation function (`sum`,
+`mean`, `min`, `max`, `median`, `sd`). Add it whenever your data
+might have missing values. Forgetting it is the most common
+silent bug in first-year R.
+
+# A worked inspection — the BC file end-to-end
+
+Here is the canonical inspection sequence on a freshly imported
+file:
+
+```{r worked-inspection}
+# 1. Import
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+# 2. Dimensions and column names
+dim(bc)
+names(bc)
+
+# 3. Type + preview
+glimpse(bc)
+
+# 4. Numeric summaries
+summary(bc)
+
+# 5. Missing-value audit
+colSums(is.na(bc))
+
+# 6. Sanity-check the verification identity from Chapter 1
+identical_check <- all.equal(
+  bc$Harvested_ha + bc$Natural_Disturbance_ha,
+  bc$Total_Disturbance_ha
+)
+identical_check
+```
+
+Six lines. Six confirmations. You now know:
+
+- The file has 37 rows and 8 columns (matches Chapter 1).
+- Column names match the ReadMe (you can compare them by eye).
+- Every column is `<dbl>` — no surprise text-as-number issues.
+- The `summary()` table tells you each column's range.
+- No missing values anywhere.
+- The arithmetic identity from Chapter 1 still holds: `Harvested +
+  Natural = Total` for every row.
+
+That sequence is **what professional R analysts do every time
+they open a new file**. Do it on every dataset you touch.
+
+# First Quarto report
+
+You have been *reading* Quarto documents through this whole book.
+Now you write one.
+
+## The four parts of a `.qmd` file
+
+A Quarto file has four ingredients:
+
+| Part | Looks like | What it does |
+|---|---|---|
+| **YAML header** | `---` block at the top | Tells Quarto how to render |
+| **Markdown text** | Plain prose, headings, bullets | The reading content |
+| **Code chunks** | ```` ```{r} ... ``` ```` | R code that gets executed |
+| **Inline code** | <code>&#96;r expression&#96;</code> | One-line R inside prose |
+
+A minimal `.qmd` file:
+
+```` markdown
+---
+title: "My first Quarto report"
+format: html
+---
+
+# Introduction
+
+This report inspects the BC silviculture file.
+
+```{r}
+library(readxl)
+library(here)
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+dim(bc)
+```
+
+The file has `r nrow(bc)` rows.
+````
+
+Save as `my_first_report.qmd`. Click **Render** (or
+**Ctrl+Shift+K** / **Cmd+Shift+K**). You get a single self-contained
+HTML file.
+
+## Common chunk options
+
+Chunk options go right after the ```` ```{r} ```` line, prefixed
+with `#|`:
+
+```` markdown
+```{r}
+#| label: import-bc
+#| echo: false
+#| message: false
+#| warning: false
+
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+```
+````
+
+| Option | What it does |
+|---|---|
+| `label:` | Names the chunk (helpful when one errors) |
+| `echo: false` | Hide the code in the rendered output (just show the result) |
+| `include: false` | Run the code but hide both code and output (useful for setup) |
+| `message: false` | Hide messages from R (e.g., the tidyverse load message) |
+| `warning: false` | Hide warnings |
+| `eval: false` | Show the code but do not run it |
+| `fig.width: 6` | Plot width in inches (Chapter 9) |
+| `fig.cap: "..."` | Caption for figures |
+
+## What rendering does
+
+When you click **Render**, Quarto:
+
+1. Reads your `.qmd` file.
+2. Runs every R chunk in order, from top to bottom, in a fresh R
+   session.
+3. Captures the output (text, tables, charts).
+4. Stitches code + text + output into a single HTML file.
+5. Saves the HTML alongside the `.qmd`.
+
+The **fresh session** part is important: rendering does not use
+your interactive console. If a chunk depends on a variable that
+was only created in your console (and not in an earlier chunk),
+rendering will fail.
+
+::: {.callout-tip}
+## A reproducibility test
+
+If your `.qmd` renders cleanly from a fresh R session, your work
+is reproducible. If it does not, your work depends on state that
+no one else can see — and that is the bug.
+
+**Restart R often.** In RStudio: **Session → Restart R**
+(Ctrl+Shift+F10 / Cmd+Shift+F10). Then render. If it still works,
+you are good.
+:::
+
+# Writing a data dictionary in Quarto
+
+A data dictionary lives next to your code. In Quarto, it is just
+a Markdown table:
+
+```` markdown
+| Column | Type | Unit | Description |
+|---|---|---|---|
+| `Fiscal_Year` | integer | year | Fiscal year (April–March) |
+| `Harvested_ha` | double | hectares | Total area harvested |
+| ... | | | |
+````
+
+That renders as:
+
+| Column | Type | Unit | Description |
+|---|---|---|---|
+| `Fiscal_Year` | integer | year | Fiscal year (April–March) |
+| `Harvested_ha` | double | hectares | Total area harvested |
+| ... | | | |
+
+The point: **the dictionary travels with the analysis**. When you
+hand your `.qmd` to a colleague, they see the table and the
+code that built the numbers, in the same file.
+
+# Active learning
+
+## Activity 1 — Vectors
+
+```r
+ha <- c(220000, 180000, 250000, 190000, 210000)
+```
+
+In the console, compute:
+
+- the sum,
+- the mean,
+- the count of values greater than 200,000 (hint: `sum(ha > 200000)`),
+- the values greater than 200,000 themselves.
+
+## Activity 2 — Inspect two files
+
+Run the six-move inspection on the BC silviculture file, then
+on the Ontario forest stats file. Note the differences:
+
+```r
+ontario <- read_excel(here("data", "on_forest_statistics_1.xlsx"),
+                      sheet = "Data")
+dim(ontario); glimpse(ontario)
+```
+
+How are the column types different from the BC file? Which file
+has any character columns?
+
+## Activity 3 — Missing-value audit
+
+Run `colSums(is.na(bc))` and `colSums(is.na(ontario))`. Are there
+any missing values? Confirm against what you saw in Excel for
+Chapters 1 and 2.
+
+## Activity 4 — Render your first Quarto report
+
+Open the chapter learner file `frst232_ch05_learner.qmd`.
+Render it. Confirm the HTML opens and shows all expected output.
+
+## Activity 5 — Break and fix
+
+In `frst232_ch05_learner.qmd`, deliberately misspell
+`Reforestation_ha` somewhere. Render. Read the error message
+carefully. Fix it. Re-render. The error message taught you
+something useful — what?
+
+# Lab session — Excel midterm
+
+::: {.callout-important appearance="default"}
+## The lab session for Chapter 5 is the Excel midterm
+
+There is no separate practice lab this chapter. The lab session
+is given over to the **Excel midterm**, covering material from
+Chapters 1–3:
+
+- Importing and inspecting an Excel workbook (Chapter 1).
+- Cleaning, summarizing, and writing formulas (Chapter 2).
+- Visualization and PivotTables (Chapter 3).
+
+The midterm is closed-AI but open-notes. Bring a laptop with
+Excel installed (or use the lab computers). The teaching team will
+provide a midterm-specific workbook at the start of the session.
+
+**What to do before the lab:**
+
+- Re-read the Chapter 1, 2, and 3 *Expected output* callouts.
+- Make sure your laptop has Excel working.
+- Bring your `bc_disturbance_reforestation.xlsx` and
+  `on_forest_statistics_1.xlsx` files in case the midterm
+  references them.
+
+**What is NOT on the midterm:**
+
+- R code.
+- Quarto rendering.
+- Anything from Chapter 4 or Chapter 5.
+
+The R material is assessed through homework exercises, the
+chapter quizzes, and the final exam at the end of the term.
+:::
+
+# Group activity — Peer review of Quarto reports
+
+Outside the midterm session, run this peer-review activity at any
+time during the chapter (e.g., during a lecture session).
+
+::: {.callout-note appearance="default"}
+## Group: Peer review a rendered HTML report
+
+Work in pairs (or threes). Each member should have a rendered
+`frst232_ch05_learner.html` to share.
+
+**Task 1 — Swap.** Each person sends their rendered HTML to the
+person on their left. Open it in a browser.
+
+**Task 2 — Score each other's report** using this rubric:
+
+| Criterion | 0 | 1 | 2 |
+|---|---|---|---|
+| Renders without error | Did not render | Renders with warnings | Renders cleanly |
+| `dim()`, `names()`, `glimpse()` visible | Missing | Present but unclear | Clearly visible |
+| Missing-value summary present | Missing | Present but unexplained | Present with note |
+| Data dictionary table | Missing | Incomplete | Complete and readable |
+| Two-sentence prose summary | Missing | Vague | Specific to the file |
+
+**Task 3 — Give one piece of constructive feedback** in writing.
+What is the strongest part of the report? What would you change?
+
+**Task 4 — Submit.** Submit your peer-review rubric (with your
+own name and the author's name) to the course site.
+
+This activity is designed to fit inside a single lecture session.
+:::
+
+# Exercises
+
+These are the take-home exercises that go with this chapter.
+
+1. Run the **six-move inspection** sequence on the BC silviculture
+   file. Copy the output of each function into your `.qmd` file
+   inside R chunks.
+
+2. Run the same six-move inspection on the **Ontario file**.
+   Compare the two outputs. Which file has character columns?
+   How many?
+
+3. Compute the **missing-value summary** for both files using
+   `colSums(is.na(...))`. Are there any missing values?
+
+4. Build a **data dictionary table** for the BC silviculture file
+   in your `.qmd`, in the format shown in this chapter. Each row
+   should have *Column*, *Type*, *Unit*, *Description*.
+
+5. Use **vectorized arithmetic** to compute the ratio
+   `Reforestation_ha / Total_Disturbance_ha` for every year. Save
+   the result as a new vector. How many years had a ratio greater
+   than 1?
+
+6. Use **`summary(bc)`** to find the **median** of
+   `Total_Disturbance_ha`. Confirm it matches the value you would
+   compute with `median(bc$Total_Disturbance_ha)`.
+
+7. **Restart R** (Session → Restart R). Re-render your
+   `frst232_ch05_learner.qmd` from scratch. Confirm it renders
+   without errors. (If it does not, fix what depends on hidden
+   console state.)
+
+8. **Optional, harder.** Write a tiny R function called
+   `inspect_file()` that takes a tibble and prints `dim`,
+   `names`, `glimpse`, and `colSums(is.na(...))` all at once.
+   Apply it to `bc` and `ontario`.
+
+# Optional, advanced
+
+## Lists — the catch-all data structure
+
+A **list** in R is like a vector except its elements can be of
+different types. A tibble is technically a list of equal-length
+vectors.
+
+```r
+my_list <- list(name = "BC silviculture",
+                rows = 37,
+                cols = 8,
+                tibble = bc)
+my_list$name
+my_list$tibble
+```
+
+You will use lists in Chapter 11 when working with spatial data
+(where each "row" is a complex geometry).
+
+## Factors — categorical variables with order
+
+A **factor** is a vector with a fixed set of allowed values
+(levels). Useful when you want ordered categories (`small` <
+`medium` < `large`) or when a categorical variable has a known
+set of valid values.
+
+```r
+size <- factor(c("small", "large", "medium", "large"),
+               levels = c("small", "medium", "large"))
+size
+```
+
+We will use factors more in Chapter 9 (ggplot2 axis ordering).
+
+## Locking column types at import time
+
+If `read_excel` or `read_csv` guesses a column type wrong, you
+can override it:
+
+```r
+read_csv("file.csv",
+         col_types = cols(
+           plot_id = col_character(),
+           dbh_cm = col_double(),
+           date_measured = col_date(format = "%Y-%m-%d")
+         ))
+```
+
+This is overkill for clean BC and Ontario files. It becomes
+useful when you import messy real-world CSVs in Chapter 6.
+
+# A glimpse of Chapter 6: From inspection to cleaning
+
+In Chapter 6 you move from *inspecting* to *cleaning*. The core
+moves of `dplyr`:
+
+| What you want to do | Excel (Ch 2) | dplyr verb (Ch 6) |
+|---|---|---|
+| Keep some rows | AutoFilter | `filter()` |
+| Add a new column | `=A2+B2` in a new column | `mutate()` |
+| Sort | Data → Sort | `arrange()` |
+| Keep only some columns | Delete columns | `select()` |
+| Group and summarise | PivotTable | `group_by() |> summarise()` |
+| Look up from a reference | `VLOOKUP` | `left_join()` |
+| Recode values | `IFS` | `case_when()` |
+
+**Every Excel cleaning move you learned in Chapter 2 has a one-line
+dplyr equivalent.** The names are short, the pattern is
+consistent, and once you know the six verbs above, you can clean
+almost any real-world dataset.
+
+Chapter 6 walks through each verb on the BC air-quality dataset
+(`airdata3.csv`) — a messier file than what you have seen so far,
+with actual missing values, mixed date formats, and the kind of
+problems that real forestry data presents.
+
+# Self-assessment quiz {#sec-quiz-ch05}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. What is a vector in R?</div>
+  <ul class="qopts">
+    <li data-correct="false">A graphical chart</li>
+    <li data-correct="true">An ordered sequence of values, all of the same type</li>
+    <li data-correct="false">A file format</li>
+    <li data-correct="false">The same as a list</li>
+  </ul>
+  <div class="explanation">Vectors are the building block of R. A vector has a single type — logical, integer, double, or character — and a length.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. <code>c(1987, 1988, 1989)</code> is a vector of which type?</div>
+  <ul class="qopts">
+    <li data-correct="false">integer (<int>)</li>
+    <li data-correct="true">double (<dbl>)</li>
+    <li data-correct="false">character (<chr>)</li>
+    <li data-correct="false">logical (<lgl>)</li>
+  </ul>
+  <div class="explanation">Numbers without an <code>L</code> suffix are doubles by default. <code>c(1987L, 1988L, 1989L)</code> would be integer.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. A tibble is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A new programming language</li>
+    <li data-correct="true">A tidyverse-flavored data.frame — a rectangular table where each column is a vector</li>
+    <li data-correct="false">A type of chart</li>
+    <li data-correct="false">A statistical model</li>
+  </ul>
+  <div class="explanation">Tibbles are the tidyverse's default rectangular structure. They print better than data.frames and show column types.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. In a tibble printout, you see <code>&lt;dbl&gt;</code> under a column name. What does that mean?</div>
+  <ul class="qopts">
+    <li data-correct="false">The column has no values</li>
+    <li data-correct="true">The column is a double (any real number)</li>
+    <li data-correct="false">The column is text</li>
+    <li data-correct="false">The column has been deleted</li>
+  </ul>
+  <div class="explanation"><code>&lt;dbl&gt;</code> = double-precision number. <code>&lt;int&gt;</code> = integer. <code>&lt;chr&gt;</code> = character (text). <code>&lt;lgl&gt;</code> = logical.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. To import a CSV file in R, you would use —</div>
+  <ul class="qopts">
+    <li data-correct="false">read_excel()</li>
+    <li data-correct="true">read_csv()</li>
+    <li data-correct="false">read_pdf()</li>
+    <li data-correct="false">open()</li>
+  </ul>
+  <div class="explanation"><code>read_csv()</code> from the <code>readr</code> package (part of tidyverse) reads comma-separated files into a tibble. <code>read_excel()</code> is for <code>.xlsx</code> files only.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. <code>colSums(is.na(bc))</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The sum of every column</li>
+    <li data-correct="true">A named vector giving the number of missing (NA) values in each column</li>
+    <li data-correct="false">Whether the file is complete</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation"><code>is.na(bc)</code> returns a logical matrix (TRUE for each NA). <code>colSums()</code> adds the TRUEs per column. One line, complete missing-value audit.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. <code>NA</code> in R means —</div>
+  <ul class="qopts">
+    <li data-correct="false">Zero</li>
+    <li data-correct="false">An empty string</li>
+    <li data-correct="true">Missing — the value is unknown</li>
+    <li data-correct="false">North America</li>
+  </ul>
+  <div class="explanation"><code>NA</code> is its own value type. Mixing it up with 0 is a silent bug: an unmeasured year recorded as 0 will be pulled into averages; recorded as NA, it will be skipped if you use <code>na.rm = TRUE</code>.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. <code>mean(c(1, 2, NA, 4))</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">2.33</li>
+    <li data-correct="true">NA</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">7</li>
+  </ul>
+  <div class="explanation">By default, R refuses to silently ignore missing values. Add <code>na.rm = TRUE</code> to skip them: <code>mean(c(1,2,NA,4), na.rm = TRUE)</code> returns 2.33.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. Which function gives the most useful one-line preview of every column in a tibble (name, type, and first values)?</div>
+  <ul class="qopts">
+    <li data-correct="false">dim()</li>
+    <li data-correct="false">summary()</li>
+    <li data-correct="true">glimpse()</li>
+    <li data-correct="false">head()</li>
+  </ul>
+  <div class="explanation"><code>glimpse()</code> shows every column, its type, and a preview of the first values — like a richer version of Excel's status bar.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. <code>summary(bc)</code> on a tibble of numeric columns returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The R version</li>
+    <li data-correct="true">For each column: Min, 1st Quartile, Median, Mean, 3rd Quartile, Max (and NA count if any)</li>
+    <li data-correct="false">Only the column names</li>
+    <li data-correct="false">A chart</li>
+  </ul>
+  <div class="explanation"><code>summary()</code> produces the five-number summary plus the mean for each numeric column. For character columns it just notes the type.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. A Quarto <code>.qmd</code> file has four main parts. Which is NOT one of them?</div>
+  <ul class="qopts">
+    <li data-correct="false">YAML header</li>
+    <li data-correct="false">Markdown text</li>
+    <li data-correct="false">Code chunks</li>
+    <li data-correct="true">A standalone CSS file</li>
+  </ul>
+  <div class="explanation">The four parts: YAML header, Markdown text, code chunks (```` ```{r} ... ``` ````), and inline R code (<code>&#96;r ...&#96;</code>). CSS can be customized but is not a required part.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. Inside a Quarto code chunk, what does <code>#| echo: false</code> do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Skips the chunk entirely</li>
+    <li data-correct="true">Hides the code in the rendered HTML; still shows the output</li>
+    <li data-correct="false">Hides the output; still shows the code</li>
+    <li data-correct="false">Stops the chunk after one second</li>
+  </ul>
+  <div class="explanation"><code>echo: false</code> shows the output but hides the source code. Use it for the setup chunk and for any code your reader does not need to see.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. When you click <strong>Render</strong> in RStudio, Quarto —</div>
+  <ul class="qopts">
+    <li data-correct="false">Just exports the .qmd file as text</li>
+    <li data-correct="true">Runs every code chunk in order in a fresh R session and produces a self-contained HTML (or PDF) file</li>
+    <li data-correct="false">Asks an AI to render the document</li>
+    <li data-correct="false">Saves the file to the cloud</li>
+  </ul>
+  <div class="explanation">Render = run every chunk top-to-bottom in a fresh session + assemble code, text, and output into one HTML. The fresh session is what makes rendering a reproducibility test.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. <code>bc$Fiscal_Year</code> is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A tibble</li>
+    <li data-correct="true">A vector — the Fiscal_Year column of the bc tibble</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">A function</li>
+  </ul>
+  <div class="explanation">Using <code>$</code> on a tibble returns a single column as a vector. <code>bc[, "Fiscal_Year"]</code> on a tibble returns a one-column tibble, not a vector.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. <code>ha &gt; 200000</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">A single number</li>
+    <li data-correct="true">A logical vector — TRUE or FALSE for each element of ha</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">The number of values greater than 200,000</li>
+  </ul>
+  <div class="explanation">Comparison in R is vectorized: each element of <code>ha</code> is compared to 200000, returning a parallel logical vector. To count how many are TRUE, wrap with <code>sum()</code>.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Inside a Quarto chunk, you write code that uses a variable created only in your interactive console. When you Render, what happens?</div>
+  <ul class="qopts">
+    <li data-correct="false">It works fine — Quarto sees the console</li>
+    <li data-correct="true">It fails — Render runs in a fresh R session that does not see console state</li>
+    <li data-correct="false">It works only on Posit Cloud</li>
+    <li data-correct="false">It runs the chunk twice</li>
+  </ul>
+  <div class="explanation">Render uses a fresh session. Everything the document depends on must be created inside a chunk. This is the whole point of Quarto being reproducible.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. The Excel midterm is held —</div>
+  <ul class="qopts">
+    <li data-correct="false">Online, asynchronously</li>
+    <li data-correct="true">During the Chapter 5 lab session</li>
+    <li data-correct="false">At the end of the term</li>
+    <li data-correct="false">There is no midterm</li>
+  </ul>
+  <div class="explanation">The Chapter 5 lab session is given over to the midterm. The midterm covers Chapter 1, 2, and 3 (Excel) material.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. Which is the closest equivalent of Excel's status-bar "Count = 35 but I selected 37 cells" warning?</div>
+  <ul class="qopts">
+    <li data-correct="false">summary(bc)</li>
+    <li data-correct="false">dim(bc)</li>
+    <li data-correct="true">colSums(is.na(bc)) — a non-zero entry means that column has missing or non-numeric cells</li>
+    <li data-correct="false">head(bc)</li>
+  </ul>
+  <div class="explanation">In Excel, status-bar Count &lt; selection size meant some cells were text-not-number. In R, <code>colSums(is.na(...))</code> per column tells you the same thing more precisely.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. What is the main difference between a tibble and a data.frame in this course?</div>
+  <ul class="qopts">
+    <li data-correct="false">Tibbles cannot hold text</li>
+    <li data-correct="true">Tibbles print better (first 10 rows, column types shown) and are the default in tidyverse imports</li>
+    <li data-correct="false">data.frames are faster</li>
+    <li data-correct="false">There is no difference</li>
+  </ul>
+  <div class="explanation">For most operations, a tibble IS a data.frame (it inherits from it). The differences matter for printing, subsetting (<code>tibble[, "col"]</code> returns a tibble, not a vector), and consistency with tidyverse functions.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Now that you have rendered a Quarto report, how does the experience compare to submitting an Excel workbook? What is easier? What is harder?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common reflections: <em>easier — every number in the report is traceable to the code that produced it</em> · <em>harder — getting the YAML header right the first time</em> · <em>easier — re-running with a new dataset doesn't require redoing every chart and table</em> · <em>harder — error messages on render are scary at first</em> · <em>aha moment — the Quarto report carries its own data dictionary AND its own analysis, in one file.</em></div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"My Quarto document fails to render with the error
+  `object 'bc' not found`. The variable works fine in my console.
+  What might be wrong?"* (Hint: fresh-session rendering.)
+
+- *"Explain this output of `glimpse(bc)` line by line:"* (paste
+  the glimpse output)
+
+- *"I imported a CSV with `read_csv` and one of my numeric columns
+  was read as character. What's the most common cause and how do
+  I fix it?"*
+
+## A prompt template for the rest of the course
+
+When you ask AI for help with R code, include four things:
+
+1. Your R version (`R.version.string`).
+2. The packages you have loaded (the top of your `.qmd`).
+3. The exact code you ran.
+4. The exact error message (copy-paste, do not paraphrase).
+
+Without these four, the answer will be too generic to use.
+
+## Verifying AI's answers
+
+After AI suggests a fix, **check**:
+
+1. Run the suggested code in your console. Does it work?
+2. Does the result match what you expect from
+   `glimpse()`, `summary()`, or a manual count?
+3. If AI rewrites a chunk for you, render the whole document
+   afterwards to confirm nothing else broke.
+
+## When *not* to use AI
+
+- Do not let AI write your data dictionary. The dictionary
+  describes *your* analysis decisions.
+- Do not let AI hide an unexplained behaviour with a `try()` or
+  `suppressWarnings()`. Warnings exist for a reason — read them.
+:::
+
+# Reading
+
+- *R for Data Science* — chapter 2 *Workflow: basics* and chapter
+  8 *Data import*. Free at <https://r4ds.hadley.nz/>.
+- *Quarto official guide* — <https://quarto.org/docs/guide/>.
+  Start with *Authoring* → *Markdown Basics* and *Computations*
+  → *R*.
+- Jenny Bryan, *"Naming things"* — short lecture on file naming
+  conventions: <https://speakerdeck.com/jennybc/how-to-name-files>.
+- The `readxl` documentation: <https://readxl.tidyverse.org/>.
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- The chapter has two big new ideas: **vectors / tibbles** (the
+  R type system) and **Quarto** (the new deliverable format).
+  Spend time on both; do not rush past the YAML header.
+- The **missing-value audit** (`colSums(is.na(bc))`) is the
+  single most useful one-line R command in this chapter. Use
+  it in your live demo.
+- **Quarto rendering must succeed before submission.** Many
+  learners will hand in a `.qmd` that does not render. Build
+  the "render from a fresh session" check into the grading
+  rubric.
+
+## Excel midterm logistics
+
+- The lab session for this chapter is the midterm.
+- Material is Chapter 1, 2, 3 Excel only.
+- Recommended midterm structure: one 90-minute Excel deliverable
+  (single workbook) with sections on importing, cleaning,
+  summarizing, and a PivotTable. Provide a starter file at the
+  start of the session.
+- Closed-AI, open-notes. Learners may use the chapter materials
+  but not generative-AI tools.
+- TAs should be prepared for *"my Excel won't open"* support
+  questions at the start of the session — have a backup
+  computer ready.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. `frst232_ch05_learner.html` (rendered) with imports for both
+   BC and Ontario files.
+2. `frst232_ch05_learner.qmd` (source).
+3. Excel midterm completed in the lab session.
+4. Peer-review worksheet (during the lecture peer-review
+   activity).
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `bc_disturbance_reforestation.xlsx` | Raw BC silviculture (from Ch 1, unchanged). |
+| `on_forest_statistics_1.xlsx` | Raw Ontario forest stats (from Ch 2, unchanged). |
+| `frst232_ch05_learner.qmd` | Quarto starter with TODO chunks for each exercise. |
+| `frst232_ch05_solutions.qmd` | Completed Quarto document. **Do not distribute to learners.** |
+| `quiz_ch05.html` | Standalone interactive quiz. |
+
+## Common stumbling points
+
+- **"Object not found on render."** Almost always: the variable
+  was created in the console, not in a chunk. Solution: Restart
+  R, then re-render.
+- **YAML errors.** Quarto is fussy about the YAML header.
+  Indentation must use spaces (no tabs); the `---` fences must
+  be on their own lines.
+- **`library(tidyverse)` not run in the setup chunk.** Then the
+  first chunk that uses a tidyverse function errors. Make sure
+  the setup chunk has `include: false` (runs but is hidden)
+  and loads every package the document needs.
+- **NA confusion.** Some learners conflate NA with 0 when they
+  see a "missing value count of 0" — they think *"so there are
+  zero values?"*. Walk through the distinction explicitly.
+- *Excel-to-R bridge:* The most important sentence in this
+  chapter is *"every move you used to do by looking at Excel is
+  now a scripted R call"*. Refer back to it whenever a learner
+  asks why a particular function exists.
+:::

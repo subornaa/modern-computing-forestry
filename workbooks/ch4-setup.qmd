@@ -1,0 +1,430 @@
+---
+title: "Chapter 1: Why R? Why Now? Setting Up Your Reproducible Workspace"
+subtitle: "Install R, RStudio, and Quarto, set up a project, and write your first reproducible script."
+author:
+  - name: "Dr. Suborna Ahmed"
+    affiliation: "Forest Resources Management, Faculty of Forestry, UBC"
+date: today
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(here)
+# Source helpers if available
+if (file.exists(here("R", "forestry_helpers.R"))) {
+  source(here("R", "forestry_helpers.R"))
+}
+```
+
+::: {.callout-note appearance="minimal" icon="false"}
+## About This Chapter
+
+Install R, RStudio, and Quarto, set up an RStudio Project with a logical folder layout, and write your first reproducible script using a real Canadian wildfire dataset.
+:::
+
+## Learning Objectives {#sec-ch01-objectives}
+
+By the end of this chapter, you will be able to:
+
+1.  Explain why R is widely used in forestry and natural resources.
+2.  Install R, RStudio, Quarto, `tidyverse` and other packages.
+3.  Create an RStudio Project with a logical folder structure.
+4.  Use the `here` package for portable, project-relative file paths.
+5.  Render a first Quarto document that loads a real BC forestry dataset.
+
+## Why This Matters {#sec-ch01-why}
+
+**Our objective:** Understand *why* this course uses R instead of manual tools or software, and *why* we care so much about reproducible workflows.
+
+R is the most widely used language for ecological and forestry data analysis, and it is **free** and **open source**. Equally important, R fits naturally into a *reproducible research* workflow: every analytical step is written down as code, anyone can re-run it, and your future self thanks you for organizing things properly today.
+
+Compared to Excel or Google Sheets, R works much faster on the kind of large datasets that forestry produces think of inventory plots with hundreds of thousands of trees, or wildfire records spanning decades. R can also be **automated**: instead of clicking through menus, you write a script once and re-run it any time the data is updated. And R produces publication-quality graphs and tables in the same workflow that does the analysis.
+
+Real examples of R in BC forestry and natural resources:
+
+1.  **UBC Faculty of Forestry** researchers use R for tree-growth modelling, biodiversity analysis, and remote-sensing workflows.
+2.  **Parks Canada and the BC Ministry of Forests** use R to analyze long-term ecological monitoring data from permanent sample plots.
+3.  **BC Wildfire Service** uses R-based fire behaviour models and post-fire severity assessments to plan suppression and recovery.
+4.  **Forest carbon accounting projects** across Canada use R to convert tree inventory data into province-level greenhouse gas estimates.
+
+## Datasets Used in This Chapter {#sec-ch01-data}
+
+| Dataset | Source | Format | Role |
+|------------------|------------------|------------------|------------------|
+| `nfdb_fires_2021_2024.csv` | Canadian National Forestry Database (NFDB), Natural Resources Canada | CSV (attribute table from the NFDB polygon shapefile) | Demo dataset for our first plot |
+| R built-in `trees` | Base R | data frame | Comparison example only |
+
+The NFDB wildfire dataset contains every reported wildfire in Canada from 2021 to 2024, with one row per fire and columns for the year, source agency (province), size in hectares, and cause. It is published openly at <https://cwfis.cfs.nrcan.gc.ca/datamart>. For this chapter we will focus on the 1,929 wildfires that occurred in British Columbia.
+
+## Installation Walkthrough: R, RStudio, Quarto, tidyverse {#sec-ch01-s1}
+
+**Our objective:** Install the three tools (R, RStudio, Quarto) that everything in this course depends on, plus the `tidyverse` package collection.
+
+You only do this once on your computer. After this section, you will not need to install anything again for the rest of the course.
+
+### Step 1: Install R
+
+**R** is the *programming language* that runs your calculations. Download and install it from <https://cloud.r-project.org/> and follow the instructions for your operating system:
+
+- **Windows:** Go directly to <https://cloud.r-project.org/bin/windows/base/> and click the download link.
+- **macOS:** Go directly to <https://cloud.r-project.org/bin/macosx/> and download the most recent version. You will also need to install [XQuartz](https://www.xquartz.org/) before installing R.
+- **Linux:** Go directly to <https://cloud.r-project.org/> and follow the instructions for your specific distribution.
+
+::: {.callout-tip icon="false"}
+## 🔍 Why use the latest version
+
+Install the latest stable release. Older R versions sometimes fail to install newer packages, which causes hours of frustration later.
+:::
+
+### Step 2: Install RStudio
+
+**RStudio** is the editor for R and Quarto files called an **IDE** (Integrated Development Environment) where you will write and run your R code. Download the free **RStudio Desktop** version from <https://posit.co/downloads>.
+
+If you cannot install RStudio Desktop on your machine for any reason, the free [Posit Cloud](https://posit.cloud/) is a fully functional online alternative. Note that on Posit Cloud you have to install `tidyverse` separately for every new project.
+
+Once you open RStudio, you will see the following panes. The names of each pane are in red. ![An example of the RStudio dashboard with names of panes in RStudio](images/screen-rstudiopanes.png)
+
+### Step 3: Install Quarto
+
+**Quarto** is the reporting tool that turns your R code into nicely formatted documents, slides, and books. Quarto is bundled with recent versions of RStudio, so if you installed RStudio in Step 2, you already have it.
+
+To confirm Quarto is installed, open RStudio and look for the **Terminal** in the **Console** pane and copy the following code:
+
+```{r}
+#| eval: false
+quarto --version
+```
+
+![Terminal in Console pane, Place your code in the space beside the file path (where the black box is).](images/screen-quartocheck.png){fig-alt="Console tab, Terminal tab, below is a file path with quarto --version copied. RStudio returns the version number 1.8.27" width=95%}
+
+If you see a version number, you are good to go. If not, download Quarto from <https://quarto.org/docs/get-started/>.
+
+### Step 4: Install the `tidyverse` package collection
+
+**Our objective:** Install one set of packages that will do most of the heavy lifting in this course.
+
+The [`tidyverse`](https://tidyverse.org/) is a collection of R packages designed to work together for data science. Select the **Console** tab in the **Console** pane, and copy the code below:
+
+```{r}
+#| eval: false
+install.packages("tidyverse")
+```
+
+![Console in Console pane, Place your code beside the arrow to run it](images/screen-installtidyverse.png){fig-alt="console panel console tab, right arrow with pasted code to its right"}
+
+You only need to install a package once. After that, every time you start a new R session, you load it in your program with the code:
+
+```{r}
+#| eval: false
+library(tidyverse)
+```
+
+The full set of packages inside `tidyverse` is shown below. You can load them all at once with `library(tidyverse)`, or load them one at a time if you prefer.
+
+```{r}
+#| label: tbl-ch01-tidyverse
+#| tbl-cap: "The tidyverse package collection."
+#| echo: false
+
+tibble::tribble(
+  ~Package,     ~`Load with`,             ~Purpose,
+  "ggplot2",    "library(ggplot2)",       "Creating graphs and visualizations",
+  "dplyr",      "library(dplyr)",         "Manipulating data frames (filter, select, summarise)",
+  "tidyr",      "library(tidyr)",         "Reshaping and tidying tables (pivot_longer, pivot_wider)",
+  "readr",      "library(readr)",         "Reading and writing CSV files efficiently",
+  "purrr",      "library(purrr)",         "Applying functions over lists and vectors",
+  "tibble",     "library(tibble)",        "A modern, friendlier version of data frames",
+  "stringr",    "library(stringr)",       "Working with text strings",
+  "forcats",    "library(forcats)",       "Working with categorical variables (factors)",
+  "lubridate",  "library(lubridate)",     "Handling dates and date-time data"
+) |>
+  knitr::kable()
+```
+
+We will also need to install a few more libraries to make our workflow smoother, 
+
+```{r}
+#| eval: false
+install.packages("here", "janitor", "skimr",
+"scales", "patchwork", "plotly",
+"sf", "terra", "tmap", "leaflet",
+"knitr", "kableExtra", "gt",
+"learnr", "shiny")
+```
+
+![R is the engine, RStudio is the dashboard, and Quarto is the reporting tool. All three are free and work together.](images/r_rstudio_quarto.png){fig-alt="Diagram showing R, RStudio, and Quarto and how they relate" width="95%"}
+
+::: {.callout-note icon="false"}
+## 🔍 Loading `tidyverse` packages
+
+Loading `tidyverse` once with `library(tidyverse)` actually loads all nine packages above. You don't need to remember each individual `library()` call.
+:::
+
+## From Spreadsheets to Reproducible Code {#sec-ch01-s2}
+
+**Our objective:** See *why* writing a short R script is more trustworthy than the same calculation in a spreadsheet.
+
+Before you write a single line of analysis, you need a workspace that supports this kind of work. This chapter sets up the foundation that every subsequent chapter relies on.
+
+Most natural-resource analyses begin in a spreadsheet. That is fine for data entry, but spreadsheets quickly become unreproducible: cells get edited by hand, formulas drift, and nobody remembers what was changed. R replaces that workflow with **scripts**, instructions that produce the same answer every time.
+
+```{r}
+#| label: ch01-s1-demo
+# Three lines that show the philosophy
+tree_heights_m <- c(18.2, 21.5, 17.9, 25.3, 19.6)
+mean_height <- mean(tree_heights_m)
+mean_height
+```
+
+::: {.callout-tip icon="false"}
+## 🔍 Reproducible code
+
+The line `mean_height <- mean(tree_heights_m)` is a *recipe*: it always produces the same answer from the same data. A spreadsheet cell that shows the same number gives you no such guarantee someone could overwrite the formula tomorrow and you would never notice.
+:::
+
+### RStudio Projects and `here()` {#sec-ch01-s3}
+
+**Our objective:** Organize all the files for one analysis (scripts, data, outputs) into a single folder that can be shared with anyone and never have to edit a file path again.
+
+An **RStudio Project** is a self-contained folder that keeps your scripts, data, and outputs together. Always start a new analysis by creating a Project: in RStudio, choose **File → New Project** and select the **New Directory**.
+
+In the **Output** pane select the **Files** tab, click the ![](images/icon-newfile.png) **new file** button and create an R Script. We can run code like the one below in the R script file, you can copy and the code below onto R studio.
+
+![Files tab Output pane, click the new file button and select the file type you want to create](images/screen-makerscript.png){fig-alt="files tab in the output pane, beside the + folder button, there is a + file button with a dropdown of file types that can be created in your folder"}
+
+The `here` package will make your code more portable: it runs on your laptop, on a colleague's computer, and on a server, with no path edits.
+
+```{r}
+#| label: ch01-s2-demo
+library(here)
+# here() always points to your project root
+here()
+# accesses the "nfdb_fires_2021_2024.csv" from the "data" folder in the same directory as your project
+here("data", "nfdb_fires_2021_2024.csv")
+```
+
+::: {.callout-tip icon="false"}
+## 🔍 `setwd()` VS. `here()`
+
+Compare this to `setwd("C:/Users/Jane/Desktop/...")` the code breaks the moment your project moves to a new machine, because nobody else has the same username or desktop layout. `here()` does not break. It just asks RStudio "where is the project I'm currently working on?" and builds the path from there.
+:::
+
+## Organizing and Naming R Project Files {#sec-ch01-organize}
+
+```{r}
+#| label: tbl-ch01-summary
+#| tbl-cap: "Recommended folder layout for a forestry R project."
+
+tibble::tribble(
+  ~Folder,        ~Contains,
+  "data/",        "Raw and cleaned datasets",
+  "R/",           "Reusable functions",
+  "scripts/",     "Numbered analysis scripts",
+  "outputs/",     "Saved tables, figures, derived data",
+  "reports/",     "Quarto reports and rendered HTML/PDF",
+  "renv/",        "Locked package versions (added in Ch. 13)"
+) |>
+  knitr::kable()
+```
+
+## Real Forestry Application {#sec-ch01-viz}
+
+**Our objective:** Confirm that everything we installed works, by loading a real BC wildfire dataset and producing a meaningful plot in one short script.
+
+This is the kind of plot a wildfire analyst or fire-ecology researcher might create as a first look at the data: how many fires happened each year in British Columbia between 2021 and 2024, and how many hectares did each one burn?
+
+```{r}
+#| label: fig-ch01-main
+#| fig-cap: "BC wildfires from 2021 to 2024: number of fires per year, sized by area burned (hectares). Data: Canadian National Forestry Database."
+#| fig-width: 8
+#| fig-height: 5
+
+# Read the wildfire data from the data/ folder
+fires <- read_csv(here("data", "nfdb_fires_2021_2024.csv"))
+
+# Keep only BC fires with a recorded size, and label the cause.
+# NFDB cause codes: N = Natural (mostly lightning), H = Human,
+# H-PB = Human - prescribed burn, U = Unknown.
+bc_fires <- fires |>
+  filter(SRC_AGENCY == "BC", SIZE_HA > 0) |>
+  mutate(Cause = case_when(
+    CAUSE == "N"    ~ "Natural (lightning)",
+    CAUSE == "H"    ~ "Human",
+    CAUSE == "H-PB" ~ "Prescribed burn",
+    TRUE             ~ "Unknown"
+  ))
+
+# Plot: one point per fire, jittered by year, sized by hectares burned
+ggplot(bc_fires, aes(x = factor(YEAR), y = SIZE_HA, colour = Cause)) +
+  geom_jitter(alpha = 0.6, width = 0.25, size = 1.5) +
+  scale_y_log10(labels = scales::comma) +
+  scale_colour_manual(values = c("Natural (lightning)" = "#2D6A4F",
+                                 "Human"               = "#E76F51",
+                                 "Prescribed burn"     = "#F4A261",
+                                 "Unknown"             = "#8D99AE")) +
+  labs(x = "Year", y = "Fire size (hectares, log scale)",
+       title = "BC wildfires, 2021–2024",
+       subtitle = "Each point is one fire; natural (lightning-caused) fires dominate",
+       colour = "Cause") +
+  theme_minimal(base_size = 12)
+```
+
+::: {.callout-tip icon="false"}
+## 🔍 Data Interpretation
+
+Two patterns stand out:
+
+1.  **Natural causes (mostly lightning)** account for roughly 70% of BC wildfires in this period about 1,360 of the 1,920 fires shown. Human-caused fires are concentrated near urban-interface areas and tend to be smaller on average.
+2.  **2023** was a remarkable year. The cluster of large fires is visibly denser than in 2021 or 2022, matching what BC residents experienced on the ground.
+
+This is exactly the kind of quick, exploratory plot R is designed for. With one short script we have moved from a raw CSV to an interpretable picture and the script will produce the same picture every time, on any computer.
+:::
+
+## Notebook-to-Report Writing Guidance {#sec-ch01-reporting}
+
+**Our objective:** Turn our graphs and analysis from R and `tidyverse` into an organized professional report through Quarto.
+
+### Creating a Quarto Document
+
+To create a Quarto file, go the **Output** pane and select the **Files** tab. Click the ![](images/icon-newfile.png) **new file** button and create a ![](images/icon-newquarto.png) Quarto Document.
+
+::: {.callout-tip icon="false"}
+## 🔍 Creating files in R Projects
+
+There are many ways to create files on RStudio! However by creating files in the **Output** pane, you ensure that the file is saved within the same R Project folder. You can also manage the files you're working on without having to open your file explorer at the same time.
+:::
+
+In a Quarto Document, you can create formatted text like you would in MS Word or any other text editor. One of the many advantages of Quarto is that formatting can be done by coding. This makes *italic* text and other formatted text easier to detect while writing. Rather than selecting on a separate menu to create a header, you can write \# to make the text into a header. You can read more formatting tips on Quarto's website [here](https://quarto.org/docs/authoring/markdown-basics.html).
+
+```         
+Basic text
+*Italic text*
+**Bold text**
+***Bold and Italic text***
+
+# Header 1
+
+## Header 2
+
+### Header 3
+```
+
+An important feature of Quarto is the ability to embed an R code. To embed R code in your Quarto document, go to the top-right of the **Source** pane and press ![](images/icon-insertchunk.png) insert chunk on the top-right. If you select ![](images/icon-insertchunkr.png), you will create a R code chunk like below:
+
+![R code chunk, you can insert your code in the empty space inside the grey box](images/screen-rchunk.png){fig-alt="grey box surrounds text with \\ with r inside curly brackets at the beginning of grey box" width="95%"}
+
+You can then insert the code we made earlier{fig-ch01-main} inside the R code chunk. When you share the Quarto document, the `ggplot2` graph created will be shown. While that would make the Quarto document really awesome, you need to ensure that the graph and code being reported is understandable and organized. In every chapter we will have a note with guidelines to remind you how to format your Quarto Document report.
+
+::: {.callout-note icon="false"}
+## 📝 From Notebook to Report
+
+When you turn this chapter's analysis into a section of a professional report:
+
+- Open with a one-paragraph **methods** statement describing what was done and on what data, with a citation to the data source.
+- Show the summary table (@tbl-ch01-summary) with `echo: false` so the code is hidden but the result remains.
+- Show the main figure (@fig-ch01-main) with a complete caption and `echo: false`.
+- Hide intermediate cleaning and wrangling steps with `#| include: false`.
+- Close with 3–5 sentences interpreting the result for a non-technical audience (a manager, a regulator, an interdisciplinary collaborator).
+:::
+
+To export the Quarto document, you would click the ![](images/icon-renderquarto.png) **Render** button above the **Source** pane. This will create a formatted `.html` file that can be shared.
+
+With that, you have created an RStudio project, R file, a graph plot from a real forestry dataset, and a shareable Quarto document! You are now ready to dive into R programming.
+
+### Learning Checklist
+
+- [ ] Install R, RStudio and Quarto @sec-ch01-s1
+- [ ] Install `tidyverse` and other libraries @tbl-ch01-tidyverse
+- [ ] Import a Forestry database into RStudio (National Fire Database) @sec-ch01-data
+- [ ] Run R code to make a graph using `ggplot` @fig-ch01-main
+- [ ] Create a Quarto document with the graph you just made @sec-ch01-reporting
+
+## 🤖 AI Support for This Chapter {#sec-ch01-ai}
+
+### What AI Does Well Here
+
+- Walk you through installation errors on Windows, macOS, or Linux.
+- Explain the difference between R, RStudio, and Quarto in plain language.
+- Suggest a folder structure for a specific kind of project (a thesis, a course, a paper).
+- Help you write your first `ggplot2` call when you know what you want to show but not the syntax.
+
+### Useful Keywords by Tool
+
+- **ChatGPT / Claude** keywords: *install error R macOS, R version compatibility, RStudio Pane, RStudio Project workflow, here package vs setwd*
+- **GitHub Copilot** keywords: *(autocomplete in your scripts as you type best for boilerplate setup)*
+- **Gemini** keywords: *Quarto installation tutorial, R for beginners environment setup*
+
+### Example Prompt
+
+> "I just installed R 4.4.0 and RStudio on macOS Sonoma. When I run `install.packages(\"tidyverse\")` I get \[paste exact error\]. What is the cause and how do I fix it?"
+
+### ⚠️ Use AI Responsibly
+
+::: {.callout-warning icon="false"}
+AI sometimes recommends `setwd()` for setting working directories. Do **not** use `setwd()` in code that other people will run use `here()` instead. If AI suggests it, ask AI to rewrite the answer with the `here` package.
+:::
+
+## ✅ Guided Quiz {#sec-ch01-quiz}
+
+### Question 1
+
+Open RStudio. Identify the four panes by name and describe the primary purpose of each.
+
+::: {.callout-tip collapse="true" icon="false"}
+#### 💡 Hint
+
+Check the **View** menu in RStudio it lists every pane by name.
+:::
+
+### Question 2
+
+Create a new RStudio Project called `forestry-practice` with subfolders `data/`, `scripts/`, and `outputs/`. Inside it, create a script that uses `here()` to print the absolute path of `data/`.
+
+::: {.callout-tip collapse="true" icon="false"}
+#### 💡 Hint
+
+File → New Project → New Directory → New Project. Then `here::here("data")`.
+:::
+
+### Question 3
+
+Why is `setwd()` discouraged in shared analysis scripts? Provide an alternative.
+
+::: {.callout-tip collapse="true" icon="false"}
+#### 💡 Hint
+
+Think about what happens when you send your project folder to a colleague who has a different username.
+:::
+
+### Question 4
+
+Using the wildfire dataset and the plotting code in @fig-ch01-main as a starting point, modify the code to show only fires larger than 1,000 ha. How many points remain in the plot, and which cause dominates?
+
+::: {.callout-tip collapse="true" icon="false"}
+#### 💡 Hint
+
+Add another `filter()` line: `filter(SIZE_HA > 1000)`.
+:::
+
+## Reusable Outputs {#sec-ch01-outputs}
+
+Files produced in this chapter for use in later chapters:
+
+| File | Contents | Used In |
+|------------------------|------------------------|------------------------|
+| `forestry-r/` | Your project folder with subfolders and an empty README.md | Every later chapter |
+| `data/nfdb_fires_2021_2024.csv` | Canadian NFDB wildfire records, 2021–2024 | Ch. 4 (cleaning), Ch. 8 (visualization), Ch. 10 (time series) |
+
+## Further Reading {#sec-ch01-reading}
+
+- [*R for Data Science* (2e), Hadley Wickham et al.](https://r4ds.hadley.nz) is the canonical free reference for modern R.
+- [Quarto Get Started Guide](https://quarto.org/docs/get-started/)
+- [Project-oriented workflow (Jenny Bryan)](https://www.tidyverse.org/blog/2017/12/workflow-vs-script/)
+- [Canadian National Forestry Database (NFDB)](https://cwfis.cfs.nrcan.gc.ca/datamart) the open-data source for the wildfire dataset used in this chapter.
+- [BC Wildfire Service open data](https://www2.gov.bc.ca/gov/content/safety/wildfire-status/about-bcws/wildfire-statistics) BC-specific fire statistics and reports.
+- [Quarto Formatting Options and Examples](https://quarto.org/docs/authoring/markdown-basics.html)

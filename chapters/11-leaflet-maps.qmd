@@ -1,0 +1,802 @@
+---
+title: "Map Forestry Data with leaflet"
+---
+
+```{r setup-ch11}
+#| include: false
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(here)
+library(knitr)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Explain the difference between a **static** map (Ch 10,
+  `geom_sf`) and an **interactive** web map (this chapter,
+  `leaflet`), and choose the right tool for each deliverable.
+- Build a basic **leaflet** map in three lines:
+  `leaflet() |> addTiles() |> addMarkers()`.
+- Add **base tiles** from default OpenStreetMap and from
+  alternative providers (terrain, satellite, light/dark).
+- Place **markers** and **circle markers** on the map, with
+  size and colour driven by data columns.
+- Attach **popups** and **labels** that show information when a
+  reader clicks or hovers.
+- Map quantitative data with **`colorNumeric()`** and categorical
+  data with **`colorFactor()`** palettes, and add a matching
+  **`addLegend()`**.
+- Combine multiple layers with a **layers-control** widget that
+  lets the reader toggle each layer on or off.
+- Embed a leaflet map inside a rendered Quarto HTML file —
+  the map remains interactive in the final report.
+- Recognize when **`leaflet` data must be in WGS84 (EPSG:4326)**
+  and reproject if needed.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **rendered Quarto HTML report**
+   (`frst232_ch11_learner.html`) containing at least:
+   - A **basic leaflet map** of the 10 Metro Vancouver
+     monitoring stations with default markers and click-popups
+     showing station names.
+   - A **circle-marker map** where circle colour is driven by
+     each station's **mean PM2.5** (computed from the cleaned
+     air-quality tibble in Chapter 6), with a matching legend.
+   - A **multi-layer map** combining the stations and 5 km
+     buffer polygons (from Chapter 10), with a layers-control
+     widget to toggle each layer.
+   - At least one map using a non-default tile provider
+     (e.g., Esri WorldImagery for satellite or
+     CartoDB.Positron for clean light).
+2. The corresponding **`.qmd` source file**.
+3. A short **group-lab worksheet** (or screenshot) submitted to
+   the course site.
+:::
+
+# Where we are
+
+In Chapter 10 you built `stations_sf` — a tibble of 10 BC
+monitoring stations with point geometries. You plotted it with
+`geom_sf()` and got a clean static map suitable for a printed
+report.
+
+This chapter takes the same `stations_sf` and turns it into an
+**interactive web map**. Click any station to see its name. Pan
+and zoom freely. Switch between street, satellite, and terrain
+basemaps. The reader does not need R installed — the map lives
+in the rendered HTML.
+
+# Static map vs interactive map — when to use which
+
+| | Static (Ch 10) | Interactive (this chapter) |
+|---|---|---|
+| Library | `ggplot2::geom_sf()` | `leaflet` |
+| Output | PNG, PDF, or SVG | HTML widget |
+| Reader experience | Fixed view | Pan, zoom, click, toggle |
+| Where it works | Print, slides, papers | Web, dashboards, Quarto HTML |
+| File size | Small (KB) | Larger (MB — includes JS) |
+| Build time | Fast | Slower |
+| Customization | Full ggplot grammar | Many leaflet options, but not everything |
+
+Use **`geom_sf`** for any chart that goes into a paper or a
+PowerPoint slide. Use **`leaflet`** for any chart that goes into
+an HTML report, a Quarto deliverable, or a dashboard your reader
+will explore.
+
+The two are complementary. A working analyst publishes both — a
+static map in the printed memo, an interactive map in the linked
+HTML.
+
+# A note about Excel
+
+Excel does not have a direct equivalent of leaflet. You could
+embed a Bing Maps chart in Excel 365 (limited), or paste a
+screenshot of a web map. Neither is interactive in the leaflet
+sense. **This is one of the places where R simply does something
+Excel cannot.**
+
+# Installing leaflet
+
+```r
+install.packages("leaflet")
+library(leaflet)
+```
+
+`leaflet` is much lighter than `sf` — no system dependencies,
+installs in seconds on every platform. If you already have
+Posit Cloud from Chapter 10, `leaflet` is pre-installed there
+too.
+
+# The leaflet pipeline pattern
+
+Every leaflet map is built with the pipe `|>` (or `%>%`) and the
+`add*()` family of functions:
+
+```{r minimal-leaflet}
+#| eval: false
+leaflet() |>
+  addTiles() |>
+  addMarkers(lng = -123.117, lat = 49.247, popup = "Vancouver, BC")
+```
+
+Three things to notice:
+
+1. **`leaflet()`** starts an empty map.
+2. **`addTiles()`** adds the default basemap (OpenStreetMap).
+3. **`addMarkers()`** drops a pin.
+
+Read each `|>` as *"and also add"*. This is the same layering
+pattern as ggplot's `+`, just with the pipe.
+
+::: {.callout-tip}
+## leaflet uses `|>` (not `+`)
+
+Unlike `ggplot2`, which connects layers with `+`, leaflet uses
+the pipe `|>`. This makes sense — each `add*()` call takes a
+leaflet map object and returns a modified one, so it composes
+like every other dplyr-style operation.
+:::
+
+# Build the stations sf object (carrying forward from Ch 10)
+
+```{r build-stations}
+stations <- tribble(
+  ~location,                          ~lon,        ~lat,
+  "Burnaby South",                    -122.985,    49.215,
+  "Coquitlam Douglas College",        -122.798,    49.252,
+  "Langley Central",                  -122.660,    49.105,
+  "Maple Ridge Golden Ears School",   -122.620,    49.215,
+  "New Westminster Sapperton Park",   -122.890,    49.235,
+  "North Delta",                      -122.910,    49.135,
+  "North Vancouver Second Narrows",   -123.015,    49.295,
+  "Pitt Meadows Airport",             -122.700,    49.215,
+  "Port Coquitlam North",             -122.770,    49.265,
+  "Port Moody Rocky Point Park",      -122.860,    49.290
+)
+
+stations_sf <- stations |>
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+```
+
+::: {.callout-warning}
+## leaflet requires WGS84 (EPSG:4326)
+
+The leaflet JavaScript library expects all coordinates in
+**latitude/longitude (WGS84)**. If your sf object is in BC
+Albers or any other projected CRS, **reproject before passing
+to leaflet**:
+
+```r
+stations_for_leaflet <- stations_sf |> st_transform(4326)
+```
+
+leaflet will sometimes warn if you forget; sometimes it just
+plots your data in the wrong place. Make the reprojection
+explicit.
+:::
+
+# Your first interactive map
+
+```{r first-map}
+#| eval: false
+leaflet(data = stations_sf) |>
+  addTiles() |>
+  addMarkers(popup = ~location)
+```
+
+When this renders, you get:
+
+- A draggable, zoomable map centered on Metro Vancouver.
+- 10 default blue teardrop pins, one per station.
+- A popup with the station name on each click.
+
+Three new ideas in that small example:
+
+- **`data = stations_sf`** — leaflet auto-detects the geometry
+  column and finds the lat/lon.
+- **`popup = ~location`** — the `~` (tilde) is leaflet's *formula
+  notation*: *"the value of the column called `location`"*. You
+  will see this pattern everywhere in leaflet.
+- The map auto-centres and auto-zooms to fit all the points.
+
+# Markers, circles, and popups
+
+## `addMarkers()` — default pins
+
+```r
+leaflet(stations_sf) |>
+  addTiles() |>
+  addMarkers(popup = ~location, label = ~location)
+```
+
+- **`popup`**: shows on click.
+- **`label`**: shows on hover.
+
+## `addCircleMarkers()` — circles whose size and colour can vary
+
+When the data column matters (not just the location), use circle
+markers:
+
+```r
+leaflet(stations_sf) |>
+  addTiles() |>
+  addCircleMarkers(
+    radius      = 8,
+    color       = "#1B4332",
+    fillColor   = "#52B788",
+    fillOpacity = 0.8,
+    weight      = 2,
+    popup       = ~location
+  )
+```
+
+## Driving size and colour from a data column
+
+Attach a mean-PM2.5 value to each station (carrying forward from
+Ch 7) and use it to size/colour the circles:
+
+```{r pm25-circles}
+#| eval: false
+# Suppose airdata_clean is loaded from Ch 6
+station_means <- airdata_clean |>
+  group_by(location) |>
+  summarise(mean_pm25 = mean(PM25, na.rm = TRUE), .groups = "drop")
+
+stations_pm25 <- stations_sf |>
+  left_join(station_means, by = "location")
+
+pal <- colorNumeric(
+  palette = c("#52B788", "#B7791F", "#B05C50"),
+  domain  = stations_pm25$mean_pm25,
+  na.color = "grey50"
+)
+
+leaflet(stations_pm25) |>
+  addTiles() |>
+  addCircleMarkers(
+    radius      = ~ifelse(is.na(mean_pm25), 5, mean_pm25 + 4),
+    color       = "#1B4332",
+    fillColor   = ~pal(mean_pm25),
+    fillOpacity = 0.85,
+    weight      = 1.5,
+    popup       = ~paste0("<b>", location, "</b><br>",
+                          "Mean PM2.5: ",
+                          ifelse(is.na(mean_pm25), "no data",
+                                 paste0(round(mean_pm25, 1), " μg/m³")))
+  ) |>
+  addLegend(
+    "bottomright",
+    pal     = pal,
+    values  = ~mean_pm25,
+    title   = "Mean PM2.5 (μg/m³)",
+    opacity = 1
+  )
+```
+
+Three new ideas:
+
+- **`colorNumeric(palette, domain)`** builds a palette function
+  that maps numeric values to colours. Use it inside
+  `fillColor = ~pal(column)`.
+- **`addLegend()`** draws a matching legend. The palette
+  function and the data column must match what the markers used.
+- **HTML in popups** — you can use `<b>`, `<br>`, links —
+  anything HTML.
+
+# Tile providers — change the basemap
+
+`addTiles()` adds the default OpenStreetMap. For other basemaps,
+use `addProviderTiles()`:
+
+```r
+leaflet(stations_sf) |>
+  addProviderTiles("CartoDB.Positron") |>     # clean light theme
+  addMarkers(popup = ~location)
+```
+
+Useful providers:
+
+| Provider | When to use |
+|---|---|
+| `OpenStreetMap.Mapnik` (default) | General-purpose, free |
+| `CartoDB.Positron` | Clean light theme — popular for data viz |
+| `CartoDB.DarkMatter` | Dark theme |
+| `Esri.WorldImagery` | Satellite imagery |
+| `Esri.WorldTopoMap` | Topographic with relief |
+| `OpenTopoMap` | Open-source topo, good for forestry |
+| `Stadia.AlidadeSmooth` | Subtle smooth basemap |
+
+Full provider list: <https://leaflet-extras.github.io/leaflet-providers/preview/>.
+
+# Polygons — adding the buffers from Ch 10
+
+Polygon layers (like the 5 km buffers from Ch 10) go in with
+`addPolygons()`:
+
+```r
+buffers_sf <- stations_sf |>
+  st_transform(3005) |>
+  st_buffer(dist = 5000) |>
+  st_transform(4326)
+
+leaflet() |>
+  addProviderTiles("CartoDB.Positron") |>
+  addPolygons(data = buffers_sf,
+              fillColor = "#52B788",
+              fillOpacity = 0.25,
+              color = "#1B4332",
+              weight = 1) |>
+  addCircleMarkers(data = stations_sf,
+                   radius = 5,
+                   color = "#1B4332",
+                   fillColor = "#1B4332",
+                   fillOpacity = 1,
+                   popup = ~location)
+```
+
+Note the **CRS dance**: buffers are computed in BC Albers (3005,
+metric — required for the buffer distance), then reprojected to
+WGS84 (4326) for leaflet. **Always end in WGS84 before passing to
+leaflet.**
+
+# Multiple layers + layers control
+
+When a map has multiple groups, `addLayersControl()` lets the
+reader toggle them:
+
+```r
+leaflet() |>
+  addProviderTiles("OpenStreetMap.Mapnik", group = "Street") |>
+  addProviderTiles("Esri.WorldImagery", group = "Satellite") |>
+  addProviderTiles("OpenTopoMap", group = "Topo") |>
+  addCircleMarkers(data = stations_sf,
+                   group = "Stations",
+                   popup = ~location) |>
+  addPolygons(data = buffers_sf,
+              group = "5 km buffers",
+              fillColor = "#52B788", fillOpacity = 0.3) |>
+  addLayersControl(
+    baseGroups    = c("Street", "Satellite", "Topo"),
+    overlayGroups = c("Stations", "5 km buffers"),
+    options       = layersControlOptions(collapsed = FALSE)
+  )
+```
+
+- **`baseGroups`** are mutually exclusive (radio buttons — one
+  basemap at a time).
+- **`overlayGroups`** are independently toggleable (checkboxes).
+
+The reader sees a control box in the top-right of the map.
+
+# `setView()` and `fitBounds()` — control the initial view
+
+By default, leaflet zooms to fit the data. Override with:
+
+```r
+# Centre on a specific lat/lon and zoom level
+leaflet() |>
+  addTiles() |>
+  setView(lng = -122.9, lat = 49.22, zoom = 11)
+
+# Or fit a specific bounding box
+leaflet() |>
+  addTiles() |>
+  fitBounds(lng1 = -123.1, lat1 = 49.10,
+            lng2 = -122.6, lat2 = 49.30)
+```
+
+Zoom level: 0 (whole world) to ~18 (street level). For a
+Metro Vancouver overview, zoom 10 or 11 is right.
+
+# Saving and embedding
+
+When you render a Quarto document, leaflet maps appear **inline**
+in the rendered HTML. The map is fully interactive — your reader
+can pan, zoom, click — without opening R.
+
+To save a leaflet map as a standalone HTML file:
+
+```r
+library(htmlwidgets)
+saveWidget(my_leaflet_map,
+           file = here("outputs", "stations_map.html"),
+           selfcontained = TRUE)
+```
+
+`selfcontained = TRUE` bundles all the JavaScript into a single
+file — easy to email, share, or open offline.
+
+# A complete worked example
+
+```{r complete-example}
+#| eval: false
+# All together: stations + buffers + PM2.5 colour, layered + legend
+
+# 1. Build the buffer layer (compute in metric CRS, reproject for leaflet)
+buffers_sf <- stations_sf |>
+  st_transform(3005) |>
+  st_buffer(dist = 5000) |>
+  st_transform(4326)
+
+# 2. Attach PM2.5 (assume station_means is from Ch 6/7)
+stations_pm25 <- stations_sf |>
+  left_join(station_means, by = "location")
+
+# 3. Palette for PM2.5
+pal <- colorNumeric(palette = c("#52B788", "#B7791F", "#B05C50"),
+                    domain = stations_pm25$mean_pm25,
+                    na.color = "grey60")
+
+# 4. Build the map
+leaflet() |>
+  addProviderTiles("CartoDB.Positron", group = "Light") |>
+  addProviderTiles("Esri.WorldImagery", group = "Satellite") |>
+  addPolygons(data = buffers_sf,
+              group = "5 km buffers",
+              fillColor = "#52B788", fillOpacity = 0.2,
+              color = "#1B4332", weight = 1) |>
+  addCircleMarkers(data = stations_pm25,
+                   group = "Stations",
+                   radius      = ~ifelse(is.na(mean_pm25), 5, mean_pm25 + 4),
+                   fillColor   = ~pal(mean_pm25),
+                   fillOpacity = 0.9,
+                   color       = "#1B4332",
+                   weight      = 1.5,
+                   popup       = ~paste0("<b>", location, "</b><br>",
+                                          "Mean PM2.5: ",
+                                          ifelse(is.na(mean_pm25), "no data",
+                                                 paste0(round(mean_pm25, 1),
+                                                        " μg/m³")))) |>
+  addLegend("bottomright",
+            pal = pal, values = stations_pm25$mean_pm25,
+            title = "Mean PM2.5 (μg/m³)",
+            na.label = "No data",
+            opacity = 1) |>
+  addLayersControl(
+    baseGroups    = c("Light", "Satellite"),
+    overlayGroups = c("Stations", "5 km buffers"),
+    options       = layersControlOptions(collapsed = FALSE)
+  ) |>
+  setView(lng = -122.85, lat = 49.22, zoom = 11)
+```
+
+This map renders as a single interactive widget. A reader can
+zoom out to BC, zoom in to a station, click for the popup, toggle
+the buffers off, switch to satellite. **One R block, full
+dashboard.**
+
+# Active learning
+
+## Activity 1 — Minimal map
+
+Build a leaflet map showing only one location: your university
+campus. Use `addTiles()` and `addMarkers()` with a popup.
+
+## Activity 2 — All ten stations
+
+Build a leaflet map of `stations_sf` with default markers and
+hover labels.
+
+## Activity 3 — Circle markers
+
+Replace the default markers with `addCircleMarkers()`. Set
+`radius = 7`, `fillColor = "#2D6A4F"`, `fillOpacity = 0.85`.
+
+## Activity 4 — Tile provider experiment
+
+Build the same map three times with three different tile
+providers (default, `CartoDB.Positron`, `Esri.WorldImagery`).
+Which feels best for a forestry deliverable?
+
+## Activity 5 — Add a polygon layer
+
+Take any one station, build a 5 km buffer, and add it to the
+map as `addPolygons()`. Make sure both the buffer and the
+station markers are in WGS84 before plotting.
+
+## Activity 6 — Save as standalone HTML
+
+Use `htmlwidgets::saveWidget()` to save your map as
+`outputs/my_map.html`. Open it in a browser — confirm it
+works offline.
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Build the chapter capstone interactive map
+
+Work in groups of 3 or 4. The lab builds the multi-layer
+interactive map specified in the chapter's *Expected output*.
+
+**Task 1 — Build `stations_sf`** (everyone confirms 10 rows in
+WGS84, same as Ch 10).
+
+**Task 2 — Compute mean PM2.5 per station** using the Chapter 6
+cleaning pipeline + `group_by(location) |> summarise(mean_pm25 =
+mean(PM25, na.rm = TRUE))`. Join the mean back onto
+`stations_sf` with `left_join(by = "location")`.
+
+**Task 3 — Build a PM2.5 palette** with `colorNumeric()`.
+Discuss as a group: which colour scheme makes sense for an
+air-quality variable? (Many groups choose green→yellow→red.)
+
+**Task 4 — Build the map.** Add tiles, add circle markers
+with size/colour driven by mean_pm25, add a legend, add
+informative popups.
+
+**Task 5 — Add the buffer overlay.** Build 5 km buffers around
+every station and add them as a separate group with
+`addPolygons()`. Add a layers-control widget so the reader can
+toggle buffers on and off.
+
+**Task 6 — Pick the basemap.** Discuss which provider tile
+makes the air-quality colours pop. Add at least two basemap
+options to the layers control.
+
+**Task 7 — Submit.** Each group submits the rendered HTML
+file and a one-sentence caption explaining the headline
+finding.
+
+This lab fits comfortably inside a single hands-on session.
+:::
+
+# Exercises
+
+1. **Minimal map.** Build a leaflet map of `stations_sf` with
+   default tiles and markers. Confirm the popup shows the
+   station name.
+
+2. **Circle markers.** Replace `addMarkers()` with
+   `addCircleMarkers()`. Set radius, fill colour, and
+   fill opacity manually.
+
+3. **Tile providers.** Build the same map three times with
+   three different `addProviderTiles()` calls. Embed all three
+   in your `.qmd`.
+
+4. **Colour by PM2.5.** Compute mean PM2.5 per station (from
+   Ch 6 cleaning). Use `colorNumeric()` to colour the circles.
+   Add `addLegend()`.
+
+5. **Popup with HTML.** Build popups that include the station
+   name in bold, a line break, and the mean PM2.5 rounded to
+   one decimal.
+
+6. **Add a polygon layer.** Build 5 km buffers around all
+   stations and add them with `addPolygons()`. Confirm both
+   layers are in WGS84 before plotting.
+
+7. **Layers control.** Add an `addLayersControl()` with two
+   base groups (street, satellite) and two overlay groups
+   (stations, buffers).
+
+8. **Save standalone.** Use `htmlwidgets::saveWidget()` to save
+   your final map as `outputs/stations_map.html`. Open it
+   directly in a browser.
+
+# Optional, advanced
+
+## Markers with custom icons
+
+```r
+fire_icon <- makeIcon(
+  iconUrl = "https://leafletjs.com/examples/custom-icons/leaf-red.png",
+  iconWidth = 24, iconHeight = 38
+)
+leaflet(stations_sf) |>
+  addTiles() |>
+  addMarkers(icon = fire_icon, popup = ~location)
+```
+
+For forestry use cases, custom icons can distinguish point
+types (fire ignitions, plot centres, sampling locations).
+
+## Adding a search box
+
+The `leaflet.extras` add-on package provides extras including
+search, drawing tools, and measurement widgets:
+
+```r
+library(leaflet.extras)
+leaflet(stations_sf) |>
+  addTiles() |>
+  addMarkers(popup = ~location, group = "stations") |>
+  addSearchFeatures(targetGroups = "stations",
+                    options = searchFeaturesOptions(zoom = 12))
+```
+
+## Heatmaps
+
+For dense point data (e.g., wildfire ignitions over years),
+`leaflet.extras::addHeatmap()` produces a smooth density
+overlay:
+
+```r
+library(leaflet.extras)
+leaflet(ignition_points) |>
+  addTiles() |>
+  addHeatmap(radius = 12)
+```
+
+# A glimpse of Chapter 12: From maps to presentations
+
+In Chapter 12 you take everything from Chapters 4–11 — your
+cleaned data, summary tables, charts, and maps — and assemble
+them into a **portfolio**:
+
+- A Quarto **revealjs presentation** for an in-class talk.
+- A Quarto **HTML report** showcasing your best analyses.
+- A printable **PDF** for a deliverable submission.
+
+The leaflet maps you built in this chapter become **slides** in
+the presentation — fully interactive when displayed live.
+
+# Self-assessment quiz {#sec-quiz-ch11}
+
+```{=html}
+<style>
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1"><div class="q">1. leaflet builds a web map by —</div><ul class="qopts"><li data-correct="false">Asking Google Maps</li><li data-correct="true">Generating HTML + JavaScript that wraps the leaflet.js library</li><li data-correct="false">Drawing into a static PNG</li><li data-correct="false">Calling ggplot</li></ul><div class="explanation">leaflet is an R wrapper around leaflet.js — your R code produces the HTML/JS that runs in a browser.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. The leaflet pipeline pattern uses —</div><ul class="qopts"><li data-correct="false">+ between calls (like ggplot2)</li><li data-correct="true">|> (or %>%) between leaflet() and the add*() functions</li><li data-correct="false">commas inside a single call</li><li data-correct="false">no chaining</li></ul><div class="explanation">Each add* function takes a leaflet map and returns a modified one, so they compose with the pipe.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. leaflet requires its input data to be in CRS —</div><ul class="qopts"><li data-correct="false">EPSG:3005 (BC Albers)</li><li data-correct="true">EPSG:4326 (WGS84, lat/lon)</li><li data-correct="false">EPSG:3857 (Web Mercator)</li><li data-correct="false">Any CRS</li></ul><div class="explanation">leaflet.js expects lat/lon. Reproject with st_transform(4326) before plotting.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. To add the default OpenStreetMap basemap, you use —</div><ul class="qopts"><li data-correct="false">addBackground()</li><li data-correct="true">addTiles()</li><li data-correct="false">addBasemap()</li><li data-correct="false">addLayer()</li></ul><div class="explanation"><code>addTiles()</code> with no arguments adds the default OpenStreetMap Mapnik tiles.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. To use a different tile provider (e.g., satellite imagery), you use —</div><ul class="qopts"><li data-correct="false">addTiles("satellite")</li><li data-correct="true">addProviderTiles("Esri.WorldImagery")</li><li data-correct="false">addTiles(satellite = TRUE)</li><li data-correct="false">setBasemap()</li></ul><div class="explanation">leaflet bundles many third-party tile providers. Browse the full list at https://leaflet-extras.github.io/leaflet-providers/preview/.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. In leaflet, the formula notation <code>popup = ~location</code> means —</div><ul class="qopts"><li data-correct="false">Literally the string "location"</li><li data-correct="true">The value of the column called <code>location</code> in the data tibble</li><li data-correct="false">The opposite of location</li><li data-correct="false">A function called location</li></ul><div class="explanation">The tilde is leaflet's way of saying "look up this column in the data" — similar to how aes() works in ggplot.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>addCircleMarkers()</code> differs from <code>addMarkers()</code> in that —</div><ul class="qopts"><li data-correct="false">It only works with raster data</li><li data-correct="true">It draws circles whose size and colour you can drive from data columns; default markers are fixed pins</li><li data-correct="false">It is faster but less accurate</li><li data-correct="false">It is for polygons</li></ul><div class="explanation">Circle markers are the leaflet equivalent of a sized/coloured scatter. Use them whenever the data values matter visually.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. To map a numeric column to colour, you use —</div><ul class="qopts"><li data-correct="false">scale_colour_continuous()</li><li data-correct="true">colorNumeric(palette, domain) — and pass the resulting function as fillColor = ~pal(column)</li><li data-correct="false">addColour()</li><li data-correct="false">paint()</li></ul><div class="explanation">leaflet's colour-palette functions (colorNumeric, colorBin, colorFactor) build a function that maps values to colours.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>addLegend()</code> is —</div><ul class="qopts"><li data-correct="false">A required call for every map</li><li data-correct="true">An optional layer that draws a legend matching a palette and data values</li><li data-correct="false">A way to add a title</li><li data-correct="false">A debugging tool</li></ul><div class="explanation"><code>addLegend</code> takes the same palette function and column you used for the markers, and draws a legend box anchored to a corner.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. <code>addPolygons()</code> is for —</div><ul class="qopts"><li data-correct="false">Points</li><li data-correct="false">Lines only</li><li data-correct="true">Polygon geometries (e.g., buffers, forest districts, watersheds)</li><li data-correct="false">Markers</li></ul><div class="explanation"><code>addPolygons</code> draws filled polygon shapes. <code>addPolylines</code> draws line geometries.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. <code>addLayersControl()</code> with <code>baseGroups</code> and <code>overlayGroups</code> —</div><ul class="qopts"><li data-correct="false">Hides the map</li><li data-correct="true">Adds a toggle widget where base groups are radio buttons (one at a time) and overlay groups are checkboxes (any combination)</li><li data-correct="false">Removes all layers</li><li data-correct="false">Saves the map</li></ul><div class="explanation">baseGroups are mutually exclusive (basemaps); overlayGroups can each be toggled independently.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. <code>setView(lng, lat, zoom)</code> —</div><ul class="qopts"><li data-correct="false">Adds a marker at the centre</li><li data-correct="true">Sets the initial centre and zoom level when the map first renders</li><li data-correct="false">Saves the map</li><li data-correct="false">Adds an overlay</li></ul><div class="explanation"><code>setView</code> controls the starting view. Without it, leaflet auto-zooms to fit the data.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. A leaflet map embedded in a Quarto HTML report —</div><ul class="qopts"><li data-correct="false">Renders as a static PNG</li><li data-correct="true">Remains fully interactive in the rendered HTML — the reader can pan, zoom, click, and toggle layers</li><li data-correct="false">Requires R to be installed on the reader's computer</li><li data-correct="false">Cannot be embedded</li></ul><div class="explanation">leaflet outputs an HTML widget. When rendered into a self-contained HTML file, the widget remains fully interactive.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. To save a leaflet map as a standalone HTML file, you use —</div><ul class="qopts"><li data-correct="false">ggsave()</li><li data-correct="true">htmlwidgets::saveWidget()</li><li data-correct="false">write_csv()</li><li data-correct="false">save()</li></ul><div class="explanation"><code>saveWidget(my_map, "outputs/map.html", selfcontained = TRUE)</code> bundles all the JS into one shareable file.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. The most likely cause of leaflet plotting your points in the middle of the ocean is —</div><ul class="qopts"><li data-correct="false">A bug in leaflet</li><li data-correct="true">Your sf data is not in WGS84 (EPSG:4326) — you forgot to st_transform(4326) before passing it to leaflet</li><li data-correct="false">Your internet is down</li><li data-correct="false">Your zoom level is wrong</li></ul><div class="explanation">leaflet expects lat/lon. If you pass BC Albers (metres) data, leaflet treats the metric coordinates as if they were lat/lon, and your points land somewhere in the Atlantic.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. To compute a 5 km buffer for use in leaflet —</div><ul class="qopts"><li data-correct="false">Use st_buffer in WGS84 with dist = 5000</li><li data-correct="true">Reproject to BC Albers (metric), st_buffer with dist = 5000, then reproject the buffer back to WGS84 for leaflet</li><li data-correct="false">leaflet handles buffers automatically</li><li data-correct="false">It is not possible</li></ul><div class="explanation">Buffering requires metric units. Compute in EPSG:3005, then reproject back to EPSG:4326 for leaflet.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. The biggest advantage of leaflet over a static map is —</div><ul class="qopts"><li data-correct="false">Higher resolution</li><li data-correct="true">Interactivity — pan, zoom, click for popups, toggle layers</li><li data-correct="false">Lower file size</li><li data-correct="false">No CRS required</li></ul><div class="explanation">leaflet trades file size and print-friendliness for interactivity. Pick it for web/HTML deliverables.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. Excel has —</div><ul class="qopts"><li data-correct="false">A built-in leaflet equivalent</li><li data-correct="true">No direct equivalent — interactive web mapping is one of the places R does something Excel cannot</li><li data-correct="false">Better web mapping</li><li data-correct="false">Identical functionality</li></ul><div class="explanation">Excel's mapping is limited to embedded Bing charts. For real interactive web mapping, R (leaflet) or a dedicated GIS tool is the choice.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. <code>popup</code> shows on click; <code>label</code> shows on —</div><ul class="qopts"><li data-correct="false">Page load</li><li data-correct="true">Hover</li><li data-correct="false">Double-click</li><li data-correct="false">Right-click</li></ul><div class="explanation">Use label for short always-visible info on hover; popup for richer content on click.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Now that you can publish interactive maps, which forestry analyses you have done in Excel feel like they would have been more useful as interactive maps? Why?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>my 2017 wildfire analysis would have come alive as an interactive map of fire perimeters with clickable details</em> · <em>monitoring station tables are abstract; the same data on a clickable map immediately raises questions</em> · <em>the cleaned air-quality file becomes a dashboard when each station is a clickable popup</em> · <em>any analysis with a spatial component benefits from being explorable — Excel's tables hide the geographic story</em>.</div></div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts
+
+- *"My leaflet map shows my points in the middle of the
+  Atlantic Ocean. My sf data is in BC Albers. What did I miss?"*
+  (Answer: reproject to WGS84 before passing to leaflet.)
+
+- *"How do I add a legend that matches the colour palette I
+  used for my circles?"*
+
+- *"My popups show the literal word 'location' instead of the
+  station name. What's wrong?"* (Answer: missing the `~` in
+  `popup = ~location`.)
+:::
+
+# Reading
+
+- *Leaflet for R* — the canonical reference, free:
+  <https://rstudio.github.io/leaflet/>
+- *Geocomputation with R* — chapter 8 *Making maps with R*:
+  <https://r.geocompx.org/adv-map.html>
+- Tile providers preview:
+  <https://leaflet-extras.github.io/leaflet-providers/preview/>
+- HTML widgets gallery: <https://www.htmlwidgets.org/>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- The chapter has **two big concepts**: the pipeline pattern
+  with `|>` (different from `+` in ggplot), and the
+  WGS84-required-for-leaflet rule. Demo both in the first
+  lecture.
+- The **circle marker + colorNumeric + addLegend trio** is
+  the chapter's most powerful pattern. Spend time getting
+  learners fluent with it.
+- **Layers control** is a small UI feature but turns a single
+  map into a mini-dashboard. Worth emphasising.
+
+## Materials provided
+
+| File | Purpose |
+|---|---|
+| `frst232_ch11_learner.qmd` | Quarto starter with TODO chunks. |
+| `frst232_ch11_solutions.qmd` | Completed solutions. **Do not distribute.** |
+| `quiz_ch11.html` | Standalone interactive quiz. |
+
+## Reference numbers
+
+| Quantity | Approximate value |
+|---|---|
+| Number of stations on the map | 10 |
+| Map centre (lon, lat) | (-122.85, 49.22) |
+| Useful initial zoom | 10 or 11 |
+| Number of stations with mean PM2.5 | ~6 (the rest are NA in the cleaned file) |
+| Mean PM2.5 range (used for the colour palette) | ~2 to ~10 μg/m³ |
+
+## Common stumbling points
+
+- **Points in the wrong place.** Almost always: sf data in BC
+  Albers (3005) was passed to leaflet without
+  `st_transform(4326)`. Symptom: pins land in the Atlantic
+  or Indian Ocean.
+- **Popup shows literal column name.** Symptom: every popup
+  says "location". Fix: add the `~` — `popup = ~location`.
+- **Buffer computed in WGS84.** Symptom: buffer is a
+  micro-shape (5000 degrees instead of 5000 metres) or
+  errors. Fix: buffer in 3005, reproject back.
+- **Legend palette mismatch.** Symptom: the legend's colours
+  do not match the markers'. Fix: use the same `pal` object
+  and the same column for both `addCircleMarkers(fillColor =
+  ~pal(col))` and `addLegend(pal = pal, values = ~col)`.
+- **Forgetting `library(leaflet)`.** Symptom: *"could not
+  find function 'leaflet'"*. Confirm setup chunk loads it.
+:::

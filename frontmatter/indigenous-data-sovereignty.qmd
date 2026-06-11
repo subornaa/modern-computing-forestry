@@ -1,0 +1,70 @@
+# Indigenous data sovereignty {.unnumbered}
+
+Throughout this book, learners will work with publicly released
+government data from the BC Data Catalogue, Environmental
+Reporting BC, and the Government of Ontario. **Government open
+data is not the same thing as Indigenous data.**
+
+When working with data that pertains to First Nations lands,
+peoples, knowledge, or resources, learners and instructors are
+expected to be familiar with two frameworks that govern
+respectful and rightful data practice:
+
+## OCAP® — First Nations principles
+
+The **First Nations Information Governance Centre (FNIGC)**
+maintains the OCAP® framework, which asserts First Nations'
+sovereignty over data about their peoples, communities, and
+territories. The four principles are:
+
+- **Ownership** — communities collectively own information about
+  themselves the way an individual owns personal information.
+- **Control** — First Nations have the right to control how
+  information about them is collected, used, and disclosed.
+- **Access** — First Nations must have access to information
+  and data about themselves regardless of where it is held.
+- **Possession** — physical control of data is the mechanism by
+  which ownership and control can be asserted.
+
+Learn more: <https://fnigc.ca/ocap-training/>
+
+## CARE — global Indigenous data principles
+
+The **Global Indigenous Data Alliance** maintains the CARE
+principles, which complement the well-known FAIR (Findable,
+Accessible, Interoperable, Reusable) principles by adding an
+explicit ethical and relational layer:
+
+- **Collective benefit** — data ecosystems must support
+  Indigenous peoples' self-determination and collective
+  benefit.
+- **Authority to control** — Indigenous peoples' rights and
+  interests must be recognized and their authority over data
+  respected.
+- **Responsibility** — those working with Indigenous data have
+  a responsibility to share how that data is used to support
+  self-determination and collective benefit.
+- **Ethics** — Indigenous peoples' rights and well-being must
+  be the primary concern at all stages of the data lifecycle.
+
+Learn more: <https://www.gida-global.org/care>
+
+## Practical implications for this course
+
+- **The data used in this book is government-published open
+  data.** It is appropriate for teaching analytical methods.
+- **It is not a substitute for working with First Nations
+  directly.** Any forestry analysis that informs decisions
+  affecting First Nations lands must be conducted in
+  partnership with the affected Nation(s), and must respect
+  OCAP and CARE principles.
+- **The BC First Nations Forestry Council**
+  (<https://www.bcfnfc.ca/>) is a primary point of reference
+  for forestry-specific Indigenous data and management
+  practice in BC.
+- **A complete forestry analysis is more than statistics.**
+  Traditional Ecological Knowledge (TEK), oral history,
+  place-based observation, and lived experience are valid
+  and necessary forms of forest knowledge that operate in
+  partnership with — not in opposition to — quantitative
+  methods.

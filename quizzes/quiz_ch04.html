@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 4 Self-Assessment Quiz</title>
+<style>
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif;
+  max-width: 800px; margin: 2em auto; padding: 0 1.5em;
+  color: #2C3E2F; line-height: 1.55;
+}
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note {
+  background: #FFF8E8; border-left: 4px solid #B7791F;
+  padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em;
+}
+.quiz {
+  background: #F4F7F4; border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+code {
+  background: #F0F5F1; color: #1B4332;
+  padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em;
+}
+.progress {
+  position: sticky; top: 0; background: white;
+  border-bottom: 1px solid #d8e4d8; padding: 0.5em 0;
+  margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F;
+}
+</style>
+</head>
+<body>
+
+<h1>Chapter 4 — Self-Assessment Quiz</h1>
+<p><em>Start of Computing in R: Install, Project, First Import · 20 questions</em></p>
+
+<div class="preview-note">
+<strong>How this works:</strong> click an option in each question. The right
+answer turns green, wrong answers turn red (with the correct one revealed),
+and an explanation appears below.
+</div>
+
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1">
+  <div class="q">1. What is the difference between R and RStudio?</div>
+  <ul class="qopts">
+    <li data-correct="false">They are the same thing</li>
+    <li data-correct="true">R is the language and engine that runs the math; RStudio is a friendly editor that uses R</li>
+    <li data-correct="false">R is the editor; RStudio is the language</li>
+    <li data-correct="false">RStudio is an older version of R</li>
+  </ul>
+  <div class="explanation">R does the computation. RStudio is the interface.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Why is it recommended to always work inside an RStudio Project?</div>
+  <ul class="qopts">
+    <li data-correct="false">RStudio refuses to run code without one</li>
+    <li data-correct="true">A project sets the working directory automatically, so relative paths (like data/file.xlsx) work for anyone who opens the project</li>
+    <li data-correct="false">Projects make R faster</li>
+    <li data-correct="false">Projects encrypt your code</li>
+  </ul>
+  <div class="explanation">The Project anchor lets you use portable file paths.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. <code>install.packages("tidyverse")</code> needs to be run —</div>
+  <ul class="qopts">
+    <li data-correct="false">At the top of every R script, every time</li>
+    <li data-correct="true">Once per machine (the package downloads and installs)</li>
+    <li data-correct="false">Never — tidyverse is built into R</li>
+    <li data-correct="false">Only on Mondays</li>
+  </ul>
+  <div class="explanation">Install is one-time. Loading the package with <code>library()</code> is what you do every session.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. <code>library(tidyverse)</code> needs to be run —</div>
+  <ul class="qopts">
+    <li data-correct="false">Once per machine</li>
+    <li data-correct="true">Once per R session (at the top of every script that uses tidyverse functions)</li>
+    <li data-correct="false">Never if you have already installed it</li>
+    <li data-correct="false">Only inside an RStudio Project</li>
+  </ul>
+  <div class="explanation">Loading is per-session. R forgets which packages are loaded when you restart it.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. What does <code>here("data", "bc_disturbance_reforestation.xlsx")</code> return?</div>
+  <ul class="qopts">
+    <li data-correct="false">The contents of the file</li>
+    <li data-correct="true">The absolute path to the file, computed relative to the RStudio Project root</li>
+    <li data-correct="false">An error message</li>
+    <li data-correct="false">The file's modification date</li>
+  </ul>
+  <div class="explanation"><code>here()</code> builds a portable path. The result is an absolute path string that points to the file regardless of where the project lives.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. Posit Cloud is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A paid alternative to R</li>
+    <li data-correct="true">A free, browser-based RStudio environment that runs in the cloud — no local install needed</li>
+    <li data-correct="false">A statistics textbook</li>
+    <li data-correct="false">An Excel competitor</li>
+  </ul>
+  <div class="explanation">Posit Cloud is RStudio running in your browser. Recommended for getting started.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. The function <code>read_excel()</code> comes from which package?</div>
+  <ul class="qopts">
+    <li data-correct="false">tidyverse</li>
+    <li data-correct="true">readxl</li>
+    <li data-correct="false">here</li>
+    <li data-correct="false">base R</li>
+  </ul>
+  <div class="explanation"><code>readxl</code> is the tidyverse-adjacent package for <code>.xlsx</code> files. It is not loaded by <code>library(tidyverse)</code> — you need <code>library(readxl)</code> separately.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. After loading the BC file with <code>bc &lt;- read_excel(...)</code>, how do you access just the <code>Reforestation_ha</code> column?</div>
+  <ul class="qopts">
+    <li data-correct="false">bc["Reforestation_ha"]</li>
+    <li data-correct="true">bc$Reforestation_ha</li>
+    <li data-correct="false">Reforestation_ha</li>
+    <li data-correct="false">bc.Reforestation_ha</li>
+  </ul>
+  <div class="explanation">The <code>$</code> is the column selector. Tab completion after <code>bc$</code> shows every column name.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. <code>dim(bc)</code> returns <code>c(37, 8)</code>. What does that mean?</div>
+  <ul class="qopts">
+    <li data-correct="false">37 columns and 8 rows</li>
+    <li data-correct="true">37 rows and 8 columns</li>
+    <li data-correct="false">37 sheets and 8 files</li>
+    <li data-correct="false">37 megabytes and 8 packages</li>
+  </ul>
+  <div class="explanation"><code>dim()</code> returns rows first, then columns.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. You ran <code>sum(bc$Reforestation_ha)</code> in R and got a value. In Excel last chapter you also computed total reforestation. The two numbers should be —</div>
+  <ul class="qopts">
+    <li data-correct="false">Different — R rounds differently</li>
+    <li data-correct="true">Identical — same data, same computation, same answer</li>
+    <li data-correct="false">Off by 10%</li>
+    <li data-correct="false">It depends on the day</li>
+  </ul>
+  <div class="explanation">Same data, same operation, same answer. The Excel-to-R bridge.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. The native pipe in R is —</div>
+  <ul class="qopts">
+    <li data-correct="false">%&gt;%</li>
+    <li data-correct="true">|&gt;</li>
+    <li data-correct="false">-&gt;&gt;</li>
+    <li data-correct="false">==&gt;</li>
+  </ul>
+  <div class="explanation"><code>|&gt;</code> is the native pipe, built into R 4.1+. <code>%&gt;%</code> is the older magrittr pipe.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. <code>x |> mean()</code> is equivalent to —</div>
+  <ul class="qopts">
+    <li data-correct="false">x + mean()</li>
+    <li data-correct="true">mean(x)</li>
+    <li data-correct="false">mean(mean(x))</li>
+    <li data-correct="false">x * mean</li>
+  </ul>
+  <div class="explanation">The pipe takes the thing on its left and inserts it as the first argument of the function on its right.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. You see this error: <code>Error in library(tidyverse) : there is no package called 'tidyverse'</code>. What do you do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Reinstall R</li>
+    <li data-correct="true">Run install.packages("tidyverse") first, then library(tidyverse)</li>
+    <li data-correct="false">Switch operating systems</li>
+    <li data-correct="false">Ignore it</li>
+  </ul>
+  <div class="explanation">R is telling you the package was never installed. Install once, then load.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. Inside an RStudio Project, the working directory is —</div>
+  <ul class="qopts">
+    <li data-correct="false">Your Desktop</li>
+    <li data-correct="true">The project root folder (where the .Rproj file lives)</li>
+    <li data-correct="false">/tmp/</li>
+    <li data-correct="false">Wherever you ran the install</li>
+  </ul>
+  <div class="explanation">The Project anchors the working directory. <code>here()</code> uses this anchor to resolve relative paths.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. Where should the raw <code>bc_disturbance_reforestation.xlsx</code> file live inside your RStudio Project?</div>
+  <ul class="qopts">
+    <li data-correct="false">In the project root</li>
+    <li data-correct="true">In data/</li>
+    <li data-correct="false">In outputs/</li>
+    <li data-correct="false">On your Desktop</li>
+  </ul>
+  <div class="explanation">Same folder structure as Chapter 1: raw files in <code>data/</code>, generated files in <code>outputs/</code>, scripts in <code>R/</code>.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Which is the assignment operator preferred in this course?</div>
+  <ul class="qopts">
+    <li data-correct="false">=</li>
+    <li data-correct="true">&lt;-</li>
+    <li data-correct="false">::</li>
+    <li data-correct="false">==</li>
+  </ul>
+  <div class="explanation"><code>&lt;-</code> is the conventional R assignment operator. Keyboard shortcut: <strong>Alt+-</strong> (Windows) / <strong>Option+-</strong> (Mac).</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. <code>glimpse(bc)</code> shows you —</div>
+  <ul class="qopts">
+    <li data-correct="false">A pie chart of the data</li>
+    <li data-correct="true">A compact summary of every column with its type and the first few values</li>
+    <li data-correct="false">Only the row count</li>
+    <li data-correct="false">Only the column names</li>
+  </ul>
+  <div class="explanation"><code>glimpse()</code> is one of the most useful first-look functions. Like a richer version of Excel's status bar.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The five basic statistics from this chapter are —</div>
+  <ul class="qopts">
+    <li data-correct="false">add, subtract, multiply, divide, exponent</li>
+    <li data-correct="true">sum, mean, min, max, median</li>
+    <li data-correct="false">x, y, z, w, v</li>
+    <li data-correct="false">SUMIF, COUNTIF, AVERAGEIF, MAXIF, MINIF</li>
+  </ul>
+  <div class="explanation">Five base R functions — <code>sum()</code>, <code>mean()</code>, <code>min()</code>, <code>max()</code>, <code>median()</code> — directly equivalent to Excel's <code>SUM</code>, <code>AVERAGE</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. Which is true about R errors?</div>
+  <ul class="qopts">
+    <li data-correct="false">They are random and impossible to read</li>
+    <li data-correct="true">They usually tell you where the problem is (which function) and often suggest a fix</li>
+    <li data-correct="false">You should always reinstall R when you see one</li>
+    <li data-correct="false">They mean your computer is broken</li>
+  </ul>
+  <div class="explanation">R errors are written by people for people. Read every word.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one moment from this chapter where R felt easier than Excel — or harder. What made the difference?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common reflections: <em>easier — being able to re-run the whole import in one click</em> · <em>harder — remembering install vs library the first time</em> · <em>easier — typing sum(bc$Reforestation_ha) and getting the same number as my Excel formula, instantly</em> · <em>aha moment — realizing the data is the same, just the language is different</em>.</div>
+</div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

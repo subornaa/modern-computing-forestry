@@ -1,0 +1,247 @@
+---
+title: "Your Presentation Title Here"
+subtitle: "FRST 232 — A group presentation"
+author: "Member A · Member B · Member C · Member D"
+date: 2027-04-10
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    transition: slide
+    incremental: false
+    embed-resources: true
+    code-overflow: wrap
+    chalkboard: false
+    logo: "" # add a path to a logo if you have one
+    footer: "FRST 232 — UBC · CC BY 4.0"
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(here)
+library(knitr)
+library(scales)
+# Add: library(sf) and library(leaflet) if your talk uses spatial work
+```
+
+# Background
+
+## The question
+
+> Replace this slide with **one sentence** stating the question
+> your analysis answers.
+
+::: {.notes}
+Talking points (only you see these in presenter mode):
+
+- Set the scene in 15 seconds.
+- Why does this question matter for forestry?
+- One concrete real-world implication.
+:::
+
+## The data
+
+::: {.incremental}
+- **Source:** [name the publisher, e.g., Environmental Reporting BC]
+- **Licence:** [Open Government Licence — BC]
+- **Coverage:** [time period, region, units of observation]
+- **Size:** [rows × columns]
+- **Why we picked this dataset:** [one sentence]
+:::
+
+::: {.notes}
+Acknowledge the licence here, not just at the end.
+:::
+
+# Methods and Results
+
+## The cleaning pipeline
+
+Show your actual R code — ideally ≤ 10 lines.
+
+```{r method}
+#| echo: true
+#| eval: false
+#| code-line-numbers: true
+
+# Example placeholder — replace with your real pipeline
+airdata_clean <- read_csv(here("data", "airdata3.csv")) |>
+  select(-starts_with("Unnamed")) |>
+  select(where(\(col) !all(is.na(col)))) |>
+  mutate(date_parsed = mdy(Date)) |>
+  filter(!is.na(PM25)) |>
+  left_join(station_regions, by = "location")
+```
+
+::: {.notes}
+Read each verb out loud. Audiences who do not know R can still
+follow "filter, mutate, join".
+:::
+
+## Result — chart
+
+```{r chart}
+#| echo: false
+#| fig.width: 9
+#| fig.height: 4.8
+
+# Replace with your group's headline chart.
+# Use base_size 18+ so the chart reads on a projector.
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
+  geom_col(fill = "#2D6A4F") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title    = NULL,
+       x        = "Fiscal year",
+       y        = "Reforested area (ha)",
+       caption  = "Source: Environmental Reporting BC") +
+  theme_minimal(base_size = 18) +
+  theme(plot.caption = element_text(colour = "grey40"))
+```
+
+## Result — table
+
+```{r table}
+#| echo: false
+# Replace with your group's headline summary table
+bc |>
+  summarise(
+    n_years     = n(),
+    mean_ha     = mean(Reforestation_ha) |> round(0) |> comma(),
+    median_ha   = median(Reforestation_ha) |> round(0) |> comma(),
+    max_ha      = max(Reforestation_ha) |> round(0) |> comma(),
+    max_year    = Fiscal_Year[which.max(Reforestation_ha)]
+  ) |>
+  kable(col.names = c("Years", "Mean (ha)", "Median (ha)",
+                      "Max (ha)", "Max year"))
+```
+
+## Result — map
+
+```{r map}
+#| echo: false
+#| eval: false
+
+# If your talk uses a leaflet map, place it here.
+# (Set eval: true and uncomment when you have the data set up.)
+#
+# leaflet(stations_pm25) |>
+#   addProviderTiles("CartoDB.Positron") |>
+#   addCircleMarkers(radius = ~mean_pm25 + 4,
+#                    fillColor = ~pal(mean_pm25),
+#                    fillOpacity = 0.85,
+#                    color = "#1B4332", weight = 1.5,
+#                    popup = ~paste0("<b>", location, "</b>")) |>
+#   addLegend("bottomright", pal = pal,
+#             values = stations_pm25$mean_pm25,
+#             title = "Mean PM2.5 (μg/m³)")
+```
+
+# Interpretation
+
+## What we found
+
+::: {.incremental}
+- **Headline:** [one sentence stating the main finding]
+- **Magnitude:** [the number that proves it]
+- **Context:** [why this matters — for forestry, policy, or
+  research]
+:::
+
+::: {.notes}
+The headline must be defensible. If a sceptic asks "really?"
+have one number ready.
+:::
+
+## Comparison
+
+Build a two-column slide if you have a useful comparison.
+
+::: {.columns}
+::: {.column width="50%"}
+**Our result**
+
+- key number 1
+- key number 2
+- key number 3
+:::
+::: {.column width="50%"}
+**Baseline or comparison**
+
+- baseline number 1
+- baseline number 2
+- baseline number 3
+:::
+:::
+
+# Conclusion
+
+## What we know
+
+::: {.incremental}
+- **One:** [first conclusion]
+- **Two:** [second conclusion]
+- **Three:** [third conclusion]
+:::
+
+## Limitations
+
+::: {.incremental}
+- **Data scope:** [e.g., one month of measurements; one
+  province; one decade]
+- **Methodology:** [e.g., did not adjust for X; treated Y as
+  comparable to Z]
+- **Generalisability:** [where these results would NOT hold]
+:::
+
+::: {.notes}
+A frank limitations slide makes you more credible, not less.
+Audiences who hear acknowledged limitations trust the rest of
+the talk more.
+:::
+
+## What we could do next
+
+::: {.incremental}
+- More years of data
+- Stratify by [variable not yet considered]
+- Combine with [companion dataset]
+:::
+
+# Acknowledgements
+
+## Data
+
+- BC Government, Environmental Reporting BC. Open Government
+  Licence — BC.
+- [Any other data source here]
+
+## R packages
+
+tidyverse · readxl · dplyr · ggplot2 · lubridate · sf · leaflet ·
+Quarto
+
+## Course
+
+FRST 232 — Computer Applications in Forestry
+Dr. Suborna Ahmed · UBC Faculty of Forestry · Fall 2026
+
+::: {.notes}
+Always credit the data. Quietly mention which packages you used.
+End on the course name + instructor.
+:::
+
+## Questions
+
+Thank you.
+
+::: {.notes}
+End on a clean slide with one word ("Questions" or "Thank you").
+NEVER end on the acknowledgements slide — it gives the audience
+nowhere to look during Q&A.
+:::

@@ -1,0 +1,871 @@
+---
+title: "Group Presentations and Portfolio Outputs"
+---
+
+```{r setup-ch12}
+#| include: false
+library(tidyverse)
+library(here)
+library(knitr)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Build a **Quarto revealjs presentation** by changing one line
+  of YAML in a `.qmd` file.
+- Apply the **one-idea-per-slide** rule and use slide separators
+  (`---` or `## Heading`) effectively.
+- Embed R code chunks (charts, tables, leaflet maps) directly in
+  slides so the slide refreshes whenever the data changes.
+- Add **incremental reveals**, **speaker notes**, and **footnote
+  citations** to slides.
+- Assemble a **portfolio** — a single Quarto site or HTML
+  collection — that showcases your best analyses from
+  Chapters 4–11.
+- Cite **data sources** (BC Data Catalogue, Environmental
+  Reporting BC) and **R packages** properly.
+- Apply an **open licence** (CC BY 4.0) to your deliverables so
+  they can be shared and built upon.
+- Publish a rendered Quarto site to a free hosting service
+  (Quarto Pub, GitHub Pages, Netlify).
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **rendered group presentation** in revealjs HTML format,
+   covering one analysis from the term (10–15 slides for a
+   ~12-minute talk).
+2. A **personal portfolio** — at least three of your previous
+   chapter deliverables (rendered HTML reports) collected into
+   a single linked landing page.
+3. A **citation file** (`CITATION.md`) listing the data sources,
+   R packages, and any external code used.
+4. A **licence statement** (CC BY 4.0 or equivalent) at the
+   bottom of your portfolio landing page.
+5. The corresponding **`.qmd` source files** for both the
+   presentation and the portfolio.
+:::
+
+# Where we are
+
+Through Chapters 1–11 you produced a body of work: cleaned
+datasets, summary reports, charts, static maps, interactive
+maps. Each rendered HTML stands alone. **Chapter 12 is about
+packaging.**
+
+Two questions this chapter answers:
+
+1. **How do I present what I built** to a non-R audience in a
+   12-minute talk?
+2. **How do I publish what I built** so a future employer, TA,
+   or classmate can find it and build on it?
+
+Both answers use the same tool you have been using since
+Chapter 5: Quarto.
+
+# Quarto outputs — three formats from one file
+
+The same `.qmd` source can produce different outputs by changing
+the YAML `format` field. Through this course you have already
+used:
+
+| `format:` | What it produces |
+|---|---|
+| `html` | A single HTML report — your chapter deliverables. |
+
+This chapter adds two more:
+
+| `format:` | What it produces |
+|---|---|
+| `revealjs` | A revealjs HTML presentation (slides). |
+| `pdf` | A printable PDF (requires a TeX install). |
+
+A single Quarto **project** (a folder of `.qmd` files plus a
+`_quarto.yml` config) can produce **all three formats from the
+same content**. The same chart that appears on slide 7 of your
+revealjs talk can appear on page 12 of your PDF report and at
+section 3 of your HTML portfolio — without ever copy-pasting.
+
+That single-source-many-outputs property is the difference
+between PowerPoint+Word+PDF as separate deliverables and Quarto
+as a publishing system.
+
+# PowerPoint-to-Quarto bridge
+
+| What you would do in PowerPoint | What you do in Quarto revealjs |
+|---|---|
+| New slide | `## Slide title` (h2 heading) or `---` separator |
+| Two-column layout | `::: {.columns}` / `::: {.column width="50%"}` |
+| Title slide | YAML header (`title:`, `subtitle:`, `author:`) |
+| Speaker notes | `::: {.notes}` block |
+| Animated reveal | `::: {.incremental}` block or `{.fragment}` class |
+| Paste a chart | An R code chunk that re-renders the chart |
+| Paste a screenshot of a map | A leaflet chunk that produces a live, interactive map |
+| Embed a video | `<video>` tag in HTML cell |
+| Insert a footnote | `^[footnote text]` or proper Markdown citation |
+| Apply a template | `theme:` in YAML (`default`, `dark`, `simple`, `sky`, etc.) |
+| Save as PDF | Render once to `revealjs` (HTML); press **E** key during the talk to export PDF |
+| Edit the company logo every slide | Set it once in `_quarto.yml`; every slide inherits |
+
+**Every PowerPoint move has a Quarto equivalent, and most are one
+line of code instead of a menu hunt.**
+
+# Your first revealjs file
+
+Change one line of YAML at the top of any `.qmd` file:
+
+```yaml
+---
+title: "BC Reforestation Trends, 1987–2023"
+author: "Your name"
+date: today
+format: revealjs
+---
+```
+
+Render. Open the resulting `.html`. You are presenting.
+
+## Slide separators — two patterns
+
+Inside the document, two patterns create a new slide:
+
+**Pattern 1 — heading-based:**
+
+```markdown
+## Slide 1 title
+
+content
+
+## Slide 2 title
+
+more content
+```
+
+Each `## ` heading starts a new slide. **Recommended for most
+talks** — the title is built into the slide automatically.
+
+**Pattern 2 — horizontal-rule-based:**
+
+```markdown
+A slide with no title.
+
+---
+
+Another slide with no title.
+```
+
+The `---` (three dashes on a blank line) creates an
+untitled slide. Useful for image-only slides or section
+transitions.
+
+::: {.callout-tip}
+## Heading hierarchy in revealjs
+
+- **`# Section Title`** (h1) — creates a *section divider* slide.
+- **`## Slide title`** (h2) — creates a *content slide*.
+- **`### Subheading`** (h3) — used within a slide.
+
+A talk with three sections, each containing three slides, has
+`#` × 3 and `##` × 9.
+:::
+
+# The one-idea-per-slide rule
+
+The strongest discipline in slide design: **one slide, one
+idea**. If your slide has two unrelated points, split it.
+
+Symptoms of slides that need splitting:
+
+- More than ~50 words of body text.
+- More than one chart per slide.
+- A title with the word *"and"* in it (*"Methods and Results"*).
+- Bullet points that wrap to a third line.
+
+A revealjs deck of 20 short slides is almost always clearer than
+the same content jammed into 8 dense slides.
+
+# Embedding R output in slides
+
+Code chunks work the same way in revealjs as in HTML reports —
+the output appears on the slide where the chunk lives:
+
+```` markdown
+## BC reforestation trend
+
+```{r}
+#| echo: false
+#| fig.width: 8
+#| fig.height: 4.5
+library(tidyverse)
+library(readxl)
+library(here)
+
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
+  geom_col(fill = "#2D6A4F") +
+  labs(title = NULL,
+       x = "Fiscal year", y = "Reforested area (ha)") +
+  theme_minimal(base_size = 18)
+```
+````
+
+Notice the **`base_size = 18`** — slide text needs to be larger
+than report text. A 12-point chart that reads fine in a printed
+report is illegible on a projector. **Always increase font sizes
+in slide charts.**
+
+# Speaker notes
+
+A `::: {.notes}` block adds notes that you see in presenter mode
+but the audience never sees:
+
+```markdown
+## BC reforestation trend
+
+[chart]
+
+::: {.notes}
+Talking points: emphasise the post-2010 increase, mention the
+2018 dip caused by silviculture-budget cuts, prompt audience
+to predict 2024.
+:::
+```
+
+Press **`S`** during the live presentation to open presenter mode
+in a separate window.
+
+# Incremental reveals
+
+Sometimes you want bullets to appear one at a time:
+
+```markdown
+## Three findings
+
+::: {.incremental}
+- Reforestation has risen ~50% since 2010.
+- Natural disturbance peaked in 2017 wildfires.
+- The ratio reforestation : disturbance crossed 1 in 2019.
+:::
+```
+
+The reader sees the first bullet, presses → to reveal the
+second, again for the third. Use sparingly — incremental
+reveals can frustrate audiences if overused.
+
+# Two-column layout
+
+For comparing two charts or putting text next to an image:
+
+```markdown
+## Static vs interactive maps
+
+::: {.columns}
+::: {.column width="50%"}
+**Static** — `geom_sf`
+
+- One PNG
+- Fixed view
+- Goes in printed reports
+:::
+
+::: {.column width="50%"}
+**Interactive** — `leaflet`
+
+- HTML widget
+- Pan, zoom, click
+- Goes in HTML deliverables
+:::
+:::
+```
+
+# A complete revealjs `.qmd` skeleton
+
+Copy this as a starting point for a 10-slide talk:
+
+```yaml
+---
+title: "BC Air Quality, January 2000"
+subtitle: "An FRST 232 group presentation"
+author: "Members A, B, C, D"
+date: 2027-04-10
+format:
+  revealjs:
+    theme: simple
+    incremental: false
+    transition: slide
+    slide-number: true
+    chalkboard: false
+    embed-resources: true
+    code-overflow: wrap
+---
+
+# Background
+
+## The question
+
+What did January 2000 PM2.5 look like across Metro Vancouver?
+
+::: {.notes}
+Set up the question — the file we cleaned in Ch 6 is hourly PM2.5
+across 16 stations.
+:::
+
+## The data
+
+::: {.incremental}
+- 11,904 rows × 27 columns raw
+- 16 stations across Metro Vancouver
+- Source: Environmental Reporting BC
+- Licence: Open Government Licence — BC
+:::
+
+# Cleaning
+
+## The pipeline
+
+[paste the Ch 6 dplyr pipeline as a code chunk with `echo: true`]
+
+# Findings
+
+## Per-station means
+
+[paste the bar chart of mean PM2.5 by station]
+
+## Regional differences
+
+[paste the box plot from Ch 9]
+
+## On a map
+
+[paste the leaflet capstone map from Ch 11]
+
+# Conclusion
+
+## What we found
+
+One sentence. Big and centered.
+
+## Thank you
+
+Questions?
+```
+
+Render. Adjust. Iterate.
+
+# Building a portfolio
+
+A **portfolio** is a single landing page that links to your
+previously rendered analyses. Your future employer, TA, or
+classmate visits one URL and can browse everything you have
+built.
+
+## Simple folder structure
+
+```
+frst232/
+├── _quarto.yml                  ← project config
+├── index.qmd                    ← portfolio landing page
+├── docs/                        ← rendered output (auto-generated)
+└── chapters/
+    ├── ch05.qmd
+    ├── ch06.qmd
+    ├── ...
+```
+
+## Minimal `_quarto.yml`
+
+```yaml
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "FRST 232 — Forestry Data Analysis"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: chapters/ch05.qmd
+        text: Ch 5 — Inspection
+      - href: chapters/ch06.qmd
+        text: Ch 6 — Cleaning
+      - href: chapters/ch07.qmd
+        text: Ch 7 — Summarising
+      - href: chapters/ch09.qmd
+        text: Ch 9 — Charts
+      - href: chapters/ch11.qmd
+        text: Ch 11 — Maps
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+```
+
+`quarto render` produces a complete navigable site in `docs/`.
+Drop that folder anywhere — a USB stick, a web server, GitHub
+Pages — and it renders as a real website.
+
+## A minimal `index.qmd`
+
+```markdown
+---
+title: "FRST 232 Portfolio"
+---
+
+# About this site
+
+A collection of forestry data analyses produced for FRST 232
+(UBC, Fall 2026). Each linked report covers a different
+methodological topic, using openly licensed BC and Ontario
+forestry data.
+
+## Highlights
+
+- [Chapter 6 — Cleaning the BC air-quality file](chapters/ch06.html)
+- [Chapter 9 — Visualising reforestation trends](chapters/ch09.html)
+- [Chapter 11 — Interactive map of monitoring stations](chapters/ch11.html)
+
+## Author
+
+Your name · [LinkedIn / email]
+
+## Licence
+
+All content © 2026 Your Name, released under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Code is released under the MIT licence.
+
+## Data sources
+
+- BC silviculture: Environmental Reporting BC
+- BC air quality: Environmental Reporting BC
+- Ontario forest stats: Government of Ontario
+```
+
+# Citation — citing data, code, and packages
+
+Every analysis you publish should make three things easy to
+find:
+
+1. **The data source.** Who published it? Where? Under what
+   licence?
+2. **The code dependencies.** Which R packages did you use?
+3. **The methods.** Which previously published work did you
+   build on?
+
+## A `CITATION.md` in your project root
+
+```markdown
+# Citations
+
+## Data
+
+- BC Government, Environmental Reporting BC. *Trends in
+  Silviculture in British Columbia*. Open Government Licence —
+  BC. <https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c->.
+  Accessed 2026-09-15.
+
+- Government of Ontario. *Forest Resources of Ontario 2021*.
+  Open Government Licence — Ontario.
+  Accessed 2026-09-22.
+
+## R packages
+
+- Wickham H et al. (2019). Welcome to the tidyverse. *Journal of
+  Open Source Software*, 4(43), 1686.
+- Pebesma E (2018). Simple Features for R: Standardized Support
+  for Spatial Vector Data. *The R Journal* 10(1), 439–446.
+- Cheng J, Karambelkar B, Xie Y (2024). leaflet: Create
+  Interactive Web Maps with the JavaScript "Leaflet" Library.
+```
+
+In R, `citation("package_name")` returns the BibTeX entry for any
+package. Copy the entries into your `CITATION.md`.
+
+# Licensing — choose one openly
+
+Three commonly used licences for student work:
+
+| Licence | What it allows | When to use |
+|---|---|---|
+| **CC BY 4.0** | Anyone can reuse and modify, as long as they credit you | Reports, charts, written analyses — the default for OER work. |
+| **CC BY-NC 4.0** | Same as above but no commercial use | If you want to restrict business reuse |
+| **MIT** | Free reuse of code, must include copyright notice | Code (R scripts, Quarto sources) |
+
+Many real-world projects combine: **CC BY for prose and figures,
+MIT for code**. Both can co-exist in one repository.
+
+Add a one-line statement to the bottom of your portfolio:
+
+```markdown
+© 2026 Your Name · Content licensed under CC BY 4.0 · Code under MIT
+```
+
+# Publishing — three free hosts
+
+Once `quarto render` produces a `docs/` folder, you can drop it
+on:
+
+| Host | What it gives you | Effort |
+|---|---|---|
+| **Quarto Pub** | A unique URL like `yourname.quarto.pub/portfolio/`. Free. | One command: `quarto publish quarto-pub` |
+| **GitHub Pages** | Free hosting on `yourname.github.io/repo-name`. Needs a GitHub account. | Push to GitHub, enable Pages in repo settings |
+| **Netlify** | Same idea, more enterprise features. Free tier generous. | Drag-and-drop the `docs/` folder onto the Netlify dashboard |
+
+All three are zero-cost for student-scale traffic. The first one
+is the easiest by far — `quarto publish quarto-pub` from your
+project root, sign in, done.
+
+# Active learning
+
+## Activity 1 — Convert a chapter to slides
+
+Take your `frst232_ch09_learner.qmd` (charts chapter). Change
+the YAML `format:` from `html` to `revealjs`. Re-render. Inspect
+what changes — which charts make readable slides, which need
+bigger fonts.
+
+## Activity 2 — One idea per slide
+
+Take the rendered HTML from Activity 1. Identify any slide with
+more than one chart or more than ~50 words of text. Split each
+into two slides.
+
+## Activity 3 — Two-column layout
+
+Build a two-column slide: left column has a chart, right column
+has three bullet takeaways.
+
+## Activity 4 — Citation
+
+Run `citation("tidyverse")` and `citation("sf")` in the R
+console. Copy the output into a `CITATION.md` file in your
+`frst232/` project root.
+
+## Activity 5 — Apply a licence
+
+Add a one-line licence statement to the bottom of your
+`index.qmd` (CC BY 4.0 for content, MIT for code).
+
+## Activity 6 — Publish
+
+Run `quarto publish quarto-pub` from your project root. Sign
+in to Quarto Pub when prompted. Confirm the resulting URL
+loads in a browser.
+
+# Group lab activity — In-class presentations
+
+::: {.callout-note appearance="default"}
+## Lab: The synthesis presentations
+
+The lab session for this chapter is given over to **in-class
+group presentations**. Each group presents one analysis from
+the term, using a revealjs deck they have built in advance.
+
+**Format**
+
+- 4 groups × 12 minutes each (10 min talk + 2 min Q&A).
+- Each group covers one chapter's headline analysis (Ch 6
+  cleaning, Ch 7 summarising, Ch 9 charts, Ch 11 maps).
+- Each group member speaks for at least 2 minutes.
+
+**Required slide structure**
+
+1. **Title slide** — title, group members, date.
+2. **The question** — what forestry question are we answering?
+3. **The data** — source, licence, row/column counts.
+4. **The method** — show the actual R code (≤ 10 lines).
+5. **The result** — one chart, table, or map.
+6. **Interpretation** — one sentence headline + one paragraph
+   nuance.
+7. **Limitations** — what does this analysis NOT show?
+8. **Acknowledgements** — citations of data sources and
+   packages.
+
+**Peer evaluation**
+
+Every learner submits a peer-eval form for every other group,
+scoring:
+
+- Clarity of the question (0–3)
+- Quality of the slides (0–3)
+- Depth of interpretation (0–3)
+- Acknowledgement of limitations (0–3)
+
+**Submission**
+
+- The rendered revealjs HTML.
+- The source `.qmd`.
+- The peer-eval forms.
+:::
+
+# Exercises
+
+These are the take-home exercises for this chapter.
+
+1. **Change the format.** Take any Chapter 5–11 learner `.qmd`
+   you have rendered. Change the YAML `format:` line from `html`
+   to `revealjs`. Re-render. What changes?
+
+2. **Slide separators.** In your converted file, identify three
+   places where you should add `## ` headings or `---`
+   separators to break a long page into multiple slides.
+
+3. **One slide, one chart.** Refactor one chapter so each
+   slide contains exactly one chart (or table, or map). Compare
+   the new deck length to the original page count.
+
+4. **Speaker notes.** Add `::: {.notes}` blocks to three of
+   your slides with talking points only you will see.
+
+5. **Two-column layout.** Build one slide with a two-column
+   layout — a chart on the left, three bullet takeaways on the
+   right.
+
+6. **Build a portfolio.** Create `_quarto.yml`, `index.qmd`,
+   and a navbar that links to at least three of your previous
+   chapter deliverables. Run `quarto render` and inspect the
+   resulting `docs/` folder.
+
+7. **CITATION.md.** Write a `CITATION.md` file listing your
+   three data sources and at least five R packages you used
+   through the course.
+
+8. **Publish.** Run `quarto publish quarto-pub` and share the
+   resulting URL with one classmate. Confirm it loads on their
+   computer without any R install.
+
+# Optional, advanced
+
+## Slide themes and templates
+
+revealjs ships with multiple built-in themes:
+
+```yaml
+format:
+  revealjs:
+    theme: [default, dark, sky, beige, simple, serif, blood, night, moon, solarized]
+```
+
+Pick one that matches the venue. For most academic/professional
+talks, `simple` or `serif` is safest. `dark` works well in
+dim conference rooms.
+
+## Custom CSS
+
+If a built-in theme is not quite right:
+
+```yaml
+format:
+  revealjs:
+    theme: simple
+    css: my-custom.css
+```
+
+Then in `my-custom.css`:
+
+```css
+.reveal h1, .reveal h2, .reveal h3 {
+  color: #1B4332;
+}
+.reveal blockquote {
+  border-left: 4px solid #2D6A4F;
+  padding-left: 1em;
+}
+```
+
+## Print to PDF during the talk
+
+While presenting in revealjs, press **`E`** to enter print mode,
+then **Ctrl+P** / **Cmd+P** to save as PDF. Useful for handouts.
+
+## Multi-author Quarto projects
+
+For a group presentation, share the `.qmd` source via Git
+(Chapter 12 references for more). Each member edits one section.
+Render only when merging.
+
+# A glimpse of Chapter 13: Wrap-up and final exam preparation
+
+Chapter 13 is the term-end consolidation:
+
+- A complete review of all 12 chapters.
+- The Excel-to-R bridge in one summary table.
+- The final-exam structure and topics.
+- Where to go next: advanced R, dedicated GIS courses,
+  reproducibility frameworks.
+
+The chapter lab is the **final exam itself** — closed-AI,
+open-notes, covering everything from Chapter 1 to Chapter 12.
+
+# Self-assessment quiz {#sec-quiz-ch12}
+
+```{=html}
+<style>
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1"><div class="q">1. To turn an HTML Quarto report into a presentation, you change —</div><ul class="qopts"><li data-correct="false">Every code chunk</li><li data-correct="true">The YAML <code>format:</code> line from html to revealjs</li><li data-correct="false">The entire R session</li><li data-correct="false">Nothing — they are the same</li></ul><div class="explanation">Quarto's single-source-many-outputs design means one YAML change reformats the same content as slides.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. The "one idea per slide" rule means —</div><ul class="qopts"><li data-correct="false">Use exactly one word per slide</li><li data-correct="true">Each slide should make one clear point — split if you have two unrelated ideas</li><li data-correct="false">Use one slide per chapter</li><li data-correct="false">It is just a suggestion</li></ul><div class="explanation">Dense slides confuse audiences. Split when you have two ideas, two charts, or 50+ words.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. In revealjs, a new slide is created by —</div><ul class="qopts"><li data-correct="false">Pressing Enter twice</li><li data-correct="true">A `## ` heading or a `---` horizontal rule on a blank line</li><li data-correct="false">A {slide} block</li><li data-correct="false">A separate file per slide</li></ul><div class="explanation">Heading-based separators (## Title) are most common; --- creates an untitled slide.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. A `# Section Title` (h1) in revealjs creates —</div><ul class="qopts"><li data-correct="false">A regular content slide</li><li data-correct="true">A section-divider slide between groups of content slides</li><li data-correct="false">An error</li><li data-correct="false">A speaker note</li></ul><div class="explanation">h1 = section divider; h2 = content slide; h3 = subheading within a slide.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. `::: {.notes}` blocks contain —</div><ul class="qopts"><li data-correct="false">Code that does not run</li><li data-correct="true">Speaker notes — visible to you in presenter mode, hidden from the audience</li><li data-correct="false">Footnotes</li><li data-correct="false">References</li></ul><div class="explanation">Press S during the live presentation to open presenter mode in a separate window.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. R code chunks in revealjs slides —</div><ul class="qopts"><li data-correct="false">Do not run</li><li data-correct="true">Run and embed their output (charts, tables, maps) on the slide where they live</li><li data-correct="false">Run only on the title slide</li><li data-correct="false">Require a separate library</li></ul><div class="explanation">Same as in HTML reports — the chunk runs, the output appears.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. When embedding a chart in a slide, you should set —</div><ul class="qopts"><li data-correct="false">A smaller font than for a report</li><li data-correct="true">A larger base_size (e.g., 16–20) so the chart reads on a projector</li><li data-correct="false">No font change</li><li data-correct="false">Black text only</li></ul><div class="explanation">Projector audiences sit further away than report readers. Increase chart font sizes accordingly.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. `::: {.incremental}` blocks produce —</div><ul class="qopts"><li data-correct="false">A loop in the code</li><li data-correct="true">Bullets that appear one at a time as the presenter advances</li><li data-correct="false">A counter</li><li data-correct="false">A footnote</li></ul><div class="explanation">Use sparingly — overusing incremental reveals frustrates audiences.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. A two-column slide layout uses —</div><ul class="qopts"><li data-correct="false">Two separate files</li><li data-correct="true">A `::: {.columns}` parent block with two `::: {.column width="50%"}` child blocks</li><li data-correct="false">A table</li><li data-correct="false">Tabs</li></ul><div class="explanation">Adjust widths as needed (e.g., 40/60). The columns blocks must be inside a columns block.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. A "portfolio" in the context of this course is —</div><ul class="qopts"><li data-correct="false">A single document</li><li data-correct="true">A Quarto website (one landing page + multiple linked chapter deliverables) showcasing your best work</li><li data-correct="false">A printed binder</li><li data-correct="false">A LinkedIn profile</li></ul><div class="explanation">A landing page (index.qmd) + multiple chapter pages + a _quarto.yml = a navigable website.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. `_quarto.yml` is —</div><ul class="qopts"><li data-correct="false">A data file</li><li data-correct="true">The project config file that defines the site's structure, navigation, and format defaults</li><li data-correct="false">A backup file</li><li data-correct="false">Optional metadata</li></ul><div class="explanation">_quarto.yml is to a Quarto project what package.json is to a Node project — the single config file at the root.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. To cite an R package in your report, run —</div><ul class="qopts"><li data-correct="false">help(package)</li><li data-correct="true">citation("package_name") in the R console</li><li data-correct="false">summary(package)</li><li data-correct="false">There is no standard way</li></ul><div class="explanation">citation() returns the BibTeX/plain-text reference the package authors want you to use.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. The CC BY 4.0 licence —</div><ul class="qopts"><li data-correct="false">Prohibits commercial use</li><li data-correct="true">Allows anyone to reuse and adapt your work, as long as they credit you</li><li data-correct="false">Requires payment</li><li data-correct="false">Only applies to code</li></ul><div class="explanation">CC BY 4.0 is the most permissive Creative Commons licence — credit required, otherwise free.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. The BC silviculture and air-quality data you used this term is licensed under —</div><ul class="qopts"><li data-correct="false">CC BY 4.0</li><li data-correct="true">Open Government Licence — British Columbia (OGL-BC)</li><li data-correct="false">MIT</li><li data-correct="false">Proprietary</li></ul><div class="explanation">All BC Government datasets in the Data Catalogue are OGL-BC — similar to CC BY 4.0 in spirit; attribution required, otherwise free to use.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. <code>quarto publish quarto-pub</code> does what?</div><ul class="qopts"><li data-correct="false">Saves a local PDF</li><li data-correct="true">Uploads the rendered site to Quarto Pub (free hosting) and gives you a public URL</li><li data-correct="false">Compiles the document</li><li data-correct="false">Installs Quarto</li></ul><div class="explanation">Quarto Pub is RStudio/Posit's free hosting service. One command from your project root.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. During a live revealjs presentation, pressing <strong>S</strong> —</div><ul class="qopts"><li data-correct="false">Saves the file</li><li data-correct="true">Opens presenter mode in a separate window, showing speaker notes and the next slide</li><li data-correct="false">Stops the slideshow</li><li data-correct="false">Searches the slides</li></ul><div class="explanation">Other useful keys: F = fullscreen, E = print-PDF mode, B = blank, ESC = overview.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. The biggest reproducibility advantage of revealjs over PowerPoint is —</div><ul class="qopts"><li data-correct="false">Smaller file size</li><li data-correct="true">Charts and tables re-render automatically when the underlying R code changes — no copy-pasting</li><li data-correct="false">Animations</li><li data-correct="false">More fonts</li></ul><div class="explanation">In PowerPoint, every chart is a paste. In Quarto, every chart is a chunk that re-runs.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. A required slide in a professional analytical presentation is —</div><ul class="qopts"><li data-correct="false">A list of your hobbies</li><li data-correct="true">A "limitations" slide that names what the analysis does NOT show</li><li data-correct="false">A long bio</li><li data-correct="false">An advertisement</li></ul><div class="explanation">Naming limitations builds credibility. Audiences trust analysts who acknowledge what they do not know.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. Three commonly used free hosts for Quarto sites are —</div><ul class="qopts"><li data-correct="false">Word, Excel, PowerPoint</li><li data-correct="true">Quarto Pub, GitHub Pages, Netlify</li><li data-correct="false">AWS, GCP, Azure (paid)</li><li data-correct="false">Dropbox, Google Drive, OneDrive</li></ul><div class="explanation">All three are free at student-scale. Quarto Pub is easiest (one command); GitHub Pages requires Git; Netlify is drag-and-drop.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Compare this chapter's "single-source-many-outputs" idea (one Quarto file → HTML + slides + PDF) with what you used to do across Word + PowerPoint + PDF separately. What changes in how you would build a deliverable next time?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>I'll write the analysis once and reformat for any audience</em> · <em>no more "the chart is wrong in the slides but right in the report" bug because the chart is generated from one source</em> · <em>I can re-render in 30 seconds if the data updates instead of remaking three documents</em> · <em>publishing as a URL feels more professional than emailing a .docx attachment</em>.</div></div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts
+
+- *"My revealjs slide has too much text. Help me split it into
+  three shorter slides."* (Paste the slide content.)
+
+- *"My ggplot chart looks fine in HTML but the labels are tiny
+  on the projector. What do I change?"* (Answer: increase
+  `base_size` in `theme_*(base_size = 18)`.)
+
+- *"Write a CITATION.md entry for the readxl R package."*
+:::
+
+# Reading
+
+- *Quarto Presentations* guide — the canonical reference:
+  <https://quarto.org/docs/presentations/revealjs/>
+- *Quarto Websites* guide:
+  <https://quarto.org/docs/websites/>
+- Nancy Duarte, *Slide:ology* — short, opinionated, and the
+  single best one-book primer on slide design.
+- Creative Commons licence chooser:
+  <https://creativecommons.org/choose/>
+- Open Government Licence — BC:
+  <https://www2.gov.bc.ca/gov/content/data/policy-standards/open-data/open-government-licence-bc>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Lab logistics
+
+- The lab session for this chapter is in-class group
+  presentations.
+- 4 groups × ~12 minutes each fits in a 60–75 minute lab.
+- Bring the projector hook-up that matches the venue; have a
+  PDF backup of each group's slides in case revealjs fails on
+  the projector machine.
+- Encourage groups to use **presenter mode (S)** during the
+  talk — speaker notes are vastly more useful than memorising
+  bullet points.
+
+## Grading rubric
+
+| Criterion | Weight | What to look for |
+|---|---|---|
+| Title slide + agenda | 10 % | All members named; clear topic |
+| The question | 10 % | Stated as one sentence, not a paragraph |
+| The data | 10 % | Source, licence, row counts |
+| The method | 15 % | Real R code, not pseudocode |
+| The result | 25 % | One clear chart, table, or map |
+| Interpretation | 15 % | Headline + nuance |
+| Limitations | 10 % | What the analysis does NOT show |
+| Acknowledgements | 5 % | Data citations + R-package citations |
+
+## Materials provided
+
+| File | Purpose |
+|---|---|
+| `frst232_ch12_learner.qmd` | Quarto starter — exercises walking through revealjs and portfolio assembly. |
+| `frst232_ch12_solutions.qmd` | Completed solutions. **Do not distribute.** |
+| `frst232_ch12_slides_template.qmd` | A ready-to-customize revealjs presentation skeleton. |
+| `quiz_ch12.html` | Standalone interactive quiz. |
+
+## Common stumbling points
+
+- **Chart fonts too small on projector.** Insist on
+  `theme_*(base_size = 18)` in slide chunks.
+- **No limitations slide.** Push back hard — limitations are
+  the single best signal of professional maturity in an
+  analytical presentation.
+- **Wall-of-text slides.** Apply the 50-word rule live;
+  refactor in front of the class.
+- **Missing data citations.** Every dataset used must be
+  credited on the acknowledgement slide.
+- **`format: revealjs` not rendering.** Some Posit Cloud
+  setups need `install.packages("rmarkdown")` even though
+  Quarto is bundled. The error message is descriptive.
+:::

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 2 Self-Assessment Quiz</title>
+<style>
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif;
+  max-width: 800px;
+  margin: 2em auto;
+  padding: 0 1.5em;
+  color: #2C3E2F;
+  line-height: 1.55;
+}
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note {
+  background: #FFF8E8;
+  border-left: 4px solid #B7791F;
+  padding: 1em 1.5em;
+  border-radius: 6px;
+  margin-bottom: 2em;
+}
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+code {
+  background: #F0F5F1; color: #1B4332;
+  padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em;
+}
+.progress {
+  position: sticky; top: 0; background: white;
+  border-bottom: 1px solid #d8e4d8; padding: 0.5em 0;
+  margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F;
+}
+</style>
+</head>
+<body>
+
+<h1>Chapter 2 — Self-Assessment Quiz</h1>
+<p><em>Clean and Summarize Data in Excel · 20 questions</em></p>
+
+<div class="preview-note">
+<strong>How this works:</strong> click an option in each question. The right
+answer turns green, wrong answers turn red (with the correct one revealed),
+and an explanation appears below.
+</div>
+
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<h2>Self-assessment quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="q">1. In the formula <code>=B2 / $C$38</code>, what does the dollar sign do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Marks the cell as currency</li>
+    <li data-correct="true">Locks the reference so it does not move when the formula is copied</li>
+    <li data-correct="false">Indicates an error</li>
+    <li data-correct="false">Nothing — Excel ignores it</li>
+  </ul>
+  <div class="explanation"><code>$C$38</code> stays as <code>$C$38</code> when copied. Without the dollar signs, the reference shifts relative to the formula's new position.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Which function returns the <em>number of non-empty</em> cells in a range, including text cells?</div>
+  <ul class="qopts">
+    <li data-correct="false">COUNT</li>
+    <li data-correct="true">COUNTA</li>
+    <li data-correct="false">COUNTIF</li>
+    <li data-correct="false">LEN</li>
+  </ul>
+  <div class="explanation"><code>COUNTA</code> counts every non-empty cell (text + numeric + dates). <code>COUNT</code> only counts numeric cells.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. To check that a lookup key appears <strong>exactly once</strong> in a reference table, which formula is best?</div>
+  <ul class="qopts">
+    <li data-correct="false">=VLOOKUP(A2, codes!A:B, 2, FALSE)</li>
+    <li data-correct="true">=COUNTIF(codes!A:A, A2) — should return 1</li>
+    <li data-correct="false">=IF(A2 = codes!A2, "OK", "not OK")</li>
+    <li data-correct="false">=ISNUMBER(VLOOKUP(...))</li>
+  </ul>
+  <div class="explanation">If the result is 1, the lookup is safe. If it is 2 or more, your <code>VLOOKUP</code> would silently return the first match.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. A cleaning log should record:</div>
+  <ul class="qopts">
+    <li data-correct="false">Only the final cleaned data</li>
+    <li data-correct="true">Every change you made between raw and clean, with a reason</li>
+    <li data-correct="false">Only changes you cannot reverse</li>
+    <li data-correct="false">The data dictionary</li>
+  </ul>
+  <div class="explanation">A cleaning log captures <strong>every</strong> change with a reason. This is what lets you defend your numbers months later.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. Which function is best for recoding the value in a cell to one of several exact-match labels (e.g., "P" → "Pre-sapling", "S" → "Sapling")?</div>
+  <ul class="qopts">
+    <li data-correct="false">VLOOKUP</li>
+    <li data-correct="false">A long chain of nested IF</li>
+    <li data-correct="true">IFS (or SWITCH)</li>
+    <li data-correct="false">SUMIF</li>
+  </ul>
+  <div class="explanation"><code>IFS</code> is designed for exact-match recoding. Cleaner and more readable than a long chain of nested <code>IF</code>.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. You apply AutoFilter to hide rows where <code>SumOfTotalHa &lt; 1000</code>. The other rows are not deleted — they are just hidden. True or false?</div>
+  <ul class="qopts">
+    <li data-correct="true">True — AutoFilter hides; it does not delete</li>
+    <li data-correct="false">False — AutoFilter deletes the hidden rows</li>
+  </ul>
+  <div class="explanation">AutoFilter is reversible. Sorting, by contrast, <strong>rearranges</strong> the rows permanently.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. The formula <code>=SUMIFS(H2:H180, F2:F180, "Jack Pine", D2:D180, "Mature")</code> does what?</div>
+  <ul class="qopts">
+    <li data-correct="false">Sums every numeric value in column H</li>
+    <li data-correct="true">Sums the H values for rows where column F is "Jack Pine" AND column D is "Mature"</li>
+    <li data-correct="false">Returns "Jack Pine" if column D is "Mature"</li>
+    <li data-correct="false">Counts the rows that match both conditions</li>
+  </ul>
+  <div class="explanation"><code>SUMIFS</code> sums the first range, subject to one or more criterion ranges.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. What is the main advantage of converting your data into a structured table (Ctrl+T) before writing formulas?</div>
+  <ul class="qopts">
+    <li data-correct="false">It makes Excel faster</li>
+    <li data-correct="true">Formulas use column names instead of cell ranges, and they auto-extend when rows are added</li>
+    <li data-correct="false">It encrypts the data</li>
+    <li data-correct="false">It is required for sorting</li>
+  </ul>
+  <div class="explanation">Structured tables make formulas self-documenting (<code>=AVERAGE(tbl[col])</code> instead of <code>=AVERAGE(H2:H180)</code>) and self-extending.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. Where does the Ontario dataset come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A private consulting firm</li>
+    <li data-correct="true">The Government of Ontario, distributed through the Ontario Open Data Catalogue</li>
+    <li data-correct="false">A textbook publisher</li>
+    <li data-correct="false">A research paper</li>
+  </ul>
+  <div class="explanation">The file is from the Ministry of Natural Resources and Forestry, published under the Open Government Licence — Ontario.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. The Ontario file in this chapter is a <strong>cross-classification</strong>. That means —</div>
+  <ul class="qopts">
+    <li data-correct="false">It has only one column of data</li>
+    <li data-correct="true">Each row is one unique combination of categorical variables, with one numeric value</li>
+    <li data-correct="false">The data is encrypted</li>
+    <li data-correct="false">It is sorted by region</li>
+  </ul>
+  <div class="explanation">Every row is one unique combination of region × ownership × seral stage × forest type × age class, with the total area for that cell.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. What is the natural composite key for the Ontario file?</div>
+  <ul class="qopts">
+    <li data-correct="false">PFTName alone</li>
+    <li data-correct="false">SumOfTotalHa alone</li>
+    <li data-correct="true">landscape_guide_region, own_group, LGDS, PFTName, AC_10</li>
+    <li data-correct="false">There is no key</li>
+  </ul>
+  <div class="explanation">The combination of region, ownership, seral stage, forest type, and age class uniquely identifies each row.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. Press <strong>F4</strong> while editing a cell reference. What does it do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Closes the file</li>
+    <li data-correct="true">Cycles the reference through absolute / mixed / relative forms ($A$1 → A$1 → $A1 → A1)</li>
+    <li data-correct="false">Inserts a function</li>
+    <li data-correct="false">Triggers AutoFilter</li>
+  </ul>
+  <div class="explanation">F4 is the fastest way to add or remove dollar signs.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. After cleaning the Ontario file, what should the file be named and where should it live?</div>
+  <ul class="qopts">
+    <li data-correct="false">Overwrite on_forest_statistics_1.xlsx in data/</li>
+    <li data-correct="true">Save as on_forest_statistics_1_clean.xlsx in outputs/</li>
+    <li data-correct="false">Email it to yourself</li>
+    <li data-correct="false">Delete the original</li>
+  </ul>
+  <div class="explanation">The raw file should stay unchanged in <code>data/</code>. The cleaned version goes in <code>outputs/</code> with a clear suffix.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. <code>=AVERAGEIF(D2:D180, "Mature", H2:H180)</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The total area of mature forest</li>
+    <li data-correct="true">The mean SumOfTotalHa for rows where SERAL_NAME = "Mature"</li>
+    <li data-correct="false">The number of mature rows</li>
+    <li data-correct="false">The largest mature area</li>
+  </ul>
+  <div class="explanation"><code>AVERAGEIF</code> averages the third range, subject to the criterion.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. Which is true about <code>=VLOOKUP(A2, codes!A:B, 2, TRUE)</code>?</div>
+  <ul class="qopts">
+    <li data-correct="false">It is the safest form of VLOOKUP</li>
+    <li data-correct="true">The TRUE means approximate match — dangerous if the lookup table is unsorted; can silently return the wrong value</li>
+    <li data-correct="false">It returns an error if the key is missing</li>
+    <li data-correct="false">It looks up the value in column B</li>
+  </ul>
+  <div class="explanation">Always use <code>FALSE</code> (exact match) for VLOOKUP unless you really mean approximate.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. The mean of <code>SumOfTotalHa</code> in the Ontario file is much larger than the median. What does this tell you?</div>
+  <ul class="qopts">
+    <li data-correct="false">The data is wrong</li>
+    <li data-correct="true">The distribution is right-skewed — a few very large rows pull the mean up</li>
+    <li data-correct="false">The data is sorted</li>
+    <li data-correct="false">Half the rows are missing</li>
+  </ul>
+  <div class="explanation">When mean &gt; median by a lot, the distribution is right-skewed. The median is the more honest measure of a "typical" row.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. You convert your Ontario data to a structured table named <code>ontario_data</code>. Which formula references the SumOfTotalHa column correctly?</div>
+  <ul class="qopts">
+    <li data-correct="false">=AVERAGE(SumOfTotalHa)</li>
+    <li data-correct="true">=AVERAGE(ontario_data[SumOfTotalHa])</li>
+    <li data-correct="false">=AVERAGE("SumOfTotalHa")</li>
+    <li data-correct="false">=AVERAGE(@SumOfTotalHa)</li>
+  </ul>
+  <div class="explanation">Structured-table syntax uses <code>table_name[column_name]</code>.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. Which of these does NOT cause a VLOOKUP to fail?</div>
+  <ul class="qopts">
+    <li data-correct="false">A trailing space in the lookup key</li>
+    <li data-correct="false">The key is numeric but the lookup column is text</li>
+    <li data-correct="true">The lookup table is on the same sheet as the data</li>
+    <li data-correct="false">The exact-match flag is missing or TRUE</li>
+  </ul>
+  <div class="explanation">VLOOKUP works regardless of which sheet the lookup table is on. Trailing spaces, type mismatches, and the approximate-match default are the real culprits.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. Why is sorting a structured table different from sorting a plain range?</div>
+  <ul class="qopts">
+    <li data-correct="false">Structured tables cannot be sorted</li>
+    <li data-correct="true">Structured tables keep formulas connected to the right columns even after rows are rearranged</li>
+    <li data-correct="false">Sorting a structured table makes Excel slower</li>
+    <li data-correct="false">There is no difference</li>
+  </ul>
+  <div class="explanation">Structured-table column references stay valid through sorts and filters because they refer to column names, not cell ranges.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one formula you wrote this chapter that did not work the first time. What was wrong, and how did you find out?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common answers: <em>VLOOKUP returned #N/A because of a trailing space in the lookup key</em> · <em>SUMIFS gave 0 because the criterion was a number formatted as text</em> · <em>a relative reference shifted incorrectly when copied down because I forgot the dollar signs on the denominator</em> · <em>IFS returned #N/A on some rows because the final TRUE catch-all was missing</em>.</div>
+</div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') {
+              o.classList.add('correct');
+            }
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

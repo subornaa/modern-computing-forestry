@@ -1,0 +1,255 @@
+---
+title: "Chapter 11 — Learner Exercises"
+subtitle: "Map Forestry Data with leaflet"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+# If leaflet is not installed:
+#   install.packages(c("leaflet", "sf", "tidyverse", "lubridate", "here", "htmlwidgets"))
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(lubridate)
+library(here)
+library(knitr)
+library(htmlwidgets)
+```
+
+# About this file {.unnumbered}
+
+Learner workbook for Chapter 11. Code chunks marked `# TODO` are
+where you write your own R code. Render when done — the leaflet
+maps stay interactive in the rendered HTML, which is the
+deliverable.
+
+```{r build-stations}
+# Build stations_sf (same as Ch 10)
+stations <- tribble(
+  ~location,                          ~lon,        ~lat,
+  "Burnaby South",                    -122.985,    49.215,
+  "Coquitlam Douglas College",        -122.798,    49.252,
+  "Langley Central",                  -122.660,    49.105,
+  "Maple Ridge Golden Ears School",   -122.620,    49.215,
+  "New Westminster Sapperton Park",   -122.890,    49.235,
+  "North Delta",                      -122.910,    49.135,
+  "North Vancouver Second Narrows",   -123.015,    49.295,
+  "Pitt Meadows Airport",             -122.700,    49.215,
+  "Port Coquitlam North",             -122.770,    49.265,
+  "Port Moody Rocky Point Park",      -122.860,    49.290
+)
+
+stations_sf <- stations |>
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+```
+
+```{r compute-pm25}
+# Compute mean PM2.5 per station from the Ch 6 cleaned air-quality data
+airdata_clean <- read_csv(here("data", "airdata3.csv"),
+                          show_col_types = FALSE) |>
+  filter(!is.na(PM25))
+
+station_means <- airdata_clean |>
+  group_by(location) |>
+  summarise(mean_pm25 = mean(PM25, na.rm = TRUE),
+            n_obs = n(),
+            .groups = "drop")
+
+stations_pm25 <- stations_sf |>
+  left_join(station_means, by = "location")
+```
+
+---
+
+# Exercise 1 — Your first interactive map
+
+```{r ex1}
+# TODO: build a leaflet map of stations_sf with:
+#   1) leaflet(stations_sf)
+#   2) addTiles()
+#   3) addMarkers(popup = ~location)
+
+```
+
+> *Write your answer here.* When you render this document and
+> click a marker, what shows up?
+
+---
+
+# Exercise 2 — Circle markers
+
+```{r ex2}
+# TODO: rebuild the map using addCircleMarkers() instead of
+# addMarkers(). Set radius = 7, fillColor = "#2D6A4F",
+# fillOpacity = 0.85, color = "#1B4332", weight = 2, popup = ~location.
+
+```
+
+---
+
+# Exercise 3 — Three tile providers
+
+## 3a — Default OpenStreetMap
+
+```{r ex3a}
+# TODO: leaflet(stations_sf) |> addTiles() |> addMarkers(popup = ~location)
+
+```
+
+## 3b — CartoDB.Positron (light theme)
+
+```{r ex3b}
+# TODO: same map but with addProviderTiles("CartoDB.Positron") instead
+
+```
+
+## 3c — Esri.WorldImagery (satellite)
+
+```{r ex3c}
+# TODO: same map but with addProviderTiles("Esri.WorldImagery")
+
+```
+
+> *Write your answer here.* Which tile provider feels best for a
+> forestry deliverable? Why?
+
+---
+
+# Exercise 4 — Colour by PM2.5
+
+## 4a — Build the palette
+
+```{r ex4a}
+# TODO: build a colour palette with colorNumeric().
+# Use palette = c("#52B788", "#B7791F", "#B05C50") (green to red),
+# domain = stations_pm25$mean_pm25, na.color = "grey50".
+# Save as `pal`.
+
+```
+
+## 4b — Build the map
+
+```{r ex4b}
+# TODO: leaflet(stations_pm25) |> addTiles() |>
+#   addCircleMarkers(radius = ~ifelse(is.na(mean_pm25), 5, mean_pm25 + 4),
+#                    fillColor = ~pal(mean_pm25),
+#                    fillOpacity = 0.85,
+#                    color = "#1B4332",
+#                    weight = 1.5,
+#                    popup = ~location) |>
+#   addLegend("bottomright", pal = pal, values = ~mean_pm25,
+#             title = "Mean PM2.5 (μg/m³)", opacity = 1)
+
+```
+
+---
+
+# Exercise 5 — HTML popups
+
+```{r ex5}
+# TODO: rebuild the map from Ex 4 with rich HTML popups using paste0():
+#   popup = ~paste0("<b>", location, "</b><br>",
+#                   "Mean PM2.5: ",
+#                   ifelse(is.na(mean_pm25), "no data",
+#                          paste0(round(mean_pm25, 1), " μg/m³")), "<br>",
+#                   "N observations: ", ifelse(is.na(n_obs), "0", n_obs))
+
+```
+
+---
+
+# Exercise 6 — Add a buffer polygon layer
+
+## 6a — Compute buffers in BC Albers, reproject back to WGS84
+
+```{r ex6a}
+# TODO: build buffers_sf:
+#   stations_sf |> st_transform(3005) |> st_buffer(dist = 5000) |> st_transform(4326)
+
+```
+
+## 6b — Plot both layers
+
+```{r ex6b}
+# TODO: build a leaflet map with:
+#   addProviderTiles("CartoDB.Positron")
+#   addPolygons(data = buffers_sf, fillColor = "#52B788", fillOpacity = 0.25,
+#               color = "#1B4332", weight = 1)
+#   addCircleMarkers(data = stations_sf, radius = 5,
+#                    color = "#1B4332", fillColor = "#1B4332",
+#                    fillOpacity = 1, popup = ~location)
+
+```
+
+---
+
+# Exercise 7 — Layers control
+
+```{r ex7}
+# TODO: build the multi-layer map from the chapter's complete
+# worked example. It should include:
+#   - Two basemaps (Light, Satellite) as baseGroups
+#   - Stations and 5 km buffers as overlayGroups
+#   - addLayersControl with options(collapsed = FALSE)
+#   - setView centred at lng = -122.85, lat = 49.22, zoom = 11
+
+```
+
+---
+
+# Exercise 8 — Save as standalone HTML
+
+```{r ex8}
+#| eval: false
+# TODO: save the Exercise 7 map as outputs/stations_map.html using
+# htmlwidgets::saveWidget(my_map, file = here("outputs", "stations_map.html"),
+#                         selfcontained = TRUE)
+
+```
+
+---
+
+# Group lab — Chapter capstone interactive map
+
+## Group members
+
+> *List your group members here.*
+
+## Palette choice and rationale
+
+> *What colour palette did your group choose for PM2.5, and why?*
+
+## The capstone map
+
+```{r group-capstone}
+# TODO: build the chapter capstone map here.
+# - Stations + buffers
+# - Colour by mean PM2.5 with a matching legend
+# - Layers control (at least two basemaps + two overlay groups)
+# - Informative popups
+
+```
+
+## Headline finding
+
+> *In one sentence, what does the map show?*
+
+---
+
+# Done
+
+When rendered, this `.qmd` becomes an HTML report with **all
+maps still interactive** — pan, zoom, click, toggle layers.
+Submit:
+
+1. This `.qmd` source.
+2. The rendered `.html` (with all interactive maps embedded).
+3. The standalone HTML map from Exercise 8.

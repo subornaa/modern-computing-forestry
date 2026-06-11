@@ -1,0 +1,251 @@
+---
+title: "Chapter 6 — Learner Exercises"
+subtitle: "Clean and Prepare Forestry Data in R"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+# If any of these fail, run:
+#   install.packages(c("tidyverse", "lubridate", "here", "knitr"))
+library(tidyverse)
+library(lubridate)
+library(here)
+library(knitr)
+```
+
+# About this file {.unnumbered}
+
+This is the learner workbook for Chapter 6. Code chunks marked
+`# TODO` are where you fill in your own R code.
+
+**Folder structure expected:**
+
+```
+frst232/
+├── frst232.Rproj
+├── data/
+│   ├── bc_disturbance_reforestation.xlsx
+│   ├── on_forest_statistics_1.xlsx
+│   └── airdata3.csv                      ← new this chapter
+├── outputs/
+├── R/
+└── frst232_ch06_learner.qmd              ← this file
+```
+
+When everything renders cleanly, submit both this `.qmd` source
+and the rendered `.html`.
+
+---
+
+# Exercise 1 — Import and inspect
+
+## 1a — Import the raw file
+
+```{r ex1a}
+# TODO: read airdata3.csv into a tibble called `airdata_raw`.
+# Use read_csv() with here() for the path.
+# Add show_col_types = FALSE to silence the type-guessing message.
+
+```
+
+## 1b — Six-move inspection
+
+```{r ex1b}
+# TODO: call dim(), names() (or glimpse()), and
+# colSums(is.na(airdata_raw)) |> sort(decreasing = TRUE) |> head(15)
+# to see which columns are most missing.
+
+```
+
+## 1c — Note your findings
+
+> *Write your answer here.* How many rows? How many columns?
+> Which columns are 100% missing?
+
+---
+
+# Exercise 2 — Drop redundant columns with `select()`
+
+## 2a — Drop the upstream-tool index columns
+
+```{r ex2a}
+# TODO: starting from airdata_raw, drop any column whose name
+# starts with "Unnamed" or "...".
+# Save as `airdata_step1`.
+# Hint: select(-starts_with("Unnamed"), -any_of("...1"))
+
+```
+
+## 2b — Drop all-NA columns
+
+```{r ex2b}
+# TODO: starting from airdata_step1, drop every column where every
+# value is NA. Save as `airdata_step2`.
+# Hint: select(where(\(col) !all(is.na(col))))
+
+```
+
+## 2c — Confirm
+
+```{r ex2c}
+# TODO: call ncol(airdata_step2) and names(airdata_step2).
+# You should be down to roughly half the original columns.
+
+```
+
+---
+
+# Exercise 3 — Parse the date with `mutate()`
+
+## 3a — Add a parsed-date column
+
+```{r ex3a}
+# TODO: starting from airdata_step2, use mutate() to add a column
+# called `date_parsed` built from the Date column using mdy().
+# Save as `airdata_step3`.
+
+```
+
+## 3b — Verify
+
+```{r ex3b}
+# TODO: glimpse(airdata_step3) and confirm `date_parsed` is <date>.
+# Also call summary(airdata_step3$date_parsed) to see the range.
+
+```
+
+---
+
+# Exercise 4 — Filter to non-missing PM2.5
+
+```{r ex4}
+# TODO: starting from airdata_step3, keep only rows where PM25 is
+# NOT missing. Save as `airdata_step4`.
+# Hint: filter(!is.na(PM25))
+# Then report nrow(airdata_step4).
+
+```
+
+---
+
+# Exercise 5 — `case_when()` for PM2.5 bands
+
+```{r ex5}
+# TODO: starting from airdata_step4, add a column `pm25_band`:
+#   PM25 < 10  -> "low"
+#   PM25 < 25  -> "moderate"
+#   PM25 < 50  -> "high"
+#   TRUE       -> "very high"
+# Save as `airdata_step5`.
+# Then call count(airdata_step5, pm25_band).
+
+```
+
+---
+
+# Exercise 6 — `left_join()` with a station-region lookup
+
+## 6a — Build the lookup tibble
+
+```{r ex6a}
+station_regions <- tribble(
+  ~location,                          ~region,
+  "Burnaby South",                    "Burrard Peninsula",
+  "Coquitlam Douglas College",        "North-East Sector",
+  "Langley Central",                  "Fraser Valley West",
+  "Maple Ridge Golden Ears School",   "North-East Sector",
+  "New Westminster Sapperton Park",   "Burrard Peninsula",
+  "North Delta",                      "South of Fraser",
+  "North Vancouver Second Narrows",   "North Shore",
+  "Pitt Meadows Airport",             "North-East Sector",
+  "Port Coquitlam North",             "North-East Sector",
+  "Port Moody Rocky Point Park",      "North-East Sector"
+)
+station_regions
+```
+
+## 6b — Join
+
+```{r ex6b}
+# TODO: left_join airdata_step5 with station_regions, joining on
+# the location column. Save as `airdata_clean`.
+
+```
+
+## 6c — Confirm row count is preserved
+
+```{r ex6c}
+# TODO: nrow(airdata_step5) and nrow(airdata_clean) should match.
+# (left_join never drops rows from the main tibble.)
+
+```
+
+---
+
+# Exercise 7 — Save the cleaned tibble
+
+```{r ex7}
+# TODO: write airdata_clean to outputs/airdata3_clean.csv using
+# write_csv(). Use here() for the path.
+
+```
+
+---
+
+# Exercise 8 — Per-station summary
+
+```{r ex8}
+# TODO: group airdata_clean by location, then summarise with:
+#   n_obs = n()
+#   mean_pm25 = mean(PM25, na.rm = TRUE)
+#   max_pm25  = max(PM25, na.rm = TRUE)
+# Then arrange(desc(mean_pm25)).
+# Print the result.
+
+```
+
+---
+
+# Cleaning log
+
+> Write your own cleaning log here. Use the table format from
+> the chapter prose. One row per cleaning step you did above.
+
+| Date | Step | What I did | Why |
+|---|---|---|---|
+| TODO | 1 | TODO | TODO |
+| ... | ... | ... | ... |
+
+---
+
+# Group-lab summary
+
+Use this section for your group-lab submission.
+
+## Group members
+
+> *List your group members here.*
+
+## Highest-PM2.5 station (Task 5 of the group lab)
+
+> *Type the station name and its mean PM2.5 here.*
+
+## One-sentence interpretation
+
+> *Why might that station have higher PM2.5? Use your knowledge
+> of Metro Vancouver geography.*
+
+---
+
+# Done
+
+When everything above runs without error, click **Render**.
+Submit the `.qmd` and the rendered `.html`.

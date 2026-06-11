@@ -1,0 +1,85 @@
+# Equity, diversity, and inclusion commitment {.unnumbered}
+
+This book is open in two senses: **openly licensed** (anyone
+can reuse and adapt it), and **open to its audience** (no
+learner should feel that this book is not for them).
+
+## What "open" means in practice
+
+| Dimension | Our commitment |
+|---|---|
+| **Cost** | The book and every tool it teaches (R, RStudio, Quarto, Posit Cloud) are free of charge. No paywalls, no required textbook purchase. |
+| **Hardware** | Posit Cloud (free tier) lets a learner complete every chapter from a smartphone, tablet, or library computer. No need for a personal high-end laptop. |
+| **Prior experience** | The book assumes no prior coding background. Chapters 1–3 use Excel — a tool most learners already have access to — as the bridge into computational thinking. |
+| **Language background** | A glossary is provided. Technical terms are defined on first use. Where English-language conventions diverge from common usage, we say so. |
+| **Learning differences** | Each chapter offers multiple ways through: read, watch the screencast (where available), do the exercises, work the group lab, or take the quiz. There is no single required path. |
+| **Career direction** | Chapters reference careers in research, government forestry agencies, First Nations forestry councils, consulting, NGOs, and field crews — not just academic paths. |
+
+## Whose voices are in this book
+
+Forestry analytics has historically been a field dominated by
+certain demographics. This book is committed to:
+
+- **Citing and referencing the work of women, BIPOC, and
+  Indigenous forestry researchers and practitioners.** Where
+  classic R / tidyverse documentation is cited, we
+  additionally cite ecological and forestry researchers from
+  diverse backgrounds whose substantive work informs our
+  examples.
+- **Featuring diverse data sources.** The course uses
+  Environmental Reporting BC, the Government of Ontario,
+  and references the BC First Nations Forestry Council.
+- **Avoiding default examples that exclude.** We do not
+  centre Christian-calendar holidays, sports-team affiliation
+  examples, or career arcs that assume a specific cultural
+  background.
+
+## Inclusive language
+
+This book follows the following conventions:
+
+- **"Learner"** rather than "student" — inclusive of returning
+  adults, mature learners, career-changers, and informal
+  learners.
+- **"Chapter"** rather than "week" — does not assume a fixed
+  pacing.
+- **"Course site"** rather than a specific LMS name —
+  portable across institutional contexts.
+- **Avoidance of ableist language** — we work to remove
+  phrases like *"easy"*, *"obvious"*, *"just"*, *"see"*, or
+  *"simply"* when they imply that a concept should be
+  effortless. Learning takes work; that is normal.
+- **Gender-neutral defaults** — we use "everyone", "the
+  learner", or "they" instead of "guys" or default-masculine
+  language.
+- **Plain language alongside technical terms** — *"the
+  tibble (a kind of data frame)"* rather than introducing
+  jargon without translation.
+
+## Multiple ways of knowing
+
+The quantitative methods in this book — descriptive statistics,
+group summaries, regression smoothers, spatial overlays — are
+*one* way of understanding forests. They are powerful, and they
+are necessary for many of the questions a working forester or
+researcher will ask. **They are not sufficient on their own.**
+
+Traditional Ecological Knowledge (TEK), oral history,
+participatory observation, place-based experience, and First
+Nations forestry practices offer complementary forms of
+knowledge that are equally rigorous, equally evidence-based, and
+in many cases more deeply informed about the specific forest
+systems being analysed. A complete forestry analysis brings
+these forms of knowledge into partnership, not into hierarchy.
+
+For deeper engagement with this idea, see:
+
+- Atleo, C. (2011). *Tsawalk: A Nuu-chah-nulth Worldview*. UBC
+  Press.
+- Kimmerer, R. W. (2013). *Braiding Sweetgrass: Indigenous
+  Wisdom, Scientific Knowledge, and the Teachings of Plants*.
+  Milkweed Editions.
+- BC First Nations Forestry Council resources at
+  <https://www.bcfnfc.ca/>.
+- Mills, A. & McGregor, D. (2022). *Indigenous Data
+  Sovereignty in Canada*. (Various publications.)

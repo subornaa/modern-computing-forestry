@@ -1,0 +1,1132 @@
+---
+title: "Clean and Prepare Forestry Data in R"
+---
+
+```{r setup-ch06}
+#| include: false
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Recognize the **six core dplyr verbs**: `filter()`, `select()`,
+  `mutate()`, `arrange()`, `group_by()`, `summarise()`.
+- Drop unwanted columns with **`select()`** and drop unwanted
+  rows with **`filter()`**.
+- Add new columns or transform existing ones with **`mutate()`**.
+- Sort tibbles with **`arrange()`** (ascending) and `desc()`
+  (descending).
+- Parse messy text dates into proper R dates with
+  **`lubridate::mdy()`** and friends.
+- Recode values into categories with **`case_when()`** (the R
+  equivalent of `IFS` from Chapter 2).
+- Look up reference values with **`left_join()`** (the R
+  equivalent of `VLOOKUP`).
+- Chain operations into a single readable pipeline with the
+  native pipe **`|>`**.
+- Maintain a **cleaning log** inside a Quarto document — text and
+  code side by side, every change documented.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **cleaned tibble** of `airdata3.csv`, saved as
+   `outputs/airdata3_clean.csv`, containing only the useful
+   columns, with the date parsed properly, and missing-value
+   rows removed where appropriate.
+2. A **rendered Quarto HTML report** (`frst232_ch06_learner.html`)
+   showing the full cleaning sequence and a cleaning log.
+3. A **station-level summary table** of mean PM2.5 by
+   monitoring station, sorted in descending order.
+4. A short **group-lab worksheet** (or screenshot) submitted to
+   the course site.
+
+This list is the same as the rubric for the chapter assignment.
+Keep it in view while you work.
+:::
+
+# Why dplyr
+
+In Chapter 2 you cleaned data in Excel using AutoFilter, sorts,
+helper columns with `IF`/`IFS`, `VLOOKUP`, and `SUMIFS`. Every
+move was visible — but every move was also a click that left no
+record. *"How did you get this number?"* months later was hard to
+answer.
+
+**dplyr** is the tidyverse package for data cleaning in R. Its
+verbs do exactly what your Excel moves did, with three changes:
+
+1. Every move is a **written instruction** that can be re-run.
+2. Every move is **named after the operation** (`filter` not
+   "AutoFilter"; `mutate` not "add helper column").
+3. Moves **chain together** with the pipe `|>`, so a multi-step
+   cleaning is one block of code that reads top to bottom.
+
+# Excel-to-dplyr bridge
+
+This is the cleaning bridge that Chapter 2 previewed and Chapter
+5 introduced. Now you write the right-hand column for real.
+
+| What you did in Excel (Ch 2) | What you do in R (Ch 6) |
+|---|---|
+| AutoFilter to hide rows | `filter(data, condition)` |
+| Sort A→Z | `arrange(data, column)` |
+| Sort Z→A | `arrange(data, desc(column))` |
+| Delete unwanted columns | `select(data, -unwanted_col)` |
+| Helper column with `=A2+B2` | `mutate(data, new_col = A + B)` |
+| `IFS(x<1000, "small", ...)` | `case_when(x < 1000 ~ "small", ...)` |
+| `VLOOKUP(...)` | `left_join(data, reference, by = "key")` |
+| PivotTable (sum by group) | `group_by(col) |> summarise(sum = sum(x))` |
+| Cleaning log on a separate sheet | Markdown prose between code chunks |
+
+**Every cell of the right-hand column is one line of code.**
+After this chapter, you will be able to clean a dataset in R as
+fluently as you cleaned one in Excel — with the bonus that the
+work is now reproducible.
+
+# The dataset for this chapter
+
+This chapter uses one openly licensed file from the **BC
+Government — Environmental Reporting BC** program:
+
+```{r dataset-summary}
+#| echo: false
+tibble(
+  Property = c("File", "Source", "Catalogue", "Licence", "Rows",
+               "Columns", "Coverage", "Time period"),
+  Value = c(
+    "`airdata3.csv`",
+    "BC Government — Environmental Reporting BC, BC Air Data",
+    "<https://envistaweb.env.gov.bc.ca/>",
+    "Open Government Licence — British Columbia",
+    "11,904",
+    "27 (most of them empty)",
+    "16 air-quality monitoring stations across Metro Vancouver",
+    "January 2000 (one month of hourly readings)"
+  )
+) |> kable()
+```
+
+## Why this dataset matters for forestry
+
+Forest health, wildfire smoke, and silvicultural planning all
+depend on air quality. PM2.5 — fine particulate matter — is the
+single most important air-quality indicator for wildfire smoke
+exposure. The 16 stations in this file are the same network BC
+uses today to monitor smoke from interior wildfires reaching the
+Lower Mainland.
+
+The 2017 wildfire season you met in the Chapter 1 BC silviculture
+file (218,275 ha burned) caused major PM2.5 spikes at every one
+of these stations. A working analyst at a BC ministry, regional
+district, or consultancy will use exactly this format to assess
+exposure.
+
+::: {.callout-important}
+## The file is intentionally messy
+
+Unlike the BC silviculture and Ontario forest stats files (which
+were pre-cleaned by their publishers), `airdata3.csv` arrives in
+a state much closer to **real-world raw data**:
+
+- Several columns are **entirely missing** (every row is `NA`).
+  We need to detect and drop these.
+- Two **redundant index columns** (`"Unnamed: 0"` and similar)
+  were added by an upstream tool — we drop these too.
+- **Dates are stored as text** in `M/D/YYYY` format
+  (`"1/1/2000"`). R does not recognise these as dates until we
+  parse them.
+- **Many rows have no PM2.5 measurement** because not every
+  station measures every pollutant.
+
+Real forestry data looks like this. The cleaning work in this
+chapter is the cleaning work you will do all the time as a
+working analyst.
+:::
+
+# Importing the file
+
+In your `frst232/` project (from Chapter 4 or 5), the file should
+live at `data/airdata3.csv`. If you do not have it yet, download
+it from the BC Government link above and place it there.
+
+```{r import}
+airdata_raw <- read_csv(here("data", "airdata3.csv"),
+                        show_col_types = FALSE)
+dim(airdata_raw)
+```
+
+Notice the variable name: **`airdata_raw`**. We never modify this
+in place. Every cleaning step creates a new variable. The raw
+tibble stays untouched in memory in case we need to start over.
+
+# Inspect first — the six-move check from Chapter 5
+
+```{r inspect-airdata}
+dim(airdata_raw)
+glimpse(airdata_raw)
+colSums(is.na(airdata_raw)) |> sort(decreasing = TRUE) |> head(15)
+```
+
+What we see:
+
+- 11,904 rows × 27 columns.
+- Many `<dbl>` columns. Some `<chr>` columns (`location`, `Date`,
+  `Time`).
+- **Several columns are 100% missing** — the count of NAs equals
+  the total row count.
+
+The 100%-missing columns are an artefact of how this dataset is
+distributed: the schema reserves room for variables that *some*
+stations might measure, but the stations in this extract do not
+all measure them. Our first cleaning move is to drop them.
+
+# Verb 1 — `select()` (keep or drop columns)
+
+`select()` chooses which columns to keep. The simplest form is to
+list the columns you want:
+
+```{r select-keep}
+airdata_raw |>
+  select(location, Date, Time, PM25, PM10, O3, NO2, SO2, CO) |>
+  head(3)
+```
+
+The pipe `|>` reads: *"take `airdata_raw`, then pass it into
+`select()`, then take just the first 3 rows"*.
+
+## Dropping columns with `-`
+
+To drop named columns, prefix them with `-`:
+
+```{r select-drop}
+# Drop the redundant index columns added by an upstream tool.
+airdata_step1 <- airdata_raw |>
+  select(-`...1`, -starts_with("Unnamed"))
+ncol(airdata_step1)
+```
+
+`starts_with("Unnamed")` is a **selection helper** — a pattern
+match that grabs every column whose name starts with `"Unnamed"`.
+Other helpers: `ends_with()`, `contains()`, `matches()` (regex),
+and `where()` (predicate).
+
+## Dropping all-NA columns programmatically
+
+We saw above that several columns are entirely missing. We can
+drop them in one move with `where()`:
+
+```{r drop-all-na}
+airdata_step2 <- airdata_step1 |>
+  select(where(\(col) !all(is.na(col))))
+ncol(airdata_step2)
+names(airdata_step2)
+```
+
+Read it: *"keep columns where it is **not** the case that all
+values are NA"*. We just removed twelve dead-weight columns with
+one line.
+
+# Verb 2 — `filter()` (keep or drop rows)
+
+`filter()` keeps rows where a condition is `TRUE`:
+
+```{r filter-pm25}
+# Keep only rows where PM2.5 was actually measured.
+airdata_step3 <- airdata_step2 |>
+  filter(!is.na(PM25))
+nrow(airdata_step3)
+```
+
+`!is.na(PM25)` reads *"PM25 is NOT missing"*. The `!` is the
+logical NOT operator.
+
+## Combining conditions
+
+You can combine conditions with `&` (AND), `|` (OR), or by adding
+multiple conditions separated by commas (which dplyr treats as
+AND):
+
+```{r filter-multi}
+# Keep only Burnaby South rows with measured PM2.5
+burnaby_pm25 <- airdata_step3 |>
+  filter(location == "Burnaby South",
+         !is.na(PM25))
+nrow(burnaby_pm25)
+```
+
+Note the **double-equals `==`** for "is equal to" — single `=`
+would be an assignment.
+
+## Common filter patterns
+
+| You want | Filter expression |
+|---|---|
+| One specific value | `filter(col == "Burnaby South")` |
+| Not equal | `filter(col != "Burnaby South")` |
+| One of several | `filter(col %in% c("A", "B", "C"))` |
+| Numeric threshold | `filter(PM25 > 10)` |
+| Between two values | `filter(PM25 >= 10, PM25 < 25)` |
+| Non-missing | `filter(!is.na(PM25))` |
+| Date range | `filter(date >= "2000-01-15")` |
+
+The right-hand column reads naturally in English. *"Filter the
+data where location is in 'A', 'B', or 'C'."* That's the dplyr
+design.
+
+# Verb 3 — `mutate()` (add or change columns)
+
+`mutate()` adds new columns or replaces existing ones. The most
+common use in this chapter is **parsing the text date column into
+a real R date**.
+
+```{r mutate-date}
+airdata_step4 <- airdata_step3 |>
+  mutate(date_parsed = mdy(Date))
+glimpse(airdata_step4 |> select(Date, date_parsed))
+```
+
+`mdy()` from the **lubridate** package reads a text date in
+*month/day/year* order and returns a proper `<date>` column.
+Other parsers:
+
+| Source format | lubridate function |
+|---|---|
+| `"1/15/2000"` (US) | `mdy()` |
+| `"15/1/2000"` (UK / Canadian common) | `dmy()` |
+| `"2000-01-15"` (ISO 8601) | `ymd()` |
+| `"15-Jan-2000"` | `dmy()` (handles abbreviations) |
+
+::: {.callout-warning}
+## Date ambiguity
+
+A string like `"3/4/2000"` could be March 4 or April 3 depending
+on convention. **lubridate trusts the function name** — call
+`mdy()` and it interprets as March 4; call `dmy()` and it
+interprets as April 3.
+
+Always check: pick one row, look at the original `Date` string,
+and confirm the parsed date is what you expected. A wrong date
+parser is a silent bug that ruins every later analysis.
+:::
+
+## Multiple new columns at once
+
+```{r mutate-many}
+airdata_step5 <- airdata_step4 |>
+  mutate(date_parsed = mdy(Date),
+         year = year(date_parsed),
+         month = month(date_parsed),
+         day = day(date_parsed),
+         pm25_kg_per_m3 = PM25 / 1000)
+glimpse(airdata_step5 |> select(Date, date_parsed, year, month, day, pm25_kg_per_m3))
+```
+
+`year()`, `month()`, `day()` are lubridate accessors. Each
+returns a vector of the same length.
+
+# Verb 4 — `arrange()` (sort rows)
+
+`arrange()` sorts the tibble:
+
+```{r arrange-asc}
+airdata_step5 |>
+  arrange(PM25) |>
+  select(location, date_parsed, PM25) |>
+  head(5)
+```
+
+Ascending by default. For descending, wrap in `desc()`:
+
+```{r arrange-desc}
+airdata_step5 |>
+  arrange(desc(PM25)) |>
+  select(location, date_parsed, PM25) |>
+  head(5)
+```
+
+The top of the list is the highest-PM2.5 hourly readings —
+useful for spotting the most polluted moments.
+
+## Multi-key sort
+
+```{r arrange-multi}
+airdata_step5 |>
+  arrange(location, desc(PM25)) |>
+  select(location, date_parsed, PM25) |>
+  head(8)
+```
+
+Sorts by `location` (alphabetical), then within each location by
+`PM25` descending. The equivalent in Excel was **Data → Sort →
+Add Level**.
+
+# Verb 5 — `case_when()` (the R `IFS`)
+
+`case_when()` recodes values into categories based on rules. It
+is the direct R equivalent of Excel's `IFS`.
+
+```{r case-when}
+airdata_step6 <- airdata_step5 |>
+  mutate(pm25_band = case_when(
+    is.na(PM25)    ~ "missing",
+    PM25 < 10      ~ "low",
+    PM25 < 25      ~ "moderate",
+    PM25 < 50      ~ "high",
+    PM25 >= 50     ~ "very high",
+    TRUE           ~ "other"
+  ))
+airdata_step6 |> count(pm25_band)
+```
+
+Read it line by line: *"if PM25 is missing, return 'missing';
+otherwise if it is less than 10, return 'low'; otherwise less
+than 25, 'moderate'; ..."*. The first match wins. The trailing
+`TRUE ~ "other"` is the catch-all, like the `TRUE` in Excel's
+`IFS`.
+
+::: {.callout-tip}
+## Why `case_when` beats nested `if_else`
+
+You could write the same logic with nested `if_else()`:
+
+```r
+if_else(PM25 < 10, "low",
+  if_else(PM25 < 25, "moderate",
+    if_else(PM25 < 50, "high", "very high")))
+```
+
+It works, but it nests deeply and is hard to maintain. `case_when`
+is flat — one row per rule — and easy to extend.
+:::
+
+# Verb 6 — `summarise()` overall, `group_by()` for groups
+
+`summarise()` collapses a tibble to **one row** of summary
+statistics:
+
+```{r summarise-overall}
+airdata_step6 |>
+  summarise(
+    n_obs = n(),
+    mean_pm25 = mean(PM25, na.rm = TRUE),
+    median_pm25 = median(PM25, na.rm = TRUE),
+    max_pm25 = max(PM25, na.rm = TRUE)
+  )
+```
+
+The function `n()` (with no arguments, only used inside
+`summarise()` or `mutate()`) returns the row count.
+
+Add `group_by()` *before* `summarise()` to get one row per
+group:
+
+```{r group-by}
+airdata_step6 |>
+  group_by(location) |>
+  summarise(
+    n_obs = n(),
+    n_with_pm25 = sum(!is.na(PM25)),
+    mean_pm25 = mean(PM25, na.rm = TRUE)
+  ) |>
+  arrange(desc(mean_pm25))
+```
+
+This is the **PivotTable equivalent** from Chapter 3. Same
+operation. Same answer. Now scriptable.
+
+::: {.callout-tip}
+## Always remember `na.rm = TRUE`
+
+When summarising a column that *might* have missing values, add
+`na.rm = TRUE` to every aggregation function: `mean()`, `sum()`,
+`min()`, `max()`, `median()`, `sd()`. Forgetting it returns `NA`
+for any group with even one missing value, which is rarely what
+you want.
+:::
+
+## `count()` — the most common summarise
+
+`count(col)` is a shortcut for `group_by(col) |> summarise(n =
+n())`:
+
+```{r count}
+airdata_step6 |>
+  count(location, sort = TRUE)
+```
+
+`sort = TRUE` orders the result descending by count. Useful for
+spotting which categories dominate.
+
+# Verb 7 — `left_join()` (the R `VLOOKUP`)
+
+A real-world cleaning task often needs a **lookup**: take a code
+column, attach a description from a reference table. `left_join`
+does this without the silent failures of `VLOOKUP`.
+
+Suppose we have a small reference tibble mapping stations to
+regions:
+
+```{r station-regions}
+station_regions <- tribble(
+  ~location,                          ~region,
+  "Burnaby South",                    "Burrard Peninsula",
+  "Coquitlam Douglas College",        "North-East Sector",
+  "Langley Central",                  "Fraser Valley West",
+  "Maple Ridge Golden Ears School",   "North-East Sector",
+  "New Westminster Sapperton Park",   "Burrard Peninsula",
+  "North Delta",                      "South of Fraser",
+  "North Vancouver Second Narrows",   "North Shore",
+  "Pitt Meadows Airport",             "North-East Sector",
+  "Port Coquitlam North",             "North-East Sector",
+  "Port Moody Rocky Point Park",      "North-East Sector"
+)
+```
+
+Attach the `region` column to the data:
+
+```{r left-join}
+airdata_step7 <- airdata_step6 |>
+  left_join(station_regions, by = "location")
+airdata_step7 |>
+  select(location, region, date_parsed, PM25) |>
+  head(5)
+```
+
+Every row gets its region. The `by = "location"` argument names
+the column to match on. Stations not in the reference table get
+`region = NA` (and the join does *not* drop them — that is what
+`left` means).
+
+::: {.callout-tip}
+## `left_join` vs `inner_join` vs `right_join`
+
+| Join | Keeps |
+|---|---|
+| `left_join(x, y)` | **All rows of `x`**, plus matched rows from `y` (NA otherwise) |
+| `inner_join(x, y)` | Only rows that match in both |
+| `right_join(x, y)` | All rows of `y`, plus matched rows from `x` |
+| `full_join(x, y)` | All rows from both, NA where no match |
+
+For lookups, `left_join` is the default — it keeps every row in
+your main data, even if the lookup misses.
+:::
+
+# Putting it all together — the full cleaning pipeline
+
+Now the entire chapter in one pipeline:
+
+```{r full-pipeline}
+airdata_clean <- read_csv(here("data", "airdata3.csv"),
+                          show_col_types = FALSE) |>
+  # Drop redundant index columns
+  select(-starts_with("Unnamed"), -any_of("...1")) |>
+  # Drop columns that are 100% missing
+  select(where(\(col) !all(is.na(col)))) |>
+  # Parse the date and add date parts
+  mutate(date_parsed = mdy(Date),
+         year = year(date_parsed),
+         month = month(date_parsed),
+         day = day(date_parsed)) |>
+  # Keep only rows with a measured PM2.5
+  filter(!is.na(PM25)) |>
+  # Classify PM2.5 into bands
+  mutate(pm25_band = case_when(
+    PM25 < 10  ~ "low",
+    PM25 < 25  ~ "moderate",
+    PM25 < 50  ~ "high",
+    TRUE       ~ "very high"
+  )) |>
+  # Attach region info
+  left_join(station_regions, by = "location") |>
+  # Final sort
+  arrange(date_parsed, location)
+
+dim(airdata_clean)
+glimpse(airdata_clean)
+```
+
+**One pipeline.** Eight steps. Reads top-to-bottom in English.
+Reproducible. Documented. This is what cleaning data in R looks
+like once you are fluent.
+
+## Save the cleaned tibble
+
+```{r write-csv}
+#| eval: false
+write_csv(airdata_clean,
+          here("outputs", "airdata3_clean.csv"))
+```
+
+The cleaned file is your **Expected output** for the chapter
+assignment. The raw `data/airdata3.csv` stays untouched.
+
+# The cleaning log
+
+In Excel you kept a cleaning log on a separate sheet. In Quarto
+you keep it as **Markdown text between the code chunks**.
+
+For this chapter, the log might look like:
+
+````markdown
+## Cleaning log
+
+| Date | Step | What I did | Why |
+|---|---|---|---|
+| 2026-09-22 | 1 | Dropped 2 redundant index columns (`Unnamed: 0`, etc.) | Added by an upstream pandas export; no meaning. |
+| 2026-09-22 | 2 | Dropped 12 columns that were 100% missing | No measurements at any station for this month. |
+| 2026-09-22 | 3 | Parsed `Date` from text to `<date>` using `lubridate::mdy()` | Original was `"M/D/YYYY"` text. |
+| 2026-09-22 | 4 | Added `year`, `month`, `day` columns | Convenience for later grouping. |
+| 2026-09-22 | 5 | Filtered to rows where PM25 was measured | Reduced rows from 11,904 to 742. |
+| 2026-09-22 | 6 | Recoded PM25 into 4 bands using `case_when` | For the air-quality summary table. |
+| 2026-09-22 | 7 | Left-joined a station→region reference table | To enable regional summaries. |
+| 2026-09-22 | 8 | Arranged by date then location | Final sort. |
+````
+
+That table goes in your `.qmd` directly above the cleaning
+pipeline. Anyone reading the rendered report sees what you did,
+why, and the code that did it.
+
+# Active learning
+
+## Activity 1 — Find the dirty columns
+
+Run `colSums(is.na(airdata_raw)) |> sort(decreasing = TRUE)`.
+How many columns are 100% missing? How many are partially
+missing?
+
+## Activity 2 — Filter and count
+
+How many rows did the file have before filtering for non-missing
+PM25? How many after? What fraction of rows did you keep?
+
+## Activity 3 — Try a different case_when
+
+Replace the four-band PM25 classification with a three-band
+version (`good` / `moderate` / `unhealthy`). Re-run the pipeline.
+How does the count of each category change?
+
+## Activity 4 — Add a new station to the lookup
+
+Add one row to `station_regions` for a station you noticed in the
+data but is missing from the reference. Re-run the `left_join`.
+Confirm the new station now has a region.
+
+## Activity 5 — Save and re-import
+
+Save your cleaned tibble to `outputs/airdata3_clean.csv`. Then in
+a fresh R session, import it with `read_csv()`. Confirm the date
+column is still `<date>` (not `<chr>`). If it is, your earlier
+parsing held.
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Clean the air-quality file together
+
+Work in groups of 3 or 4. Each member should be inside their own
+`frst232/` RStudio Project. The file `airdata3.csv` must be in
+each member's `data/` folder.
+
+**Task 1 — Inspect together.** Each member runs the six-move
+inspection (`dim`, `names`, `glimpse`, `summary`,
+`colSums(is.na(...))`). Compare what you see. How many columns
+have any data? How many are 100% missing?
+
+**Task 2 — Drop redundant columns.** As a group, decide which
+columns to drop. Write the `select()` call together.
+
+**Task 3 — Parse the date.** Try `mdy(Date)`. Did it work for
+every row, or did some fail? (Check with `summary(parsed_date)`
+— any `NA` count from parsing.)
+
+**Task 4 — Filter and group.** Write a `filter()` + `group_by()`
++ `summarise()` pipeline that returns mean PM2.5 per station.
+**Sort descending** by mean PM2.5.
+
+**Task 5 — Discuss the result.** Which station has the highest
+mean PM2.5 in this month? Does that make sense given what the
+group members know about Metro Vancouver geography?
+
+**Task 6 — Submit.** Each group submits:
+- the final pipeline code (paste into a Quarto chunk in your
+  shared learner file),
+- the station-ranked summary table,
+- a one-sentence interpretation of the result.
+
+This lab fits comfortably inside a single hands-on session.
+:::
+
+# Exercises
+
+These are the take-home exercises for this chapter.
+
+1. **Read and inspect.** Import `airdata3.csv`. Report the row
+   count, column count, and the number of all-NA columns.
+
+2. **Clean step by step.** Build the pipeline yourself, one step
+   at a time, in separate chunks. After each step, print
+   `nrow()` and `ncol()`. The final cleaned tibble should have
+   742 rows (rows with PM2.5 measured).
+
+3. **Per-station summary.** Group by `location` and compute
+   `n_obs`, `mean_pm25`, `median_pm25`, `max_pm25`. Sort
+   descending by `mean_pm25`.
+
+4. **Per-day summary.** Group by your parsed `date_parsed` column
+   and compute mean PM2.5 across all stations per day. Which day
+   in January 2000 had the highest provincial mean PM2.5?
+
+5. **Add a category.** Use `case_when()` to add a column
+   `aq_alert` that is `"alert"` if PM2.5 ≥ 25 and `"normal"`
+   otherwise. How many `"alert"` hours are in the file?
+
+6. **Lookup challenge.** Build a small `station_lat_lon` tibble
+   with at least 5 stations and made-up latitude/longitude pairs.
+   `left_join` it onto your cleaned tibble. Confirm the join did
+   not drop any rows.
+
+7. **Cleaning log.** Write a cleaning log Markdown table in your
+   `.qmd`, with one row per step you did in Exercise 2.
+
+8. **Optional, harder.** Use `pivot_wider()` to reshape your
+   per-station summary so each station is a column. (We will
+   meet `pivot_wider` formally in Chapter 8 — try it now if you
+   want to look ahead.)
+
+# Optional, advanced
+
+## Renaming columns
+
+`rename()` lets you give a column a new name:
+
+```r
+airdata_step1 |>
+  rename(station = location,
+         pm25_ugm3 = PM25)
+```
+
+## `if_else()` for binary recodes
+
+When you only need two outcomes, `if_else()` is briefer than
+`case_when()`:
+
+```r
+mutate(aq_alert = if_else(PM25 >= 25, "alert", "normal"))
+```
+
+## `across()` for applying a function to many columns
+
+If you want the mean of *every* numeric column grouped by
+station, you can use `across()`:
+
+```r
+airdata_clean |>
+  group_by(location) |>
+  summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))
+```
+
+This is one of the most powerful patterns in dplyr — but also
+one of the most confusing. We will use it sparingly in this
+course.
+
+# A glimpse of Chapter 7: From cleaning to summarizing
+
+In Chapter 7 we go deeper into `summarise()`. The verbs are
+already familiar; what we add is:
+
+- Multiple summary statistics in one call.
+- `group_by()` with two or more grouping variables.
+- `count()` and `tally()` shortcuts.
+- Reshaping summary output with `pivot_wider()` for cross-tabs.
+- The connection to the Excel **PivotTable** from Chapter 3 —
+  same answer, now scriptable.
+
+```{r ch7-preview}
+#| eval: false
+airdata_clean |>
+  group_by(region, pm25_band) |>
+  summarise(n = n(), .groups = "drop") |>
+  pivot_wider(names_from = pm25_band, values_from = n, values_fill = 0)
+```
+
+That's a cross-tabulation: rows = region, columns = PM2.5 band,
+values = count. Equivalent to a PivotTable with `region` in
+Rows, `pm25_band` in Columns, and `Count of n_obs` in Values —
+but as one line of dplyr.
+
+Chapter 7 walks through this in detail.
+
+# Self-assessment quiz {#sec-quiz-ch06}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. Which dplyr verb keeps rows where a condition is TRUE?</div>
+  <ul class="qopts">
+    <li data-correct="false">select()</li>
+    <li data-correct="true">filter()</li>
+    <li data-correct="false">mutate()</li>
+    <li data-correct="false">arrange()</li>
+  </ul>
+  <div class="explanation"><code>filter()</code> works on rows. <code>select()</code> works on columns. Easy to confuse — name them out loud when you write them.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Which dplyr verb keeps or drops columns by name?</div>
+  <ul class="qopts">
+    <li data-correct="true">select()</li>
+    <li data-correct="false">filter()</li>
+    <li data-correct="false">mutate()</li>
+    <li data-correct="false">group_by()</li>
+  </ul>
+  <div class="explanation"><code>select()</code> takes column names (or selection helpers like <code>starts_with()</code>) and returns a tibble with only those columns.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. <code>airdata_raw |> select(-Date)</code> does what?</div>
+  <ul class="qopts">
+    <li data-correct="false">Selects only the Date column</li>
+    <li data-correct="true">Drops the Date column, keeps everything else</li>
+    <li data-correct="false">Sorts by Date</li>
+    <li data-correct="false">Filters where Date is missing</li>
+  </ul>
+  <div class="explanation">The minus sign means "drop this column". <code>select()</code> can drop one column or many.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. <code>arrange(desc(PM25))</code> sorts the tibble —</div>
+  <ul class="qopts">
+    <li data-correct="false">Ascending by PM25</li>
+    <li data-correct="true">Descending by PM25 (largest first)</li>
+    <li data-correct="false">Alphabetically</li>
+    <li data-correct="false">By row number</li>
+  </ul>
+  <div class="explanation"><code>arrange()</code> is ascending by default. Wrap in <code>desc()</code> for descending.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. Which dplyr verb adds a new column or transforms an existing one?</div>
+  <ul class="qopts">
+    <li data-correct="false">filter()</li>
+    <li data-correct="false">select()</li>
+    <li data-correct="true">mutate()</li>
+    <li data-correct="false">summarise()</li>
+  </ul>
+  <div class="explanation"><code>mutate()</code> is the column-creation/transformation verb. <code>mutate(date_parsed = mdy(Date))</code> adds a parsed date column.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. The lubridate function that parses <code>"1/15/2000"</code> (month/day/year text) into a real R date is —</div>
+  <ul class="qopts">
+    <li data-correct="false">ymd()</li>
+    <li data-correct="true">mdy()</li>
+    <li data-correct="false">dmy()</li>
+    <li data-correct="false">parse_date()</li>
+  </ul>
+  <div class="explanation"><code>mdy()</code> reads month-first. <code>dmy()</code> reads day-first. <code>ymd()</code> reads ISO 8601 (year-month-day).</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. <code>case_when()</code> in dplyr is the R equivalent of which Excel function?</div>
+  <ul class="qopts">
+    <li data-correct="false">VLOOKUP</li>
+    <li data-correct="false">SUMIF</li>
+    <li data-correct="true">IFS (or nested IF)</li>
+    <li data-correct="false">COUNTA</li>
+  </ul>
+  <div class="explanation"><code>case_when()</code> walks down a list of conditions, returning the value for the first matching one. The trailing <code>TRUE ~ ...</code> is the catch-all, matching Excel's <code>TRUE</code> in <code>IFS</code>.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. <code>left_join()</code> in dplyr is the R equivalent of which Excel function?</div>
+  <ul class="qopts">
+    <li data-correct="false">SUMIFS</li>
+    <li data-correct="true">VLOOKUP (or XLOOKUP)</li>
+    <li data-correct="false">IFS</li>
+    <li data-correct="false">PIVOT</li>
+  </ul>
+  <div class="explanation">A left join attaches a column from a reference table to your main data based on a matching key — exactly what VLOOKUP does, with fewer silent failures.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. <code>group_by(location) |> summarise(mean(PM25, na.rm = TRUE))</code> is equivalent to which Excel feature?</div>
+  <ul class="qopts">
+    <li data-correct="false">AutoFilter</li>
+    <li data-correct="false">VLOOKUP</li>
+    <li data-correct="true">A PivotTable with location in Rows and Average of PM25 in Values</li>
+    <li data-correct="false">Conditional Formatting</li>
+  </ul>
+  <div class="explanation">Group-then-summarise is the conceptual ancestor of every PivotTable. Same answer, scriptable.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. Why include <code>na.rm = TRUE</code> in <code>mean(PM25, na.rm = TRUE)</code>?</div>
+  <ul class="qopts">
+    <li data-correct="false">It makes R faster</li>
+    <li data-correct="true">Without it, the mean returns NA whenever any value in the column is NA</li>
+    <li data-correct="false">It removes the PM25 column</li>
+    <li data-correct="false">It is required syntax</li>
+  </ul>
+  <div class="explanation">By default, R refuses to silently skip missing values. <code>na.rm = TRUE</code> tells the aggregation function to skip them. Forgetting it is the most common silent bug in summarise pipelines.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. The native pipe <code>|></code> takes the thing on its left and —</div>
+  <ul class="qopts">
+    <li data-correct="false">deletes it</li>
+    <li data-correct="true">passes it as the first argument of the function on its right</li>
+    <li data-correct="false">divides it by the right side</li>
+    <li data-correct="false">prints it</li>
+  </ul>
+  <div class="explanation"><code>x |> f()</code> is equivalent to <code>f(x)</code>. Chained pipes let a multi-step pipeline read top-to-bottom in English.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. To filter rows where <code>location</code> is one of <code>"A"</code>, <code>"B"</code>, or <code>"C"</code>, the cleanest expression is —</div>
+  <ul class="qopts">
+    <li data-correct="false">filter(location == "A" | location == "B" | location == "C")</li>
+    <li data-correct="true">filter(location %in% c("A", "B", "C"))</li>
+    <li data-correct="false">filter(location = c("A", "B", "C"))</li>
+    <li data-correct="false">filter(location == c("A", "B", "C"))</li>
+  </ul>
+  <div class="explanation"><code>%in%</code> is the membership operator. The first option works but is wordy. The last is a common bug — <code>==</code> does element-wise comparison and will not do what you expect.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. <code>airdata_raw |> filter(!is.na(PM25))</code> keeps —</div>
+  <ul class="qopts">
+    <li data-correct="false">Only rows where PM25 is missing</li>
+    <li data-correct="true">Only rows where PM25 is NOT missing</li>
+    <li data-correct="false">All rows, unchanged</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation"><code>is.na()</code> returns TRUE for missing values. The <code>!</code> negates it. So this keeps rows where PM25 is non-missing.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. <code>count(location, sort = TRUE)</code> is equivalent to —</div>
+  <ul class="qopts">
+    <li data-correct="false">filter(location == ...)</li>
+    <li data-correct="true">group_by(location) |> summarise(n = n()) |> arrange(desc(n))</li>
+    <li data-correct="false">select(location)</li>
+    <li data-correct="false">mutate(location_count = ...)</li>
+  </ul>
+  <div class="explanation"><code>count()</code> is the dplyr shortcut for group-then-tally. <code>sort = TRUE</code> orders the result descending by count.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. Which is the cleanest way to drop every column that is 100% missing?</div>
+  <ul class="qopts">
+    <li data-correct="false">Manually list every empty column in select()</li>
+    <li data-correct="true">select(where(\(col) !all(is.na(col))))</li>
+    <li data-correct="false">filter(!is.na(.))</li>
+    <li data-correct="false">drop_na()</li>
+  </ul>
+  <div class="explanation"><code>where()</code> applies a predicate to each column. The lambda <code>\(col) !all(is.na(col))</code> reads "keep the column if it is not the case that all of its values are NA". <code>drop_na()</code> drops rows, not columns.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Where does the BC air-quality file come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A textbook</li>
+    <li data-correct="true">The BC Government, Environmental Reporting BC — the same publisher as the silviculture file</li>
+    <li data-correct="false">A research paper</li>
+    <li data-correct="false">A private consulting firm</li>
+  </ul>
+  <div class="explanation">Both the BC silviculture (Ch 1) and the BC air-quality (Ch 6) files come from Environmental Reporting BC, published under the Open Government Licence — British Columbia.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. After you build a cleaning pipeline, what should you do with the cleaned tibble?</div>
+  <ul class="qopts">
+    <li data-correct="false">Overwrite the raw CSV in data/</li>
+    <li data-correct="true">Save it to outputs/ with a clear name (e.g., airdata3_clean.csv) using write_csv()</li>
+    <li data-correct="false">Email it to yourself</li>
+    <li data-correct="false">Delete the raw file</li>
+  </ul>
+  <div class="explanation">Same convention as Excel: raw stays in <code>data/</code>, cleaned versions go in <code>outputs/</code>.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. In a pipe like <code>x |> filter(...) |> mutate(...) |> arrange(...)</code>, in what order do the operations run?</div>
+  <ul class="qopts">
+    <li data-correct="false">arrange first, then mutate, then filter</li>
+    <li data-correct="true">filter first, then mutate, then arrange — top to bottom, left to right</li>
+    <li data-correct="false">All three run simultaneously</li>
+    <li data-correct="false">In alphabetical order</li>
+  </ul>
+  <div class="explanation">Pipes are evaluated left to right. The output of each step becomes the input of the next. Reading a pipe is like reading a sentence.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. The Excel function <code>=SUMIFS(PM25_col, location_col, "Burnaby South", PM25_col, "&gt;25")</code> has which dplyr equivalent?</div>
+  <ul class="qopts">
+    <li data-correct="false">select(location, PM25)</li>
+    <li data-correct="true">filter(location == "Burnaby South", PM25 > 25) |> summarise(total = sum(PM25))</li>
+    <li data-correct="false">mutate(SUMIFS = ...)</li>
+    <li data-correct="false">arrange(PM25)</li>
+  </ul>
+  <div class="explanation">SUMIFS = sum the values subject to multiple criteria. In dplyr: filter to the criteria, then summarise the sum. Same answer.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Of the six core dplyr verbs you met, which felt most natural coming from Excel? Which felt most foreign?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common reflections: <em>filter felt natural — it is just AutoFilter typed out</em> · <em>select was easy once I learned the minus-sign for dropping</em> · <em>case_when felt foreign at first but turned out cleaner than nested IF</em> · <em>left_join is way clearer than VLOOKUP — no silent first-match bug</em> · <em>group_by + summarise was the most powerful new tool — one line replaces a whole PivotTable</em>.</div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"In R, my `case_when()` returns NA for some rows even though I
+  have a TRUE catch-all at the end. What might be wrong?"*
+
+- *"Explain step by step what this pipeline does:
+  `data |> filter(!is.na(PM25)) |> group_by(location) |>
+  summarise(mean_pm25 = mean(PM25))`"*
+
+- *"I parsed a date with `mdy()` but the result is `NA` for some
+  rows. The original strings look like '1/15/2000'. What are the
+  most common reasons mdy() returns NA?"*
+
+## A cleaning prompt template
+
+When you ask AI for cleaning help, include four things:
+
+1. The output of `glimpse(your_tibble)`.
+2. The cleaning step you are trying to do (in plain English).
+3. The dplyr code you tried.
+4. The output (or error) you got.
+
+Without these four, AI's suggestion will be too generic to use
+directly.
+
+## When *not* to use AI
+
+- Do not let AI write your cleaning log. The log records *your*
+  decisions about *your* data.
+- Do not let AI invent column names that are not in your data
+  (a common hallucination). Cross-check every suggested column
+  name against `names(your_tibble)`.
+:::
+
+# Reading
+
+- *R for Data Science* — chapter 4 *Data transformation*, the
+  canonical dplyr reference. Free at <https://r4ds.hadley.nz/>.
+- The dplyr cheatsheet (PDF): <https://rstudio.github.io/cheatsheets/data-transformation.pdf>
+- The lubridate cheatsheet (PDF): <https://rstudio.github.io/cheatsheets/lubridate.pdf>
+- BC Air Data background:
+  <https://www2.gov.bc.ca/gov/content/environment/air-land-water/air/air-quality/air-data>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- The chapter has **seven new R concepts** (the six core verbs
+  plus `case_when` / `left_join`). Plan to teach the verbs in
+  two clusters: row-and-column (filter, select, arrange) in one
+  session, transform-and-summarize (mutate, case_when,
+  group_by + summarise, left_join) in the next.
+- The **Excel-to-dplyr bridge** table at the top of the chapter
+  is the most important content. Refer to it whenever a learner
+  asks why R has a particular verb.
+- The **cleaning log** habit is the chapter's most transferable
+  skill. Insist learners write one for every cleaning task,
+  starting with this chapter.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. `outputs/airdata3_clean.csv` (saved tibble).
+2. `frst232_ch06_learner.html` (rendered Quarto report).
+3. Station-ranked summary table.
+4. Group-lab worksheet or screenshot.
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `airdata3.csv` | The raw BC air-quality file. Place in `data/`. |
+| `frst232_ch06_learner.qmd` | Quarto starter with TODO chunks for each verb. |
+| `frst232_ch06_solutions.qmd` | Completed solutions. **Do not distribute to learners.** |
+| `quiz_ch06.html` | Standalone interactive quiz. |
+
+## Common stumbling points
+
+- **Confusing `filter` with `select`.** Walk through "rows vs
+  columns" explicitly. *"`filter` chooses some of the rows.
+  `select` chooses some of the columns."*
+- **`==` vs `=`.** Learners write `filter(location = "Burnaby")`
+  and get an error. Insist on `==` for comparison.
+- **`%in%` confusion.** Some learners try
+  `filter(location == c("A", "B"))` and get unexpected results
+  (it does element-wise comparison). Teach `%in%` explicitly.
+- **Date parsing failures.** Calling `mdy()` on a column that's
+  in `dmy()` format silently returns wrong dates. Walk through
+  the format-checking habit.
+- **Forgetting `na.rm = TRUE`.** Resulting in summaries full of
+  `NA`. Emphasise that for any column that might be missing,
+  add `na.rm = TRUE` to every aggregation.
+- *Excel-to-R bridge:* When a learner asks how to do an Excel
+  cleaning move, point them to the bridge table at the top of
+  this chapter. Almost every Excel cleaning question has a
+  one-line dplyr answer.
+:::

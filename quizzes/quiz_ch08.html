@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 8 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 8 — Self-Assessment Quiz</h1>
+<p><em>Reshape and Combine Forestry Datasets Safely · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1"><div class="q">1. The three rules of tidy data are —</div><ul class="qopts"><li data-correct="false">one row per file, one column per chapter, one cell per number</li><li data-correct="true">one row per observation, one column per variable, one cell per value</li><li data-correct="false">one row per year, one column per province, one cell per measurement</li><li data-correct="false">there are no rules</li></ul><div class="explanation">These three rules underpin every tidyverse verb.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. <code>pivot_longer()</code> turns —</div><ul class="qopts"><li data-correct="false">a long tibble into a wide tibble</li><li data-correct="true">a wide tibble (one column per group) into a long tibble (one row per group × observation)</li><li data-correct="false">a tibble into a chart</li><li data-correct="false">a CSV into an Excel file</li></ul><div class="explanation">It is the inverse of <code>pivot_wider()</code>.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. <code>left_join(A, B, by = "key")</code> returns —</div><ul class="qopts"><li data-correct="false">Only rows that match in both A and B</li><li data-correct="true">All rows of A, with B's columns filled in where the key matches and NA where it does not</li><li data-correct="false">All rows of B with A's columns</li><li data-correct="false">A random sample</li></ul><div class="explanation">A is the "left" tibble — it is preserved. B's matched columns are appended.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. <code>inner_join(A, B)</code> returns —</div><ul class="qopts"><li data-correct="false">All rows of A</li><li data-correct="true">Only rows where the key matches in both tibbles</li><li data-correct="false">All rows of B</li><li data-correct="false">An error</li></ul><div class="explanation">Inner join drops unmatched rows from both sides.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. <code>full_join(A, B)</code> returns —</div><ul class="qopts"><li data-correct="false">Only rows in both</li><li data-correct="true">All rows from A and all rows from B, with NA where one side has no match</li><li data-correct="false">A vector of TRUE/FALSE</li><li data-correct="false">A random subset</li></ul><div class="explanation">Full join preserves everything.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. <code>anti_join(A, B, by = "key")</code> returns —</div><ul class="qopts"><li data-correct="false">All rows of A and B combined</li><li data-correct="true">Only rows of A whose key has NO match in B (and adds no columns)</li><li data-correct="false">Only matched rows</li><li data-correct="false">A summary</li></ul><div class="explanation">Useful for data audits — "which entries in my data have no entry in the reference table?"</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>semi_join(A, B, by = "key")</code> returns —</div><ul class="qopts"><li data-correct="false">All rows of A plus all of B's columns</li><li data-correct="true">Only rows of A whose key DOES match in B (and adds no columns)</li><li data-correct="false">An error</li><li data-correct="false">A logical vector</li></ul><div class="explanation">A filtering join — keep A's rows that have a partner in B, without taking B's columns.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. To stack two tibbles end to end (same columns), you use —</div><ul class="qopts"><li data-correct="false">bind_cols()</li><li data-correct="true">bind_rows()</li><li data-correct="false">left_join()</li><li data-correct="false">pivot_wider()</li></ul><div class="explanation"><code>bind_rows()</code> matches columns by name and stacks rows.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>bind_cols(A, B)</code> requires —</div><ul class="qopts"><li data-correct="false">Matching key columns</li><li data-correct="true">That both tibbles have the same number of rows in the same order</li><li data-correct="false">That both tibbles share at least one column</li><li data-correct="false">Nothing — it always works</li></ul><div class="explanation"><code>bind_cols()</code> glues by row position with no key matching. Risky — almost always prefer <code>left_join()</code>.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. <code>left_join</code> returned more rows than the left tibble has. This means —</div><ul class="qopts"><li data-correct="false">The join worked correctly</li><li data-correct="true">The right tibble has duplicate keys, and the join silently fanned out</li><li data-correct="false">There is a bug in dplyr</li><li data-correct="false">R is broken</li></ul><div class="explanation">When the right tibble has duplicate keys, each row in the left tibble matches multiple rows in the right. The fix is to deduplicate the reference table.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. To join on TWO key columns at once —</div><ul class="qopts"><li data-correct="false">Run two separate joins</li><li data-correct="true">left_join(A, B, by = c("plot_id", "year"))</li><li data-correct="false">pivot_wider() first</li><li data-correct="false">It is not possible</li></ul><div class="explanation"><code>by</code> can take a vector of multiple column names.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. To join on differently-named keys: column "plot_id" in A and "plot" in B —</div><ul class="qopts"><li data-correct="false">left_join(A, B, by = "plot_id")</li><li data-correct="true">left_join(A, B, by = c("plot_id" = "plot"))</li><li data-correct="false">Rename one of them first</li><li data-correct="false">It is not possible</li></ul><div class="explanation">Named character vector: <code>c("name_in_A" = "name_in_B")</code>.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. <code>pivot_longer(cols = c(a, b, c), names_to = "var", values_to = "val")</code> on a tibble of 10 rows produces —</div><ul class="qopts"><li data-correct="false">10 rows</li><li data-correct="true">30 rows (10 × 3 columns pivoted)</li><li data-correct="false">3 rows</li><li data-correct="false">An error</li></ul><div class="explanation">Each row contributes one new row per pivoted column.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. Tidy ggplot2 plotting prefers data in —</div><ul class="qopts"><li data-correct="false">Wide format</li><li data-correct="true">Long format</li><li data-correct="false">Either, depending</li><li data-correct="false">CSV format</li></ul><div class="explanation"><code>ggplot2</code>'s grammar maps columns to aesthetics. Long format maps cleanly.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. The Excel function VLOOKUP is closest to —</div><ul class="qopts"><li data-correct="false">filter()</li><li data-correct="true">left_join()</li><li data-correct="false">pivot_wider()</li><li data-correct="false">bind_rows()</li></ul><div class="explanation">VLOOKUP attaches a value from a reference table based on a key — exactly what <code>left_join()</code> does.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. The "copy-paste-append" pattern in Excel is closest to —</div><ul class="qopts"><li data-correct="false">left_join()</li><li data-correct="true">bind_rows()</li><li data-correct="false">pivot_longer()</li><li data-correct="false">summarise()</li></ul><div class="explanation"><code>bind_rows()</code> stacks tibbles by name-matched columns.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. A "data audit" question — *"which entries in my data have no entry in the reference table?"* — is answered by —</div><ul class="qopts"><li data-correct="false">inner_join()</li><li data-correct="false">left_join()</li><li data-correct="true">anti_join(main_data, reference, by = "key")</li><li data-correct="false">summarise()</li></ul><div class="explanation"><code>anti_join</code> returns exactly the rows you cannot match.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. After <code>left_join()</code>, you see NAs in the right-tibble columns. What does that mean?</div><ul class="qopts"><li data-correct="false">The data is corrupted</li><li data-correct="true">Some rows in the left tibble had no matching key in the right tibble</li><li data-correct="false">The wrong column was joined</li><li data-correct="false">Nothing</li></ul><div class="explanation">Expected outcome — <code>left_join</code> preserves all left rows and inserts NA for unmatched ones.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. The "stack files from multiple provinces into one analysis" workflow uses —</div><ul class="qopts"><li data-correct="false">A join</li><li data-correct="true">bind_rows() with a province column added to each file before binding</li><li data-correct="false">pivot_wider()</li><li data-correct="false">summarise()</li></ul><div class="explanation">Same schema, different sources → stack with <code>bind_rows()</code>. Always tag the source first.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Of the verbs in this chapter, which one most changes how you would approach a multi-file analysis you have done in Excel before? Why?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>left_join replaces all my VLOOKUPs — no silent first-match bugs</em> · <em>anti_join is a magic word for "what is missing?" — Excel had no clean equivalent</em> · <em>bind_rows means I can stop maintaining a 12-sheet "master" workbook by hand</em> · <em>pivot_longer reframes what "data" means</em>.</div></div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

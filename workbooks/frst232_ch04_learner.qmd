@@ -1,0 +1,283 @@
+---
+title: "Chapter 4 — Learner Exercises"
+subtitle: "Start of Computing in R"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+# This setup chunk is included to load packages quietly.
+# You may need to install them first with:
+#   install.packages(c("tidyverse", "readxl", "here"))
+library(tidyverse)
+library(readxl)
+library(here)
+```
+
+# About this file {.unnumbered}
+
+This is the **learner workbook** for Chapter 4 of the FRST 232 OER
+book. Work through each exercise in order. Code chunks marked
+`# TODO` are where you fill in your own R code.
+
+When you are done, **render** the document by clicking the
+**Render** button at the top of RStudio (or pressing Ctrl+Shift+K
+/ Cmd+Shift+K). The rendered HTML is what you submit.
+
+**Folder structure expected:**
+
+```
+frst232/
+├── frst232.Rproj
+├── data/bc_disturbance_reforestation.xlsx
+├── outputs/
+├── R/
+└── frst232_ch04_learner.qmd   ← this file
+```
+
+---
+
+# Exercise 1 — Confirm your setup
+
+## 1a — R version
+
+Run the chunk below. The output should be a string like
+`"R version 4.5.0 (2025-04-11)"`.
+
+```{r ex1a}
+# Inspect your R version. No edits needed; just run this chunk.
+R.version.string
+```
+
+## 1b — Find the project root
+
+```{r ex1b}
+# TODO: print your project root path using here()
+# Hint: here() with no arguments returns the root of the project.
+
+```
+
+**Expected:** A path string ending in `/frst232` (or whatever you
+named your project folder).
+
+## 1c — List the files in data/
+
+```{r ex1c}
+# TODO: list every file in your data/ folder using list.files() and here()
+# Hint: list.files(here("data"))
+
+```
+
+**Expected:** A character vector that includes
+`"bc_disturbance_reforestation.xlsx"`. If the result is `character(0)`
+(empty), the file is not in `data/` and you need to put it there.
+
+---
+
+# Exercise 2 — Import the BC silviculture file
+
+## 2a — Read the file into a tibble
+
+```{r ex2a}
+# TODO: import the Data sheet of bc_disturbance_reforestation.xlsx
+# Use read_excel() with here() for the path, and sheet = "Data"
+# Save the result into a variable called `bc`
+# Hint:
+#   bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+#                    sheet = "Data")
+
+```
+
+## 2b — Confirm dimensions
+
+```{r ex2b}
+# TODO: call dim(bc). The result should be c(37, 8).
+
+```
+
+## 2c — List column names
+
+```{r ex2c}
+# TODO: call names(bc).
+# The result should include "Fiscal_Year", "Harvested_ha",
+# "Natural_Disturbance_ha", "Total_Disturbance_ha", "Reforestation_ha", etc.
+
+```
+
+## 2d — Glimpse the tibble
+
+```{r ex2d}
+# TODO: call glimpse(bc).
+# This shows a one-line preview of each column with its type.
+
+```
+
+---
+
+# Exercise 3 — Compute the five statistics
+
+The five-statistic suite from the chapter: total, mean, min, max,
+median of `bc$Reforestation_ha`.
+
+## 3a — Total reforestation
+
+```{r ex3a}
+# TODO: compute sum(bc$Reforestation_ha)
+# Expected: about 8,264,063 ha
+
+```
+
+## 3b — Mean annual reforestation
+
+```{r ex3b}
+# TODO: compute mean(bc$Reforestation_ha)
+# Expected: about 223,353 ha
+
+```
+
+## 3c — Min, max, median (one chunk)
+
+```{r ex3c}
+# TODO: compute min, max, and median of bc$Reforestation_ha
+# Three separate calls or one combined chunk — your choice.
+
+```
+
+## 3d — Verify against Excel
+
+> *Write your answer here.* Open
+> `bc_silviculture_ch01_workbook.xlsx` from your Chapter 1
+> deliverables (or your `outputs/` folder). Compare the five
+> values you computed in this exercise to the same five
+> statistics on the Summary sheet of the workbook.
+>
+> **Do they match?** (Write "yes" or describe any differences.)
+
+---
+
+# Exercise 4 — The native pipe
+
+Rewrite the following nested expression as a pipe with two or
+more steps:
+
+```r
+round(mean(bc$Total_Disturbance_ha), 0)
+```
+
+## 4a — Your piped version
+
+```{r ex4a}
+# TODO: rewrite the expression above using |>
+# Hint:
+#   bc$Total_Disturbance_ha |> mean() |> round(0)
+
+```
+
+## 4b — Confirm same answer
+
+```{r ex4b}
+# TODO: confirm both versions return the same number.
+# Either print both and compare visually, or use:
+#   round(mean(bc$Total_Disturbance_ha), 0) ==
+#     (bc$Total_Disturbance_ha |> mean() |> round(0))
+
+```
+
+---
+
+# Exercise 5 — Find the year of the 2017 spike
+
+The BC file has its largest `Natural_Disturbance_ha` value in
+2017 (the record wildfire season). Use R to confirm this.
+
+## 5a — Find the largest value
+
+```{r ex5a}
+# TODO: compute max(bc$Natural_Disturbance_ha)
+# Expected: about 218,275 ha
+
+```
+
+## 5b — Find the year of the maximum
+
+```{r ex5b}
+# TODO: use which.max() to find the index of the maximum, then
+# use that index to look up the year:
+#   bc$Fiscal_Year[which.max(bc$Natural_Disturbance_ha)]
+# Expected: 2017
+
+```
+
+---
+
+# Exercise 6 — Optional: import the Ontario file
+
+If you completed Chapter 2, you have
+`on_forest_statistics_1.xlsx` in your `data/` folder too. Import
+it the same way.
+
+## 6a — Import
+
+```{r ex6a}
+# TODO: import the Data sheet of on_forest_statistics_1.xlsx
+# Save into a variable called `ontario`
+
+```
+
+## 6b — Inspect
+
+```{r ex6b}
+# TODO: call dim(ontario). Expected: c(179, 8)
+
+```
+
+---
+
+# Group lab — Confirmation
+
+Use this section for your group lab submission.
+
+## Group members
+
+> *List your group members here, one per line.*
+
+## Confirm sum(bc$Reforestation_ha)
+
+```{r group-confirm}
+# Already done in 3a — just re-run for the screenshot.
+sum(bc$Reforestation_ha)
+```
+
+## Confirm dim(bc)
+
+```{r group-confirm-dim}
+dim(bc)
+```
+
+## Screenshot reminder
+
+> Take a screenshot of your rendered HTML showing:
+> - the project root path,
+> - the column names of `bc`,
+> - the total reforestation number.
+>
+> Submit the screenshot to the course site.
+
+---
+
+# Done
+
+When the document renders cleanly with no errors and shows all
+expected outputs, you have completed Chapter 4.
+
+Re-render: **Render** button (or Ctrl+Shift+K / Cmd+Shift+K).
+
+Submit the rendered `.html` file (and this `.qmd` source) to the
+course site.

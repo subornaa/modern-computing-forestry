@@ -1,0 +1,1152 @@
+---
+title: "Start of Computing in R: Install, Project, First Import"
+---
+
+```{r setup-ch04}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Explain the difference between **R**, **RStudio**, **Quarto**,
+  and **Posit Cloud**, and choose which you will use.
+- Install R and RStudio on your computer, **or** create a free
+  Posit Cloud account (recommended for getting started).
+- Create an **RStudio Project** for FRST 232 with a clean folder
+  structure (`data/`, `outputs/`, `R/`, `notes/`).
+- Install and load the **`tidyverse`**, **`readxl`**, and
+  **`here`** packages.
+- Use the **`here()`** function for portable, project-relative
+  file paths.
+- **Import** the BC silviculture file from Chapter 1 into R using
+  `readxl::read_excel()`.
+- Inspect the imported tibble with `dim()`, `nrow()`, `ncol()`,
+  `names()`, `glimpse()`, `summary()`, and `head()`.
+- **Confirm** the numbers R computes match the numbers you
+  computed in Excel in Chapters 1–3.
+- Use the **native pipe `|>`** to chain operations.
+- Recognize and read common error messages.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **working RStudio Project** named `frst232/` (or
+   `frst232-yourname/`), either on your local machine or on Posit
+   Cloud, with this folder structure:
+
+   ```
+   frst232/
+   ├── frst232.Rproj
+   ├── data/bc_disturbance_reforestation.xlsx
+   ├── outputs/
+   ├── R/
+   └── notes/
+   ```
+
+2. A rendered Quarto HTML file (`frst232_ch04_learner.html`)
+   showing the result of importing and inspecting the BC
+   silviculture file. The file should include:
+   - the working directory printed by `here::here()`,
+   - `dim(bc)`, `names(bc)`, and `glimpse(bc)` output,
+   - the five basic statistics (`sum`, `mean`, `min`, `max`,
+     `median`) of `bc$Reforestation_ha`,
+   - a one-line confirmation that **the R numbers match the Excel
+     numbers** from Chapter 1.
+
+3. A short **group-lab worksheet** (or screenshot) submitted to
+   the course site.
+
+This list is the same as the rubric for the chapter assignment.
+Keep it in view while you work.
+:::
+
+# Why R, why now
+
+For three chapters, every analysis lived inside Excel. You wrote
+formulas, dragged them across grids, built PivotTables, made
+charts. Real work.
+
+But you also saw the limits:
+
+- **PivotTable refresh.** Change the Data sheet → forget to
+  refresh → silent stale data.
+- **Cell-reference shifts.** Copy a formula one cell over → forget
+  the `$` → silently wrong percentages.
+- **Display vs value.** Two cells show `100,000` → one is
+  `99999.999`. `=A1=B1` is `FALSE` and nobody notices.
+- **No history.** Six months later, *"how did I get this number?"*
+  is unanswerable.
+
+R fixes these — not by being smarter, but by making every step
+**a written instruction**. The instruction is the audit trail. Run
+it again, get the same number. Send it to a colleague, get the
+same number. Edit one line, re-run, see what changed.
+
+Chapter 4 is where the language changes. The data does not. The
+file you import today is the same
+`bc_disturbance_reforestation.xlsx` from Chapter 1. The numbers
+you compute will be identical. **What changes is that the steps
+are now scriptable.**
+
+# R, RStudio, Quarto, Posit Cloud — what each thing is
+
+These four words show up everywhere. They are not the same thing.
+
+| Name | What it is | When you need it |
+|---|---|---|
+| **R** | The computing language and engine. The thing that does the math. | Always. R is the underlying tool. |
+| **RStudio** | A friendly editor for R, with a console, file browser, and project manager. | Almost always. You *could* use R without it, but you do not want to. |
+| **Quarto** | A document format that lets you mix R code, R output, and prose into one rendered HTML / PDF / Word file. | When you want to write a report (Chapter 5 onward). |
+| **Posit Cloud** | A free, browser-based version of RStudio that runs in the cloud — no install needed. | When you do not want to (or cannot) install R locally. |
+
+::: {.callout-tip}
+## The recommended path for this course
+
+If you have never used R before, **start with Posit Cloud**. No
+installation. No version conflicts. Works on any laptop, any
+operating system, any course-lab computer.
+
+Switch to a local install only if (a) you need to work offline or
+(b) you are comfortable troubleshooting R installation issues
+yourself.
+:::
+
+# Path A — Posit Cloud (recommended)
+
+1. Go to <https://posit.cloud>.
+2. Click **Sign Up** (free plan is fine for this course).
+3. Once signed in, click **New Project → New RStudio Project**.
+4. Rename the project `frst232` (top-left of the window).
+5. You now have a full RStudio environment in your browser.
+
+That is it. Skip Path B and go to *Your first R commands*.
+
+# Path B — Install R and RStudio locally
+
+If you prefer (or need) a local install:
+
+## 1. Install R
+
+- Windows: <https://cran.r-project.org/bin/windows/base/>
+- macOS: <https://cran.r-project.org/bin/macosx/>
+- Pick the latest release. Accept all defaults.
+
+## 2. Install RStudio
+
+- All platforms: <https://posit.co/download/rstudio-desktop/>
+- Install **after** R is installed. RStudio finds R automatically.
+
+## 3. Install Quarto
+
+- <https://quarto.org/docs/get-started/>
+- Quarto often comes bundled with recent RStudio; if so, you can
+  skip this step.
+
+## 4. Verify
+
+Open RStudio. In the **Console** pane (bottom-left), type:
+
+```r
+R.version.string
+```
+
+You should see something like `"R version 4.5.0 (2025-04-11)"`.
+If you do, you are ready.
+
+# Creating an RStudio Project
+
+Whether on Posit Cloud or local, **always work inside an RStudio
+Project**. Never run R code without a project.
+
+A project is just a folder with a `.Rproj` file inside it. The
+`.Rproj` file tells RStudio:
+
+- where your working directory is,
+- which files belong to this project,
+- how to keep your R session separate from other projects.
+
+## To create the project
+
+In RStudio: **File → New Project → New Directory → New Project**.
+
+- **Directory name**: `frst232`
+- **Create project as subdirectory of**: pick a sensible parent
+  folder (e.g., your `Documents/` folder, or — on Posit Cloud —
+  the default).
+- Click **Create Project**.
+
+RStudio opens a fresh session inside the new folder. The top-right
+corner of the window now reads `frst232`.
+
+## Why this matters
+
+Without a project, your R session has **no anchor**. You end up
+typing absolute paths like
+`/Users/yourname/Desktop/FRST232/Lab1/data.csv` — which break the
+moment you move the folder, switch computers, or share with a
+classmate.
+
+With a project, you type **relative paths** like
+`data/bc_disturbance_reforestation.xlsx`. R knows the project root
+and resolves the rest. Portable forever.
+
+# Folder structure (same as Chapters 1–3, now used by R)
+
+Inside your `frst232` project folder, create these subfolders.
+In RStudio, use the **Files** pane (bottom-right) → **New Folder**.
+
+```
+frst232/
+├── frst232.Rproj                                   ← created automatically
+├── data/                                           ← raw input files
+│   └── bc_disturbance_reforestation.xlsx
+├── outputs/                                        ← cleaned files, figures
+├── R/                                              ← reusable R scripts (.R files)
+├── notes/                                          ← scribbles, screenshots
+└── deliverables/                                   ← what you submit
+```
+
+Same three rules from Chapter 1:
+
+1. **Never edit raw data in place.** `data/` is read-only.
+2. **Use lowercase, snake_case names.** No spaces, no capitals.
+3. **One folder per chapter** (or per topic). Easier to find
+   things later.
+
+## Place the BC file
+
+If you do not have it already, download
+`bc_disturbance_reforestation.xlsx` from the BC Data Catalogue
+(<https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c->)
+and drop it into `data/`.
+
+On Posit Cloud, you upload files through the **Files pane →
+Upload** button.
+
+# Installing packages
+
+R out of the box can do a lot, but most real work uses **packages**
+— pre-written collections of functions. You install a package once,
+then load it at the start of every R session that needs it.
+
+The three packages we use this chapter:
+
+| Package | What it does |
+|---|---|
+| `tidyverse` | A bundle of packages for data manipulation, plotting, and reshaping. The backbone of modern R. |
+| `readxl` | Reads `.xlsx` and `.xls` files. |
+| `here` | Builds portable, project-relative file paths. |
+
+## To install
+
+In the RStudio Console, type:
+
+```r
+install.packages(c("tidyverse", "readxl", "here"))
+```
+
+Press Enter. This will take a minute or two the first time — R
+downloads each package and its dependencies.
+
+::: {.callout-warning}
+## install vs library
+
+- **`install.packages(...)`** — runs **once per machine**.
+  Downloads and installs.
+- **`library(...)`** — runs **once per R session**. Loads the
+  installed package so its functions are available.
+
+Confusing these two is the most common first-day R bug. *"I
+installed it but R says it can't find the function"* — almost
+always means you forgot the `library()` call.
+:::
+
+## To load
+
+At the top of every R script or Quarto document for this course,
+include:
+
+```r
+library(tidyverse)
+library(readxl)
+library(here)
+```
+
+# `here()` — portable paths
+
+The `here()` function builds a path relative to your project root.
+Type this in the Console:
+
+```r
+here("data", "bc_disturbance_reforestation.xlsx")
+```
+
+You should see a string like:
+
+```text
+/cloud/project/data/bc_disturbance_reforestation.xlsx
+```
+
+(or, on a local install, something like
+`/Users/yourname/Documents/frst232/data/bc_disturbance_reforestation.xlsx`)
+
+The point: **the same code works for everyone**. You do not need
+to know the full path; `here()` figures it out.
+
+::: {.callout-tip}
+## Why this matters for collaboration
+
+When you share your project folder with a classmate (or with a TA
+for grading), they may unzip it to a completely different
+location. **Because every file path uses `here()`, the code still
+works** — no edits required.
+
+This is the reproducibility win that pure-Excel work cannot give
+you.
+:::
+
+# Your first R commands
+
+Open a new R script: **File → New File → R Script**. Save it
+into `R/` as `01_first_import.R`.
+
+Type these lines (or copy-paste). Run them one at a time by
+clicking on the line and pressing **Ctrl+Enter** (Cmd+Enter on
+Mac):
+
+```r
+# Load packages
+library(tidyverse)
+library(readxl)
+library(here)
+
+# Import the BC silviculture file (same one you used in Chapter 1)
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+# Inspect
+dim(bc)
+names(bc)
+glimpse(bc)
+```
+
+What you should see:
+
+```{r first-import-demo}
+#| echo: false
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+cat("dim(bc):", dim(bc), "\n\n")
+cat("names(bc):\n")
+print(names(bc))
+cat("\nglimpse(bc):\n")
+glimpse(bc)
+```
+
+37 rows × 8 columns — exactly the BC file you knew from Chapter 1,
+now living inside R.
+
+## The assignment operator `<-`
+
+You probably noticed the `<-` symbol. It is the **assignment
+operator** — *"store this on the right into this name on the
+left"*. In R, `<-` is preferred over `=` for assignment because
+`=` has other uses (function arguments).
+
+A keyboard shortcut: **Alt+-** (Windows / Linux) or **Option+-**
+(Mac) inserts `<- ` with a space.
+
+# The Excel-to-R bridge — side by side
+
+The following table is what Chapters 1, 2, and 3 have been
+previewing. Now you can actually run the right-hand column.
+
+| What you did in Excel | What you do in R | Result on the BC file |
+|---|---|---|
+| Open the file by double-clicking | `bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"), sheet = "Data")` | A tibble in memory called `bc` |
+| Read the status-bar `Count` | `nrow(bc)` | `r nrow(bc)` |
+| Read the status-bar `Sum` for column H | `sum(bc$Reforestation_ha)` | `r format(round(sum(bc$Reforestation_ha)), big.mark = ",")` |
+| Read the status-bar `Average` for column G | `mean(bc$Total_Disturbance_ha)` | `r format(round(mean(bc$Total_Disturbance_ha)), big.mark = ",")` |
+| Scan the Data sheet visually | `glimpse(bc)` and `summary(bc)` | text summaries |
+| `=MIN(F2:F38)` | `min(bc$Natural_Disturbance_ha)` | `r format(round(min(bc$Natural_Disturbance_ha)), big.mark = ",")` |
+| `=MAX(F2:F38)` | `max(bc$Natural_Disturbance_ha)` | `r format(round(max(bc$Natural_Disturbance_ha)), big.mark = ",")` |
+
+**Every number on the right matches the value you saw in Chapter 1.**
+The data is the same. The columns are the same. The only thing
+that changed is *how you ask for the answer*.
+
+# Accessing columns with `$`
+
+`bc$Reforestation_ha` means *"the column called Reforestation_ha
+inside the tibble bc"*. The `$` is the column selector.
+
+Try these in the Console:
+
+```r
+bc$Fiscal_Year                  # the year column (37 numbers)
+bc$Reforestation_ha             # the reforestation column
+sum(bc$Reforestation_ha)        # total reforestation
+mean(bc$Reforestation_ha)       # mean annual reforestation
+length(bc$Reforestation_ha)     # how many values (= 37)
+```
+
+## Tab completion saves typos
+
+In RStudio, after you type `bc$`, press **Tab**. A dropdown shows
+every column name. Click one (or arrow-down + Tab) to insert it.
+This prevents the *"I spelled the column wrong"* class of bugs.
+
+# Computing the chapter's five statistics
+
+```r
+sum(bc$Reforestation_ha)
+mean(bc$Reforestation_ha)
+min(bc$Reforestation_ha)
+max(bc$Reforestation_ha)
+median(bc$Reforestation_ha)
+```
+
+```{r five-stats}
+#| echo: false
+tibble(
+  Statistic = c("Total reforestation",
+                "Mean annual reforestation",
+                "Min annual reforestation",
+                "Max annual reforestation",
+                "Median annual reforestation"),
+  Result = c(
+    paste0(format(round(sum(bc$Reforestation_ha)), big.mark = ","), " ha"),
+    paste0(format(round(mean(bc$Reforestation_ha)), big.mark = ","), " ha"),
+    paste0(format(round(min(bc$Reforestation_ha)), big.mark = ","), " ha"),
+    paste0(format(round(max(bc$Reforestation_ha)), big.mark = ","), " ha"),
+    paste0(format(round(median(bc$Reforestation_ha)), big.mark = ","), " ha")
+  )
+) |> kable()
+```
+
+**Match against Chapter 1.** Open
+`bc_silviculture_ch01_workbook.xlsx` from your Chapter 1
+deliverables and compare. Total reforestation should match to the
+last decimal. If anything does not match, something is wrong —
+either with your import or with the file you handed in for
+Chapter 1.
+
+# The native pipe `|>`
+
+The pipe operator `|>` takes the thing on its left and sends it
+into the first argument of the function on its right. It reads
+left-to-right, like a sentence.
+
+Without the pipe:
+
+```r
+round(mean(bc$Reforestation_ha), 0)
+```
+
+With the pipe:
+
+```r
+bc$Reforestation_ha |> mean() |> round(0)
+```
+
+Same answer. The piped version reads top to bottom: *"take the
+reforestation column → take its mean → round to zero decimals"*.
+
+This is the same logical pattern as **chaining slicers in
+PivotTables**: a sequence of operations applied one after the
+other. The pipe is how that sequence looks in R.
+
+::: {.callout-tip}
+## When pipes help, when they hurt
+
+- Pipes **help** when you have 3 or more steps that read naturally
+  as a sequence. `bc |> filter() |> group_by() |> summarise()`.
+- Pipes **hurt** when there is only one step. Just write
+  `mean(bc$Reforestation_ha)` directly.
+
+Use the pipe when it makes the code easier to read. Skip it when
+it does not.
+:::
+
+# Reading error messages
+
+Errors in R look intimidating. They are not.
+
+A typical first-day error:
+
+```r
+> sum(bc$Refrestation_ha)
+Error in `$.tbl_df`(bc, Refrestation_ha) :
+  Column `Refrestation_ha` doesn't exist.
+Did you mean `Reforestation_ha`?
+```
+
+Two facts from that message:
+
+1. The error happens in `$` — that is the column-selector.
+2. R suggests a fix — *"Did you mean `Reforestation_ha`?"*. You
+   misspelled it.
+
+R errors usually tell you **where** and **why**. Read every word.
+The fix is often in the message itself.
+
+## A second common error
+
+```r
+> library(tidyverse)
+Error in library(tidyverse) : there is no package called 'tidyverse'
+```
+
+R is saying *"you tried to load a package you haven't installed"*.
+The fix is `install.packages("tidyverse")`, then try again.
+
+::: {.callout-tip}
+## How to read any R error in 30 seconds
+
+1. **Read the function name** in the error (e.g., `$`, `library`,
+   `read_excel`). That tells you where the problem is.
+2. **Read the suggested fix** if there is one (R is good at this).
+3. **Copy-paste the error** into your search engine if you cannot
+   solve it. Someone else has had the same problem.
+4. **Ask AI** with the full error text *and* the code that caused
+   it. Vague *"my code doesn't work"* prompts give vague answers.
+:::
+
+# Active learning
+
+## Activity 1 — Sanity-check the install
+
+In the Console, type:
+
+```r
+R.version.string
+sessionInfo()
+```
+
+The first line should report your R version (4.5 or newer). The
+second should list `tidyverse`, `readxl`, and `here` among the
+loaded packages (after you have run `library(...)` on each).
+
+## Activity 2 — Verify your folder structure
+
+In the Console, type:
+
+```r
+list.files(here("data"))
+```
+
+You should see `"bc_disturbance_reforestation.xlsx"`. If you see
+an empty result, the file is not where you think it is.
+
+## Activity 3 — Import and inspect
+
+Run the import code from the *Your first R commands* section.
+Then answer in your own words:
+
+- What is the *type* of `bc`? (Hint: `class(bc)`)
+- How many rows does it have?
+- What are the column names?
+
+## Activity 4 — Compute and compare
+
+Compute the five statistics from this chapter. Compare each value
+to the same statistic in your Chapter 1 deliverable workbook. Do
+they match?
+
+## Activity 5 — Write your first pipe
+
+Take this sequence:
+
+```r
+round(mean(bc$Total_Disturbance_ha), 0)
+```
+
+Rewrite it as a pipe with three steps. Confirm the answer is the
+same.
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Set up a working R project together
+
+Work in groups of 3 or 4. Each member follows the same setup
+steps on their own computer (or in their own Posit Cloud project).
+Use the lab session to debug together.
+
+**Task 1 — Posit Cloud accounts.** Every member creates a free
+Posit Cloud account (if they have not already).
+
+**Task 2 — Create the project.** Each member creates a project
+named `frst232` and sets up the folder structure from the
+*Folder structure* section.
+
+**Task 3 — Install packages.** Each member runs:
+
+```r
+install.packages(c("tidyverse", "readxl", "here"))
+```
+
+While packages install, discuss: *what is a package, and why are
+there so many?*
+
+**Task 4 — Upload the data file.** Each member uploads
+`bc_disturbance_reforestation.xlsx` into `data/`. Confirm with
+`list.files(here("data"))`.
+
+**Task 5 — First import.** Each member runs the import code from
+the chapter. Confirm everyone sees the same `dim(bc)` output
+(`37 8`).
+
+**Task 6 — Compute and compare.** Each member computes
+`sum(bc$Reforestation_ha)`. Confirm everyone gets the same number
+(`r format(round(sum(bc$Reforestation_ha)), big.mark = ",")`).
+Now compare this to the Chapter 1 workbook value. **They should
+match.**
+
+**Task 7 — Submit.** Submit a single screenshot showing one
+group member's RStudio with the BC file loaded, the column names
+visible, and the `sum()` result. Include all group members' names
+on the screenshot or in the submission caption.
+
+This lab is designed to fit comfortably inside a single hands-on
+session.
+:::
+
+# Exercises
+
+These are the take-home exercises that go with this chapter.
+
+1. Compute `mean(bc$Harvested_ha)` and confirm it equals the same
+   number you computed in Excel for Chapter 1 (Activity 3, the
+   `=AVERAGE(...)` formula).
+
+2. Use the pipe to compute the median of
+   `Natural_Disturbance_ha`, rounded to the nearest hectare.
+
+3. Use `which.max()` to find the **index** of the largest value
+   in `bc$Natural_Disturbance_ha`. Then use it to find the year
+   of the maximum:
+
+   ```r
+   bc$Fiscal_Year[which.max(bc$Natural_Disturbance_ha)]
+   ```
+
+   What year does R report? Does it match Chapter 1?
+
+4. Use `summary(bc)` and explain in one sentence what each row of
+   the summary shows (Min, 1st Qu, Median, Mean, 3rd Qu, Max).
+
+5. Save your `R/01_first_import.R` script. Close the project.
+   Re-open it. Run the whole script again from top to bottom
+   (**Code → Run Region → Run All**). Confirm everything works
+   without errors.
+
+6. Open the Ontario file from Chapter 2 the same way:
+
+   ```r
+   ontario <- read_excel(here("data", "on_forest_statistics_1.xlsx"),
+                         sheet = "Data")
+   dim(ontario)
+   ```
+
+   How many rows does R report? Does it match Chapter 2?
+
+7. **Optional, harder.** Write a tiny R function that takes a
+   numeric vector and returns a named list with `mean`, `median`,
+   `min`, and `max`. Apply it to `bc$Reforestation_ha`.
+
+# Optional, advanced
+
+## The old pipe `%>%`
+
+You may see `%>%` (the magrittr pipe) in older R code. It does
+almost the same thing as the native `|>` but is not built into
+base R. This course uses the native `|>` because it is now part
+of R itself (since R 4.1) and does not require a package.
+
+If you see `%>%` in a tutorial, treat it as equivalent to `|>` for
+most purposes. The differences are minor and only matter in
+advanced cases.
+
+## RStudio Project options
+
+In the project menu (top-right of RStudio), choose **Project
+Options → General**. Recommended settings for this course:
+
+- **Restore .RData into workspace on startup**: **No**
+- **Save workspace to .RData on exit**: **Never**
+
+These two changes guarantee that your R session starts fresh
+every time. This sounds inconvenient but is the right discipline:
+if your code only works because of *leftover variables from
+yesterday*, your code is broken.
+
+## Reading multiple sheets at once
+
+`readxl::excel_sheets()` returns the sheet names of a file:
+
+```r
+excel_sheets(here("data", "bc_disturbance_reforestation.xlsx"))
+```
+
+You can then `purrr::map()` over them to read all sheets. We will
+get to `purrr` later in the course; just know that batch-import is
+possible.
+
+# A glimpse of Chapter 5: From Excel to Quarto
+
+In Chapter 5 you will write your first **Quarto** document. Quarto
+mixes:
+
+- prose (written in Markdown),
+- R code (in chunks like ` ```{r} ... ``` `), and
+- the output of that R code (numbers, tables, charts)
+
+…into one rendered HTML, PDF, or Word file. The chapter you are
+reading right now is a Quarto document.
+
+| In Excel (Ch 1–3) | In Quarto (Ch 5+) |
+|---|---|
+| Submit a `.xlsx` workbook | Submit a rendered `.html` (or `.pdf`) file |
+| Charts as PNG inserts | Charts as code chunks that re-render |
+| Cleaning log on a separate sheet | Cleaning log as Markdown next to the code |
+| Hand-edited values inside cells | Code-computed values that update on re-render |
+| File is the deliverable | The `.qmd` source AND the rendered file together |
+
+The principle is the same as Excel's *About / ReadMe / Data*
+pattern: documentation lives with the data. The difference is that
+the documentation, the code, and the output are now one file.
+
+# Self-assessment quiz {#sec-quiz-ch04}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. What is the difference between R and RStudio?</div>
+  <ul class="qopts">
+    <li data-correct="false">They are the same thing</li>
+    <li data-correct="true">R is the language and engine that runs the math; RStudio is a friendly editor that uses R</li>
+    <li data-correct="false">R is the editor; RStudio is the language</li>
+    <li data-correct="false">RStudio is an older version of R</li>
+  </ul>
+  <div class="explanation">R does the computation. RStudio is the interface that lets you write, run, and organize R code more easily.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. Why is it recommended to always work inside an RStudio Project?</div>
+  <ul class="qopts">
+    <li data-correct="false">RStudio refuses to run code without one</li>
+    <li data-correct="true">A project sets the working directory automatically, so relative paths (like data/file.xlsx) work for anyone who opens the project</li>
+    <li data-correct="false">Projects make R faster</li>
+    <li data-correct="false">Projects encrypt your code</li>
+  </ul>
+  <div class="explanation">The Project anchor lets you use portable file paths. Without it, you end up with absolute paths that break when the folder moves.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. <code>install.packages("tidyverse")</code> needs to be run —</div>
+  <ul class="qopts">
+    <li data-correct="false">At the top of every R script, every time</li>
+    <li data-correct="true">Once per machine (the package downloads and installs)</li>
+    <li data-correct="false">Never — tidyverse is built into R</li>
+    <li data-correct="false">Only on Mondays</li>
+  </ul>
+  <div class="explanation">Install is a one-time download. Loading the package (<code>library()</code>) is what you do every session.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. <code>library(tidyverse)</code> needs to be run —</div>
+  <ul class="qopts">
+    <li data-correct="false">Once per machine</li>
+    <li data-correct="true">Once per R session (at the top of every script that uses tidyverse functions)</li>
+    <li data-correct="false">Never if you have already installed it</li>
+    <li data-correct="false">Only inside an RStudio Project</li>
+  </ul>
+  <div class="explanation">Loading a package is per-session. R forgets which packages are loaded when you restart it.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. What does <code>here("data", "bc_disturbance_reforestation.xlsx")</code> return?</div>
+  <ul class="qopts">
+    <li data-correct="false">The contents of the file</li>
+    <li data-correct="true">The absolute path to the file, computed relative to the RStudio Project root</li>
+    <li data-correct="false">An error message</li>
+    <li data-correct="false">The file's modification date</li>
+  </ul>
+  <div class="explanation"><code>here()</code> builds a portable path. The result is an absolute path string that points to the file regardless of where the project lives on disk.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. Posit Cloud is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A paid alternative to R</li>
+    <li data-correct="true">A free, browser-based RStudio environment that runs in the cloud — no local install needed</li>
+    <li data-correct="false">A statistics textbook</li>
+    <li data-correct="false">An Excel competitor</li>
+  </ul>
+  <div class="explanation">Posit Cloud is RStudio running in your browser. Recommended for getting started with R because it avoids installation headaches.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. The function <code>read_excel()</code> comes from which package?</div>
+  <ul class="qopts">
+    <li data-correct="false">tidyverse</li>
+    <li data-correct="true">readxl</li>
+    <li data-correct="false">here</li>
+    <li data-correct="false">base R</li>
+  </ul>
+  <div class="explanation"><code>readxl</code> is the tidyverse-adjacent package for reading <code>.xlsx</code> and <code>.xls</code> files. It is not loaded by <code>library(tidyverse)</code> — you need <code>library(readxl)</code> separately.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. After loading the BC file with <code>bc &lt;- read_excel(...)</code>, how do you access just the <code>Reforestation_ha</code> column?</div>
+  <ul class="qopts">
+    <li data-correct="false">bc["Reforestation_ha"]</li>
+    <li data-correct="true">bc$Reforestation_ha</li>
+    <li data-correct="false">Reforestation_ha</li>
+    <li data-correct="false">bc.Reforestation_ha</li>
+  </ul>
+  <div class="explanation">The <code>$</code> is the column selector. Tab completion after <code>bc$</code> shows you every column name.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. <code>dim(bc)</code> returns <code>c(37, 8)</code>. What does that mean?</div>
+  <ul class="qopts">
+    <li data-correct="false">37 columns and 8 rows</li>
+    <li data-correct="true">37 rows and 8 columns</li>
+    <li data-correct="false">37 sheets and 8 files</li>
+    <li data-correct="false">37 megabytes and 8 packages</li>
+  </ul>
+  <div class="explanation"><code>dim()</code> returns rows first, then columns. Use <code>nrow()</code> or <code>ncol()</code> if you only want one of them.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. You ran <code>sum(bc$Reforestation_ha)</code> in R and got a value. In Excel last chapter you also computed total reforestation. The two numbers should be —</div>
+  <ul class="qopts">
+    <li data-correct="false">Different — R rounds differently</li>
+    <li data-correct="true">Identical — same data, same computation, same answer</li>
+    <li data-correct="false">Off by 10%</li>
+    <li data-correct="false">It depends on the day</li>
+  </ul>
+  <div class="explanation">Whole point of the Excel-to-R bridge: the data did not change, the operation did not change, so the answer cannot change. If they differ, something is wrong.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. The native pipe in R is —</div>
+  <ul class="qopts">
+    <li data-correct="false">%&gt;%</li>
+    <li data-correct="true">|&gt;</li>
+    <li data-correct="false">-&gt;&gt;</li>
+    <li data-correct="false">==&gt;</li>
+  </ul>
+  <div class="explanation"><code>|&gt;</code> is the native pipe, built into R 4.1+. <code>%&gt;%</code> is the older magrittr pipe, which still works but requires a package.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. <code>x |> mean()</code> is equivalent to —</div>
+  <ul class="qopts">
+    <li data-correct="false">x + mean()</li>
+    <li data-correct="true">mean(x)</li>
+    <li data-correct="false">mean(mean(x))</li>
+    <li data-correct="false">x * mean</li>
+  </ul>
+  <div class="explanation">The pipe takes the thing on its left and inserts it as the first argument of the function on its right. Useful when chaining several operations.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. You see this error: <code>Error in library(tidyverse) : there is no package called 'tidyverse'</code>. What do you do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Reinstall R</li>
+    <li data-correct="true">Run install.packages("tidyverse") first, then library(tidyverse)</li>
+    <li data-correct="false">Switch operating systems</li>
+    <li data-correct="false">Ignore it</li>
+  </ul>
+  <div class="explanation">R is telling you the package was never installed on this machine. Install once, then load. The error message itself names the package — read every word.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. Inside an RStudio Project, the working directory is —</div>
+  <ul class="qopts">
+    <li data-correct="false">Your Desktop</li>
+    <li data-correct="true">The project root folder (where the .Rproj file lives)</li>
+    <li data-correct="false">/tmp/</li>
+    <li data-correct="false">Wherever you ran the install</li>
+  </ul>
+  <div class="explanation">The Project anchors the working directory. <code>here()</code> uses this anchor to resolve relative paths.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. Where should the raw <code>bc_disturbance_reforestation.xlsx</code> file live inside your RStudio Project?</div>
+  <ul class="qopts">
+    <li data-correct="false">In the project root</li>
+    <li data-correct="true">In data/</li>
+    <li data-correct="false">In outputs/</li>
+    <li data-correct="false">On your Desktop</li>
+  </ul>
+  <div class="explanation">Same folder structure as Chapter 1: raw files in <code>data/</code>, generated files in <code>outputs/</code>, scripts in <code>R/</code>, deliverables in <code>deliverables/</code>.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Which is the assignment operator preferred in this course?</div>
+  <ul class="qopts">
+    <li data-correct="false">=</li>
+    <li data-correct="true">&lt;-</li>
+    <li data-correct="false">::</li>
+    <li data-correct="false">==</li>
+  </ul>
+  <div class="explanation"><code>&lt;-</code> is the conventional R assignment operator. <code>=</code> works in most cases but is also used for function arguments, so <code>&lt;-</code> keeps the two uses visually distinct. The keyboard shortcut is <strong>Alt+-</strong> (Windows) / <strong>Option+-</strong> (Mac).</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. <code>glimpse(bc)</code> shows you —</div>
+  <ul class="qopts">
+    <li data-correct="false">A pie chart of the data</li>
+    <li data-correct="true">A compact summary of every column with its type and the first few values</li>
+    <li data-correct="false">Only the row count</li>
+    <li data-correct="false">Only the column names</li>
+  </ul>
+  <div class="explanation"><code>glimpse()</code> is one of the most useful first-look functions. It shows every column, its type, and a preview of the values — like a richer version of Excel's status bar.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The five basic statistics from this chapter are —</div>
+  <ul class="qopts">
+    <li data-correct="false">add, subtract, multiply, divide, exponent</li>
+    <li data-correct="true">sum, mean, min, max, median</li>
+    <li data-correct="false">x, y, z, w, v</li>
+    <li data-correct="false">SUMIF, COUNTIF, AVERAGEIF, MAXIF, MINIF</li>
+  </ul>
+  <div class="explanation">Five base R functions — <code>sum()</code>, <code>mean()</code>, <code>min()</code>, <code>max()</code>, <code>median()</code> — directly equivalent to Excel's <code>SUM</code>, <code>AVERAGE</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. Which is true about R errors?</div>
+  <ul class="qopts">
+    <li data-correct="false">They are random and impossible to read</li>
+    <li data-correct="true">They usually tell you where the problem is (which function) and often suggest a fix</li>
+    <li data-correct="false">You should always reinstall R when you see one</li>
+    <li data-correct="false">They mean your computer is broken</li>
+  </ul>
+  <div class="explanation">R errors are written by people for people. Read every word. Often the fix is in the message ("Did you mean ..."), and copy-pasting the error into a search engine usually finds someone with the same problem.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one moment from this chapter where R felt easier than Excel — or harder. What made the difference?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common reflections: <em>easier — being able to re-run the whole import in one click instead of clicking through Excel menus</em> · <em>harder — remembering install vs library the first time</em> · <em>easier — typing sum(bc$Reforestation_ha) and getting the same number as my Excel formula, instantly</em> · <em>harder — getting used to writing code instead of clicking</em> · <em>aha moment — realizing the data is the same, just the language is different</em>.</div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"I am brand new to R. I just installed it and I'm seeing this
+  error message when I run `library(tidyverse)`. What does it
+  mean?"* (paste the full error)
+
+- *"Explain step by step what this R code does:
+  `bc |> filter(Fiscal_Year >= 2010) |> summarise(total = sum(Reforestation_ha))`"*
+
+- *"I'm getting `Error in `$.tbl_df`(bc, Refrestation_ha)`. The
+  column name in my Excel file is `Reforestation_ha`. What's wrong
+  and how do I fix it?"*
+
+## Verifying AI's answers
+
+After AI suggests a fix, **check**:
+
+1. Does the fix run without error in your console?
+2. Does the resulting number match what you expect from Chapter 1?
+3. Did AI invent a function that doesn't exist? (Run
+   `?function_name` — if the help page doesn't open, the function
+   is fictional.)
+
+AI's R suggestions are usually correct but occasionally include
+non-existent functions (called "hallucinations"). The two-second
+check is to look up the function in R's own help.
+
+## When *not* to use AI
+
+- Do not paste an exercise question into AI and copy the answer
+  back. The point of the exercise is the thinking.
+- Do not let AI make code-style decisions for you (pipe vs
+  nested, snake_case vs camelCase) without understanding why.
+- Do not let AI invent a *replacement* for `here()` that uses
+  absolute paths. Portable paths are non-negotiable for this
+  course.
+:::
+
+# Reading
+
+- The *R for Data Science* book by Wickham, Çetinkaya-Rundel,
+  & Grolemund — free at <https://r4ds.hadley.nz/>. Chapter 2
+  ("Workflow: basics") and Chapter 8 ("Data import") are
+  directly relevant.
+- The `here` package vignette:
+  <https://here.r-lib.org/articles/here.html>
+- Jenny Bryan's classic *"Project-Oriented Workflow"*:
+  <https://www.tidyverse.org/blog/2017/12/workflow-vs-script/>
+- RStudio Education resources:
+  <https://education.rstudio.com/learn/beginner/>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- Chapter 4 is structurally different from Chapters 1–3. The
+  first half is **installation and setup**, which can swallow an
+  entire lab session if your group is mostly new to R.
+- The **Excel-to-R bridge table** in the *Side by side* section
+  is the single most important content in this chapter. If
+  learners only remember one thing, it should be that the
+  numbers they computed in Excel are the same numbers R computes,
+  using different syntax for the same data.
+- **The old pipe `%>%`** is briefly mentioned in *Optional,
+  advanced*. Keep the main path on the native `|>` only — the
+  difference rarely matters for beginners, and consistency makes
+  the course easier to teach.
+
+## Posit Cloud vs local install
+
+- **Strongly recommend Posit Cloud** for the first lab. It
+  eliminates 90% of "my install isn't working" tickets.
+- Learners can switch to a local install later in the term once
+  they are comfortable with the workflow.
+- For the lab session, have one TA ready to help with local
+  installs and another with Posit Cloud account creation.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. RStudio Project named `frst232/` with the correct folder
+   structure (verify with `list.files(here("data"))`).
+2. Rendered Quarto HTML showing `dim(bc)`, `names(bc)`,
+   `glimpse(bc)`, and the five basic statistics.
+3. Group-lab worksheet or screenshot.
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `bc_disturbance_reforestation.xlsx` | Raw BC silviculture workbook (carried forward from Chapter 1). |
+| `frst232_ch04_learner.qmd` | Quarto document with TODO chunks for learners to complete. |
+| `frst232_ch04_solutions.qmd` | Completed Quarto document with all code chunks filled in. **Do not distribute to learners.** |
+| `frst232_ch04_starter.zip` | A pre-built starter project containing the .Rproj file, folder structure, learner .qmd, and a placeholder data folder. |
+| `quiz_ch04.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
+
+## Suggested grading guidance for the group lab
+
+| Task | Weight | What to look for |
+|---|---|---|
+| Posit Cloud accounts (Task 1) | 10 % | Everyone has an account. |
+| Project + folders (Task 2) | 20 % | All four folders present; project named correctly. |
+| Packages installed (Task 3) | 15 % | No load errors for tidyverse, readxl, here. |
+| Data file uploaded (Task 4) | 15 % | `list.files(here("data"))` returns the .xlsx name. |
+| Successful import (Task 5) | 15 % | `dim(bc)` returns `37 8`. |
+| Sum matches Excel (Task 6) | 15 % | `sum(bc$Reforestation_ha)` matches the Chapter 1 deliverable to the cent. |
+| Screenshot submission (Task 7) | 10 % | Screenshot legible; all group members named. |
+
+## Common stumbling points
+
+- **install vs library** confusion. Walk through the distinction
+  explicitly at the start of the lab.
+- **Forgot to load `readxl`.** `read_excel()` errors with
+  *"could not find function"* if `readxl` is not loaded.
+- **Wrong working directory.** Learners who skip the RStudio
+  Project step end up with absolute paths that work on their
+  machine but break in submission. Insist on `here()` from day
+  one.
+- **Misspelled column names.** R is case-sensitive. `bc$Refor`
+  is not `bc$Reforestation_ha`. Tab completion fixes most of
+  these.
+- **The "saved workspace" trap.** RStudio's default is to save
+  your workspace on exit and restore it on startup. This means
+  yesterday's variables are still around — until they aren't,
+  and your code mysteriously breaks. Recommend the **No / Never**
+  setting from *Optional, advanced*.
+- *Excel-to-R bridge:* Refer back to the side-by-side table
+  often. When a learner asks *"is this the same as the Excel
+  formula?"*, the answer is always *"yes — here's the row in the
+  bridge table."*
+:::

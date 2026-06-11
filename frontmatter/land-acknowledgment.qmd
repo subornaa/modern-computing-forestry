@@ -1,0 +1,30 @@
+# Land acknowledgment {.unnumbered}
+
+This open educational resource was developed at the University
+of British Columbia, whose Vancouver campus is located on the
+traditional, ancestral, and unceded territory of the
+xʷməθkʷəy̓əm (Musqueam) people. UBC's Okanagan campus is
+located on the traditional, ancestral, and unceded territory of
+the Syilx Okanagan Nation.
+
+The forestry datasets used throughout this book describe lands
+that are the traditional territories of many First Nations
+across British Columbia and Ontario — including the Coast
+Salish peoples (Sḵwx̱wú7mesh / Squamish, Səl̓ílwətaʔ /
+Tsleil-Waututh, xʷməθkʷəy̓əm / Musqueam), the Stó:lō Nation, the
+Syilx, the Tsilhqot'in, the Anishinaabe, the Haudenosaunee, and
+many others not named here.
+
+Indigenous peoples have practiced sophisticated, place-based
+forest stewardship across these lands for thousands of years
+before, during, and after the introduction of Western
+quantitative methods. The tools taught in this book — Excel
+spreadsheets, statistical summaries, ggplot2 charts, sf
+geometries, leaflet maps — are *one* way of describing and
+reasoning about forest ecosystems. **They are not the only way.**
+
+We acknowledge that data about Indigenous lands has historically
+been collected and used in ways that have not always respected
+Indigenous data sovereignty, and that the responsibility to
+work in good relationship with First Nations rests with every
+practitioner using these tools.

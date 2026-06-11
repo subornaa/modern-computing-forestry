@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 10 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 10 — Self-Assessment Quiz</h1>
+<p><em>Spatial Data in R with sf · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1"><div class="q">1. The two main paradigms for representing spatial data are —</div><ul class="qopts"><li data-correct="false">2D and 3D</li><li data-correct="true">vector (points, lines, polygons) and raster (grid of cells)</li><li data-correct="false">SVG and PDF</li><li data-correct="false">XML and JSON</li></ul><div class="explanation">Vector for discrete shapes; raster for continuous fields like elevation.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. An <code>sf</code> object in R is —</div><ul class="qopts"><li data-correct="false">A completely new data structure unrelated to tibbles</li><li data-correct="true">A tibble with one extra column called geometry, plus a CRS</li><li data-correct="false">A shapefile</li><li data-correct="false">A list of coordinates</li></ul><div class="explanation">That tibble-like design is why every dplyr verb still works on an sf object.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. The CRS code for WGS84 (latitude / longitude) is —</div><ul class="qopts"><li data-correct="false">3005</li><li data-correct="true">4326</li><li data-correct="false">3857</li><li data-correct="false">26910</li></ul><div class="explanation">EPSG:4326 = WGS84. EPSG:3005 = BC Albers. EPSG:3857 = Web Mercator.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. The CRS code for BC Albers (the standard for BC Government data) is —</div><ul class="qopts"><li data-correct="false">4326</li><li data-correct="true">3005</li><li data-correct="false">3857</li><li data-correct="false">26910</li></ul><div class="explanation">EPSG:3005 — equal-area projection used for nearly all BC forestry data. Units are metres.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. You have point data in lat/lon (degrees). To compute the distance between two points in metres, you must —</div><ul class="qopts"><li data-correct="false">Use Pythagoras on the degrees</li><li data-correct="true">Reproject to a metric CRS (e.g., BC Albers, EPSG:3005), then use st_distance()</li><li data-correct="false">Convert degrees to metres manually with 111000</li><li data-correct="false">Use raster algebra</li></ul><div class="explanation">Degrees of longitude vary with latitude. Reproject to a metric CRS first.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. <code>st_as_sf(coords = c("lon", "lat"), crs = 4326)</code> tells R that —</div><ul class="qopts"><li data-correct="false">lon is y and lat is x</li><li data-correct="true">lon (x) and lat (y) columns in the tibble define point geometries in WGS84</li><li data-correct="false">The data should be plotted but not stored</li><li data-correct="false">The data is in BC Albers</li></ul><div class="explanation">Order matters: first is x (longitude), second is y (latitude).</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>st_transform(data, crs = 3005)</code> does what?</div><ul class="qopts"><li data-correct="false">Adds an attribute column</li><li data-correct="true">Reprojects the data to BC Albers, transforming the coordinates so they are still in the right place but in metres</li><li data-correct="false">Deletes the geometry</li><li data-correct="false">Plots the data</li></ul><div class="explanation">Reprojection moves geometries from one coordinate system to another while keeping real-world position.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. <code>st_buffer(point, dist = 5000)</code> in a CRS with metres returns —</div><ul class="qopts"><li data-correct="false">A point 5,000 metres away</li><li data-correct="true">A polygon representing a circle of radius 5,000 metres around the point</li><li data-correct="false">A line of length 5,000 m</li><li data-correct="false">An error</li></ul><div class="explanation">In a metric CRS, dist is in metres.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>st_intersection(layer_a, layer_b)</code> returns —</div><ul class="qopts"><li data-correct="false">The union of both layers</li><li data-correct="true">The geometric overlap of the two layers</li><li data-correct="false">Only the attributes of layer_b</li><li data-correct="false">An error</li></ul><div class="explanation">Intersection is the geometric AND.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. <code>geom_sf()</code> is —</div><ul class="qopts"><li data-correct="false">A completely separate plotting system from ggplot2</li><li data-correct="true">A ggplot2 geom that draws sf geometries (points, lines, polygons) using ggplot's grammar</li><li data-correct="false">A function in the leaflet package</li><li data-correct="false">A way to save sf objects</li></ul><div class="explanation"><code>geom_sf()</code> uses the same ggplot grammar as every other geom.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. To read a shapefile in R, you use —</div><ul class="qopts"><li data-correct="false">read_csv()</li><li data-correct="true">st_read()</li><li data-correct="false">read_excel()</li><li data-correct="false">readRDS()</li></ul><div class="explanation">st_read() reads any vector spatial format.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. The recommended new-data file format (over shapefile) is —</div><ul class="qopts"><li data-correct="false">CSV with WKT</li><li data-correct="true">GeoPackage (.gpkg) — single file, no column-name limits</li><li data-correct="false">Excel</li><li data-correct="false">Plain text</li></ul><div class="explanation">GeoPackage fixes shapefile's 10-char column-name limit and four-file split.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. A spatial join (st_join) is the GIS equivalent of —</div><ul class="qopts"><li data-correct="false">filter()</li><li data-correct="true">left_join() — but matched on geometric position instead of a shared column</li><li data-correct="false">summarise()</li><li data-correct="false">pivot_wider()</li></ul><div class="explanation">Where left_join matches on a shared key, st_join matches on geometric predicates.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. You loaded a new spatial file. What is the first command you should run?</div><ul class="qopts"><li data-correct="false">plot(data)</li><li data-correct="false">summary(data)</li><li data-correct="true">st_crs(data) to confirm the coordinate reference system</li><li data-correct="false">nrow(data)</li></ul><div class="explanation">Always check CRS first. Everything else depends on it.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. <code>st_area()</code> on a polygon in BC Albers returns area in —</div><ul class="qopts"><li data-correct="false">degrees squared</li><li data-correct="true">square metres</li><li data-correct="false">hectares</li><li data-correct="false">acres</li></ul><div class="explanation">BC Albers' units are metres. Divide m² by 10,000 for hectares.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. dplyr verbs on an sf object —</div><ul class="qopts"><li data-correct="false">Strip the geometry column</li><li data-correct="true">Keep the geometry column automatically (it is "sticky")</li><li data-correct="false">Do not work — you need separate spatial verbs</li><li data-correct="false">Convert the data to a base R data.frame</li></ul><div class="explanation">Geometry survives filter, select, mutate, summarise, joins. To drop it explicitly: st_drop_geometry().</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. When you have two sf layers and want to combine them on a plot, you must first —</div><ul class="qopts"><li data-correct="false">Convert both to data.frames</li><li data-correct="true">Make sure they share a CRS (or reproject one to match the other)</li><li data-correct="false">Save both to disk</li><li data-correct="false">Pivot one of them longer</li></ul><div class="explanation">Mismatched CRSs either error or give nonsense. Reproject first.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. For BC forestry spatial data, the canonical source is —</div><ul class="qopts"><li data-correct="false">A textbook</li><li data-correct="true">The BC Data Catalogue (https://catalogue.data.gov.bc.ca/) — Open Government Licence BC</li><li data-correct="false">Wikipedia</li><li data-correct="false">A private consulting firm</li></ul><div class="explanation">Forest districts, cut blocks, fire perimeters, watersheds — all openly published.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. The single most common bug when building an sf object from a lat/lon tibble is —</div><ul class="qopts"><li data-correct="false">Forgetting to load tidyverse</li><li data-correct="true">Passing coords = c("lat", "lon") instead of c("lon", "lat") — first is x, second is y</li><li data-correct="false">Using too many decimal places</li><li data-correct="false">The wrong package version</li></ul><div class="explanation">Swapping lat and lon plots BC points off the coast of Somalia. Look at the bounding box.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Until now your forestry analysis treated rows as anonymous records. How does adding spatial location change what questions you can answer?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>I can now ask "how close" instead of just "how many"</em> · <em>buffers let me reason about exposure zones, fire risk, road influence</em> · <em>intersection lets me cross datasets that share nothing but location</em> · <em>plotting on a map immediately surfaces patterns that a table hides</em>.</div></div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 6 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 6 — Self-Assessment Quiz</h1>
+<p><em>Clean and Prepare Forestry Data in R · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+
+<div class="quiz" id="q1"><div class="q">1. Which dplyr verb keeps rows where a condition is TRUE?</div><ul class="qopts"><li data-correct="false">select()</li><li data-correct="true">filter()</li><li data-correct="false">mutate()</li><li data-correct="false">arrange()</li></ul><div class="explanation"><code>filter()</code> works on rows. <code>select()</code> works on columns.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. Which dplyr verb keeps or drops columns by name?</div><ul class="qopts"><li data-correct="true">select()</li><li data-correct="false">filter()</li><li data-correct="false">mutate()</li><li data-correct="false">group_by()</li></ul><div class="explanation"><code>select()</code> takes column names and returns a tibble with only those columns.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. <code>airdata_raw |> select(-Date)</code> does what?</div><ul class="qopts"><li data-correct="false">Selects only the Date column</li><li data-correct="true">Drops the Date column, keeps everything else</li><li data-correct="false">Sorts by Date</li><li data-correct="false">Filters where Date is missing</li></ul><div class="explanation">The minus sign means "drop this column".</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. <code>arrange(desc(PM25))</code> sorts the tibble —</div><ul class="qopts"><li data-correct="false">Ascending by PM25</li><li data-correct="true">Descending by PM25 (largest first)</li><li data-correct="false">Alphabetically</li><li data-correct="false">By row number</li></ul><div class="explanation"><code>arrange()</code> is ascending by default. Wrap in <code>desc()</code> for descending.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. Which dplyr verb adds a new column or transforms an existing one?</div><ul class="qopts"><li data-correct="false">filter()</li><li data-correct="false">select()</li><li data-correct="true">mutate()</li><li data-correct="false">summarise()</li></ul><div class="explanation"><code>mutate()</code> is the column-creation/transformation verb.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. The lubridate function that parses <code>"1/15/2000"</code> (month/day/year text) into a real R date is —</div><ul class="qopts"><li data-correct="false">ymd()</li><li data-correct="true">mdy()</li><li data-correct="false">dmy()</li><li data-correct="false">parse_date()</li></ul><div class="explanation"><code>mdy()</code> reads month-first; <code>dmy()</code> day-first; <code>ymd()</code> ISO 8601.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>case_when()</code> in dplyr is the R equivalent of which Excel function?</div><ul class="qopts"><li data-correct="false">VLOOKUP</li><li data-correct="false">SUMIF</li><li data-correct="true">IFS (or nested IF)</li><li data-correct="false">COUNTA</li></ul><div class="explanation"><code>case_when()</code> walks down a list of conditions; the first match wins.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. <code>left_join()</code> in dplyr is the R equivalent of which Excel function?</div><ul class="qopts"><li data-correct="false">SUMIFS</li><li data-correct="true">VLOOKUP (or XLOOKUP)</li><li data-correct="false">IFS</li><li data-correct="false">PIVOT</li></ul><div class="explanation">Left join attaches a column from a reference table to your main data based on a key — exactly what VLOOKUP does.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>group_by(location) |> summarise(mean(PM25, na.rm = TRUE))</code> is equivalent to which Excel feature?</div><ul class="qopts"><li data-correct="false">AutoFilter</li><li data-correct="false">VLOOKUP</li><li data-correct="true">A PivotTable with location in Rows and Average of PM25 in Values</li><li data-correct="false">Conditional Formatting</li></ul><div class="explanation">Group-then-summarise is the conceptual ancestor of every PivotTable.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. Why include <code>na.rm = TRUE</code> in <code>mean(PM25, na.rm = TRUE)</code>?</div><ul class="qopts"><li data-correct="false">It makes R faster</li><li data-correct="true">Without it, the mean returns NA whenever any value in the column is NA</li><li data-correct="false">It removes the PM25 column</li><li data-correct="false">It is required syntax</li></ul><div class="explanation">R refuses to silently skip missing values by default. <code>na.rm = TRUE</code> tells the aggregation function to skip them.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. The native pipe <code>|></code> takes the thing on its left and —</div><ul class="qopts"><li data-correct="false">deletes it</li><li data-correct="true">passes it as the first argument of the function on its right</li><li data-correct="false">divides it by the right side</li><li data-correct="false">prints it</li></ul><div class="explanation"><code>x |> f()</code> is equivalent to <code>f(x)</code>.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. To filter rows where <code>location</code> is one of <code>"A"</code>, <code>"B"</code>, or <code>"C"</code>, the cleanest expression is —</div><ul class="qopts"><li data-correct="false">filter(location == "A" | location == "B" | location == "C")</li><li data-correct="true">filter(location %in% c("A", "B", "C"))</li><li data-correct="false">filter(location = c("A", "B", "C"))</li><li data-correct="false">filter(location == c("A", "B", "C"))</li></ul><div class="explanation"><code>%in%</code> is the membership operator.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. <code>airdata_raw |> filter(!is.na(PM25))</code> keeps —</div><ul class="qopts"><li data-correct="false">Only rows where PM25 is missing</li><li data-correct="true">Only rows where PM25 is NOT missing</li><li data-correct="false">All rows, unchanged</li><li data-correct="false">An error</li></ul><div class="explanation">The <code>!</code> negates <code>is.na()</code>.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. <code>count(location, sort = TRUE)</code> is equivalent to —</div><ul class="qopts"><li data-correct="false">filter(location == ...)</li><li data-correct="true">group_by(location) |> summarise(n = n()) |> arrange(desc(n))</li><li data-correct="false">select(location)</li><li data-correct="false">mutate(location_count = ...)</li></ul><div class="explanation"><code>count()</code> is the dplyr shortcut for group-then-tally.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. Which is the cleanest way to drop every column that is 100% missing?</div><ul class="qopts"><li data-correct="false">Manually list every empty column in select()</li><li data-correct="true">select(where(\(col) !all(is.na(col))))</li><li data-correct="false">filter(!is.na(.))</li><li data-correct="false">drop_na()</li></ul><div class="explanation"><code>where()</code> applies a predicate to each column.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. Where does the BC air-quality file come from?</div><ul class="qopts"><li data-correct="false">A textbook</li><li data-correct="true">The BC Government, Environmental Reporting BC — the same publisher as the silviculture file</li><li data-correct="false">A research paper</li><li data-correct="false">A private consulting firm</li></ul><div class="explanation">Both files are from Environmental Reporting BC.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. After you build a cleaning pipeline, what should you do with the cleaned tibble?</div><ul class="qopts"><li data-correct="false">Overwrite the raw CSV in data/</li><li data-correct="true">Save it to outputs/ with a clear name (e.g., airdata3_clean.csv) using write_csv()</li><li data-correct="false">Email it to yourself</li><li data-correct="false">Delete the raw file</li></ul><div class="explanation">Raw stays in <code>data/</code>; cleaned versions go in <code>outputs/</code>.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. In a pipe like <code>x |> filter(...) |> mutate(...) |> arrange(...)</code>, in what order do the operations run?</div><ul class="qopts"><li data-correct="false">arrange first, then mutate, then filter</li><li data-correct="true">filter first, then mutate, then arrange — top to bottom, left to right</li><li data-correct="false">All three run simultaneously</li><li data-correct="false">In alphabetical order</li></ul><div class="explanation">Pipes evaluate left to right.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. The Excel function <code>=SUMIFS(PM25_col, location_col, "Burnaby South", PM25_col, "&gt;25")</code> has which dplyr equivalent?</div><ul class="qopts"><li data-correct="false">select(location, PM25)</li><li data-correct="true">filter(location == "Burnaby South", PM25 > 25) |> summarise(total = sum(PM25))</li><li data-correct="false">mutate(SUMIFS = ...)</li><li data-correct="false">arrange(PM25)</li></ul><div class="explanation">Filter to the criteria, then summarise the sum.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Of the six core dplyr verbs you met, which felt most natural coming from Excel? Which felt most foreign?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>filter felt natural — it is just AutoFilter typed out</em> · <em>select was easy once I learned the minus-sign for dropping</em> · <em>case_when felt foreign at first but turned out cleaner than nested IF</em> · <em>left_join is way clearer than VLOOKUP</em> · <em>group_by + summarise is the most powerful new tool</em>.</div></div>
+
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

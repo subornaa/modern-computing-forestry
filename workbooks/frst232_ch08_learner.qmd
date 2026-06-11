@@ -1,0 +1,220 @@
+---
+title: "Chapter 8 — Learner Exercises"
+subtitle: "Reshape and Combine Forestry Datasets Safely"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+```
+
+# About this file {.unnumbered}
+
+Learner workbook for Chapter 8. Each numbered exercise has one
+or more `# TODO` chunks. Render when done; submit the `.qmd` and
+the rendered `.html`.
+
+```{r load-data}
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+ontario <- read_excel(here("data", "on_forest_statistics_1.xlsx"),
+                      sheet = "Data")
+```
+
+---
+
+# Exercise 1 — Pivot longer
+
+## 1a — Build a wide tibble
+
+```{r ex1a}
+# TODO: from `bc`, select Fiscal_Year, Harvested_ha, and
+# Natural_Disturbance_ha. Save as `bc_wide`.
+
+```
+
+## 1b — Pivot longer
+
+```{r ex1b}
+# TODO: pivot bc_wide to long format with names_to = "disturbance_type"
+# and values_to = "area_ha". Save as `bc_long`. Print head(bc_long).
+# Then confirm nrow(bc_long) == nrow(bc_wide) * 2.
+
+```
+
+---
+
+# Exercise 2 — All four joins on a small example
+
+```{r ex2-setup}
+plots <- tribble(
+  ~plot_id, ~district,    ~area_ha,
+  "P001",   "Vancouver",    12.0,
+  "P002",   "Vancouver",     8.5,
+  "P003",   "Squamish",     21.2,
+  "P004",   "Squamish",     15.0,
+  "P005",   "Nanaimo",       9.7
+)
+
+districts <- tribble(
+  ~district,         ~bec_zone,
+  "Vancouver",       "CWHdm",
+  "Squamish",        "CWHvm",
+  "Sunshine Coast",  "CWHvh"
+)
+```
+
+## 2a — left_join
+
+```{r ex2a}
+# TODO: left_join plots and districts on "district". Report nrow().
+
+```
+
+## 2b — inner_join
+
+```{r ex2b}
+# TODO: inner_join plots and districts on "district". Report nrow().
+
+```
+
+## 2c — right_join
+
+```{r ex2c}
+# TODO: right_join plots and districts on "district". Report nrow().
+
+```
+
+## 2d — full_join
+
+```{r ex2d}
+# TODO: full_join plots and districts on "district". Report nrow().
+
+```
+
+## 2e — Interpret
+
+> *Write your answer here.* Which join kept the most rows?
+> Which kept the fewest? In one sentence each, what did each
+> join include or exclude?
+
+---
+
+# Exercise 3 — Filtering joins
+
+## 3a — anti_join
+
+```{r ex3a}
+# TODO: anti_join plots and districts on "district". What single row
+# does this return, and why?
+
+```
+
+## 3b — semi_join
+
+```{r ex3b}
+# TODO: semi_join plots and districts on "district". How many rows?
+
+```
+
+## 3c — Relationship between the two
+
+> *Write your answer here.* What is nrow(plots) compared to
+> nrow(anti_join) + nrow(semi_join)? Why must they sum to that?
+
+---
+
+# Exercise 4 — bind_rows for multi-source data
+
+## 4a — Tag the two files
+
+```{r ex4a}
+# TODO: build bc_tagged with Fiscal_Year, Harvested_ha, and a
+# new column province = "BC".
+# Build ontario_sample as a small tribble with 3 rows for 2018-2020,
+# each tagged province = "ON".
+
+```
+
+## 4b — Combine
+
+```{r ex4b}
+# TODO: bind_rows bc_tagged and ontario_sample into `combined`.
+# Print the tail(combined, 6).
+
+```
+
+## 4c — Summarise by province
+
+```{r ex4c}
+# TODO: group combined by province; summarise mean Harvested_ha.
+
+```
+
+---
+
+# Exercise 5 — Join diagnostics
+
+## 5a — Row count check
+
+```{r ex5a}
+# TODO: compute nrow(plots) and nrow(left_join(plots, districts, by = "district")).
+# Are they equal? They should be — left_join with no duplicate keys
+# in `districts` preserves the row count.
+
+```
+
+## 5b — Introduce a duplicate key
+
+```{r ex5b}
+# TODO: create districts_dup by adding one row that duplicates Vancouver
+# but with a different bec_zone. Re-run the left_join. What is the new
+# row count? What does that tell you?
+
+```
+
+---
+
+# Group lab — Combine three sources
+
+Use this section for your group-lab submission.
+
+## Group members
+
+> *List your group members here.*
+
+## Common columns identified
+
+> *List the columns that are comparable across the BC, Ontario, and
+> air-quality files.*
+
+## The combined tibble
+
+```{r group-pipeline}
+# TODO: paste your group's combined-tibble code here.
+
+```
+
+## Decisions made
+
+> *In one paragraph: what choices did your group make about
+> units, time aggregation, scope, or column matching that the
+> code itself could not decide for you?*
+
+---
+
+# Done
+
+When everything renders cleanly, submit the `.qmd` and the
+rendered `.html`.

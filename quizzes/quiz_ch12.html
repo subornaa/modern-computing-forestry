@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 12 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 12 — Self-Assessment Quiz</h1>
+<p><em>Group Presentations and Portfolio Outputs · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1"><div class="q">1. To turn an HTML Quarto report into a presentation, you change —</div><ul class="qopts"><li data-correct="false">Every code chunk</li><li data-correct="true">The YAML <code>format:</code> line from html to revealjs</li><li data-correct="false">The entire R session</li><li data-correct="false">Nothing — they are the same</li></ul><div class="explanation">Quarto's single-source-many-outputs design means one YAML change reformats the same content.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. The "one idea per slide" rule means —</div><ul class="qopts"><li data-correct="false">Use exactly one word per slide</li><li data-correct="true">Each slide should make one clear point — split if you have two unrelated ideas</li><li data-correct="false">Use one slide per chapter</li><li data-correct="false">It is just a suggestion</li></ul><div class="explanation">Split when you have two ideas, two charts, or 50+ words.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. In revealjs, a new slide is created by —</div><ul class="qopts"><li data-correct="false">Pressing Enter twice</li><li data-correct="true">A `## ` heading or a `---` horizontal rule on a blank line</li><li data-correct="false">A {slide} block</li><li data-correct="false">A separate file per slide</li></ul><div class="explanation">Heading-based separators (## Title) are most common; --- creates an untitled slide.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. A `# Section Title` (h1) in revealjs creates —</div><ul class="qopts"><li data-correct="false">A regular content slide</li><li data-correct="true">A section-divider slide between groups of content slides</li><li data-correct="false">An error</li><li data-correct="false">A speaker note</li></ul><div class="explanation">h1 = section divider; h2 = content slide; h3 = subheading within a slide.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. `::: {.notes}` blocks contain —</div><ul class="qopts"><li data-correct="false">Code that does not run</li><li data-correct="true">Speaker notes — visible to you in presenter mode, hidden from the audience</li><li data-correct="false">Footnotes</li><li data-correct="false">References</li></ul><div class="explanation">Press S during the live presentation to open presenter mode in a separate window.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. R code chunks in revealjs slides —</div><ul class="qopts"><li data-correct="false">Do not run</li><li data-correct="true">Run and embed their output (charts, tables, maps) on the slide where they live</li><li data-correct="false">Run only on the title slide</li><li data-correct="false">Require a separate library</li></ul><div class="explanation">Same as in HTML reports — the chunk runs, the output appears.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. When embedding a chart in a slide, you should set —</div><ul class="qopts"><li data-correct="false">A smaller font than for a report</li><li data-correct="true">A larger base_size (e.g., 16–20) so the chart reads on a projector</li><li data-correct="false">No font change</li><li data-correct="false">Black text only</li></ul><div class="explanation">Projector audiences sit further away than report readers.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. `::: {.incremental}` blocks produce —</div><ul class="qopts"><li data-correct="false">A loop in the code</li><li data-correct="true">Bullets that appear one at a time as the presenter advances</li><li data-correct="false">A counter</li><li data-correct="false">A footnote</li></ul><div class="explanation">Use sparingly — overusing incremental reveals frustrates audiences.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. A two-column slide layout uses —</div><ul class="qopts"><li data-correct="false">Two separate files</li><li data-correct="true">A `::: {.columns}` parent block with two `::: {.column width="50%"}` child blocks</li><li data-correct="false">A table</li><li data-correct="false">Tabs</li></ul><div class="explanation">Adjust widths as needed (e.g., 40/60).</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. A "portfolio" in the context of this course is —</div><ul class="qopts"><li data-correct="false">A single document</li><li data-correct="true">A Quarto website (one landing page + multiple linked chapter deliverables) showcasing your best work</li><li data-correct="false">A printed binder</li><li data-correct="false">A LinkedIn profile</li></ul><div class="explanation">index.qmd + multiple chapter pages + _quarto.yml = a navigable website.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. `_quarto.yml` is —</div><ul class="qopts"><li data-correct="false">A data file</li><li data-correct="true">The project config file that defines the site's structure, navigation, and format defaults</li><li data-correct="false">A backup file</li><li data-correct="false">Optional metadata</li></ul><div class="explanation">_quarto.yml is to a Quarto project what package.json is to a Node project.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. To cite an R package in your report, run —</div><ul class="qopts"><li data-correct="false">help(package)</li><li data-correct="true">citation("package_name") in the R console</li><li data-correct="false">summary(package)</li><li data-correct="false">There is no standard way</li></ul><div class="explanation">citation() returns the BibTeX/plain-text reference the package authors want you to use.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. The CC BY 4.0 licence —</div><ul class="qopts"><li data-correct="false">Prohibits commercial use</li><li data-correct="true">Allows anyone to reuse and adapt your work, as long as they credit you</li><li data-correct="false">Requires payment</li><li data-correct="false">Only applies to code</li></ul><div class="explanation">CC BY 4.0 is the most permissive Creative Commons licence — credit required.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. The BC silviculture and air-quality data you used this term is licensed under —</div><ul class="qopts"><li data-correct="false">CC BY 4.0</li><li data-correct="true">Open Government Licence — British Columbia (OGL-BC)</li><li data-correct="false">MIT</li><li data-correct="false">Proprietary</li></ul><div class="explanation">All BC Government datasets in the Data Catalogue are OGL-BC.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. <code>quarto publish quarto-pub</code> does what?</div><ul class="qopts"><li data-correct="false">Saves a local PDF</li><li data-correct="true">Uploads the rendered site to Quarto Pub (free hosting) and gives you a public URL</li><li data-correct="false">Compiles the document</li><li data-correct="false">Installs Quarto</li></ul><div class="explanation">Quarto Pub is Posit's free hosting service. One command from your project root.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. During a live revealjs presentation, pressing <strong>S</strong> —</div><ul class="qopts"><li data-correct="false">Saves the file</li><li data-correct="true">Opens presenter mode in a separate window, showing speaker notes and the next slide</li><li data-correct="false">Stops the slideshow</li><li data-correct="false">Searches the slides</li></ul><div class="explanation">Other useful keys: F = fullscreen, E = print-PDF mode, B = blank, ESC = overview.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. The biggest reproducibility advantage of revealjs over PowerPoint is —</div><ul class="qopts"><li data-correct="false">Smaller file size</li><li data-correct="true">Charts and tables re-render automatically when the underlying R code changes — no copy-pasting</li><li data-correct="false">Animations</li><li data-correct="false">More fonts</li></ul><div class="explanation">In PowerPoint every chart is a paste; in Quarto every chart is a chunk that re-runs.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. A required slide in a professional analytical presentation is —</div><ul class="qopts"><li data-correct="false">A list of your hobbies</li><li data-correct="true">A "limitations" slide that names what the analysis does NOT show</li><li data-correct="false">A long bio</li><li data-correct="false">An advertisement</li></ul><div class="explanation">Naming limitations builds credibility. Audiences trust analysts who acknowledge what they do not know.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. Three commonly used free hosts for Quarto sites are —</div><ul class="qopts"><li data-correct="false">Word, Excel, PowerPoint</li><li data-correct="true">Quarto Pub, GitHub Pages, Netlify</li><li data-correct="false">AWS, GCP, Azure (paid)</li><li data-correct="false">Dropbox, Google Drive, OneDrive</li></ul><div class="explanation">All three are free at student-scale.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Compare this chapter's "single-source-many-outputs" idea (one Quarto file → HTML + slides + PDF) with what you used to do across Word + PowerPoint + PDF separately. What changes in how you would build a deliverable next time?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>I'll write the analysis once and reformat for any audience</em> · <em>no more "the chart is wrong in the slides but right in the report" bug</em> · <em>I can re-render in 30 seconds if the data updates instead of remaking three documents</em> · <em>publishing as a URL feels more professional than emailing a .docx attachment</em>.</div></div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

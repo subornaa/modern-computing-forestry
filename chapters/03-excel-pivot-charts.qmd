@@ -1,0 +1,1050 @@
+---
+title: "Excel Visualization and PivotTables"
+---
+
+```{r setup-ch03}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+library(scales)
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Choose the **right chart type** for the question being asked
+  (bar, column, line, scatter).
+- Build clean Excel charts with **titles, axis labels, and
+  captions** that another reader could understand on their own.
+- Construct a **PivotTable** from a tidy dataset, choosing what
+  goes in Rows, Columns, Values, and Filters.
+- Switch the **aggregation function** (sum, count, average) inside
+  a PivotTable and predict what each one returns.
+- Connect a **PivotChart** to a PivotTable and keep them in sync.
+- Add **Slicers** to a PivotTable to give a non-technical reader
+  controls to explore the data.
+- **Refresh** PivotTables when the underlying data changes, and
+  recognize the silent-bug risk if you forget.
+- Recreate a PivotTable manually with **`SUMIFS` and `COUNTIFS`** —
+  the bridge to how the same logic works in R.
+- Export a finished chart to a **PNG** with a caption ready for a
+  report or a course-site submission.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. **One PivotTable + PivotChart** built on
+   `on_forest_statistics_1.xlsx`, answering one forestry question
+   of your choice (e.g., "Total mature area by forest type" or
+   "Count of combinations by seral stage and age class"). Exported
+   as a **PNG with caption**.
+2. **One time-series chart** built on
+   `bc_disturbance_reforestation.xlsx`, showing reforestation,
+   harvest, and natural disturbance from 1987 to 2023 on the same
+   axes. Exported as a **PNG with caption**.
+3. **One short worksheet** matching common forestry questions to
+   the correct chart type (provided in the learner workbook).
+4. A short **group-lab worksheet** (or screenshot) submitted to the
+   course site.
+
+This list is the same as the rubric for the chapter assignment.
+Keep it in view while you work.
+:::
+
+# Why visualization matters
+
+A number in a cell is a fact. A chart is an argument. The same
+data, in the same workbook, can become a *story about reforestation
+finally catching up to harvest* (a single time-series chart) or a
+*story about a record-breaking wildfire season* (a bar chart with
+2017 visibly above the rest). Choosing how to display data is part
+of the analysis, not an after-the-fact decoration.
+
+The transition matrix for this course explicitly treats Chapter 3
+as the **bridge** from raw Excel work into tidy-data thinking. The
+PivotTable you build in this chapter is conceptually the same as a
+`group_by() |> summarise()` pipeline in R — which you will write in
+Chapter 7. The chart you build is the conceptual ancestor of
+`ggplot2`, which you will meet in Chapter 9.
+
+For now, the goal is to be **fluent** in the Excel versions, so
+that when we move to R, you already know what each command is
+doing.
+
+# The two datasets for this chapter
+
+This chapter uses two openly licensed files you have already met:
+
+```{r datasets-summary}
+#| echo: false
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+ontario <- read_excel(here("data", "on_forest_statistics_1.xlsx"),
+                      sheet = "Data")
+
+tibble(
+  Property = c("File", "Source", "Used for", "Shape", "Rows × Cols"),
+  `BC silviculture` = c(
+    "`bc_disturbance_reforestation.xlsx`",
+    "BC Government / BC Data Catalogue",
+    "Time-series charts (line, area)",
+    "Time series (one row per fiscal year)",
+    paste(nrow(bc), "×", ncol(bc))
+  ),
+  `Ontario forest stats` = c(
+    "`on_forest_statistics_1.xlsx`",
+    "Government of Ontario / Ontario Open Data Catalogue",
+    "PivotTables, cross-classification charts",
+    "Cross-classification (region × ownership × seral × type × age)",
+    paste(nrow(ontario), "×", ncol(ontario))
+  )
+) |> kable()
+```
+
+::: {.callout-important}
+## File-handling rules carry over
+
+Same two rules as Chapters 1 and 2:
+
+1. **Keep the raw downloaded files unchanged** in your `data/`
+   folder.
+2. **Save any cleaned or chart-ready version** under
+   `_clean.xlsx` in your `outputs/` folder.
+
+You will work mostly on the *clean* copies for this chapter.
+:::
+
+# Choosing the right chart type
+
+Before opening the chart dialog, answer one question: **what is the
+chart for?**
+
+| If your question is... | The natural chart is... |
+|---|---|
+| How has this number changed over time? | **Line chart** (or area chart) |
+| How do these categories compare? | **Bar chart** (horizontal) or **column chart** (vertical) |
+| How does Y relate to X across observations? | **Scatter plot** |
+| What share does each part take of a whole? | **Stacked bar** (or pie, sparingly) |
+| Where are the extremes / outliers? | **Bar chart** sorted by value |
+| How does one group differ from another over time? | **Multi-series line chart** |
+
+::: {.callout-warning}
+## When **not** to use a pie chart
+
+Pie charts are easy to draw and hard to read. The human eye is bad
+at comparing angles. Use a sorted bar chart instead, except for:
+
+- 2–3 categories where you specifically want to communicate
+  *share of whole*,
+- A clear majority slice (e.g., "97 % vs 3 %").
+
+In every other case, a **sorted bar chart** is the better tool.
+:::
+
+## Worked example — choosing a chart for BC silviculture
+
+Suppose you want to answer: *"How has BC reforestation kept pace
+with disturbance since 1987?"*
+
+The question is **about change over time**. So: line chart, with
+two series:
+
+- `Total_Disturbance_ha` over `Fiscal_Year`
+- `Reforestation_ha` over `Fiscal_Year`
+
+```{r bc-line-chart}
+#| echo: false
+#| fig.width: 7
+#| fig.height: 3.5
+bc |>
+  pivot_longer(c(Total_Disturbance_ha, Reforestation_ha),
+               names_to = "series", values_to = "ha") |>
+  ggplot(aes(Fiscal_Year, ha, colour = series)) +
+  geom_line(linewidth = 0.9) +
+  scale_y_continuous(labels = comma) +
+  scale_colour_manual(values = c("Reforestation_ha" = "#2D6A4F",
+                                 "Total_Disturbance_ha" = "#B7791F"),
+                      labels = c("Reforestation", "Total disturbance")) +
+  labs(title = "BC reforestation has matched total disturbance since the late 1990s",
+       subtitle = "Fiscal years 1987–2023, hectares",
+       x = "Fiscal year", y = "Hectares", colour = NULL,
+       caption = "Source: Environmental Reporting BC, Trends in Silviculture in B.C.") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top",
+        plot.caption = element_text(hjust = 0, colour = "grey40", size = 8))
+```
+
+In Excel:
+
+1. Select the three columns: `Fiscal_Year`, `Total_Disturbance_ha`,
+   `Reforestation_ha`.
+2. **Insert → Charts → Line chart**.
+3. Add chart elements: title, axis titles, data labels (sparingly),
+   caption / source line.
+
+The 2017 spike — BC's record wildfire season — is the most visible
+feature. The chart itself is the argument.
+
+# Chart anatomy
+
+A finished chart has six elements. Every one is editable; many are
+hidden by default.
+
+| Element | Why it matters | How to edit |
+|---|---|---|
+| **Title** | Tells the reader what the chart is *for*. Should be a one-line sentence. | Click chart → Chart Elements (+) → Chart Title |
+| **Axis titles** | Tell the reader what each axis is measuring (and in what units). | Chart Elements → Axis Titles |
+| **Legend** | Identifies each series. Skip if there is only one series. | Chart Elements → Legend |
+| **Data labels** | Numbers on the data points. Use sparingly. | Chart Elements → Data Labels |
+| **Source / caption** | One line at the bottom naming the data source and date. | Insert → Text Box, anchor below chart |
+| **Theme** | Colour and font choices. Should match the rest of the deliverable. | Chart Design ribbon → Chart Styles |
+
+## Title rules
+
+A bad title is *"Chart 1"* or *"Reforestation_ha vs Fiscal_Year"*.
+
+A good title is *"BC reforestation has matched total disturbance
+since the late 1990s"* — a one-sentence claim the chart supports.
+
+If you cannot write a one-sentence claim for the chart, the chart
+is the wrong chart for your question.
+
+## Axis labels and units
+
+Always include units in axis labels: *"Hectares"*, not just
+*"Area"*. *"Fiscal year"*, not just *"Year"*.
+
+For very large numbers, use a thousands separator and consider
+abbreviating the axis (200K instead of 200,000). Excel does this
+through **Format Axis → Display units → Thousands**.
+
+# PivotTables
+
+A PivotTable is Excel's most underused feature for forestry data.
+It takes a **tidy** table — one row per observation, one column per
+variable — and rearranges it into a summary.
+
+The Ontario file is tidy and cross-classified, which makes it
+perfect for a PivotTable.
+
+## What a PivotTable does
+
+Given the 179-row Ontario file, a PivotTable can produce any of:
+
+- A table of *total area* by forest type (one number per row).
+- A table of *total area* by forest type × seral stage (rows × columns).
+- A table of *average area* by forest type × seral stage.
+- A *count* of how many age-class combinations exist for each forest
+  type.
+
+All without writing a single formula.
+
+```{r pivot-preview}
+#| echo: false
+ontario |>
+  group_by(PFTName, SERAL_NAME) |>
+  summarise(total_ha = sum(SumOfTotalHa), .groups = "drop") |>
+  pivot_wider(names_from = SERAL_NAME, values_from = total_ha) |>
+  mutate(across(where(is.numeric), \(x) format(round(x), big.mark = ","))) |>
+  kable(caption = "Total area (ha) by forest type × seral stage — what your PivotTable should look like")
+```
+
+## Building one — step by step
+
+1. Click any cell inside the Ontario `Data` sheet.
+2. **Insert → PivotTable**. A dialog opens.
+3. Choose **New Worksheet** as the destination. Click OK.
+4. A blank PivotTable appears on a new sheet, with a **PivotTable
+   Fields** panel on the right.
+5. Drag fields into the four zones:
+   - **Rows**: `PFTName`
+   - **Columns**: `SERAL_NAME`
+   - **Values**: `SumOfTotalHa`
+   - **Filters**: (leave empty for now)
+6. Excel automatically picks `Sum` as the aggregation. Confirm.
+7. Format the numbers: right-click any value → **Number Format → Number → 1000 separator → 0 decimals**.
+
+You should now see the cross-tab shown above.
+
+## Changing the aggregation
+
+Right-click any value in the PivotTable → **Value Field Settings**.
+A list of aggregations appears:
+
+| Aggregation | What it returns | When to use |
+|---|---|---|
+| Sum | Total of the values | Default for most quantities. |
+| Count | How many rows match | "How many combinations are there?" |
+| Average | Mean of the values | "What is the typical row in this group?" |
+| Max | Largest value | "Which group has the biggest single cell?" |
+| StdDev | Variability around the mean | "How spread out are the values?" |
+
+**The same PivotTable can answer multiple questions** by switching
+the aggregation. Try it.
+
+## Drag-and-drop pivot
+
+The most useful PivotTable habit is **moving fields around**:
+
+- Drag `PFTName` from Rows to Columns. The whole table flips.
+- Drag `AC_10` into Rows below `PFTName`. You get nested groups.
+- Drag `SERAL_NAME` into Filters. A dropdown appears above the
+  table — choose one seral stage to filter the whole pivot.
+
+This is the *fluency* PivotTables train. Drag, observe, drag back.
+
+## Refreshing
+
+A PivotTable is a **snapshot** of the data at the moment you built
+it. If the underlying Data sheet changes, the PivotTable does
+*not* automatically update.
+
+To refresh: click anywhere in the PivotTable, then **PivotTable
+Analyze → Refresh** (or right-click → **Refresh**).
+
+::: {.callout-warning}
+## A silent-bug warning
+
+If you change the Data sheet and forget to refresh the PivotTable,
+the chart you export will be based on **stale data**. There is no
+warning. Always refresh before exporting.
+:::
+
+# PivotCharts
+
+A PivotChart is a chart **wired** to a PivotTable. When you change
+the PivotTable, the chart changes with it.
+
+To create one:
+
+1. Click anywhere inside an existing PivotTable.
+2. **PivotTable Analyze → PivotChart**.
+3. Choose a chart type. For a cross-classification, a **clustered
+   column** or **stacked column** chart usually works best.
+
+The chart appears with field buttons on it. Those buttons are
+interactive — clicking them filters the chart (and the PivotTable
+behind it).
+
+```{r pivot-chart-preview}
+#| echo: false
+#| fig.width: 7
+#| fig.height: 3.5
+ontario |>
+  group_by(PFTName) |>
+  summarise(total_ha = sum(SumOfTotalHa), .groups = "drop") |>
+  arrange(desc(total_ha)) |>
+  mutate(PFTName = fct_inorder(PFTName)) |>
+  ggplot(aes(PFTName, total_ha)) +
+  geom_col(fill = "#2D6A4F") +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Total area by forest type, Region 3E",
+       subtitle = "Ontario Forest Resources, 2021 snapshot",
+       x = NULL, y = "Hectares",
+       caption = "Source: Government of Ontario, Forest Resources of Ontario 2021") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1),
+        plot.caption = element_text(hjust = 0, colour = "grey40", size = 8))
+```
+
+## Slicers
+
+A **Slicer** is a visual filter panel. Click any PivotTable →
+**PivotTable Analyze → Insert Slicer**. Check `PFTName`. Click OK.
+
+A panel of buttons appears, one per forest type. Click "Jack Pine"
+— the PivotTable (and the PivotChart) filter to Jack Pine only.
+`Ctrl+Click` to select multiple.
+
+Slicers are excellent for **presentations** because they let a
+non-technical reader explore the data without learning Excel.
+
+# Recreating a PivotTable with formulas
+
+PivotTables are fast and visual, but they are not the only way to
+build a cross-tab. You can recreate one with `SUMIFS` and
+`COUNTIFS` — the formula approach.
+
+This matters because **the formula version is the closest thing to
+what you will write in R**.
+
+## Example: SUMIFS cross-tab on the Ontario file
+
+Build a small table on a new sheet:
+
+|   | Pre-Sapling | Sapling | Immature | Mature | Late Successional |
+|---|---|---|---|---|---|
+| Jack Pine          | `=SUMIFS(...)` | `=SUMIFS(...)` | ... | ... | ... |
+| Conifer Upland     | ... | ... | ... | ... | ... |
+| Conifer Lowland    | ... | ... | ... | ... | ... |
+| Mixedwood          | ... | ... | ... | ... | ... |
+| Poplar             | ... | ... | ... | ... | ... |
+| White Birch        | ... | ... | ... | ... | ... |
+| Red and White Pine | ... | ... | ... | ... | ... |
+| Tolerant Hardwoods | ... | ... | ... | ... | ... |
+
+Each cell is a `SUMIFS` formula like:
+
+```text
+=SUMIFS(Data!$H:$H, Data!$F:$F, $A2, Data!$D:$D, B$1)
+```
+
+- `Data!$H:$H` is `SumOfTotalHa`.
+- `Data!$F:$F` is `PFTName`.
+- `Data!$D:$D` is `SERAL_NAME`.
+- `$A2` is the row label (a forest type).
+- `B$1` is the column label (a seral stage).
+
+Notice the **mixed references**: `$A2` (column locked, row moves)
+and `B$1` (row locked, column moves). This is the cell-reference
+pattern you learned in Chapter 2 — it lets one formula copied
+across the whole grid produce the right answer in every cell.
+
+The result is the same numbers as the PivotTable, but the
+formulas are explicit, auditable, and version-controllable.
+
+::: {.callout-tip}
+## When to use which
+
+- For **exploration** — drag-and-drop PivotTable. Fast.
+- For **production reports** that need to be reproducible — formula
+  cross-tab with `SUMIFS`. Auditable.
+- For **scripted analysis** — neither, use R (Chapter 7).
+:::
+
+# Exporting a chart with a caption
+
+A chart in Excel is not a deliverable. A chart **outside** Excel —
+saved as a PNG with a caption — is a deliverable.
+
+## To save as PNG
+
+Right-click the chart border → **Save as Picture**. Choose PNG.
+Save into your `outputs/` folder.
+
+## Caption format
+
+A caption is one short sentence that:
+
+- Tells the reader what the chart shows.
+- Names the data source.
+- Notes the date or version.
+
+Example:
+
+> **Figure 1.** BC reforestation has tracked total disturbance
+> since 1999, with the exception of the 2017 wildfire spike.
+> Source: Environmental Reporting BC, *Trends in Silviculture in
+> B.C.*, retrieved 2026-05-24.
+
+Put the caption in the report document, not in the PNG itself.
+
+# Connecting charts to the data dictionary
+
+Every chart should be **traceable** back to the ReadMe sheet of the
+file it came from. Three habits make this easy:
+
+1. **Name the chart** after the variable it shows. *"Total
+   reforestation by year"* is better than *"Chart 3"*.
+2. **Save the PNG** with a snake_case name that includes the
+   variable. `reforestation_by_year.png` is better than
+   `chart3.png`.
+3. **In the caption**, reference the variable by its exact ReadMe
+   name. *"`Reforestation_ha`"* is better than *"reforestation"*.
+
+This sounds fussy but pays off the first time someone asks *"which
+column is this from?"*.
+
+# Active learning
+
+## Activity 1 — Choose the right chart
+
+A list of forestry questions appears in the learner workbook.
+Match each one to its best chart type from this menu: line, bar,
+column, scatter, stacked column, pie. Defend your choices in pairs.
+
+## Activity 2 — Build the BC time-series chart
+
+Open `bc_disturbance_reforestation_clean.xlsx` (your working copy).
+Select `Fiscal_Year`, `Total_Disturbance_ha`, and `Reforestation_ha`.
+**Insert → Charts → Line**. Add a title, axis labels, and a
+caption. Save as `outputs/bc_disturbance_reforestation_chart.png`.
+
+## Activity 3 — Build a PivotTable
+
+Open `on_forest_statistics_1_clean.xlsx`. Insert a PivotTable with
+`PFTName` in Rows, `SERAL_NAME` in Columns, `SumOfTotalHa` in
+Values. Verify the totals match the table in the chapter prose
+above.
+
+```{r act3-verify}
+#| echo: false
+ontario |>
+  group_by(PFTName) |>
+  summarise(total_ha = sum(SumOfTotalHa), .groups = "drop") |>
+  arrange(desc(total_ha)) |>
+  mutate(total_ha = comma(round(total_ha))) |>
+  kable(caption = "Total area by forest type — should match the row totals of your PivotTable")
+```
+
+## Activity 4 — Switch the aggregation
+
+Right-click any value in your PivotTable → **Value Field Settings →
+Count**. The cell values change from total hectares to *number of
+age-class combinations* for that group. How does the picture
+change?
+
+```{r act4-verify}
+#| echo: false
+ontario |>
+  count(PFTName) |>
+  arrange(desc(n)) |>
+  kable(caption = "Number of age-class combinations per forest type")
+```
+
+## Activity 5 — Add a slicer
+
+To your PivotTable, add a Slicer on `LGDS` (the seral-stage code).
+Click each button in turn. Which forest types disappear at the
+"Pre-Sapling" stage? Which dominate at "Mature"?
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Build a chart-and-PivotTable deliverable together
+
+Work in groups of 3 or 4. One submission per group.
+
+**Task 1 — Choose the question.** As a group, choose one forestry
+question your PivotTable will answer. Options:
+
+- *"Which forest type has the most mature area in Region 3E?"*
+- *"Which age class has the most total area, across all types?"*
+- *"How does conifer-vs-hardwood area compare across seral stages?"*
+
+**Task 2 — Build the PivotTable.** Open
+`on_forest_statistics_1_clean.xlsx`. Insert a PivotTable that
+answers your question. Decide together what goes in Rows, Columns,
+and Values.
+
+**Task 3 — Build the PivotChart.** From your PivotTable, insert a
+PivotChart of an appropriate type. Add a title, axis labels, and
+ensure units (hectares) appear in the y-axis label.
+
+**Task 4 — Add a slicer.** Insert at least one slicer (any
+categorical field). Confirm that clicking a slicer button changes
+both the PivotTable and the PivotChart.
+
+**Task 5 — Export and caption.** Save the PivotChart as a PNG into
+`outputs/`. Write a one-sentence caption that includes the data
+source.
+
+**Task 6 — Submit.** Submit a short worksheet showing your
+question, your field choices, and the exported PNG + caption.
+Include all group members' names.
+
+This lab is designed to fit comfortably inside a single hands-on
+session.
+:::
+
+# Exercises
+
+These are the take-home exercises that go with this chapter.
+
+1. Open `bc_disturbance_reforestation.xlsx`. Build a **column
+   chart** of `Natural_Disturbance_ha` by `Fiscal_Year`. Add a
+   title that names the 2017 wildfire spike. Export as PNG.
+
+2. Open `on_forest_statistics_1.xlsx`. Build a PivotTable with
+   `SERAL_NAME` in Rows and `SumOfTotalHa` in Values (using `Sum`).
+   Sort the table by descending total area. Which seral stage
+   covers the most area?
+
+3. On the same PivotTable, change the aggregation from `Sum` to
+   `Count`. Which seral stage has the most age-class
+   combinations? Is it the same answer as Exercise 2?
+
+4. Build a **manual SUMIFS cross-tab** with `PFTName` down the
+   left and `SERAL_NAME` across the top. Verify your numbers
+   match the PivotTable.
+
+5. Add a **slicer** on `PFT` to your PivotTable. Take a
+   screenshot showing the table when one forest-type slicer is
+   active.
+
+6. Write a one-page chart-caption sheet listing the captions you
+   would use for the three exported PNG files (Exercises 1, 2,
+   and the group lab output). Save as
+   `outputs/chart_captions.docx` or `chart_captions.md`.
+
+7. **Optional, harder.** Build a **dashboard sheet** containing
+   your time-series chart from Exercise 1 and your PivotChart
+   from Exercise 2 side by side, with a slicer that controls
+   both. (Hint: a slicer can connect to multiple PivotTables
+   built from the same data source.)
+
+# Optional, advanced
+
+## Sparklines
+
+A sparkline is a tiny chart inside a single cell. Useful for
+trend-at-a-glance summaries inside a table.
+
+To insert: **Insert → Sparklines → Line** (or Column, or Win/Loss).
+Select the data range, then choose the cell where the sparkline
+goes.
+
+## Conditional-formatted data bars
+
+Inside a PivotTable, you can add **Data Bars** to a value column.
+Select the values → **Home → Conditional Formatting → Data Bars**.
+The cells now show a tiny in-cell horizontal bar proportional to
+the value — a quick way to add visual rank to a table.
+
+## Calculated fields
+
+A **Calculated Field** is a column in a PivotTable derived from
+other PivotTable fields. To add one: **PivotTable Analyze →
+Fields, Items, & Sets → Calculated Field**.
+
+Example: in the Ontario file you could add a `area_per_age_class`
+calculated field equal to `SumOfTotalHa / AC_10`. Use sparingly —
+calculated fields are powerful but easy to hide a typo inside.
+
+# A glimpse of Chapter 9: From Excel to `ggplot2`
+
+In Chapter 9 you will rebuild the BC and Ontario charts from this
+chapter using `ggplot2` in R. The Excel moves you learned here map
+to R commands you will meet later:
+
+| What you did in Excel (Ch 3) | What you will do in R (Ch 9) |
+|---|---|
+| **Insert → Line chart** | `ggplot(bc, aes(Fiscal_Year, Reforestation_ha)) + geom_line()` |
+| **Insert → Column chart** | `ggplot(...) + geom_col()` |
+| **Chart title** in the chart area | `labs(title = "...")` |
+| **Axis title** "Hectares" | `labs(y = "Hectares")` |
+| **Add caption** in a text box | `labs(caption = "Source: ...")` |
+| **PivotTable** with `PFTName` in Rows | `ontario \|> group_by(PFTName) \|> summarise(sum(SumOfTotalHa))` |
+| **PivotTable** with `PFTName` × `SERAL_NAME` | `... \|> group_by(PFTName, SERAL_NAME) \|> summarise(...) \|> pivot_wider(...)` |
+| **Slicer** on `PFTName` | `... \|> filter(PFTName == "Jack Pine")` |
+| **Refresh PivotTable** (manual) | Automatic — re-running the code re-computes everything |
+| **PNG export** via Save as Picture | `ggsave("outputs/bc_reforestation.png", width = 7, height = 4)` |
+
+**The intent is identical.** R is scriptable; Excel is visual.
+Chapter 9 will walk through each row of this table in detail. The
+point right now is that the chart vocabulary you learn here
+transfers directly.
+
+# Self-assessment quiz {#sec-quiz-ch03}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz {
+  background: #F4F7F4;
+  border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. You want to show how BC reforestation has changed from 1987 to 2023. Which chart type is best?</div>
+  <ul class="qopts">
+    <li data-correct="false">Pie chart</li>
+    <li data-correct="true">Line chart</li>
+    <li data-correct="false">Scatter plot</li>
+    <li data-correct="false">Stacked bar</li>
+  </ul>
+  <div class="explanation">Time series with a single quantity over time → line chart. Pie shows share of a whole; scatter shows X vs Y relationships; stacked bar shows composition.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. A PivotTable is built from a tidy table. What four field zones does it use?</div>
+  <ul class="qopts">
+    <li data-correct="false">Headers, Values, Footer, Title</li>
+    <li data-correct="true">Rows, Columns, Values, Filters</li>
+    <li data-correct="false">Sum, Count, Average, Max</li>
+    <li data-correct="false">X-axis, Y-axis, Legend, Caption</li>
+  </ul>
+  <div class="explanation">Rows go down the left, Columns go across the top, Values are the numeric quantities being aggregated, Filters apply to the whole pivot.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. You change the underlying Data sheet after building a PivotTable. What must you do for the PivotTable to show the new numbers?</div>
+  <ul class="qopts">
+    <li data-correct="false">Nothing — the PivotTable updates automatically</li>
+    <li data-correct="true">Right-click the PivotTable → Refresh (or PivotTable Analyze → Refresh)</li>
+    <li data-correct="false">Rebuild the PivotTable from scratch</li>
+    <li data-correct="false">Delete the Data sheet</li>
+  </ul>
+  <div class="explanation">PivotTables are <em>snapshots</em>, not live views. Forgetting to refresh after a data change is the most common silent bug in PivotTable-based reporting.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. A PivotChart is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A type of chart that does not need data</li>
+    <li data-correct="true">A chart wired to a PivotTable, which updates when the PivotTable changes</li>
+    <li data-correct="false">A chart that automatically becomes a pie chart</li>
+    <li data-correct="false">A chart with a slicer attached</li>
+  </ul>
+  <div class="explanation">PivotChart and its PivotTable are linked — change one and the other follows. This is why pivot-based charts are easier to keep current than hand-built charts.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. Which chart title is better?</div>
+  <ul class="qopts">
+    <li data-correct="false">"Chart 1"</li>
+    <li data-correct="false">"Reforestation_ha vs Fiscal_Year"</li>
+    <li data-correct="true">"BC reforestation has tracked total disturbance since the late 1990s"</li>
+    <li data-correct="false">"My chart"</li>
+  </ul>
+  <div class="explanation">A good title is a one-sentence claim the chart supports. If you cannot write such a claim, the chart is probably the wrong chart for your question.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. In a PivotTable summarizing the Ontario file, you put <code>PFTName</code> in Rows, <code>SERAL_NAME</code> in Columns, and <code>SumOfTotalHa</code> in Values with aggregation <code>Sum</code>. One cell shows 178,000. That number is —</div>
+  <ul class="qopts">
+    <li data-correct="false">The total area of all forest types</li>
+    <li data-correct="false">The number of rows with that forest type and seral stage</li>
+    <li data-correct="true">The total hectares for one (forest type, seral stage) combination</li>
+    <li data-correct="false">The average area for that forest type</li>
+  </ul>
+  <div class="explanation">Each interior cell of the PivotTable is the sum of <code>SumOfTotalHa</code> for the rows that match both the row label and the column label.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. A Slicer is best understood as —</div>
+  <ul class="qopts">
+    <li data-correct="false">A new chart type</li>
+    <li data-correct="true">A clickable visual filter panel that controls one or more PivotTables / PivotCharts</li>
+    <li data-correct="false">A way to delete rows</li>
+    <li data-correct="false">A function in the formula bar</li>
+  </ul>
+  <div class="explanation">Slicers are visual filters. They are excellent for presentations because non-technical readers can explore the data by clicking buttons.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. Which Excel formula recreates a PivotTable cell that sums <code>SumOfTotalHa</code> for "Jack Pine" × "Mature" combinations?</div>
+  <ul class="qopts">
+    <li data-correct="false">=SUM(SumOfTotalHa)</li>
+    <li data-correct="false">=SUMIF(PFTName, "Jack Pine", SumOfTotalHa)</li>
+    <li data-correct="true">=SUMIFS(SumOfTotalHa, PFTName, "Jack Pine", SERAL_NAME, "Mature")</li>
+    <li data-correct="false">=COUNTIFS(PFTName, "Jack Pine", SERAL_NAME, "Mature")</li>
+  </ul>
+  <div class="explanation"><code>SUMIFS</code> sums one range subject to multiple criteria — exactly what a PivotTable cell does. <code>COUNTIFS</code> would return a row count, not a sum.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. Why is a pie chart usually a bad choice for comparing forest type areas across 8 forest types?</div>
+  <ul class="qopts">
+    <li data-correct="false">Excel cannot draw pie charts</li>
+    <li data-correct="true">Humans are bad at comparing angles; a sorted bar chart is easier to read</li>
+    <li data-correct="false">Pie charts are not allowed in forestry</li>
+    <li data-correct="false">Pie charts always use the wrong colors</li>
+  </ul>
+  <div class="explanation">The eye compares lengths much better than angles. For 8 categories, a sorted bar chart lets the reader rank values at a glance.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. Where does the Ontario forest statistics file come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A textbook</li>
+    <li data-correct="true">The Government of Ontario, distributed through the Ontario Open Data Catalogue</li>
+    <li data-correct="false">A research blog</li>
+    <li data-correct="false">A private consulting firm</li>
+  </ul>
+  <div class="explanation">Both datasets in this chapter are open government data. The Ontario file is from the Ministry of Natural Resources and Forestry, published under the Open Government Licence — Ontario.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. You build a column chart of <code>Natural_Disturbance_ha</code> by <code>Fiscal_Year</code>. One year's column is much taller than every other. Which year?</div>
+  <ul class="qopts">
+    <li data-correct="false">1987</li>
+    <li data-correct="false">2010</li>
+    <li data-correct="true">2017</li>
+    <li data-correct="false">2023</li>
+  </ul>
+  <div class="explanation">2017 was BC's record wildfire season — 218,275 ha. Always look at the chart extremes; the outlier tells you something about the world.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. When exporting a PivotChart for a report, which file format is best?</div>
+  <ul class="qopts">
+    <li data-correct="false">XLSX</li>
+    <li data-correct="true">PNG (right-click chart → Save as Picture)</li>
+    <li data-correct="false">CSV</li>
+    <li data-correct="false">TXT</li>
+  </ul>
+  <div class="explanation">PNG (or SVG) is a stand-alone image that any reader can open without Excel. CSV and TXT are data formats, not image formats.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. A chart caption should always include —</div>
+  <ul class="qopts">
+    <li data-correct="false">The Excel version you used</li>
+    <li data-correct="true">A one-sentence description and the data source</li>
+    <li data-correct="false">Your full name</li>
+    <li data-correct="false">A list of every formula in the workbook</li>
+  </ul>
+  <div class="explanation">A good caption tells the reader what the chart shows and where the data came from. Date or version is also useful.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. What does the <em>mixed reference</em> <code>$A2</code> mean in a formula copied across a grid?</div>
+  <ul class="qopts">
+    <li data-correct="false">Both the row and column are locked</li>
+    <li data-correct="true">The column is locked; the row moves as the formula is copied</li>
+    <li data-correct="false">The row is locked; the column moves</li>
+    <li data-correct="false">Nothing is locked</li>
+  </ul>
+  <div class="explanation">The <code>$</code> before <code>A</code> locks the column. When you copy the formula down, <code>$A2</code> becomes <code>$A3</code>, <code>$A4</code>, etc. When you copy it right, it stays <code>$A2</code>.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. In a PivotTable, switching the Value aggregation from <code>Sum</code> to <code>Count</code> changes —</div>
+  <ul class="qopts">
+    <li data-correct="false">The colors of the cells</li>
+    <li data-correct="false">The row and column labels</li>
+    <li data-correct="true">The interior values, from "total hectares" to "number of rows in that group"</li>
+    <li data-correct="false">The Data sheet</li>
+  </ul>
+  <div class="explanation">The aggregation function controls what the interior cells display. <code>Sum</code> adds the values; <code>Count</code> counts how many rows fall in the group.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. You add a Slicer for <code>PFTName</code> to your PivotTable. You click "Jack Pine". What happens to the PivotChart wired to the same PivotTable?</div>
+  <ul class="qopts">
+    <li data-correct="false">Nothing — slicers do not affect charts</li>
+    <li data-correct="true">The chart filters to show only Jack Pine data, in sync with the PivotTable</li>
+    <li data-correct="false">The chart shows an error</li>
+    <li data-correct="false">The slicer creates a new chart</li>
+  </ul>
+  <div class="explanation">Slicers, PivotTables, and PivotCharts are linked. A slicer filters the PivotTable, and the chart follows automatically.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. What is the closest R equivalent of an Excel PivotTable cell built with <code>Sum</code>?</div>
+  <ul class="qopts">
+    <li data-correct="false">read_excel(...)</li>
+    <li data-correct="true">group_by(...) |> summarise(sum(...))</li>
+    <li data-correct="false">ggplot(...) + geom_line()</li>
+    <li data-correct="false">filter(...)</li>
+  </ul>
+  <div class="explanation">A PivotTable aggregating by a category is conceptually <code>group_by()</code> followed by <code>summarise()</code>. This is the bridge to Chapter 7.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The PNG file you submit for the chapter assignment should live in which folder of your project?</div>
+  <ul class="qopts">
+    <li data-correct="false">data/</li>
+    <li data-correct="true">outputs/ (or deliverables/, if the file is the final submission)</li>
+    <li data-correct="false">shared/</li>
+    <li data-correct="false">It does not matter</li>
+  </ul>
+  <div class="explanation"><code>data/</code> is for raw input files only. Generated files like PNG charts go in <code>outputs/</code>, and the version you actually submit goes in <code>deliverables/</code>.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. A reader asks "which column did your chart come from?" You should answer by —</div>
+  <ul class="qopts">
+    <li data-correct="false">Guessing from the chart title</li>
+    <li data-correct="true">Pointing to the ReadMe sheet entry for the exact variable named in the caption</li>
+    <li data-correct="false">Recreating the chart from memory</li>
+    <li data-correct="false">Saying it does not matter</li>
+  </ul>
+  <div class="explanation">This is why captions reference variables by their exact ReadMe names. Traceability from chart → caption → ReadMe → Data column is what makes the work auditable.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one chart or PivotTable you built for this chapter that surprised you — anything you noticed in the data that you did not expect.</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common observations: <em>the 2017 wildfire spike is hard to even see on a linear axis — it is so much bigger than anything else that other years look flat</em> · <em>mature Conifer Lowland dominates the Ontario file in terms of area</em> · <em>most forest types have very few rows in the Pre-Sapling stage, which makes sense for old commercial landbases</em> · <em>switching from Sum to Count completely changes which forest type "leads" — total area and number of combinations tell different stories</em>.</div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') {
+              o.classList.add('correct');
+            }
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"In Excel, my PivotTable shows only zeros for one row. The
+  underlying Data sheet has values. What are the three most common
+  reasons a PivotTable shows zeros?"*
+
+- *"Explain step by step how to add a slicer to an existing
+  PivotTable and link it to a second PivotTable on the same sheet."*
+
+- *"I want to recreate this PivotTable cell with a formula — sum
+  of `SumOfTotalHa` for `PFTName = 'Jack Pine'` and `SERAL_NAME =
+  'Mature'`. What is the SUMIFS formula?"*
+
+## Verifying AI's answers
+
+After AI suggests a chart type or PivotTable layout, **check**:
+
+1. Does the chart actually answer the question you asked?
+2. Does the title state a one-sentence claim?
+3. Do the units appear in the axis label?
+4. Did the AI refresh the PivotTable in its instructions? (It
+   often forgets.)
+
+AI's chart suggestions are starting points. The interpretation is
+yours.
+
+## When *not* to use AI
+
+- Do not let AI choose the chart type without you stating the
+  question. The chart serves the question; the question serves
+  you.
+- Do not let AI invent a caption that names a source you have not
+  verified.
+:::
+
+# Reading
+
+- Microsoft Excel official documentation on [PivotTables](https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576).
+- Microsoft Excel official documentation on [PivotCharts](https://support.microsoft.com/en-us/office/create-a-pivotchart-c1b1e057-6990-4c38-b52b-8255538e7b1c).
+- Cole Nussbaumer Knaflic, *Storytelling with Data* (chapter on
+  chart choice — short, opinionated, practical).
+- BC Government silviculture indicator background:
+  <https://www.env.gov.bc.ca/soe/indicators/land/silviculture.html>
+- Ontario open-data dataset page:
+  <https://data.ontario.ca/dataset/forest-resources-of-ontario-2021>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- This chapter is the **bridge chapter** from raw Excel work into
+  tidy-data thinking. Spend time on the PivotTable → R parallel
+  in the "A glimpse of Chapter 9" section — it is the most
+  important conceptual move of the first half of the book.
+- The main path covers six skills: chart choice, chart anatomy,
+  PivotTable construction, aggregation switching, PivotChart, and
+  Slicers. The SUMIFS cross-tab section is essential for the
+  Excel-to-R bridge.
+- **Sparklines**, **data bars in pivots**, and **calculated
+  fields** are moved to the *Optional, advanced* section. Mention
+  them only if your group is ahead of pace.
+- The group lab is the central hands-on deliverable. Plan for one
+  full session.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. One PivotTable + PivotChart on `on_forest_statistics_1.xlsx`,
+   exported as PNG with caption.
+2. One time-series chart on
+   `bc_disturbance_reforestation.xlsx`, exported as PNG with
+   caption.
+3. A short chart-choice worksheet (from the learner workbook).
+4. Group-lab worksheet or screenshot.
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `bc_disturbance_reforestation.xlsx` | Raw BC silviculture workbook (carried forward from Chapter 1). |
+| `on_forest_statistics_1.xlsx` | Raw Ontario forest stats workbook (carried forward from Chapter 2). |
+| `frst232_ch03_pivot_learner.xlsx` | Learner-facing workbook with both datasets and chapter exercises. |
+| `frst232_ch03_pivot_solutions.xlsx` | Instructor solutions. **Do not distribute to learners.** |
+| `quiz_ch03.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
+
+## Suggested grading guidance for the group lab
+
+| Task | Weight | What to look for |
+|---|---|---|
+| Question + PivotTable (Tasks 1–2) | 25 % | Question is specific and answerable; PivotTable layout matches the question. |
+| PivotChart + axis labels (Task 3) | 25 % | Chart type matches the question; axis labels include units. |
+| Slicer (Task 4) | 15 % | Slicer present and functional. |
+| PNG export + caption (Task 5) | 25 % | PNG file submitted; one-sentence caption includes source. |
+| Submission (Task 6) | 10 % | Worksheet is legible; group members named. |
+
+## Common stumbling points
+
+- Some learners build a PivotTable, change the Data sheet, and
+  then export from the stale PivotTable. Emphasize the **Refresh
+  before export** habit.
+- Some forget that a chart title and an axis label are different
+  things. A good chart has both.
+- A few will choose a pie chart for 8-category comparisons.
+  Redirect to a sorted bar chart.
+- Some will compute "average" on a column already summed in a
+  PivotTable, double-aggregating. Walk through what `Sum` vs
+  `Average` actually does at the cell level.
+- *Excel-to-R bridge:* The "A glimpse of Chapter 9" section is the
+  single most important paragraph in Chapter 3 for the long arc
+  of the course. Refer to it explicitly when learners ask why we
+  are still in Excel.
+:::

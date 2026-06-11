@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 3 Self-Assessment Quiz</title>
+<style>
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif;
+  max-width: 800px; margin: 2em auto; padding: 0 1.5em;
+  color: #2C3E2F; line-height: 1.55;
+}
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note {
+  background: #FFF8E8; border-left: 4px solid #B7791F;
+  padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em;
+}
+.quiz {
+  background: #F4F7F4; border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+code {
+  background: #F0F5F1; color: #1B4332;
+  padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em;
+}
+.progress {
+  position: sticky; top: 0; background: white;
+  border-bottom: 1px solid #d8e4d8; padding: 0.5em 0;
+  margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F;
+}
+</style>
+</head>
+<body>
+
+<h1>Chapter 3 — Self-Assessment Quiz</h1>
+<p><em>Excel Visualization and PivotTables · 20 questions</em></p>
+
+<div class="preview-note">
+<strong>How this works:</strong> click an option in each question. The right
+answer turns green, wrong answers turn red (with the correct one
+revealed), and an explanation appears below.
+</div>
+
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1">
+  <div class="q">1. You want to show how BC reforestation has changed from 1987 to 2023. Which chart type is best?</div>
+  <ul class="qopts">
+    <li data-correct="false">Pie chart</li>
+    <li data-correct="true">Line chart</li>
+    <li data-correct="false">Scatter plot</li>
+    <li data-correct="false">Stacked bar</li>
+  </ul>
+  <div class="explanation">Time series with a single quantity over time → line chart. Pie shows share of a whole; scatter shows X vs Y relationships; stacked bar shows composition.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. A PivotTable is built from a tidy table. What four field zones does it use?</div>
+  <ul class="qopts">
+    <li data-correct="false">Headers, Values, Footer, Title</li>
+    <li data-correct="true">Rows, Columns, Values, Filters</li>
+    <li data-correct="false">Sum, Count, Average, Max</li>
+    <li data-correct="false">X-axis, Y-axis, Legend, Caption</li>
+  </ul>
+  <div class="explanation">Rows go down the left, Columns go across the top, Values are the numeric quantities being aggregated, Filters apply to the whole pivot.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. You change the underlying Data sheet after building a PivotTable. What must you do for the PivotTable to show the new numbers?</div>
+  <ul class="qopts">
+    <li data-correct="false">Nothing — the PivotTable updates automatically</li>
+    <li data-correct="true">Right-click the PivotTable → Refresh (or PivotTable Analyze → Refresh)</li>
+    <li data-correct="false">Rebuild the PivotTable from scratch</li>
+    <li data-correct="false">Delete the Data sheet</li>
+  </ul>
+  <div class="explanation">PivotTables are <em>snapshots</em>, not live views. Forgetting to refresh after a data change is the most common silent bug in PivotTable-based reporting.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. A PivotChart is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A type of chart that does not need data</li>
+    <li data-correct="true">A chart wired to a PivotTable, which updates when the PivotTable changes</li>
+    <li data-correct="false">A chart that automatically becomes a pie chart</li>
+    <li data-correct="false">A chart with a slicer attached</li>
+  </ul>
+  <div class="explanation">PivotChart and its PivotTable are linked — change one and the other follows.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. Which chart title is better?</div>
+  <ul class="qopts">
+    <li data-correct="false">"Chart 1"</li>
+    <li data-correct="false">"Reforestation_ha vs Fiscal_Year"</li>
+    <li data-correct="true">"BC reforestation has tracked total disturbance since the late 1990s"</li>
+    <li data-correct="false">"My chart"</li>
+  </ul>
+  <div class="explanation">A good title is a one-sentence claim the chart supports. If you cannot write such a claim, the chart is probably the wrong chart for your question.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. In a PivotTable summarizing the Ontario file, you put <code>PFTName</code> in Rows, <code>SERAL_NAME</code> in Columns, and <code>SumOfTotalHa</code> in Values with aggregation <code>Sum</code>. One cell shows 178,000. That number is —</div>
+  <ul class="qopts">
+    <li data-correct="false">The total area of all forest types</li>
+    <li data-correct="false">The number of rows with that forest type and seral stage</li>
+    <li data-correct="true">The total hectares for one (forest type, seral stage) combination</li>
+    <li data-correct="false">The average area for that forest type</li>
+  </ul>
+  <div class="explanation">Each interior cell is the sum of <code>SumOfTotalHa</code> for the rows that match both the row label and the column label.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. A Slicer is best understood as —</div>
+  <ul class="qopts">
+    <li data-correct="false">A new chart type</li>
+    <li data-correct="true">A clickable visual filter panel that controls one or more PivotTables / PivotCharts</li>
+    <li data-correct="false">A way to delete rows</li>
+    <li data-correct="false">A function in the formula bar</li>
+  </ul>
+  <div class="explanation">Slicers are visual filters. They are excellent for presentations because non-technical readers can explore the data by clicking buttons.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. Which Excel formula recreates a PivotTable cell that sums <code>SumOfTotalHa</code> for "Jack Pine" × "Mature" combinations?</div>
+  <ul class="qopts">
+    <li data-correct="false">=SUM(SumOfTotalHa)</li>
+    <li data-correct="false">=SUMIF(PFTName, "Jack Pine", SumOfTotalHa)</li>
+    <li data-correct="true">=SUMIFS(SumOfTotalHa, PFTName, "Jack Pine", SERAL_NAME, "Mature")</li>
+    <li data-correct="false">=COUNTIFS(PFTName, "Jack Pine", SERAL_NAME, "Mature")</li>
+  </ul>
+  <div class="explanation"><code>SUMIFS</code> sums one range subject to multiple criteria — exactly what a PivotTable cell does.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. Why is a pie chart usually a bad choice for comparing forest type areas across 8 forest types?</div>
+  <ul class="qopts">
+    <li data-correct="false">Excel cannot draw pie charts</li>
+    <li data-correct="true">Humans are bad at comparing angles; a sorted bar chart is easier to read</li>
+    <li data-correct="false">Pie charts are not allowed in forestry</li>
+    <li data-correct="false">Pie charts always use the wrong colors</li>
+  </ul>
+  <div class="explanation">The eye compares lengths much better than angles. For 8 categories, a sorted bar chart lets the reader rank values at a glance.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. Where does the Ontario forest statistics file come from?</div>
+  <ul class="qopts">
+    <li data-correct="false">A textbook</li>
+    <li data-correct="true">The Government of Ontario, distributed through the Ontario Open Data Catalogue</li>
+    <li data-correct="false">A research blog</li>
+    <li data-correct="false">A private consulting firm</li>
+  </ul>
+  <div class="explanation">Both datasets in this chapter are open government data, published under the Open Government Licence — Ontario.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. You build a column chart of <code>Natural_Disturbance_ha</code> by <code>Fiscal_Year</code>. One year's column is much taller than every other. Which year?</div>
+  <ul class="qopts">
+    <li data-correct="false">1987</li>
+    <li data-correct="false">2010</li>
+    <li data-correct="true">2017</li>
+    <li data-correct="false">2023</li>
+  </ul>
+  <div class="explanation">2017 was BC's record wildfire season — 218,275 ha. Always look at the chart extremes; the outlier tells you something about the world.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. When exporting a PivotChart for a report, which file format is best?</div>
+  <ul class="qopts">
+    <li data-correct="false">XLSX</li>
+    <li data-correct="true">PNG (right-click chart → Save as Picture)</li>
+    <li data-correct="false">CSV</li>
+    <li data-correct="false">TXT</li>
+  </ul>
+  <div class="explanation">PNG (or SVG) is a stand-alone image that any reader can open without Excel. CSV and TXT are data formats, not image formats.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. A chart caption should always include —</div>
+  <ul class="qopts">
+    <li data-correct="false">The Excel version you used</li>
+    <li data-correct="true">A one-sentence description and the data source</li>
+    <li data-correct="false">Your full name</li>
+    <li data-correct="false">A list of every formula in the workbook</li>
+  </ul>
+  <div class="explanation">A good caption tells the reader what the chart shows and where the data came from. Date or version is also useful.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. What does the <em>mixed reference</em> <code>$A2</code> mean in a formula copied across a grid?</div>
+  <ul class="qopts">
+    <li data-correct="false">Both the row and column are locked</li>
+    <li data-correct="true">The column is locked; the row moves as the formula is copied</li>
+    <li data-correct="false">The row is locked; the column moves</li>
+    <li data-correct="false">Nothing is locked</li>
+  </ul>
+  <div class="explanation">The <code>$</code> before <code>A</code> locks the column. Copy down: <code>$A2</code> → <code>$A3</code>. Copy right: stays <code>$A2</code>.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. In a PivotTable, switching the Value aggregation from <code>Sum</code> to <code>Count</code> changes —</div>
+  <ul class="qopts">
+    <li data-correct="false">The colors of the cells</li>
+    <li data-correct="false">The row and column labels</li>
+    <li data-correct="true">The interior values, from "total hectares" to "number of rows in that group"</li>
+    <li data-correct="false">The Data sheet</li>
+  </ul>
+  <div class="explanation">The aggregation function controls what the interior cells display.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. You add a Slicer for <code>PFTName</code> to your PivotTable. You click "Jack Pine". What happens to the PivotChart wired to the same PivotTable?</div>
+  <ul class="qopts">
+    <li data-correct="false">Nothing — slicers do not affect charts</li>
+    <li data-correct="true">The chart filters to show only Jack Pine data, in sync with the PivotTable</li>
+    <li data-correct="false">The chart shows an error</li>
+    <li data-correct="false">The slicer creates a new chart</li>
+  </ul>
+  <div class="explanation">Slicers, PivotTables, and PivotCharts are linked. A slicer filters the PivotTable, and the chart follows automatically.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. What is the closest R equivalent of an Excel PivotTable cell built with <code>Sum</code>?</div>
+  <ul class="qopts">
+    <li data-correct="false">read_excel(...)</li>
+    <li data-correct="true">group_by(...) |> summarise(sum(...))</li>
+    <li data-correct="false">ggplot(...) + geom_line()</li>
+    <li data-correct="false">filter(...)</li>
+  </ul>
+  <div class="explanation">A PivotTable aggregating by a category is conceptually <code>group_by()</code> followed by <code>summarise()</code>. This is the bridge to Chapter 7.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The PNG file you submit for the chapter assignment should live in which folder of your project?</div>
+  <ul class="qopts">
+    <li data-correct="false">data/</li>
+    <li data-correct="true">outputs/ (or deliverables/, if the file is the final submission)</li>
+    <li data-correct="false">shared/</li>
+    <li data-correct="false">It does not matter</li>
+  </ul>
+  <div class="explanation"><code>data/</code> is for raw input files only. Generated files go in <code>outputs/</code>, and the version you actually submit goes in <code>deliverables/</code>.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. A reader asks "which column did your chart come from?" You should answer by —</div>
+  <ul class="qopts">
+    <li data-correct="false">Guessing from the chart title</li>
+    <li data-correct="true">Pointing to the ReadMe sheet entry for the exact variable named in the caption</li>
+    <li data-correct="false">Recreating the chart from memory</li>
+    <li data-correct="false">Saying it does not matter</li>
+  </ul>
+  <div class="explanation">Traceability from chart → caption → ReadMe → Data column is what makes the work auditable.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Describe one chart or PivotTable you built for this chapter that surprised you — anything you noticed in the data that you did not expect.</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common observations: <em>the 2017 wildfire spike is hard to even see on a linear axis — it is so much bigger than anything else that other years look flat</em> · <em>mature Conifer Lowland dominates the Ontario file in terms of area</em> · <em>most forest types have very few rows in the Pre-Sapling stage</em> · <em>switching from Sum to Count completely changes which forest type "leads" — total area and number of combinations tell different stories</em>.</div>
+</div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 11 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 11 — Self-Assessment Quiz</h1>
+<p><em>Map Forestry Data with leaflet · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1"><div class="q">1. leaflet builds a web map by —</div><ul class="qopts"><li data-correct="false">Asking Google Maps</li><li data-correct="true">Generating HTML + JavaScript that wraps the leaflet.js library</li><li data-correct="false">Drawing into a static PNG</li><li data-correct="false">Calling ggplot</li></ul><div class="explanation">leaflet is an R wrapper around leaflet.js — your R code produces the HTML/JS that runs in a browser.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. The leaflet pipeline pattern uses —</div><ul class="qopts"><li data-correct="false">+ between calls (like ggplot2)</li><li data-correct="true">|> (or %>%) between leaflet() and the add*() functions</li><li data-correct="false">commas inside a single call</li><li data-correct="false">no chaining</li></ul><div class="explanation">Each add* function takes a leaflet map and returns a modified one, so they compose with the pipe.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. leaflet requires its input data to be in CRS —</div><ul class="qopts"><li data-correct="false">EPSG:3005 (BC Albers)</li><li data-correct="true">EPSG:4326 (WGS84, lat/lon)</li><li data-correct="false">EPSG:3857 (Web Mercator)</li><li data-correct="false">Any CRS</li></ul><div class="explanation">leaflet.js expects lat/lon. Reproject with st_transform(4326) before plotting.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. To add the default OpenStreetMap basemap, you use —</div><ul class="qopts"><li data-correct="false">addBackground()</li><li data-correct="true">addTiles()</li><li data-correct="false">addBasemap()</li><li data-correct="false">addLayer()</li></ul><div class="explanation"><code>addTiles()</code> with no arguments adds the default OpenStreetMap Mapnik tiles.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. To use a different tile provider (e.g., satellite imagery), you use —</div><ul class="qopts"><li data-correct="false">addTiles("satellite")</li><li data-correct="true">addProviderTiles("Esri.WorldImagery")</li><li data-correct="false">addTiles(satellite = TRUE)</li><li data-correct="false">setBasemap()</li></ul><div class="explanation">leaflet bundles many third-party tile providers.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. In leaflet, the formula notation <code>popup = ~location</code> means —</div><ul class="qopts"><li data-correct="false">Literally the string "location"</li><li data-correct="true">The value of the column called <code>location</code> in the data tibble</li><li data-correct="false">The opposite of location</li><li data-correct="false">A function called location</li></ul><div class="explanation">The tilde says "look up this column in the data" — similar to aes() in ggplot.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>addCircleMarkers()</code> differs from <code>addMarkers()</code> in that —</div><ul class="qopts"><li data-correct="false">It only works with raster data</li><li data-correct="true">It draws circles whose size and colour you can drive from data columns; default markers are fixed pins</li><li data-correct="false">It is faster but less accurate</li><li data-correct="false">It is for polygons</li></ul><div class="explanation">Circle markers are the leaflet equivalent of a sized/coloured scatter.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. To map a numeric column to colour, you use —</div><ul class="qopts"><li data-correct="false">scale_colour_continuous()</li><li data-correct="true">colorNumeric(palette, domain) — and pass the resulting function as fillColor = ~pal(column)</li><li data-correct="false">addColour()</li><li data-correct="false">paint()</li></ul><div class="explanation">colorNumeric builds a function that maps values to colours.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>addLegend()</code> is —</div><ul class="qopts"><li data-correct="false">A required call for every map</li><li data-correct="true">An optional layer that draws a legend matching a palette and data values</li><li data-correct="false">A way to add a title</li><li data-correct="false">A debugging tool</li></ul><div class="explanation">addLegend uses the same palette function and column as the markers, anchored to a corner.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. <code>addPolygons()</code> is for —</div><ul class="qopts"><li data-correct="false">Points</li><li data-correct="false">Lines only</li><li data-correct="true">Polygon geometries (e.g., buffers, forest districts, watersheds)</li><li data-correct="false">Markers</li></ul><div class="explanation"><code>addPolygons</code> draws filled polygon shapes; <code>addPolylines</code> for line geometries.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. <code>addLayersControl()</code> with <code>baseGroups</code> and <code>overlayGroups</code> —</div><ul class="qopts"><li data-correct="false">Hides the map</li><li data-correct="true">Adds a toggle widget where base groups are radio buttons (one at a time) and overlay groups are checkboxes (any combination)</li><li data-correct="false">Removes all layers</li><li data-correct="false">Saves the map</li></ul><div class="explanation">baseGroups are mutually exclusive (basemaps); overlayGroups can each be toggled independently.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. <code>setView(lng, lat, zoom)</code> —</div><ul class="qopts"><li data-correct="false">Adds a marker at the centre</li><li data-correct="true">Sets the initial centre and zoom level when the map first renders</li><li data-correct="false">Saves the map</li><li data-correct="false">Adds an overlay</li></ul><div class="explanation">Controls the starting view. Without it, leaflet auto-zooms to fit the data.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. A leaflet map embedded in a Quarto HTML report —</div><ul class="qopts"><li data-correct="false">Renders as a static PNG</li><li data-correct="true">Remains fully interactive in the rendered HTML — the reader can pan, zoom, click, and toggle layers</li><li data-correct="false">Requires R to be installed on the reader's computer</li><li data-correct="false">Cannot be embedded</li></ul><div class="explanation">leaflet outputs an HTML widget — fully interactive in the rendered file.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. To save a leaflet map as a standalone HTML file, you use —</div><ul class="qopts"><li data-correct="false">ggsave()</li><li data-correct="true">htmlwidgets::saveWidget()</li><li data-correct="false">write_csv()</li><li data-correct="false">save()</li></ul><div class="explanation"><code>saveWidget(map, "outputs/map.html", selfcontained = TRUE)</code> bundles all the JS into one file.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. The most likely cause of leaflet plotting your points in the middle of the ocean is —</div><ul class="qopts"><li data-correct="false">A bug in leaflet</li><li data-correct="true">Your sf data is not in WGS84 (EPSG:4326) — you forgot to st_transform(4326) before passing it to leaflet</li><li data-correct="false">Your internet is down</li><li data-correct="false">Your zoom level is wrong</li></ul><div class="explanation">leaflet expects lat/lon. BC Albers metric values land in the Atlantic.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. To compute a 5 km buffer for use in leaflet —</div><ul class="qopts"><li data-correct="false">Use st_buffer in WGS84 with dist = 5000</li><li data-correct="true">Reproject to BC Albers (metric), st_buffer with dist = 5000, then reproject the buffer back to WGS84 for leaflet</li><li data-correct="false">leaflet handles buffers automatically</li><li data-correct="false">It is not possible</li></ul><div class="explanation">Buffering requires metric units; leaflet requires lat/lon.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. The biggest advantage of leaflet over a static map is —</div><ul class="qopts"><li data-correct="false">Higher resolution</li><li data-correct="true">Interactivity — pan, zoom, click for popups, toggle layers</li><li data-correct="false">Lower file size</li><li data-correct="false">No CRS required</li></ul><div class="explanation">leaflet trades file size for interactivity. Right tool for web/HTML deliverables.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. Excel has —</div><ul class="qopts"><li data-correct="false">A built-in leaflet equivalent</li><li data-correct="true">No direct equivalent — interactive web mapping is one of the places R does something Excel cannot</li><li data-correct="false">Better web mapping</li><li data-correct="false">Identical functionality</li></ul><div class="explanation">Excel's mapping is limited to embedded Bing charts.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. <code>popup</code> shows on click; <code>label</code> shows on —</div><ul class="qopts"><li data-correct="false">Page load</li><li data-correct="true">Hover</li><li data-correct="false">Double-click</li><li data-correct="false">Right-click</li></ul><div class="explanation">Use label for short hover info; popup for richer content on click.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Now that you can publish interactive maps, which forestry analyses you have done in Excel feel like they would have been more useful as interactive maps? Why?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>my 2017 wildfire analysis would have come alive as an interactive map of fire perimeters</em> · <em>monitoring station tables are abstract; the same data on a clickable map immediately raises questions</em> · <em>the cleaned air-quality file becomes a dashboard when each station is a clickable popup</em>.</div></div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

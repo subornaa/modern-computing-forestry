@@ -1,0 +1,290 @@
+---
+title: "Chapter 5 — Learner Exercises"
+subtitle: "Import and Inspect Forestry Data with R and Quarto"
+author: "Your name here"
+date: today
+format:
+  html:
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+# Load packages quietly. If any of these fail, run:
+#   install.packages(c("tidyverse", "readxl", "here", "knitr"))
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+```
+
+# About this file {.unnumbered}
+
+This is the learner workbook for Chapter 5. Each numbered
+exercise is a section. Code chunks marked `# TODO` are where you
+fill in your own R code.
+
+**Folder structure expected** (same as Chapter 4):
+
+```
+frst232/
+├── frst232.Rproj
+├── data/
+│   ├── bc_disturbance_reforestation.xlsx
+│   └── on_forest_statistics_1.xlsx
+├── outputs/
+├── R/
+└── frst232_ch05_learner.qmd   ← this file
+```
+
+When you are done, click **Render** at the top of RStudio. The
+rendered `.html` is what you submit, alongside this `.qmd`
+source.
+
+---
+
+# Exercise 1 — Vectors
+
+## 1a — Build a vector
+
+```{r ex1a}
+# TODO: build a numeric vector called `ha` with these five values:
+#   220000, 180000, 250000, 190000, 210000
+# Use c().
+
+```
+
+## 1b — Compute summary statistics
+
+```{r ex1b}
+# TODO: compute the sum, mean, min, max, and length of `ha`.
+
+```
+
+## 1c — Logical comparison
+
+```{r ex1c}
+# TODO: print the result of ha > 200000.
+# Expected: a logical vector of length 5 (TRUE/FALSE per element).
+
+```
+
+## 1d — Count and extract
+
+```{r ex1d}
+# TODO: count how many values in ha are greater than 200000.
+# Hint: sum(ha > 200000)
+
+# TODO: extract the actual values greater than 200000.
+# Hint: ha[ha > 200000]
+
+```
+
+---
+
+# Exercise 2 — Import both files
+
+## 2a — Import the BC silviculture file
+
+```{r ex2a}
+# TODO: import the Data sheet of bc_disturbance_reforestation.xlsx
+# Save into a variable called `bc`.
+
+```
+
+## 2b — Import the Ontario forest stats file
+
+```{r ex2b}
+# TODO: import the Data sheet of on_forest_statistics_1.xlsx
+# Save into a variable called `ontario`.
+
+```
+
+---
+
+# Exercise 3 — The six-move inspection
+
+Apply each of `dim`, `nrow`, `ncol`, `names`, `head`, `glimpse`
+to `bc`.
+
+## 3a — Dimensions and counts
+
+```{r ex3a}
+# TODO: call dim(bc), nrow(bc), ncol(bc).
+
+```
+
+## 3b — Column names
+
+```{r ex3b}
+# TODO: call names(bc).
+
+```
+
+## 3c — First three rows
+
+```{r ex3c}
+# TODO: call head(bc, 3).
+
+```
+
+## 3d — Glimpse
+
+```{r ex3d}
+# TODO: call glimpse(bc).
+
+```
+
+## 3e — Repeat for Ontario
+
+```{r ex3e}
+# TODO: call dim(ontario) and glimpse(ontario).
+
+```
+
+---
+
+# Exercise 4 — Column types
+
+## 4a — Identify types
+
+Look at the `glimpse()` output for both files. Answer in prose
+below.
+
+> *Write your answer here.* Which columns are `<chr>`? Which
+> are `<dbl>`? Are there any `<int>` columns? Are the two files
+> structured differently?
+
+## 4b — Class check
+
+```{r ex4b}
+# TODO: use class() to confirm the type of:
+#   bc$Reforestation_ha
+#   ontario$PFTName
+
+```
+
+---
+
+# Exercise 5 — Missing-value audit
+
+## 5a — Per-column NA count, BC file
+
+```{r ex5a}
+# TODO: compute colSums(is.na(bc)).
+
+```
+
+## 5b — Per-column NA count, Ontario file
+
+```{r ex5b}
+# TODO: compute colSums(is.na(ontario)).
+
+```
+
+## 5c — Interpret
+
+> *Write your answer here.* Did either file have any missing
+> values? Does this match what you saw in Excel for Chapters 1
+> and 2?
+
+---
+
+# Exercise 6 — Data dictionary
+
+Write a small Markdown table describing every column of the BC
+silviculture file. Use the format below.
+
+| Column | Type | Unit | Description |
+|---|---|---|---|
+| `Fiscal_Year` | integer | year | TODO — your description |
+| `Clearcutting_ha` | double | hectares | TODO |
+| `Clearcutting_with_reserves_ha` | double | hectares | TODO |
+| `Partial_cutting_ha` | double | hectares | TODO |
+| `Harvested_ha` | double | hectares | TODO |
+| `Natural_Disturbance_ha` | double | hectares | TODO |
+| `Total_Disturbance_ha` | double | hectares | TODO |
+| `Reforestation_ha` | double | hectares | TODO |
+
+> Replace each "TODO" with a one-sentence description in your
+> own words. Compare with the ReadMe sheet of
+> `bc_disturbance_reforestation.xlsx` after you write yours.
+
+---
+
+# Exercise 7 — Vectorized arithmetic
+
+## 7a — Compute the ratio
+
+```{r ex7a}
+# TODO: compute Reforestation_ha / Total_Disturbance_ha for every row.
+# Save the result as a vector called `ratio`.
+
+```
+
+## 7b — Count years above 1
+
+```{r ex7b}
+# TODO: count how many years had ratio > 1.
+# Hint: sum(ratio > 1)
+
+```
+
+---
+
+# Exercise 8 — Render check
+
+When all chunks above run without error, click **Render**
+(or Ctrl+Shift+K / Cmd+Shift+K).
+
+**Reproducibility test:** before you submit, restart R
+(**Session → Restart R**, or Ctrl+Shift+F10 / Cmd+Shift+F10),
+then re-render. If the document still renders cleanly, your
+work is reproducible.
+
+---
+
+# Two-sentence summary
+
+> *Write two sentences here* describing what the BC and Ontario
+> files contain. Imagine your reader has not seen the data before.
+> Mention the source (Government of...) and the time period
+> covered.
+
+---
+
+# Peer-review section
+
+Use this section for your group peer-review activity.
+
+## Reviewer name
+
+> *Type the reviewer's name here.*
+
+## Score (out of 10)
+
+| Criterion | Score (0–2) |
+|---|---|
+| Renders without error | TODO |
+| dim, names, glimpse visible | TODO |
+| Missing-value summary present | TODO |
+| Data dictionary table | TODO |
+| Two-sentence prose summary | TODO |
+
+## One piece of feedback
+
+> *Write your one piece of constructive feedback here.*
+
+---
+
+# Done
+
+Submit:
+
+1. This `.qmd` file (source).
+2. The rendered `.html` file.
+3. The peer-review section above (for the lecture peer-review
+   activity).

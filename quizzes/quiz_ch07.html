@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 7 Self-Assessment Quiz</title>
+<style>
+body { font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1.5em; color: #2C3E2F; line-height: 1.55; }
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note { background: #FFF8E8; border-left: 4px solid #B7791F; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+code { background: #F0F5F1; color: #1B4332; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+.progress { position: sticky; top: 0; background: white; border-bottom: 1px solid #d8e4d8; padding: 0.5em 0; margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F; }
+</style>
+</head>
+<body>
+<h1>Chapter 7 — Self-Assessment Quiz</h1>
+<p><em>Summarize Forestry Data Overall and by Group · 20 questions</em></p>
+<div class="preview-note"><strong>How this works:</strong> click an option in each question. The right answer turns green, wrong answers turn red (with the correct one revealed), and an explanation appears below.</div>
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1"><div class="q">1. <code>summarise()</code> with no <code>group_by()</code> before it returns —</div><ul class="qopts"><li data-correct="false">One row per row of the original tibble</li><li data-correct="true">One row of overall summary statistics</li><li data-correct="false">An error</li><li data-correct="false">A chart</li></ul><div class="explanation"><code>summarise()</code> collapses the tibble to one row.</div></div>
+
+<div class="quiz" id="q2"><div class="q">2. <code>group_by(location) |> summarise(mean = mean(PM25, na.rm = TRUE))</code> returns —</div><ul class="qopts"><li data-correct="false">One row total</li><li data-correct="true">One row per unique location</li><li data-correct="false">A chart</li><li data-correct="false">An error</li></ul><div class="explanation">Each unique value of the grouping column becomes one row.</div></div>
+
+<div class="quiz" id="q3"><div class="q">3. Inside <code>summarise()</code>, what does <code>n()</code> return?</div><ul class="qopts"><li data-correct="false">The number of columns</li><li data-correct="true">The row count of the group (or the whole tibble if ungrouped)</li><li data-correct="false">The number of NAs</li><li data-correct="false">The sum of the values</li></ul><div class="explanation"><code>n()</code> is a special dplyr function — no arguments.</div></div>
+
+<div class="quiz" id="q4"><div class="q">4. <code>count(region, pm25_band)</code> is equivalent to —</div><ul class="qopts"><li data-correct="false">filter(region == ..., pm25_band == ...)</li><li data-correct="true">group_by(region, pm25_band) |> summarise(n = n())</li><li data-correct="false">select(region, pm25_band)</li><li data-correct="false">arrange(region, pm25_band)</li></ul><div class="explanation"><code>count(...)</code> is the dplyr shortcut for group-then-tally.</div></div>
+
+<div class="quiz" id="q5"><div class="q">5. <code>pivot_wider(names_from = region, values_from = mean_pm25)</code> does what?</div><ul class="qopts"><li data-correct="false">Drops the region column</li><li data-correct="true">Turns each unique value of region into a new column, with mean_pm25 values inside</li><li data-correct="false">Sorts by region</li><li data-correct="false">Counts the regions</li></ul><div class="explanation">This produces a cross-tab.</div></div>
+
+<div class="quiz" id="q6"><div class="q">6. The closest Excel equivalent of <code>group_by(region, day) |> summarise(mean(PM25)) |> pivot_wider(...)</code> is —</div><ul class="qopts"><li data-correct="false">A bar chart</li><li data-correct="false">An AutoFilter</li><li data-correct="true">A PivotTable with day in Rows, region in Columns, Average of PM25 in Values</li><li data-correct="false">A VLOOKUP</li></ul><div class="explanation">dplyr summarise + pivot_wider = PivotTable. Same answer, scriptable.</div></div>
+
+<div class="quiz" id="q7"><div class="q">7. <code>summarise(p90 = quantile(PM25, 0.9, na.rm = TRUE))</code> returns —</div><ul class="qopts"><li data-correct="false">The 9th percentile</li><li data-correct="true">The 90th percentile of PM25 (the value below which 90% of observations fall)</li><li data-correct="false">A 90-row summary</li><li data-correct="false">An error</li></ul><div class="explanation"><code>quantile(x, p)</code> returns the value at the p-th percentile.</div></div>
+
+<div class="quiz" id="q8"><div class="q">8. <code>n_distinct(location)</code> returns —</div><ul class="qopts"><li data-correct="false">The total row count</li><li data-correct="true">The number of unique values in the location column</li><li data-correct="false">The first location</li><li data-correct="false">An error</li></ul><div class="explanation"><code>n_distinct(x)</code> counts unique values.</div></div>
+
+<div class="quiz" id="q9"><div class="q">9. <code>.groups = "drop"</code> in <code>summarise()</code> —</div><ul class="qopts"><li data-correct="false">Drops the grouped columns</li><li data-correct="false">Drops the rows</li><li data-correct="true">Clears the grouping after summarise, so downstream operations are not grouped</li><li data-correct="false">Is mandatory or the code errors</li></ul><div class="explanation">Without it, dplyr keeps the grouping. Treat <code>.groups = "drop"</code> as a habit.</div></div>
+
+<div class="quiz" id="q10"><div class="q">10. <code>pivot_wider(values_fill = 0)</code> means —</div><ul class="qopts"><li data-correct="false">Fill the entire table with zeros</li><li data-correct="true">Where no observation existed for that combination, put 0 instead of NA</li><li data-correct="false">Multiply everything by zero</li><li data-correct="false">Round to zero decimals</li></ul><div class="explanation">Useful for count cross-tabs.</div></div>
+
+<div class="quiz" id="q11"><div class="q">11. <code>across(c(PM25, PM10, O3), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div><ul class="qopts"><li data-correct="false">Drops three columns</li><li data-correct="true">Applies the mean function to PM25, PM10, and O3 — one column per pollutant in the output</li><li data-correct="false">Pivots the table</li><li data-correct="false">Counts the three columns</li></ul><div class="explanation"><code>across()</code> applies the same function to multiple columns at once.</div></div>
+
+<div class="quiz" id="q12"><div class="q">12. <code>filter(region == "Burrard Peninsula") |> summarise(mean = mean(PM25, na.rm = TRUE))</code> is the dplyr equivalent of which Excel formula?</div><ul class="qopts"><li data-correct="false">=AVERAGE(PM25)</li><li data-correct="true">=AVERAGEIF(region, "Burrard Peninsula", PM25)</li><li data-correct="false">=SUMIFS(...)</li><li data-correct="false">=VLOOKUP(...)</li></ul><div class="explanation">AVERAGEIF = filter + summarise(mean) in dplyr.</div></div>
+
+<div class="quiz" id="q13"><div class="q">13. A by-station summary returns 6 rows in the result. The cleaned tibble has 742 rows. That means —</div><ul class="qopts"><li data-correct="false">736 rows were lost</li><li data-correct="false">There is a bug</li><li data-correct="true">There are 6 unique stations with measured PM2.5; the 742 rows were collapsed by group</li><li data-correct="false">The summary is wrong</li></ul><div class="explanation">Summarise collapses rows of each group into one row.</div></div>
+
+<div class="quiz" id="q14"><div class="q">14. If you forget <code>na.rm = TRUE</code> in <code>summarise(mean = mean(PM25))</code> and the PM25 column has any NA values, what happens?</div><ul class="qopts"><li data-correct="false">R uses 0 for missing values</li><li data-correct="true">The mean returns NA</li><li data-correct="false">R skips the NAs silently</li><li data-correct="false">An error is thrown</li></ul><div class="explanation">R refuses to silently ignore NAs.</div></div>
+
+<div class="quiz" id="q15"><div class="q">15. The result of <code>summarise()</code> is —</div><ul class="qopts"><li data-correct="false">A vector</li><li data-correct="true">A new tibble (smaller than the input)</li><li data-correct="false">A list</li><li data-correct="false">A chart</li></ul><div class="explanation"><code>summarise()</code> returns a tibble, so you can pipe it into <code>arrange()</code> or <code>pivot_wider()</code>.</div></div>
+
+<div class="quiz" id="q16"><div class="q">16. To get the standard deviation in dplyr, you use —</div><ul class="qopts"><li data-correct="false">stdev()</li><li data-correct="true">sd()</li><li data-correct="false">stddev()</li><li data-correct="false">STDEV()</li></ul><div class="explanation"><code>sd()</code> is the base R standard-deviation function.</div></div>
+
+<div class="quiz" id="q17"><div class="q">17. Which is the closer R analogue of an Excel PivotTable refresh after editing the underlying Data sheet?</div><ul class="qopts"><li data-correct="false">Manually clicking each summarise() call</li><li data-correct="true">Re-rendering the Quarto document, which re-runs every chunk in order</li><li data-correct="false">There is no analogue</li><li data-correct="false">install.packages()</li></ul><div class="explanation">Re-rendering re-runs cleaning + summarising. No refresh bug.</div></div>
+
+<div class="quiz" id="q18"><div class="q">18. The dplyr pipeline <code>data |> count(category) |> pivot_wider(names_from = category, values_from = n, values_fill = 0)</code> produces —</div><ul class="qopts"><li data-correct="false">A bar chart</li><li data-correct="false">A long-format tibble</li><li data-correct="true">A one-row wide tibble with one column per category, holding the count of each</li><li data-correct="false">An error</li></ul><div class="explanation">Count → pivot_wider = simplest cross-tab.</div></div>
+
+<div class="quiz" id="q19"><div class="q">19. <code>group_by(region) |> summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))</code> does what?</div><ul class="qopts"><li data-correct="false">Drops every numeric column</li><li data-correct="true">Returns one row per region with the mean of every numeric column</li><li data-correct="false">Computes the global mean</li><li data-correct="false">Renames the columns</li></ul><div class="explanation"><code>where(is.numeric)</code> picks every numeric column; <code>across()</code> applies the mean to each.</div></div>
+
+<div class="quiz" id="q20"><div class="q">20. <strong>Reflection.</strong> Now that you can produce summary tables in dplyr, when (if ever) would you still reach for an Excel PivotTable?</div><textarea placeholder="Type your answer here..."></textarea><button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button><div class="sample">Common reflections: <em>for quick one-off exploration where I do not need to share the result</em> · <em>for sharing with non-R colleagues</em> · <em>when the deliverable is itself an Excel workbook</em> · <em>for the slicer interactivity</em> · <em>almost never anymore — once I am fluent in dplyr, the same logic is faster to type than to click</em>.</div></div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

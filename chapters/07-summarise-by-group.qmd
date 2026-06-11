@@ -1,0 +1,939 @@
+---
+title: "Summarize Forestry Data Overall and by Group"
+---
+
+```{r setup-ch07}
+#| include: false
+library(tidyverse)
+library(lubridate)
+library(here)
+library(knitr)
+library(scales)
+
+# Reuse the cleaning pipeline from Chapter 6
+airdata_raw <- read_csv(here("data", "airdata3.csv"),
+                        show_col_types = FALSE)
+
+station_regions <- tribble(
+  ~location,                          ~region,
+  "Burnaby South",                    "Burrard Peninsula",
+  "Coquitlam Douglas College",        "North-East Sector",
+  "Langley Central",                  "Fraser Valley West",
+  "Maple Ridge Golden Ears School",   "North-East Sector",
+  "New Westminster Sapperton Park",   "Burrard Peninsula",
+  "North Delta",                      "South of Fraser",
+  "North Vancouver Second Narrows",   "North Shore",
+  "Pitt Meadows Airport",             "North-East Sector",
+  "Port Coquitlam North",             "North-East Sector",
+  "Port Moody Rocky Point Park",      "North-East Sector"
+)
+
+airdata_clean <- airdata_raw |>
+  select(-starts_with("Unnamed"), -any_of("...1")) |>
+  select(where(\(col) !all(is.na(col)))) |>
+  mutate(date_parsed = mdy(Date),
+         year = year(date_parsed),
+         month = month(date_parsed),
+         day = day(date_parsed)) |>
+  filter(!is.na(PM25)) |>
+  mutate(pm25_band = case_when(
+    PM25 < 10  ~ "low",
+    PM25 < 25  ~ "moderate",
+    PM25 < 50  ~ "high",
+    TRUE       ~ "very high"
+  )) |>
+  left_join(station_regions, by = "location")
+```
+
+# Chapter goals {.unnumbered}
+
+By the end of this chapter you will be able to:
+
+- Write an **overall summary** of one or more columns with
+  `summarise()` — counts, means, medians, standard deviations,
+  ranges.
+- Write a **by-group summary** by adding `group_by()` before
+  `summarise()`.
+- Group by **multiple columns** at once (e.g., region × day) to
+  build cross-tabulations.
+- Use the **shortcut functions** `count()`, `tally()`, and
+  `n_distinct()` for common patterns.
+- Reshape a summary with **`pivot_wider()`** so each group level
+  becomes a column — the closest R has to a PivotTable.
+- Recognize that a `group_by() |> summarise()` pipeline is the
+  conceptual equivalent of an Excel **PivotTable** from Chapter 3
+  — and produce identical numbers.
+- Use **`across()`** to apply the same summary to many columns
+  at once.
+- Write summary tables that read cleanly in a rendered Quarto
+  report.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+
+1. A **rendered Quarto HTML report**
+   (`frst232_ch07_learner.html`) containing:
+   - an **overall summary** of PM2.5 across the whole cleaned
+     air-quality file,
+   - a **by-station** summary table (one row per station),
+   - a **by-region × by-day** summary table reshaped with
+     `pivot_wider()` so each region is a column,
+   - one short prose paragraph interpreting which station and
+     which day had the highest mean PM2.5.
+2. The corresponding **`.qmd` source file**.
+3. A short **group-lab worksheet** (or screenshot) submitted to
+   the course site.
+
+This list is the same as the rubric for the chapter assignment.
+Keep it in view while you work.
+:::
+
+# Where we are
+
+In Chapter 6 you cleaned `airdata3.csv` with the six dplyr verbs.
+The cleaned tibble (`airdata_clean`) is the starting point for
+this chapter. Chapter 7 picks up where Chapter 6 leaves off:
+**now that the data is clean, how do you turn it into numbers
+your reader can use?**
+
+Chapter 6 introduced `group_by() |> summarise()` briefly. This
+chapter is that pattern at full depth.
+
+# Excel-to-R bridge — summarising
+
+| What you did in Excel | What you do in R |
+|---|---|
+| `=AVERAGE(C2:C743)` over a column | `summarise(mean = mean(PM25, na.rm = TRUE))` |
+| `=MEDIAN(C2:C743)` | `summarise(median = median(PM25, na.rm = TRUE))` |
+| `=COUNT(C2:C743)` | `summarise(n_obs = n())` |
+| `=SUMIF(loc, "Burnaby", pm25)` | `filter(location == "Burnaby") |> summarise(sum = sum(PM25))` |
+| `=AVERAGEIF(loc, "Burnaby", pm25)` | `filter(...) |> summarise(mean = mean(PM25))` |
+| `=SUMIFS(...)` multiple criteria | `filter(...) |> summarise(...)` with multiple conditions |
+| PivotTable (rows = station) | `group_by(location) |> summarise(...)` |
+| PivotTable (rows × columns) | `group_by(region, day) |> summarise(...) |> pivot_wider(...)` |
+| PivotTable count by category | `count(category)` |
+| PivotTable refresh after data change | Re-render the document |
+
+The right-hand column is the rest of this chapter. **Every Excel
+summary move from Chapters 2 and 3 has a one-line dplyr
+equivalent.**
+
+# The starting point — the cleaned tibble
+
+For the rest of this chapter, assume `airdata_clean` is already
+in memory (built by the Chapter 6 pipeline).
+
+```{r preview-clean}
+glimpse(airdata_clean)
+```
+
+`r nrow(airdata_clean)` rows × `r ncol(airdata_clean)` columns,
+all with a measured PM2.5 value, parsed dates, a PM2.5 band, and
+a region.
+
+# Overall summary — one row
+
+The simplest case: collapse the whole tibble to one row of
+summary statistics:
+
+```{r overall-summary}
+airdata_clean |>
+  summarise(
+    n_obs       = n(),
+    mean_pm25   = mean(PM25, na.rm = TRUE),
+    median_pm25 = median(PM25, na.rm = TRUE),
+    sd_pm25     = sd(PM25, na.rm = TRUE),
+    min_pm25    = min(PM25, na.rm = TRUE),
+    max_pm25    = max(PM25, na.rm = TRUE)
+  )
+```
+
+Every column in the result is a single number. The arguments to
+`summarise()` are named: `<name> = <expression>`.
+
+## The functions you will use most
+
+| Function | Returns | Notes |
+|---|---|---|
+| `n()` | row count | No arguments. Only inside `summarise()` / `mutate()`. |
+| `sum()` | total | Add `na.rm = TRUE` if missing values are possible. |
+| `mean()` | arithmetic mean | Same. |
+| `median()` | middle value | Robust to outliers. |
+| `min()` / `max()` | extremes | Sensitive to outliers. |
+| `sd()` | standard deviation | Spread around the mean. |
+| `n_distinct()` | unique values | Useful as `n_distinct(location)`. |
+| `quantile()` | any percentile | `quantile(PM25, 0.9)` for the 90th. |
+| `IQR()` | interquartile range | Robust spread. |
+
+# By-group summary — one row per group
+
+Add `group_by()` *before* `summarise()`:
+
+```{r by-station}
+station_summary <- airdata_clean |>
+  group_by(location) |>
+  summarise(
+    n_obs       = n(),
+    mean_pm25   = mean(PM25, na.rm = TRUE),
+    median_pm25 = median(PM25, na.rm = TRUE),
+    max_pm25    = max(PM25, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(desc(mean_pm25))
+
+station_summary
+```
+
+This is the dplyr equivalent of an Excel PivotTable with
+`location` in Rows and `Average of PM25` in Values. Same
+operation. Same answer.
+
+::: {.callout-tip}
+## Always add `.groups = "drop"` (or your code will warn)
+
+dplyr keeps the grouping after `summarise()` by default for
+backward compatibility, which causes confusing behaviour in
+downstream pipelines. Explicitly say `.groups = "drop"` to
+clear the grouping after summarise. Treat it as a habit, not a
+choice.
+:::
+
+## Multi-key grouping
+
+Group by two or more variables at once. Each unique combination
+becomes one row:
+
+```{r region-day}
+region_day_summary <- airdata_clean |>
+  group_by(region, day) |>
+  summarise(
+    mean_pm25 = mean(PM25, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+region_day_summary |> head(10)
+```
+
+The result is in **long format**: one row per (region, day)
+combination. Useful for plotting (Chapter 9) but hard to scan.
+
+# Reshaping with `pivot_wider()` — the PivotTable equivalent
+
+For human-readable cross-tabulations, reshape the long-format
+summary into a wide table:
+
+```{r pivot-wider}
+region_day_summary |>
+  pivot_wider(
+    names_from  = region,
+    values_from = mean_pm25
+  ) |>
+  arrange(day)
+```
+
+What we just built is a true cross-tab: one row per day, one
+column per region, values = mean PM2.5. **This is what an Excel
+PivotTable produces** when you put `day` in Rows, `region` in
+Columns, and `Average of PM25` in Values.
+
+## `pivot_wider()` arguments
+
+| Argument | What it does |
+|---|---|
+| `names_from` | the column whose values become new column names |
+| `values_from` | the column whose values fill the cells |
+| `values_fill` | what to put in cells where no data exists (default: NA; often `0` for counts) |
+
+::: {.callout-tip}
+## When to use long vs wide
+
+- **Long format** (one row per combination) is what
+  `summarise()` and `ggplot2` prefer. Use it for analysis.
+- **Wide format** (one column per group) is what humans prefer
+  to read. Use it for tables in a report.
+
+Convert between them with `pivot_longer()` and `pivot_wider()`.
+The two are inverses.
+:::
+
+# Shortcut: `count()` and `tally()`
+
+The two most common summarise patterns:
+
+```{r count-shortcut}
+airdata_clean |> count(region, sort = TRUE)
+airdata_clean |> count(region, pm25_band)
+```
+
+`count(x)` is exactly `group_by(x) |> summarise(n = n())`. Use
+it for tallies.
+
+`count(x, y)` cross-tabulates. To pivot it wide:
+
+```{r count-pivot}
+airdata_clean |>
+  count(region, pm25_band) |>
+  pivot_wider(names_from = pm25_band, values_from = n, values_fill = 0)
+```
+
+That's a complete cross-tab in three lines. The Excel equivalent
+was a PivotTable with `region` in Rows, `pm25_band` in Columns,
+`Count of n` in Values, plus the "Show items with no data" toggle
+to fill empty cells with 0. Three clicks in Excel; three lines in
+R; same answer.
+
+# `n_distinct()` — unique values
+
+```{r n-distinct}
+airdata_clean |>
+  summarise(
+    n_stations = n_distinct(location),
+    n_regions  = n_distinct(region),
+    n_days     = n_distinct(day)
+  )
+```
+
+Useful when you want *"how many unique stations report PM2.5?"*
+in one line.
+
+# Multiple statistics with `across()`
+
+When you want the same summary (e.g., mean) on **several
+columns**, `across()` is the cleaner pattern:
+
+```{r across-mean}
+airdata_clean |>
+  group_by(region) |>
+  summarise(
+    across(c(PM25, PM10, O3, NO2),
+           \(x) mean(x, na.rm = TRUE)),
+    .groups = "drop"
+  )
+```
+
+This summarises four pollutant columns at once, one mean per
+column per region. Far less repetitive than writing four
+`mean(...)` calls manually.
+
+## Multiple statistics on the same column
+
+You can also use `across()` to apply multiple statistics to one
+column:
+
+```{r across-multi-stat}
+airdata_clean |>
+  group_by(region) |>
+  summarise(
+    across(PM25,
+           list(mean = \(x) mean(x, na.rm = TRUE),
+                sd   = \(x) sd(x, na.rm = TRUE),
+                max  = \(x) max(x, na.rm = TRUE))),
+    .groups = "drop"
+  )
+```
+
+The result has columns `PM25_mean`, `PM25_sd`, `PM25_max`.
+
+::: {.callout-tip}
+## `across()` is advanced — use it when it helps
+
+For two or three columns, plain `summarise(mean1 = mean(x),
+mean2 = mean(y), ...)` is more readable. For five or more,
+`across()` shines. Use whichever is clearer for your reader.
+:::
+
+# Putting it together — a worked summary report
+
+Here is what a complete summary section of a forestry data
+report might look like.
+
+## Overall
+
+```{r report-overall}
+overall <- airdata_clean |>
+  summarise(
+    n_obs       = n(),
+    n_stations  = n_distinct(location),
+    n_regions   = n_distinct(region),
+    mean_pm25   = round(mean(PM25, na.rm = TRUE), 1),
+    median_pm25 = round(median(PM25, na.rm = TRUE), 1),
+    max_pm25    = round(max(PM25, na.rm = TRUE), 1)
+  )
+overall |> kable()
+```
+
+## By station
+
+```{r report-by-station}
+airdata_clean |>
+  group_by(location) |>
+  summarise(
+    n_obs     = n(),
+    mean_pm25 = round(mean(PM25, na.rm = TRUE), 1),
+    max_pm25  = max(PM25, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(desc(mean_pm25)) |>
+  kable()
+```
+
+## By region × day (wide)
+
+```{r report-region-day}
+airdata_clean |>
+  group_by(region, day) |>
+  summarise(mean_pm25 = round(mean(PM25, na.rm = TRUE), 1),
+            .groups = "drop") |>
+  pivot_wider(names_from = region, values_from = mean_pm25,
+              values_fill = NA) |>
+  arrange(day) |>
+  head(10) |>
+  kable()
+```
+
+## By PM2.5 band — count cross-tab
+
+```{r report-band}
+airdata_clean |>
+  count(region, pm25_band) |>
+  pivot_wider(names_from = pm25_band, values_from = n, values_fill = 0) |>
+  kable()
+```
+
+That entire summary section — four tables — is **fifteen lines
+of dplyr code** and renders to a polished HTML report. The same
+output in Excel would be three or four PivotTables, each requiring
+a manual refresh after every data update. **The dplyr version
+updates automatically when you re-render.**
+
+# Active learning
+
+## Activity 1 — Overall summary
+
+Write a single `summarise()` call that returns the count, mean,
+median, sd, min, and max of PM2.5 across the whole cleaned
+tibble. Compare with the table in the chapter.
+
+## Activity 2 — By-station ranking
+
+Group by `location`, summarise `mean_pm25`, and arrange
+descending. Which station has the highest mean PM2.5? Which has
+the lowest?
+
+## Activity 3 — `count()` shortcut
+
+Use `count(region)` and `count(region, sort = TRUE)`. What is
+the difference?
+
+## Activity 4 — Cross-tabulation
+
+Build a cross-tab where rows are `region`, columns are
+`pm25_band`, and cells are counts. Use `pivot_wider()` with
+`values_fill = 0` so empty cells show `0` instead of `NA`.
+
+## Activity 5 — `across()` for many means
+
+Use `across(c(PM25, PM10, O3, NO2), \(x) mean(x, na.rm = TRUE))`
+inside a `group_by(region) |> summarise(...)` pipeline. How does
+the output differ from writing four separate mean calls?
+
+# Group lab activity
+
+::: {.callout-note appearance="default"}
+## Lab: Produce a summary report together
+
+Work in groups of 3 or 4. Each member should already have
+`airdata_clean` in memory (from Chapter 6, or by re-running the
+Chapter 6 pipeline at the top of their `frst232_ch07_learner.qmd`
+setup chunk).
+
+**Task 1 — Agree on the question.** As a group, pick **one**
+forestry question your summary report will answer:
+
+- Which BC region had the highest mean PM2.5 in January 2000?
+- Which day in January 2000 was the worst air-quality day, on
+  average, across all stations?
+- Which monitoring station had the most "very high" PM2.5
+  hours?
+
+**Task 2 — Build the summary.** Write a single dplyr pipeline
+that answers your question. Use `group_by()`, `summarise()`,
+and `arrange()` as needed.
+
+**Task 3 — Reshape if useful.** If your summary has two grouping
+variables, use `pivot_wider()` to produce a cross-tab readable
+in a single screen. If it has one grouping variable, sort it.
+
+**Task 4 — Caption it.** Write a one-sentence caption above
+your table. The caption should state the **headline finding**
+(*"Region X had the highest mean PM2.5..."*).
+
+**Task 5 — Submit.** Submit:
+- the dplyr pipeline (in a Quarto chunk),
+- the rendered table,
+- the one-sentence caption,
+- all group members' names.
+
+This lab fits comfortably inside a single hands-on session.
+:::
+
+# Exercises
+
+These are the take-home exercises for this chapter.
+
+1. **Overall summary.** Write a single `summarise()` call that
+   returns `n_obs`, `n_stations`, `mean_pm25`, `median_pm25`,
+   `sd_pm25`, and `max_pm25` for the cleaned air-quality data.
+
+2. **By region.** Group by `region`, summarise mean PM2.5,
+   arrange descending. Which region has the highest mean? Does
+   the result make sense given Metro Vancouver geography?
+
+3. **By day.** Group by `day` (the day-of-month integer), then
+   summarise `n_obs` and `mean_pm25` per day. Which day in
+   January 2000 had the highest provincial mean PM2.5?
+
+4. **Cross-tabulation.** Build the region × pm25_band cross-tab
+   from Activity 4. Use `pivot_wider()` with `values_fill = 0`.
+   Submit the rendered table.
+
+5. **Top station per region.** Group by `region`, then within
+   each region find the station with the highest mean PM2.5.
+   Hint: `group_by(region) |> slice_max(mean_pm25, n = 1)` after
+   you have already computed per-station means.
+
+6. **`across()` for multiple pollutants.** Group by `region`
+   and compute the mean of every pollutant column (`PM25`,
+   `PM10`, `O3`, `NO2`, `SO2`, `CO`). Use `across()`.
+
+7. **PivotTable parity.** Save your cleaned tibble to
+   `outputs/airdata3_clean.csv`. Open it in Excel. Build a
+   PivotTable with `region` in Rows, `pm25_band` in Columns,
+   `Count of PM25` in Values. **Confirm the numbers match your
+   dplyr cross-tab to the last unit.**
+
+8. **Optional, harder.** Compute the 90th percentile of PM2.5
+   per station: `summarise(p90 = quantile(PM25, 0.9, na.rm =
+   TRUE))`. Which station has the highest 90th-percentile PM2.5?
+
+# Optional, advanced
+
+## `slice_max()` and `slice_min()` — top-N per group
+
+```r
+airdata_clean |>
+  group_by(location) |>
+  slice_max(PM25, n = 3, with_ties = FALSE)
+```
+
+Returns the three highest-PM2.5 hours at each station.
+
+## `summarise()` with custom functions
+
+You can define a helper function and call it inside
+`summarise()`:
+
+```r
+robust_mean <- function(x) mean(x, na.rm = TRUE, trim = 0.05)
+
+airdata_clean |>
+  group_by(region) |>
+  summarise(rmean_pm25 = robust_mean(PM25), .groups = "drop")
+```
+
+The 5% trimmed mean drops the top 5% and bottom 5% before
+averaging — more robust to outliers than a plain mean.
+
+## `summary()` of a tibble vs `summarise()` of a tibble
+
+These two are easily confused:
+
+| Function | Returns |
+|---|---|
+| `summary(tibble)` | A base-R text dump: five-number summary per column |
+| `summarise(tibble, ...)` | A new tibble with the columns you asked for |
+
+Use `summary()` for quick interactive inspection. Use
+`summarise()` for output that goes into a report.
+
+# A glimpse of Chapter 8: From summarising to reshaping and combining
+
+Chapter 7 used `pivot_wider()` for the first time. In Chapter 8
+you will meet:
+
+- `pivot_longer()` — the inverse of `pivot_wider()`. Useful when
+  data arrives in wide format but you need long format for
+  analysis.
+- `inner_join()`, `right_join()`, `full_join()` — the other
+  three join types, alongside `left_join()` from Chapter 6.
+- `bind_rows()` and `bind_cols()` for stacking tibbles.
+- The principles of **tidy data** — why one row per observation
+  and one column per variable matter so much.
+
+The verbs in Chapter 8 are the *last* dplyr verbs you need for
+this course. After Chapter 8, every cleaning, summarising,
+reshaping, and joining task you face has a one-line dplyr
+answer.
+
+# Self-assessment quiz {#sec-quiz-ch07}
+
+Click the answer you think is correct. The right answer turns
+green; wrong answers turn red and the correct one is revealed.
+Explanations appear below each question.
+
+```{=html}
+<style>
+.quiz { background: #F4F7F4; border-left: 4px solid #2D6A4F; padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px; }
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li { padding: 0.55em 0.9em; margin: 0.3em 0; background: white; border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer; transition: background 0.12s; }
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation { display: none; margin-top: 0.7em; padding: 0.7em 1em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; }
+.quiz .explanation.show { display: block; }
+.quiz textarea { width: 100%; min-height: 4.5em; padding: 0.6em; border: 1px solid #d8e4d8; border-radius: 4px; font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em; }
+.quiz .reveal-btn { background: #2D6A4F; color: white; border: none; padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample { display: none; margin-top: 0.6em; padding: 0.6em 0.9em; background: #FFF8E8; border-left: 3px solid #B7791F; border-radius: 4px; font-size: 0.95em; font-style: italic; }
+.quiz .sample.show { display: block; }
+</style>
+
+<div class="quiz" id="q1">
+  <div class="q">1. <code>summarise()</code> with no <code>group_by()</code> before it returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">One row per row of the original tibble</li>
+    <li data-correct="true">One row of overall summary statistics</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">A chart</li>
+  </ul>
+  <div class="explanation"><code>summarise()</code> collapses the tibble to one row. With <code>group_by()</code> first, it collapses to one row per group.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. <code>group_by(location) |> summarise(mean = mean(PM25, na.rm = TRUE))</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">One row total</li>
+    <li data-correct="true">One row per unique location</li>
+    <li data-correct="false">A chart</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation">Each unique value of the grouping column becomes one row of the summary.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. Inside <code>summarise()</code>, what does <code>n()</code> return?</div>
+  <ul class="qopts">
+    <li data-correct="false">The number of columns</li>
+    <li data-correct="true">The row count of the group (or the whole tibble if ungrouped)</li>
+    <li data-correct="false">The number of NAs</li>
+    <li data-correct="false">The sum of the values</li>
+  </ul>
+  <div class="explanation"><code>n()</code> is a special dplyr function — no arguments, only used inside <code>summarise()</code> or <code>mutate()</code>. Returns the row count of the current group.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. <code>count(region, pm25_band)</code> is equivalent to —</div>
+  <ul class="qopts">
+    <li data-correct="false">filter(region == ..., pm25_band == ...)</li>
+    <li data-correct="true">group_by(region, pm25_band) |> summarise(n = n())</li>
+    <li data-correct="false">select(region, pm25_band)</li>
+    <li data-correct="false">arrange(region, pm25_band)</li>
+  </ul>
+  <div class="explanation"><code>count(...)</code> is the dplyr shortcut for group-then-tally. Multiple grouping variables produce a row per combination.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. <code>pivot_wider(names_from = region, values_from = mean_pm25)</code> does what?</div>
+  <ul class="qopts">
+    <li data-correct="false">Drops the region column</li>
+    <li data-correct="true">Turns each unique value of region into a new column, with mean_pm25 values inside</li>
+    <li data-correct="false">Sorts by region</li>
+    <li data-correct="false">Counts the regions</li>
+  </ul>
+  <div class="explanation">This produces a cross-tab. The original long-format summary becomes wide-format with one column per region.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. The closest Excel equivalent of <code>group_by(region, day) |> summarise(mean(PM25)) |> pivot_wider(...)</code> is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A bar chart</li>
+    <li data-correct="false">An AutoFilter</li>
+    <li data-correct="true">A PivotTable with day in Rows, region in Columns, and Average of PM25 in Values</li>
+    <li data-correct="false">A VLOOKUP</li>
+  </ul>
+  <div class="explanation">The dplyr summarise + pivot_wider pipeline produces exactly what a PivotTable produces — same data, same answer, scriptable instead of clickable.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. <code>summarise(p90 = quantile(PM25, 0.9, na.rm = TRUE))</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The 9th percentile</li>
+    <li data-correct="true">The 90th percentile of PM25 (the value below which 90% of observations fall)</li>
+    <li data-correct="false">A 90-row summary</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation"><code>quantile(x, p)</code> returns the value at the p-th percentile of x. 0.9 is the 90th percentile.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. <code>n_distinct(location)</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The total row count</li>
+    <li data-correct="true">The number of unique values in the location column</li>
+    <li data-correct="false">The first location</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation"><code>n_distinct(x)</code> counts unique values. Useful for "how many unique stations are in this dataset?".</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. <code>.groups = "drop"</code> in <code>summarise()</code> —</div>
+  <ul class="qopts">
+    <li data-correct="false">Drops the grouped columns</li>
+    <li data-correct="false">Drops the rows</li>
+    <li data-correct="true">Clears the grouping after summarise, so downstream operations are not grouped</li>
+    <li data-correct="false">Is mandatory or the code errors</li>
+  </ul>
+  <div class="explanation">dplyr keeps the grouping by default after summarise (for backward compatibility). <code>.groups = "drop"</code> clears it, which is usually what you want. Treat it as a habit.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. <code>pivot_wider(values_fill = 0)</code> means —</div>
+  <ul class="qopts">
+    <li data-correct="false">Fill the entire table with zeros</li>
+    <li data-correct="true">Where no observation existed for that combination, put 0 instead of NA</li>
+    <li data-correct="false">Multiply everything by zero</li>
+    <li data-correct="false">Round to zero decimals</li>
+  </ul>
+  <div class="explanation">When pivoting count data wider, cells with no matching observations default to NA. <code>values_fill = 0</code> replaces those NAs with 0, which is usually what you want for counts.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. <code>across(c(PM25, PM10, O3), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div>
+  <ul class="qopts">
+    <li data-correct="false">Drops three columns</li>
+    <li data-correct="true">Applies the mean function to PM25, PM10, and O3 — one column per pollutant in the output</li>
+    <li data-correct="false">Pivots the table</li>
+    <li data-correct="false">Counts the three columns</li>
+  </ul>
+  <div class="explanation"><code>across()</code> applies the same function to multiple columns at once. Saves writing three separate <code>mean(...)</code> calls.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. <code>filter(region == "Burrard Peninsula") |> summarise(mean = mean(PM25, na.rm = TRUE))</code> is the dplyr equivalent of which Excel formula?</div>
+  <ul class="qopts">
+    <li data-correct="false">=AVERAGE(PM25)</li>
+    <li data-correct="true">=AVERAGEIF(region, "Burrard Peninsula", PM25)</li>
+    <li data-correct="false">=SUMIFS(...)</li>
+    <li data-correct="false">=VLOOKUP(...)</li>
+  </ul>
+  <div class="explanation"><code>AVERAGEIF</code> averages one column subject to a criterion. In dplyr: filter to the criterion, then summarise the mean.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. A by-station summary returns 6 rows in the result. The cleaned tibble has 742 rows. That means —</div>
+  <ul class="qopts">
+    <li data-correct="false">736 rows were lost</li>
+    <li data-correct="false">There is a bug</li>
+    <li data-correct="true">There are 6 unique stations with measured PM2.5; the 742 rows were collapsed by group</li>
+    <li data-correct="false">The summary is wrong</li>
+  </ul>
+  <div class="explanation">Summarise collapses the rows of each group into one row. 742 rows distributed across 6 stations → 6 summary rows. Nothing was "lost".</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. If you forget <code>na.rm = TRUE</code> in <code>summarise(mean = mean(PM25))</code> and the PM25 column has any NA values, what happens?</div>
+  <ul class="qopts">
+    <li data-correct="false">R uses 0 for missing values</li>
+    <li data-correct="true">The mean returns NA</li>
+    <li data-correct="false">R skips the NAs silently</li>
+    <li data-correct="false">An error is thrown</li>
+  </ul>
+  <div class="explanation">R refuses to silently ignore NAs by default. Always add <code>na.rm = TRUE</code> to aggregations on columns that might contain NAs.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. The result of <code>summarise()</code> is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A vector</li>
+    <li data-correct="true">A new tibble (smaller than the input)</li>
+    <li data-correct="false">A list</li>
+    <li data-correct="false">A chart</li>
+  </ul>
+  <div class="explanation"><code>summarise()</code> returns a tibble. This is why you can pipe its output into another verb, like <code>arrange()</code> or <code>pivot_wider()</code>.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. To get the standard deviation in dplyr, you use —</div>
+  <ul class="qopts">
+    <li data-correct="false">stdev()</li>
+    <li data-correct="true">sd()</li>
+    <li data-correct="false">stddev()</li>
+    <li data-correct="false">STDEV()</li>
+  </ul>
+  <div class="explanation"><code>sd()</code> is the base R standard-deviation function. Like all aggregations, add <code>na.rm = TRUE</code> if needed.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. Which is the closer R analogue of an Excel PivotTable refresh after editing the underlying Data sheet?</div>
+  <ul class="qopts">
+    <li data-correct="false">Manually clicking each summarise() call</li>
+    <li data-correct="true">Re-rendering the Quarto document, which re-runs every chunk in order</li>
+    <li data-correct="false">There is no analogue</li>
+    <li data-correct="false">install.packages()</li>
+  </ul>
+  <div class="explanation">Re-rendering re-runs the cleaning and the summarising. Numbers in the report are always in sync with the current data. No PivotTable refresh bug.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. The dplyr pipeline <code>data |> count(category) |> pivot_wider(names_from = category, values_from = n, values_fill = 0)</code> produces —</div>
+  <ul class="qopts">
+    <li data-correct="false">A bar chart</li>
+    <li data-correct="false">A long-format tibble</li>
+    <li data-correct="true">A one-row wide tibble with one column per category, holding the count of each</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation">Count produces a long-format table (one row per category). pivot_wider turns it into a single row with one column per category — the simplest cross-tab.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. <code>group_by(region) |> summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))</code> does what?</div>
+  <ul class="qopts">
+    <li data-correct="false">Drops every numeric column</li>
+    <li data-correct="true">Returns one row per region with the mean of every numeric column</li>
+    <li data-correct="false">Computes the global mean</li>
+    <li data-correct="false">Renames the columns</li>
+  </ul>
+  <div class="explanation"><code>where(is.numeric)</code> is a column-selection predicate that picks every numeric column. <code>across()</code> applies the mean to each. Powerful but use sparingly.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Now that you can produce summary tables in dplyr, when (if ever) would you still reach for an Excel PivotTable?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common reflections: <em>for quick one-off exploration where I do not need to share the result</em> · <em>for sharing with non-R colleagues</em> · <em>when the deliverable is itself an Excel workbook</em> · <em>for the slicer interactivity — clicking buttons is sometimes the right answer</em> · <em>almost never anymore — once I am fluent in dplyr, the same logic is faster to type than to click</em>.</div>
+</div>
+
+<script>
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+```
+
+# AI as a debugging companion
+
+::: {.callout-tip}
+## Useful prompts for this chapter
+
+- *"In R, my `group_by(region) |> summarise(mean(PM25))` returns
+  NA for some groups, even though the column has values. Why?"*
+
+- *"Show me how to convert a long-format summary tibble into a
+  wide-format cross-tab with `pivot_wider()`. Use these column
+  names: ..."*
+
+- *"What is the difference between `group_by() |> summarise()`
+  and `group_by() |> mutate()`?"* (Answer: summarise collapses
+  to one row per group; mutate keeps every row and broadcasts
+  the result across the group.)
+
+## When *not* to use AI
+
+- Do not let AI choose what to summarise. The choice of mean
+  vs median vs 90th percentile is an analytical decision —
+  yours to make.
+- Do not let AI invent column names that are not in your tibble.
+  Always cross-check with `names(your_tibble)`.
+:::
+
+# Reading
+
+- *R for Data Science* — chapter 5 *Data tidying* (covers
+  pivot_wider and pivot_longer), chapter 13 *Quantitative
+  exploratory data analysis*. Free at <https://r4ds.hadley.nz/>.
+- The dplyr cheatsheet (PDF): <https://rstudio.github.io/cheatsheets/data-transformation.pdf>
+- The tidyr cheatsheet (PDF): <https://rstudio.github.io/cheatsheets/tidyr.pdf>
+
+# Instructor notes {.unnumbered}
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Pacing and emphasis
+
+- This chapter is shorter on new verbs than Chapter 6 — only
+  `summarise()` (deeper), `pivot_wider()`, `count()`,
+  `n_distinct()`, and `across()`. Spend the saved time on the
+  **PivotTable parity exercise** (Exercise 7), which makes the
+  Excel-to-R bridge concrete by computing the same number both
+  ways.
+- The **`.groups = "drop"`** habit is worth repeating. Without
+  it, downstream pipelines silently inherit grouping and produce
+  surprising results.
+- **`across()`** is powerful but overwhelming for first-time R
+  users. Mention it once, demo it once, then let learners use
+  whichever pattern (plain summarise vs across) feels clearer.
+
+## Expected output checklist (matches the top-of-chapter callout)
+
+1. `frst232_ch07_learner.html` (rendered).
+2. `frst232_ch07_learner.qmd` (source).
+3. Group-lab worksheet or screenshot.
+
+## Materials provided alongside this chapter
+
+| File | Purpose |
+|---|---|
+| `airdata3.csv` | Same raw file from Ch 6. Already in `data/`. |
+| `frst232_ch07_learner.qmd` | Quarto starter with TODO chunks. |
+| `frst232_ch07_solutions.qmd` | Completed solutions. **Do not distribute.** |
+| `quiz_ch07.html` | Standalone interactive quiz. |
+
+## Sample numbers (reference)
+
+| Quantity | Approximate value |
+|---|---|
+| Overall mean PM2.5 (cleaned tibble) | ~6 μg/m³ |
+| Overall median PM2.5 | ~4 μg/m³ |
+| Number of unique stations with PM2.5 | 6 |
+| Number of unique regions in cleaned tibble | 4 |
+| Highest single-hour PM2.5 reading | ~42 μg/m³ |
+
+## Common stumbling points
+
+- **Confusing `summarise()` with `summary()`.** Walk through
+  the distinction explicitly in the lecture: one is a verb that
+  returns a new tibble; the other is a base R function that
+  prints a text summary.
+- **Forgetting `na.rm = TRUE`.** Causes group-mean columns full
+  of NA. The fix is one argument; the habit takes a few weeks
+  to form.
+- **`pivot_wider()` syntax confusion.** `names_from` vs
+  `values_from` is easy to swap. The mnemonic: *names_from* is
+  the column whose **names** become headers; *values_from* is
+  the column whose **values** fill the cells.
+- *Excel-to-R bridge:* Exercise 7 (PivotTable parity) is the
+  most important exercise. Insist that learners actually open
+  Excel and verify the numbers match. The visceral
+  "they're identical" moment is the chapter's pedagogical
+  payoff.
+:::

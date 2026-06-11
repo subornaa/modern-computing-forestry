@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FRST 232 — Chapter 5 Self-Assessment Quiz</title>
+<style>
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, 'Source Sans Pro', sans-serif;
+  max-width: 800px; margin: 2em auto; padding: 0 1.5em;
+  color: #2C3E2F; line-height: 1.55;
+}
+h1 { color: #1B4332; }
+h2 { color: #1B4332; border-bottom: 2px solid #2D6A4F; padding-bottom: 0.3em; margin-top: 2em; }
+.preview-note {
+  background: #FFF8E8; border-left: 4px solid #B7791F;
+  padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em;
+}
+.quiz {
+  background: #F4F7F4; border-left: 4px solid #2D6A4F;
+  padding: 1em 1.5em; margin: 1.5em 0; border-radius: 6px;
+}
+.quiz .q { font-weight: 600; color: #1B4332; margin-bottom: 0.6em; }
+.quiz ul.qopts { list-style: none; padding: 0; margin: 0; }
+.quiz ul.qopts li {
+  padding: 0.55em 0.9em; margin: 0.3em 0; background: white;
+  border: 1px solid #d8e4d8; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s;
+}
+.quiz ul.qopts li:hover { background: #E8F1E9; }
+.quiz ul.qopts li.correct { background: #C8E6C9; border-color: #2D6A4F; font-weight: 600; }
+.quiz ul.qopts li.wrong { background: #FFCDD2; border-color: #B05C50; }
+.quiz .explanation {
+  display: none; margin-top: 0.7em; padding: 0.7em 1em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em;
+}
+.quiz .explanation.show { display: block; }
+.quiz textarea {
+  width: 100%; min-height: 4.5em; padding: 0.6em;
+  border: 1px solid #d8e4d8; border-radius: 4px;
+  font-family: inherit; font-size: 0.95em; resize: vertical; margin-top: 0.3em;
+}
+.quiz .reveal-btn {
+  background: #2D6A4F; color: white; border: none;
+  padding: 0.45em 0.9em; margin-top: 0.5em; border-radius: 4px;
+  cursor: pointer; font-size: 0.9em;
+}
+.quiz .reveal-btn:hover { background: #1B4332; }
+.quiz .sample {
+  display: none; margin-top: 0.6em; padding: 0.6em 0.9em;
+  background: #FFF8E8; border-left: 3px solid #B7791F;
+  border-radius: 4px; font-size: 0.95em; font-style: italic;
+}
+.quiz .sample.show { display: block; }
+code {
+  background: #F0F5F1; color: #1B4332;
+  padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em;
+}
+.progress {
+  position: sticky; top: 0; background: white;
+  border-bottom: 1px solid #d8e4d8; padding: 0.5em 0;
+  margin-bottom: 1em; font-size: 0.9em; color: #2D6A4F;
+}
+</style>
+</head>
+<body>
+
+<h1>Chapter 5 — Self-Assessment Quiz</h1>
+<p><em>Import and Inspect Forestry Data with R and Quarto · 20 questions</em></p>
+
+<div class="preview-note">
+<strong>How this works:</strong> click an option in each question. The right
+answer turns green, wrong answers turn red (with the correct one revealed),
+and an explanation appears below.
+</div>
+
+<div class="progress" id="progress">Answered <span id="answered">0</span> / 20</div>
+
+<div class="quiz" id="q1">
+  <div class="q">1. What is a vector in R?</div>
+  <ul class="qopts">
+    <li data-correct="false">A graphical chart</li>
+    <li data-correct="true">An ordered sequence of values, all of the same type</li>
+    <li data-correct="false">A file format</li>
+    <li data-correct="false">The same as a list</li>
+  </ul>
+  <div class="explanation">Vectors are the building block of R. A vector has a single type — logical, integer, double, or character — and a length.</div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="q">2. <code>c(1987, 1988, 1989)</code> is a vector of which type?</div>
+  <ul class="qopts">
+    <li data-correct="false">integer (&lt;int&gt;)</li>
+    <li data-correct="true">double (&lt;dbl&gt;)</li>
+    <li data-correct="false">character (&lt;chr&gt;)</li>
+    <li data-correct="false">logical (&lt;lgl&gt;)</li>
+  </ul>
+  <div class="explanation">Numbers without an <code>L</code> suffix are doubles by default. <code>c(1987L, 1988L, 1989L)</code> would be integer.</div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="q">3. A tibble is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A new programming language</li>
+    <li data-correct="true">A tidyverse-flavored data.frame — a rectangular table where each column is a vector</li>
+    <li data-correct="false">A type of chart</li>
+    <li data-correct="false">A statistical model</li>
+  </ul>
+  <div class="explanation">Tibbles are the tidyverse's default rectangular structure. They print better than data.frames and show column types.</div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="q">4. In a tibble printout, you see <code>&lt;dbl&gt;</code> under a column name. What does that mean?</div>
+  <ul class="qopts">
+    <li data-correct="false">The column has no values</li>
+    <li data-correct="true">The column is a double (any real number)</li>
+    <li data-correct="false">The column is text</li>
+    <li data-correct="false">The column has been deleted</li>
+  </ul>
+  <div class="explanation"><code>&lt;dbl&gt;</code> = double. <code>&lt;int&gt;</code> = integer. <code>&lt;chr&gt;</code> = character. <code>&lt;lgl&gt;</code> = logical.</div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="q">5. To import a CSV file in R, you would use —</div>
+  <ul class="qopts">
+    <li data-correct="false">read_excel()</li>
+    <li data-correct="true">read_csv()</li>
+    <li data-correct="false">read_pdf()</li>
+    <li data-correct="false">open()</li>
+  </ul>
+  <div class="explanation"><code>read_csv()</code> from <code>readr</code> reads comma-separated files into a tibble.</div>
+</div>
+
+<div class="quiz" id="q6">
+  <div class="q">6. <code>colSums(is.na(bc))</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The sum of every column</li>
+    <li data-correct="true">A named vector giving the number of missing (NA) values in each column</li>
+    <li data-correct="false">Whether the file is complete</li>
+    <li data-correct="false">An error</li>
+  </ul>
+  <div class="explanation"><code>is.na(bc)</code> returns a logical matrix; <code>colSums()</code> adds TRUEs per column. One-line missing-value audit.</div>
+</div>
+
+<div class="quiz" id="q7">
+  <div class="q">7. <code>NA</code> in R means —</div>
+  <ul class="qopts">
+    <li data-correct="false">Zero</li>
+    <li data-correct="false">An empty string</li>
+    <li data-correct="true">Missing — the value is unknown</li>
+    <li data-correct="false">North America</li>
+  </ul>
+  <div class="explanation"><code>NA</code> is its own value type. Mixing it up with 0 is a silent bug.</div>
+</div>
+
+<div class="quiz" id="q8">
+  <div class="q">8. <code>mean(c(1, 2, NA, 4))</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">2.33</li>
+    <li data-correct="true">NA</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">7</li>
+  </ul>
+  <div class="explanation">By default R refuses to silently ignore missing values. Add <code>na.rm = TRUE</code> to skip them.</div>
+</div>
+
+<div class="quiz" id="q9">
+  <div class="q">9. Which function gives the most useful one-line preview of every column in a tibble (name, type, and first values)?</div>
+  <ul class="qopts">
+    <li data-correct="false">dim()</li>
+    <li data-correct="false">summary()</li>
+    <li data-correct="true">glimpse()</li>
+    <li data-correct="false">head()</li>
+  </ul>
+  <div class="explanation"><code>glimpse()</code> shows every column, its type, and a preview of the first values.</div>
+</div>
+
+<div class="quiz" id="q10">
+  <div class="q">10. <code>summary(bc)</code> on a tibble of numeric columns returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">The R version</li>
+    <li data-correct="true">For each column: Min, 1st Quartile, Median, Mean, 3rd Quartile, Max (and NA count if any)</li>
+    <li data-correct="false">Only the column names</li>
+    <li data-correct="false">A chart</li>
+  </ul>
+  <div class="explanation"><code>summary()</code> produces the five-number summary plus the mean for each numeric column.</div>
+</div>
+
+<div class="quiz" id="q11">
+  <div class="q">11. A Quarto <code>.qmd</code> file has four main parts. Which is NOT one of them?</div>
+  <ul class="qopts">
+    <li data-correct="false">YAML header</li>
+    <li data-correct="false">Markdown text</li>
+    <li data-correct="false">Code chunks</li>
+    <li data-correct="true">A standalone CSS file</li>
+  </ul>
+  <div class="explanation">The four parts: YAML header, Markdown text, code chunks, and inline R code.</div>
+</div>
+
+<div class="quiz" id="q12">
+  <div class="q">12. Inside a Quarto code chunk, what does <code>#| echo: false</code> do?</div>
+  <ul class="qopts">
+    <li data-correct="false">Skips the chunk entirely</li>
+    <li data-correct="true">Hides the code in the rendered HTML; still shows the output</li>
+    <li data-correct="false">Hides the output; still shows the code</li>
+    <li data-correct="false">Stops the chunk after one second</li>
+  </ul>
+  <div class="explanation"><code>echo: false</code> shows the output but hides the source code.</div>
+</div>
+
+<div class="quiz" id="q13">
+  <div class="q">13. When you click <strong>Render</strong> in RStudio, Quarto —</div>
+  <ul class="qopts">
+    <li data-correct="false">Just exports the .qmd file as text</li>
+    <li data-correct="true">Runs every code chunk in order in a fresh R session and produces a self-contained HTML (or PDF) file</li>
+    <li data-correct="false">Asks an AI to render the document</li>
+    <li data-correct="false">Saves the file to the cloud</li>
+  </ul>
+  <div class="explanation">Render = run every chunk top-to-bottom in a fresh session + assemble code, text, and output.</div>
+</div>
+
+<div class="quiz" id="q14">
+  <div class="q">14. <code>bc$Fiscal_Year</code> is —</div>
+  <ul class="qopts">
+    <li data-correct="false">A tibble</li>
+    <li data-correct="true">A vector — the Fiscal_Year column of the bc tibble</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">A function</li>
+  </ul>
+  <div class="explanation">Using <code>$</code> on a tibble returns a single column as a vector.</div>
+</div>
+
+<div class="quiz" id="q15">
+  <div class="q">15. <code>ha &gt; 200000</code> returns —</div>
+  <ul class="qopts">
+    <li data-correct="false">A single number</li>
+    <li data-correct="true">A logical vector — TRUE or FALSE for each element of ha</li>
+    <li data-correct="false">An error</li>
+    <li data-correct="false">The number of values greater than 200,000</li>
+  </ul>
+  <div class="explanation">Comparison in R is vectorized: each element of <code>ha</code> is compared to 200000.</div>
+</div>
+
+<div class="quiz" id="q16">
+  <div class="q">16. Inside a Quarto chunk, you write code that uses a variable created only in your interactive console. When you Render, what happens?</div>
+  <ul class="qopts">
+    <li data-correct="false">It works fine — Quarto sees the console</li>
+    <li data-correct="true">It fails — Render runs in a fresh R session that does not see console state</li>
+    <li data-correct="false">It works only on Posit Cloud</li>
+    <li data-correct="false">It runs the chunk twice</li>
+  </ul>
+  <div class="explanation">Render uses a fresh session. Everything the document depends on must be created inside a chunk.</div>
+</div>
+
+<div class="quiz" id="q17">
+  <div class="q">17. The Excel midterm is held —</div>
+  <ul class="qopts">
+    <li data-correct="false">Online, asynchronously</li>
+    <li data-correct="true">During the Chapter 5 lab session</li>
+    <li data-correct="false">At the end of the term</li>
+    <li data-correct="false">There is no midterm</li>
+  </ul>
+  <div class="explanation">The Chapter 5 lab session is given over to the midterm, covering Chapters 1, 2, and 3.</div>
+</div>
+
+<div class="quiz" id="q18">
+  <div class="q">18. Which is the closest equivalent of Excel's status-bar "Count = 35 but I selected 37 cells" warning?</div>
+  <ul class="qopts">
+    <li data-correct="false">summary(bc)</li>
+    <li data-correct="false">dim(bc)</li>
+    <li data-correct="true">colSums(is.na(bc)) — a non-zero entry means that column has missing cells</li>
+    <li data-correct="false">head(bc)</li>
+  </ul>
+  <div class="explanation">In R, <code>colSums(is.na(...))</code> per column tells you what Excel's status bar was hinting at.</div>
+</div>
+
+<div class="quiz" id="q19">
+  <div class="q">19. What is the main difference between a tibble and a data.frame in this course?</div>
+  <ul class="qopts">
+    <li data-correct="false">Tibbles cannot hold text</li>
+    <li data-correct="true">Tibbles print better (first 10 rows, column types shown) and are the default in tidyverse imports</li>
+    <li data-correct="false">data.frames are faster</li>
+    <li data-correct="false">There is no difference</li>
+  </ul>
+  <div class="explanation">A tibble IS a data.frame (it inherits from it). Differences matter for printing and consistency with tidyverse.</div>
+</div>
+
+<div class="quiz" id="q20">
+  <div class="q">20. <strong>Reflection.</strong> Now that you have rendered a Quarto report, how does the experience compare to submitting an Excel workbook? What is easier? What is harder?</div>
+  <textarea placeholder="Type your answer here..."></textarea>
+  <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show common answers</button>
+  <div class="sample">Common reflections: <em>easier — every number in the report is traceable to the code that produced it</em> · <em>harder — getting the YAML header right the first time</em> · <em>easier — re-running with a new dataset doesn't require redoing every chart and table</em> · <em>harder — error messages on render are scary at first</em> · <em>aha moment — the Quarto report carries its own data dictionary AND its own analysis, in one file.</em></div>
+</div>
+
+<script>
+(function() {
+  var answered = 0;
+  document.querySelectorAll('.quiz').forEach(function(q) {
+    q.querySelectorAll('ul.qopts li').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (q.dataset.answered) return;
+        q.dataset.answered = '1';
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        if (isCorrect) opt.classList.add('correct');
+        else {
+          opt.classList.add('wrong');
+          q.querySelectorAll('ul.qopts li').forEach(function(o) {
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+          });
+        }
+        var exp = q.querySelector('.explanation');
+        if (exp) exp.classList.add('show');
+        answered++;
+        document.getElementById('answered').textContent = answered;
+      });
+    });
+    var ta = q.querySelector('textarea');
+    if (ta) {
+      ta.addEventListener('input', function() {
+        if (q.dataset.answered) return;
+        if (ta.value.length > 10) {
+          q.dataset.answered = '1';
+          answered++;
+          document.getElementById('answered').textContent = answered;
+        }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
