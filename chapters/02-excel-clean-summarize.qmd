@@ -918,7 +918,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="What happens to a reference with a dollar sign when the formula is copied?||The dollar signs pin the address so it does not shift.||$C$38 stays put; B2 moves relative to the new cell.">
   <div class="q">1. In the formula <code>=B2 / $C$38</code>, what does the dollar sign do?</div>
   <ul class="qopts">
     <li data-correct="false">Marks the cell as currency</li>
@@ -929,7 +929,7 @@ Explanations appear below each question.
   <div class="explanation"><code>$C$38</code> stays as <code>$C$38</code> when copied. Without the dollar signs, the reference shifts relative to the formula's new position.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="Which counter includes text and dates, not only numbers?||COUNT is numbers-only; you need the all-non-empty version.||It is COUNTA.">
   <div class="q">2. Which function returns the <em>number of non-empty</em> cells in a range, including text cells?</div>
   <ul class="qopts">
     <li data-correct="false">COUNT</li>
@@ -940,7 +940,7 @@ Explanations appear below each question.
   <div class="explanation"><code>COUNTA</code> counts every non-empty cell (text + numeric + dates). <code>COUNT</code> only counts numeric cells.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="You want to count how many times the key appears.||If it appears exactly once, the lookup is safe.||COUNTIF(codes!A:A, A2) should return 1.">
   <div class="q">3. To check that a lookup key appears <strong>exactly once</strong> in a reference table, which formula is best?</div>
   <ul class="qopts">
     <li data-correct="false">=VLOOKUP(A2, codes!A:B, 2, FALSE)</li>
@@ -951,7 +951,7 @@ Explanations appear below each question.
   <div class="explanation">If the result is 1, the lookup is safe. If it is 2 or more, your <code>VLOOKUP</code> would silently return the first match.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="What lets someone reproduce your clean file from the raw one?||Not just the final values — the changes and the reasons for them.||Record every change between raw and clean, with a reason.">
   <div class="q">4. A cleaning log should record:</div>
   <ul class="qopts">
     <li data-correct="false">Only the final cleaned data</li>
@@ -962,7 +962,7 @@ Explanations appear below each question.
   <div class="explanation">A cleaning log captures <strong>every</strong> change with a reason. This is what lets you defend your numbers months later.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="You are mapping exact codes to labels, not numeric ranges.||A long nested IF works but is hard to read and audit.||IFS (or SWITCH) is built for exact-match recoding.">
   <div class="q">5. Which function is best for recoding the value in a cell to one of several exact-match labels (e.g., "P" → "Pre-sapling", "S" → "Sapling")?</div>
   <ul class="qopts">
     <li data-correct="false">VLOOKUP</li>
@@ -973,7 +973,7 @@ Explanations appear below each question.
   <div class="explanation"><code>IFS</code> is designed for exact-match recoding. Cleaner and more readable than a long chain of nested <code>IF</code>.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="Does filtering remove rows, or just hide them?||Clearing the filter brings the rows back.||True — AutoFilter hides; only sorting rearranges permanently.">
   <div class="q">6. You apply AutoFilter to hide rows where <code>SumOfTotalHa &lt; 1000</code>. The other rows are not deleted — they are just hidden. True or false?</div>
   <ul class="qopts">
     <li data-correct="true">True — AutoFilter hides; it does not delete</li>
@@ -982,7 +982,7 @@ Explanations appear below each question.
   <div class="explanation">AutoFilter is reversible. Sorting, by contrast, <strong>rearranges</strong> the rows permanently.</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="SUMIFS totals one range subject to criteria pairs.||Read each pair: a column and the value it must equal.||It sums H where F is Jack Pine AND D is Mature.">
   <div class="q">7. The formula <code>=SUMIFS(H2:H180, F2:F180, "Jack Pine", D2:D180, "Mature")</code> does what?</div>
   <ul class="qopts">
     <li data-correct="false">Sums every numeric value in column H</li>
@@ -993,7 +993,7 @@ Explanations appear below each question.
   <div class="explanation"><code>SUMIFS</code> sums the first range, subject to one or more criterion ranges.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="Think about what happens to formulas and ranges as the data grows.||Tables let you reference columns by name and auto-extend.||Formulas use column names and stay correct when rows are added.">
   <div class="q">8. What is the main advantage of converting your data into a structured table (Ctrl+T) before writing formulas?</div>
   <ul class="qopts">
     <li data-correct="false">It makes Excel faster</li>
@@ -1004,7 +1004,7 @@ Explanations appear below each question.
   <div class="explanation">Structured tables make formulas self-documenting (<code>=AVERAGE(tbl[col])</code> instead of <code>=AVERAGE(H2:H180)</code>) and self-extending.</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="Check the file's source/About note.||It is a provincial open-data source, not commercial.||Government of Ontario open data.">
   <div class="q">9. Where does the Ontario dataset come from?</div>
   <ul class="qopts">
     <li data-correct="false">A private consulting firm</li>
@@ -1015,7 +1015,7 @@ Explanations appear below each question.
   <div class="explanation">The file is from the Ministry of Natural Resources and Forestry, published under the Open Government Licence — Ontario.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="Why are there so many rows for one region?||Each row is one combination of several categories.||One unique combination of categorical variables, with one numeric value.">
   <div class="q">10. The Ontario file in this chapter is a <strong>cross-classification</strong>. That means —</div>
   <ul class="qopts">
     <li data-correct="false">It has only one column of data</li>
@@ -1026,7 +1026,7 @@ Explanations appear below each question.
   <div class="explanation">Every row is one unique combination of region × ownership × seral stage × forest type × age class, with the total area for that cell.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="No single column identifies a row uniquely here.||The key is the set of classifying columns taken together.||region + ownership + seral stage + forest type + age class.">
   <div class="q">11. What is the natural composite key for the Ontario file?</div>
   <ul class="qopts">
     <li data-correct="false">PFTName alone</li>
@@ -1037,7 +1037,7 @@ Explanations appear below each question.
   <div class="explanation">The combination of region, ownership, seral stage, forest type, and age class uniquely identifies each row. If any combination repeats, something went wrong upstream.</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="F4 changes how a reference is anchored.||It toggles the dollar signs on the reference.||It cycles absolute, mixed, and relative forms.">
   <div class="q">12. Press <strong>F4</strong> while editing a cell reference. What does it do?</div>
   <ul class="qopts">
     <li data-correct="false">Closes the file</li>
@@ -1048,7 +1048,7 @@ Explanations appear below each question.
   <div class="explanation">F4 is the fastest way to add or remove dollar signs.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="Never overwrite the raw download.||Use a clear suffix and a separate folder.||A *_clean.xlsx in outputs/, with the raw left untouched in data/.">
   <div class="q">13. After cleaning the Ontario file, what should the file be named and where should it live?</div>
   <ul class="qopts">
     <li data-correct="false">Overwrite on_forest_statistics_1.xlsx in data/</li>
@@ -1059,7 +1059,7 @@ Explanations appear below each question.
   <div class="explanation">The raw file should stay unchanged in <code>data/</code>. The cleaned version goes in <code>outputs/</code> with a clear suffix.</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="AVERAGEIF averages values that meet one condition.||The condition is on the seral-stage column.||It returns the mean of H where the class is Mature.">
   <div class="q">14. <code>=AVERAGEIF(D2:D180, "Mature", H2:H180)</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">The total area of mature forest</li>
@@ -1070,7 +1070,7 @@ Explanations appear below each question.
   <div class="explanation"><code>AVERAGEIF</code> averages the third range, subject to the criterion. Use <code>SUMIF</code> for total, <code>COUNTIF</code> for count.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="What does the 4th argument TRUE mean in VLOOKUP?||Approximate match needs a sorted table and can silently return a wrong value.||TRUE = approximate; prefer FALSE for exact match.">
   <div class="q">15. Which is true about <code>=VLOOKUP(A2, codes!A:B, 2, TRUE)</code>?</div>
   <ul class="qopts">
     <li data-correct="false">It is the safest form of VLOOKUP</li>
@@ -1081,7 +1081,7 @@ Explanations appear below each question.
   <div class="explanation">Always use <code>FALSE</code> (exact match) for VLOOKUP unless you really mean approximate. The default of <code>TRUE</code> is dangerous.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="What pulls a mean above the median?||A few very large rows stretch the mean upward.||The distribution is right-skewed.">
   <div class="q">16. The mean of <code>SumOfTotalHa</code> in the Ontario file is much larger than the median. What does this tell you?</div>
   <ul class="qopts">
     <li data-correct="false">The data is wrong</li>
@@ -1092,7 +1092,7 @@ Explanations appear below each question.
   <div class="explanation">When mean &gt; median by a lot, the distribution is right-skewed. The median is the more honest measure of a "typical" row in this case.</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="Structured tables reference columns by name, not by cell range.||The syntax is TableName[ColumnName].||=AVERAGE(ontario_data[SumOfTotalHa]).">
   <div class="q">17. You convert your Ontario data to a structured table named <code>ontario_data</code>. Which formula references the SumOfTotalHa column correctly?</div>
   <ul class="qopts">
     <li data-correct="false">=AVERAGE(SumOfTotalHa)</li>
@@ -1103,7 +1103,7 @@ Explanations appear below each question.
   <div class="explanation">Structured-table syntax uses <code>table_name[column_name]</code>. Self-documenting and self-extending.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="Recall the usual VLOOKUP failure causes.||Trailing spaces, a text/number type mismatch, and a missing/TRUE match flag all break it.||The lookup table being on the same sheet is harmless — that is the answer.">
   <div class="q">18. Which of these does NOT cause a VLOOKUP to fail?</div>
   <ul class="qopts">
     <li data-correct="false">A trailing space in the lookup key</li>
@@ -1114,7 +1114,7 @@ Explanations appear below each question.
   <div class="explanation">VLOOKUP works regardless of which sheet the lookup table is on. Trailing spaces, type mismatches, and the approximate-match default are the real culprits.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="What do structured-table references point to — cells or column names?||Column-name references survive sorts and filters.||Formulas stay connected to the right columns after rows are rearranged.">
   <div class="q">19. Why is sorting a structured table different from sorting a plain range?</div>
   <ul class="qopts">
     <li data-correct="false">Structured tables cannot be sorted</li>
