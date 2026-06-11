@@ -31,7 +31,8 @@ By the end of this chapter you will be able to:
 - Diagnose join problems: missing matches, duplicate keys,
   mismatched data types.
 - Build a multi-source forestry analysis that combines the BC
-  silviculture, Ontario forest stats, and BC air-quality files.
+  silviculture, Ontario forest stats, BC air-quality, and ECCC
+  weather files.
 
 # Expected output for this chapter {.unnumbered}
 
@@ -46,6 +47,8 @@ By the end of this chapter you will be able to:
      with a one-sentence explanation of what each kept or dropped.
    - A `bind_rows()` example combining the BC silviculture and
      Ontario forest stats files into a single national tibble.
+   - A **many-to-one join** of hourly air quality to daily
+     weather, with the pre- and post-join row counts shown.
    - A short **join diagnostic** table showing key match counts.
 2. The corresponding **`.qmd` source file**.
 3. A short **group-lab worksheet** (or screenshot) submitted to
@@ -370,6 +373,68 @@ joined columns.
 
 Both are common bugs. Both are caught in seconds by the two-line
 diagnostic.
+
+# A real-world many-to-one join: air quality + weather
+
+The join examples so far used small tribbles. Here is the real
+thing — and the single most common join shape in
+natural-resources work: **many rows in one table matching one
+row in another.**
+
+We have **hourly** ozone readings from the Vancouver
+International Airport station (many rows per day) and **daily**
+weather from the same airport (one row per day). Joining them
+attaches each hour's reading to that day's weather.
+
+```{r air-weather-join}
+# Hourly air quality at the YVR station (one row per hour)
+air_yvr <- read_csv(here("data", "airdata3.csv"),
+                    show_col_types = FALSE) |>
+  filter(location == "Vancouver International Airport #2",
+         !is.na(O3)) |>
+  mutate(date = mdy(Date)) |>
+  select(location, date, time = Time, O3)
+
+# Daily weather at the same airport (one row per day).
+# The column names arrive messy, so we rename as we select.
+weather <- read_csv(here("data", "inter_air_van_weather.csv"),
+                    show_col_types = FALSE) |>
+  mutate(date = mdy(`Date/Time`)) |>
+  select(date,
+         mean_temp    = `Mean Temp (°C)`,
+         total_precip = `Total Precip (mm)`)
+
+# Pre-join row counts — always check these first
+nrow(air_yvr)    # hourly: many rows
+nrow(weather)    # daily: one row per day
+
+# Many-to-one left join: each hour gets its day's weather
+air_weather <- air_yvr |>
+  left_join(weather, by = "date")
+
+nrow(air_weather)   # post-join row count
+```
+
+Because each hourly reading matches **exactly one** daily
+weather row, the join is **many-to-one** and the row count is
+**unchanged** (`r nrow(air_yvr)` rows in, the same number out).
+That is the signature of a safe join. If the number had *grown*,
+the weather table would have had duplicate dates — the silent
+fan-out bug from the previous section.
+
+```{r air-weather-check}
+# Is the weather key unique? (If not, the join can fan out.)
+weather |> count(date) |> filter(n > 1) |> nrow()      # expect 0
+
+# Did every air reading find a weather match?
+air_yvr |> anti_join(weather, by = "date") |> nrow()   # expect 0
+```
+
+**Forestry relevance.** Growing-degree-days, frost dates, and
+precipitation totals are the standard climate inputs to BC
+growth-and-yield models. Joining hourly observations to daily
+climate is the same operation as joining tree records to
+plot-level weather summaries — the technique transfers directly.
 
 # A complete worked example — multi-source forestry analysis
 
