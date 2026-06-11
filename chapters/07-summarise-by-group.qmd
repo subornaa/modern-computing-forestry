@@ -607,7 +607,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="summarise collapses rows into a summary.||With no groups, it collapses the whole table.||A single-row summary of the entire table.">
   <div class="q">1. <code>summarise()</code> with no <code>group_by()</code> before it returns —</div>
   <ul class="qopts">
     <li data-correct="false">One row per row of the original tibble</li>
@@ -618,7 +618,7 @@ Explanations appear below each question.
   <div class="explanation"><code>summarise()</code> collapses the tibble to one row. With <code>group_by()</code> first, it collapses to one row per group.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="Grouping first means one result row per group.||The groups are the distinct locations.||One row per station, each with its mean O3.">
   <div class="q">2. <code>group_by(location) |> summarise(mean = mean(O3, na.rm = TRUE))</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">One row total</li>
@@ -629,7 +629,7 @@ Explanations appear below each question.
   <div class="explanation">Each unique value of the grouping column becomes one row of the summary.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="n() takes no arguments.||It counts the rows in the current group.||The number of rows in each group.">
   <div class="q">3. Inside <code>summarise()</code>, what does <code>n()</code> return?</div>
   <ul class="qopts">
     <li data-correct="false">The number of columns</li>
@@ -640,7 +640,7 @@ Explanations appear below each question.
   <div class="explanation"><code>n()</code> is a special dplyr function — no arguments, only used inside <code>summarise()</code> or <code>mutate()</code>. Returns the row count of the current group.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="count tallies rows per combination of the listed columns.||It is group_by(region, o3_band) then summarise(n()).||A count of rows for each region and band pair.">
   <div class="q">4. <code>count(region, o3_band)</code> is equivalent to —</div>
   <ul class="qopts">
     <li data-correct="false">filter(region == ..., o3_band == ...)</li>
@@ -651,7 +651,7 @@ Explanations appear below each question.
   <div class="explanation"><code>count(...)</code> is the dplyr shortcut for group-then-tally. Multiple grouping variables produce a row per combination.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="pivot_wider spreads one column's values across new columns.||The region values become column headers.||It turns each region into its own column.">
   <div class="q">5. <code>pivot_wider(names_from = region, values_from = mean_o3)</code> does what?</div>
   <ul class="qopts">
     <li data-correct="false">Drops the region column</li>
@@ -662,7 +662,7 @@ Explanations appear below each question.
   <div class="explanation">This produces a cross-tab. The original long-format summary becomes wide-format with one column per region.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="A two-way summary with categories on rows and columns and a value inside.||That is exactly a PivotTable layout.||A PivotTable.">
   <div class="q">6. The closest Excel equivalent of <code>group_by(region, day) |> summarise(mean(O3)) |> pivot_wider(...)</code> is —</div>
   <ul class="qopts">
     <li data-correct="false">A bar chart</li>
@@ -673,7 +673,7 @@ Explanations appear below each question.
   <div class="explanation">The dplyr summarise + pivot_wider pipeline produces exactly what a PivotTable produces — same data, same answer, scriptable instead of clickable.</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="quantile at 0.9 is the 90th percentile.||90 percent of values fall below it.||The 90th percentile of O3.">
   <div class="q">7. <code>summarise(p90 = quantile(O3, 0.9, na.rm = TRUE))</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">The 9th percentile</li>
@@ -684,7 +684,7 @@ Explanations appear below each question.
   <div class="explanation"><code>quantile(x, p)</code> returns the value at the p-th percentile of x. 0.9 is the 90th percentile.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="It counts UNIQUE values, not all rows.||How many different stations appear.||The number of distinct locations.">
   <div class="q">8. <code>n_distinct(location)</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">The total row count</li>
@@ -695,7 +695,7 @@ Explanations appear below each question.
   <div class="explanation"><code>n_distinct(x)</code> counts unique values. Useful for "how many unique stations are in this dataset?".</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="After summarising, leftover grouping can bite later steps.||drop clears the grouping from the result.||It ungroups the result.">
   <div class="q">9. <code>.groups = "drop"</code> in <code>summarise()</code> —</div>
   <ul class="qopts">
     <li data-correct="false">Drops the grouped columns</li>
@@ -706,7 +706,7 @@ Explanations appear below each question.
   <div class="explanation">dplyr keeps the grouping by default after summarise (for backward compatibility). <code>.groups = "drop"</code> clears it, which is usually what you want. Treat it as a habit.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="After widening, some row/column combinations have no value.||Decide what an empty cell should show.||Missing combinations become 0 instead of NA.">
   <div class="q">10. <code>pivot_wider(values_fill = 0)</code> means —</div>
   <ul class="qopts">
     <li data-correct="false">Fill the entire table with zeros</li>
@@ -717,7 +717,7 @@ Explanations appear below each question.
   <div class="explanation">When pivoting count data wider, cells with no matching observations default to NA. <code>values_fill = 0</code> replaces those NAs with 0, which is usually what you want for counts.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="across applies one function to several columns at once.||Each listed column gets the same calculation.||It computes the mean of each named column.">
   <div class="q">11. <code>across(c(O3, PM10, O3), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div>
   <ul class="qopts">
     <li data-correct="false">Drops three columns</li>
@@ -728,7 +728,7 @@ Explanations appear below each question.
   <div class="explanation"><code>across()</code> applies the same function to multiple columns at once. Saves writing three separate <code>mean(...)</code> calls.</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="You average a column subject to one condition.||That is the conditional-average function in Excel.||AVERAGEIF.">
   <div class="q">12. <code>filter(region == "Burrard Peninsula") |> summarise(mean = mean(O3, na.rm = TRUE))</code> is the dplyr equivalent of which Excel formula?</div>
   <ul class="qopts">
     <li data-correct="false">=AVERAGE(O3)</li>
@@ -739,7 +739,7 @@ Explanations appear below each question.
   <div class="explanation"><code>AVERAGEIF</code> averages one column subject to a criterion. In dplyr: filter to the criterion, then summarise the mean.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="summarise collapses each group to one row.||6 result rows means 6 groups.||The data has 6 stations; each collapsed to one summary row.">
   <div class="q">13. A by-station summary returns 6 rows in the result. The cleaned tibble has 742 rows. That means —</div>
   <ul class="qopts">
     <li data-correct="false">736 rows were lost</li>
@@ -750,7 +750,7 @@ Explanations appear below each question.
   <div class="explanation">Summarise collapses the rows of each group into one row. 742 rows distributed across 6 stations → 6 summary rows. Nothing was "lost".</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="Any NA in the input makes mean() return NA.||The summary value becomes NA, not a number.||You get NA for that group.">
   <div class="q">14. If you forget <code>na.rm = TRUE</code> in <code>summarise(mean = mean(O3))</code> and the O3 column has any NA values, what happens?</div>
   <ul class="qopts">
     <li data-correct="false">R uses 0 for missing values</li>
@@ -761,7 +761,7 @@ Explanations appear below each question.
   <div class="explanation">R refuses to silently ignore NAs by default. Always add <code>na.rm = TRUE</code> to aggregations on columns that might contain NAs.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="summarise always returns a table, not a bare number.||One row per group (or one overall).||A tibble (data frame).">
   <div class="q">15. The result of <code>summarise()</code> is —</div>
   <ul class="qopts">
     <li data-correct="false">A vector</li>
@@ -772,7 +772,7 @@ Explanations appear below each question.
   <div class="explanation"><code>summarise()</code> returns a tibble. This is why you can pipe its output into another verb, like <code>arrange()</code> or <code>pivot_wider()</code>.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="Which base function gives the standard deviation?||Use it inside summarise like mean().||sd().">
   <div class="q">16. To get the standard deviation in dplyr, you use —</div>
   <ul class="qopts">
     <li data-correct="false">stdev()</li>
@@ -783,7 +783,7 @@ Explanations appear below each question.
   <div class="explanation"><code>sd()</code> is the base R standard-deviation function. Like all aggregations, add <code>na.rm = TRUE</code> if needed.</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="A PivotTable is a stale snapshot until you refresh it.||In a script there is no stale snapshot — you re-run the code.||Re-running the dplyr pipeline (or re-rendering).">
   <div class="q">17. Which is the closer R analogue of an Excel PivotTable refresh after editing the underlying Data sheet?</div>
   <ul class="qopts">
     <li data-correct="false">Manually clicking each summarise() call</li>
@@ -794,7 +794,7 @@ Explanations appear below each question.
   <div class="explanation">Re-rendering re-runs the cleaning and the summarising. Numbers in the report are always in sync with the current data. No PivotTable refresh bug.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="count gives a long category/n table; widening spreads categories to columns.||Empty cells are filled with 0.||A one-row wide table: one column per category with its count.">
   <div class="q">18. The dplyr pipeline <code>data |> count(category) |> pivot_wider(names_from = category, values_from = n, values_fill = 0)</code> produces —</div>
   <ul class="qopts">
     <li data-correct="false">A bar chart</li>
@@ -805,7 +805,7 @@ Explanations appear below each question.
   <div class="explanation">Count produces a long-format table (one row per category). pivot_wider turns it into a single row with one column per category — the simplest cross-tab.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="where(is.numeric) selects every numeric column.||across applies mean to each of them.||The mean of every numeric column, per region.">
   <div class="q">19. <code>group_by(region) |> summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))</code> does what?</div>
   <ul class="qopts">
     <li data-correct="false">Drops every numeric column</li>
