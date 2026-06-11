@@ -862,7 +862,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="Think of one column of values, all the same kind.||They are stored in order.||An ordered collection of values of the same type.">
   <div class="q">1. What is a vector in R?</div>
   <ul class="qopts">
     <li data-correct="false">A graphical chart</li>
@@ -873,7 +873,7 @@ Explanations appear below each question.
   <div class="explanation">Vectors are the building block of R. A vector has a single type — logical, integer, double, or character — and a length.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="These are plain numbers that could have decimals.||R calls that type double.||Numeric (double).">
   <div class="q">2. <code>c(1987, 1988, 1989)</code> is a vector of which type?</div>
   <ul class="qopts">
     <li data-correct="false">integer (<int>)</li>
@@ -884,7 +884,7 @@ Explanations appear below each question.
   <div class="explanation">Numbers without an <code>L</code> suffix are doubles by default. <code>c(1987L, 1988L, 1989L)</code> would be integer.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="It is the tidyverse's version of a table.||Columns are variables; rows are observations.||A modern data frame (a rectangular table).">
   <div class="q">3. A tibble is —</div>
   <ul class="qopts">
     <li data-correct="false">A new programming language</li>
@@ -895,7 +895,7 @@ Explanations appear below each question.
   <div class="explanation">Tibbles are the tidyverse's default rectangular structure. They print better than data.frames and show column types.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="The angle-bracket tag under a column is its type.||dbl is short for double.||A numeric (double) column.">
   <div class="q">4. In a tibble printout, you see <code>&lt;dbl&gt;</code> under a column name. What does that mean?</div>
   <ul class="qopts">
     <li data-correct="false">The column has no values</li>
@@ -906,7 +906,7 @@ Explanations appear below each question.
   <div class="explanation"><code>&lt;dbl&gt;</code> = double-precision number. <code>&lt;int&gt;</code> = integer. <code>&lt;chr&gt;</code> = character (text). <code>&lt;lgl&gt;</code> = logical.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="Which tidyverse reader handles comma-separated files?||Not read_excel — that is for .xlsx.||read_csv().">
   <div class="q">5. To import a CSV file in R, you would use —</div>
   <ul class="qopts">
     <li data-correct="false">read_excel()</li>
@@ -917,7 +917,7 @@ Explanations appear below each question.
   <div class="explanation"><code>read_csv()</code> from the <code>readr</code> package (part of tidyverse) reads comma-separated files into a tibble. <code>read_excel()</code> is for <code>.xlsx</code> files only.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="is.na() flags each cell TRUE/FALSE; colSums adds those up per column.||TRUE counts as 1.||The number of missing values in each column.">
   <div class="q">6. <code>colSums(is.na(bc))</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">The sum of every column</li>
@@ -928,7 +928,7 @@ Explanations appear below each question.
   <div class="explanation"><code>is.na(bc)</code> returns a logical matrix (TRUE for each NA). <code>colSums()</code> adds the TRUEs per column. One line, complete missing-value audit.</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="NA is not zero and not empty text.||It marks a value that is unknown.||A missing value.">
   <div class="q">7. <code>NA</code> in R means —</div>
   <ul class="qopts">
     <li data-correct="false">Zero</li>
@@ -939,7 +939,7 @@ Explanations appear below each question.
   <div class="explanation"><code>NA</code> is its own value type. Mixing it up with 0 is a silent bug: an unmeasured year recorded as 0 will be pulled into averages; recorded as NA, it will be skipped if you use <code>na.rm = TRUE</code>.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="By default, any NA in the input makes the result NA.||You would need na.rm = TRUE to ignore it.||NA.">
   <div class="q">8. <code>mean(c(1, 2, NA, 4))</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">2.33</li>
@@ -950,7 +950,7 @@ Explanations appear below each question.
   <div class="explanation">By default, R refuses to silently ignore missing values. Add <code>na.rm = TRUE</code> to skip them: <code>mean(c(1,2,NA,4), na.rm = TRUE)</code> returns 2.33.</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="Which function lists each column with its type and first values?||Not summary (that gives per-column stats).||glimpse().">
   <div class="q">9. Which function gives the most useful one-line preview of every column in a tibble (name, type, and first values)?</div>
   <ul class="qopts">
     <li data-correct="false">dim()</li>
@@ -961,7 +961,7 @@ Explanations appear below each question.
   <div class="explanation"><code>glimpse()</code> shows every column, its type, and a preview of the first values — like a richer version of Excel's status bar.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="summary gives distribution statistics for each numeric column.||Min, quartiles, median, mean, max.||A five-number summary plus the mean per column.">
   <div class="q">10. <code>summary(bc)</code> on a tibble of numeric columns returns —</div>
   <ul class="qopts">
     <li data-correct="false">The R version</li>
@@ -972,7 +972,7 @@ Explanations appear below each question.
   <div class="explanation"><code>summary()</code> produces the five-number summary plus the mean for each numeric column. For character columns it just notes the type.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="Recall the four parts: YAML header, prose, code chunks, inline code.||A stylesheet can be added but is not required.||A standalone CSS file is NOT one of the four.">
   <div class="q">11. A Quarto <code>.qmd</code> file has four main parts. Which is NOT one of them?</div>
   <ul class="qopts">
     <li data-correct="false">YAML header</li>
@@ -983,7 +983,7 @@ Explanations appear below each question.
   <div class="explanation">The four parts: YAML header, Markdown text, code chunks (```` ```{r} ... ``` ````), and inline R code (<code>&#96;r ...&#96;</code>). CSS can be customized but is not a required part.</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="echo controls whether the code is shown, not whether it runs.||The output still appears.||It hides the code but keeps the output.">
   <div class="q">12. Inside a Quarto code chunk, what does <code>#| echo: false</code> do?</div>
   <ul class="qopts">
     <li data-correct="false">Skips the chunk entirely</li>
@@ -994,7 +994,7 @@ Explanations appear below each question.
   <div class="explanation"><code>echo: false</code> shows the output but hides the source code. Use it for the setup chunk and for any code your reader does not need to see.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="Render runs the code and weaves prose with output.||It produces a finished, shareable document.||It executes the chunks and produces an HTML (or other) report.">
   <div class="q">13. When you click <strong>Render</strong> in RStudio, Quarto —</div>
   <ul class="qopts">
     <li data-correct="false">Just exports the .qmd file as text</li>
@@ -1005,7 +1005,7 @@ Explanations appear below each question.
   <div class="explanation">Render = run every chunk top-to-bottom in a fresh session + assemble code, text, and output into one HTML. The fresh session is what makes rendering a reproducibility test.</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="The dollar sign pulls one column out of the tibble.||A single column is itself a vector.||A vector — one column of the tibble.">
   <div class="q">14. <code>bc$Fiscal_Year</code> is —</div>
   <ul class="qopts">
     <li data-correct="false">A tibble</li>
@@ -1016,7 +1016,7 @@ Explanations appear below each question.
   <div class="explanation">Using <code>$</code> on a tibble returns a single column as a vector. <code>bc[, "Fiscal_Year"]</code> on a tibble returns a one-column tibble, not a vector.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="A comparison is evaluated for each element of the vector.||Each value becomes TRUE or FALSE.||A logical vector of TRUE/FALSE.">
   <div class="q">15. <code>ha &gt; 200000</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">A single number</li>
@@ -1027,7 +1027,7 @@ Explanations appear below each question.
   <div class="explanation">Comparison in R is vectorized: each element of <code>ha</code> is compared to 200000, returning a parallel logical vector. To count how many are TRUE, wrap with <code>sum()</code>.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="Render starts a FRESH R session — your console objects are gone.||A chunk can only see what it (or an earlier chunk) creates.||It errors: the object is not found.">
   <div class="q">16. Inside a Quarto chunk, you write code that uses a variable created only in your interactive console. When you Render, what happens?</div>
   <ul class="qopts">
     <li data-correct="false">It works fine — Quarto sees the console</li>
@@ -1038,7 +1038,7 @@ Explanations appear below each question.
   <div class="explanation">Render uses a fresh session. Everything the document depends on must be created inside a chunk. This is the whole point of Quarto being reproducible.</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="Check the course schedule — it is in a lab session.||It is the Chapter 5 lab.||In the Chapter 5 lab session.">
   <div class="q">17. The Excel midterm is held —</div>
   <ul class="qopts">
     <li data-correct="false">Online, asynchronously</li>
@@ -1049,7 +1049,7 @@ Explanations appear below each question.
   <div class="explanation">The Chapter 5 lab session is given over to the midterm. The midterm covers Chapter 1, 2, and 3 (Excel) material.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="That Excel warning is about values silently skipped because they are missing or non-numeric.||In R you surface those by counting the NAs.||colSums(is.na(...)) reveals the skipped/missing cells.">
   <div class="q">18. Which is the closest equivalent of Excel's status-bar "Count = 35 but I selected 37 cells" warning?</div>
   <ul class="qopts">
     <li data-correct="false">summary(bc)</li>
@@ -1060,7 +1060,7 @@ Explanations appear below each question.
   <div class="explanation">In Excel, status-bar Count &lt; selection size meant some cells were text-not-number. In R, <code>colSums(is.na(...))</code> per column tells you the same thing more precisely.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="Both are tables; the difference is printing and strictness.||A tibble prints types and only the first rows, and never silently changes types.||A tibble prints nicer and is stricter, but is otherwise a data frame.">
   <div class="q">19. What is the main difference between a tibble and a data.frame in this course?</div>
   <ul class="qopts">
     <li data-correct="false">Tibbles cannot hold text</li>
