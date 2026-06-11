@@ -794,7 +794,7 @@ Explanations appear below each question.
 .quiz .sample.show { display: block; }
 </style>
 
-<div class="quiz" id="q1">
+<div class="quiz" id="q1" data-hints="Which verb subsets ROWS by a condition?||Not select — that is for columns.||filter().">
   <div class="q">1. Which dplyr verb keeps rows where a condition is TRUE?</div>
   <ul class="qopts">
     <li data-correct="false">select()</li>
@@ -805,7 +805,7 @@ Explanations appear below each question.
   <div class="explanation"><code>filter()</code> works on rows. <code>select()</code> works on columns. Easy to confuse — name them out loud when you write them.</div>
 </div>
 
-<div class="quiz" id="q2">
+<div class="quiz" id="q2" data-hints="Which verb subsets COLUMNS by name?||Not filter — that is for rows.||select().">
   <div class="q">2. Which dplyr verb keeps or drops columns by name?</div>
   <ul class="qopts">
     <li data-correct="true">select()</li>
@@ -816,7 +816,7 @@ Explanations appear below each question.
   <div class="explanation"><code>select()</code> takes column names (or selection helpers like <code>starts_with()</code>) and returns a tibble with only those columns.</div>
 </div>
 
-<div class="quiz" id="q3">
+<div class="quiz" id="q3" data-hints="The minus sign in select() means remove.||It keeps everything except that column.||It drops the Date column.">
   <div class="q">3. <code>airdata_raw |> select(-Date)</code> does what?</div>
   <ul class="qopts">
     <li data-correct="false">Selects only the Date column</li>
@@ -827,7 +827,7 @@ Explanations appear below each question.
   <div class="explanation">The minus sign means "drop this column". <code>select()</code> can drop one column or many.</div>
 </div>
 
-<div class="quiz" id="q4">
+<div class="quiz" id="q4" data-hints="desc() reverses the default ascending order.||Largest values come to the top.||Sorts by O3 from highest to lowest.">
   <div class="q">4. <code>arrange(desc(O3))</code> sorts the tibble —</div>
   <ul class="qopts">
     <li data-correct="false">Ascending by O3</li>
@@ -838,7 +838,7 @@ Explanations appear below each question.
   <div class="explanation"><code>arrange()</code> is ascending by default. Wrap in <code>desc()</code> for descending.</div>
 </div>
 
-<div class="quiz" id="q5">
+<div class="quiz" id="q5" data-hints="Which verb creates or transforms a column?||Not summarise — that collapses rows.||mutate().">
   <div class="q">5. Which dplyr verb adds a new column or transforms an existing one?</div>
   <ul class="qopts">
     <li data-correct="false">filter()</li>
@@ -849,7 +849,7 @@ Explanations appear below each question.
   <div class="explanation"><code>mutate()</code> is the column-creation/transformation verb. <code>mutate(date_parsed = mdy(Date))</code> adds a parsed date column.</div>
 </div>
 
-<div class="quiz" id="q6">
+<div class="quiz" id="q6" data-hints="The text is month, then day, then year.||lubridate names its parsers by that order.||mdy().">
   <div class="q">6. The lubridate function that parses <code>"1/15/2000"</code> (month/day/year text) into a real R date is —</div>
   <ul class="qopts">
     <li data-correct="false">ymd()</li>
@@ -860,7 +860,7 @@ Explanations appear below each question.
   <div class="explanation"><code>mdy()</code> reads month-first. <code>dmy()</code> reads day-first. <code>ymd()</code> reads ISO 8601 (year-month-day).</div>
 </div>
 
-<div class="quiz" id="q7">
+<div class="quiz" id="q7" data-hints="case_when recodes through a series of conditions.||Excel's multi-condition recoder.||IFS (or a nested IF).">
   <div class="q">7. <code>case_when()</code> in dplyr is the R equivalent of which Excel function?</div>
   <ul class="qopts">
     <li data-correct="false">VLOOKUP</li>
@@ -871,7 +871,7 @@ Explanations appear below each question.
   <div class="explanation"><code>case_when()</code> walks down a list of conditions, returning the value for the first matching one. The trailing <code>TRUE ~ ...</code> is the catch-all, matching Excel's <code>TRUE</code> in <code>IFS</code>.</div>
 </div>
 
-<div class="quiz" id="q8">
+<div class="quiz" id="q8" data-hints="Pulling matching values from a reference table by a key — which Excel function?||It looks a value up in another table.||VLOOKUP (or XLOOKUP).">
   <div class="q">8. <code>left_join()</code> in dplyr is the R equivalent of which Excel function?</div>
   <ul class="qopts">
     <li data-correct="false">SUMIFS</li>
@@ -882,7 +882,7 @@ Explanations appear below each question.
   <div class="explanation">A left join attaches a column from a reference table to your main data based on a matching key — exactly what VLOOKUP does, with fewer silent failures.</div>
 </div>
 
-<div class="quiz" id="q9">
+<div class="quiz" id="q9" data-hints="Aggregating a value within each category — which Excel tool does that?||It is the drag-and-drop summary tool.||A PivotTable.">
   <div class="q">9. <code>group_by(location) |> summarise(mean(O3, na.rm = TRUE))</code> is equivalent to which Excel feature?</div>
   <ul class="qopts">
     <li data-correct="false">AutoFilter</li>
@@ -893,7 +893,7 @@ Explanations appear below each question.
   <div class="explanation">Group-then-summarise is the conceptual ancestor of every PivotTable. Same answer, scriptable.</div>
 </div>
 
-<div class="quiz" id="q10">
+<div class="quiz" id="q10" data-hints="What does mean() return if any value is NA?||na.rm drops the missing values before averaging.||Without it the result would be NA.">
   <div class="q">10. Why include <code>na.rm = TRUE</code> in <code>mean(O3, na.rm = TRUE)</code>?</div>
   <ul class="qopts">
     <li data-correct="false">It makes R faster</li>
@@ -904,7 +904,7 @@ Explanations appear below each question.
   <div class="explanation">By default, R refuses to silently skip missing values. <code>na.rm = TRUE</code> tells the aggregation function to skip them. Forgetting it is the most common silent bug in summarise pipelines.</div>
 </div>
 
-<div class="quiz" id="q11">
+<div class="quiz" id="q11" data-hints="The pipe feeds the left value into the next function.||It goes in as that function's first argument.||Inserts it as the first argument of the function on its right.">
   <div class="q">11. The native pipe <code>|></code> takes the thing on its left and —</div>
   <ul class="qopts">
     <li data-correct="false">deletes it</li>
@@ -915,7 +915,7 @@ Explanations appear below each question.
   <div class="explanation"><code>x |> f()</code> is equivalent to <code>f(x)</code>. Chained pipes let a multi-step pipeline read top-to-bottom in English.</div>
 </div>
 
-<div class="quiz" id="q12">
+<div class="quiz" id="q12" data-hints="Testing membership in a set has its own operator — cleaner than chained OR.||Read it as 'is in this set'.||location %in% c('A','B','C').">
   <div class="q">12. To filter rows where <code>location</code> is one of <code>"A"</code>, <code>"B"</code>, or <code>"C"</code>, the cleanest expression is —</div>
   <ul class="qopts">
     <li data-correct="false">filter(location == "A" | location == "B" | location == "C")</li>
@@ -926,7 +926,7 @@ Explanations appear below each question.
   <div class="explanation"><code>%in%</code> is the membership operator. The first option works but is wordy. The last is a common bug — <code>==</code> does element-wise comparison and will not do what you expect.</div>
 </div>
 
-<div class="quiz" id="q13">
+<div class="quiz" id="q13" data-hints="The exclamation mark means NOT; is.na flags missing values.||So you keep the values that are present.||Rows where O3 is not missing.">
   <div class="q">13. <code>airdata_raw |> filter(!is.na(O3))</code> keeps —</div>
   <ul class="qopts">
     <li data-correct="false">Only rows where O3 is missing</li>
@@ -937,7 +937,7 @@ Explanations appear below each question.
   <div class="explanation"><code>is.na()</code> returns TRUE for missing values. The <code>!</code> negates it. So this keeps rows where O3 is non-missing.</div>
 </div>
 
-<div class="quiz" id="q14">
+<div class="quiz" id="q14" data-hints="count tallies rows per value; sort orders the result.||It is group_by then summarise(n()) then arrange(desc()).||A frequency table of locations, most common first.">
   <div class="q">14. <code>count(location, sort = TRUE)</code> is equivalent to —</div>
   <ul class="qopts">
     <li data-correct="false">filter(location == ...)</li>
@@ -948,7 +948,7 @@ Explanations appear below each question.
   <div class="explanation"><code>count()</code> is the dplyr shortcut for group-then-tally. <code>sort = TRUE</code> orders the result descending by count.</div>
 </div>
 
-<div class="quiz" id="q15">
+<div class="quiz" id="q15" data-hints="You want to keep a column only if it is not entirely missing.||select() can take a where() test applied to each column.||select(where()) keeping columns that are not all NA.">
   <div class="q">15. Which is the cleanest way to drop every column that is 100% missing?</div>
   <ul class="qopts">
     <li data-correct="false">Manually list every empty column in select()</li>
@@ -959,7 +959,7 @@ Explanations appear below each question.
   <div class="explanation"><code>where()</code> applies a predicate to each column. The lambda <code>\(col) !all(is.na(col))</code> reads "keep the column if it is not the case that all of its values are NA". <code>drop_na()</code> drops rows, not columns.</div>
 </div>
 
-<div class="quiz" id="q16">
+<div class="quiz" id="q16" data-hints="Check the file's source note.||BC government open data, an air-quality monitoring network.||BC Ministry of Environment open data (BC Data Catalogue).">
   <div class="q">16. Where does the BC air-quality file come from?</div>
   <ul class="qopts">
     <li data-correct="false">A textbook</li>
@@ -970,7 +970,7 @@ Explanations appear below each question.
   <div class="explanation">Both the BC silviculture (Ch 1) and the BC air-quality (Ch 6) files come from Environmental Reporting BC, published under the Open Government Licence — British Columbia.</div>
 </div>
 
-<div class="quiz" id="q17">
+<div class="quiz" id="q17" data-hints="A clean dataset should be saved separately from the raw file.||Write it out so later chapters can reuse it.||write_csv() it to outputs/.">
   <div class="q">17. After you build a cleaning pipeline, what should you do with the cleaned tibble?</div>
   <ul class="qopts">
     <li data-correct="false">Overwrite the raw CSV in data/</li>
@@ -981,7 +981,7 @@ Explanations appear below each question.
   <div class="explanation">Same convention as Excel: raw stays in <code>data/</code>, cleaned versions go in <code>outputs/</code>.</div>
 </div>
 
-<div class="quiz" id="q18">
+<div class="quiz" id="q18" data-hints="A pipe reads left to right, each step feeding the next.||The first verb runs first.||In order: filter, then mutate, then arrange.">
   <div class="q">18. In a pipe like <code>x |> filter(...) |> mutate(...) |> arrange(...)</code>, in what order do the operations run?</div>
   <ul class="qopts">
     <li data-correct="false">arrange first, then mutate, then filter</li>
@@ -992,7 +992,7 @@ Explanations appear below each question.
   <div class="explanation">Pipes are evaluated left to right. The output of each step becomes the input of the next. Reading a pipe is like reading a sentence.</div>
 </div>
 
-<div class="quiz" id="q19">
+<div class="quiz" id="q19" data-hints="SUMIFS totals values meeting conditions; here, one station and O3 above 25.||In dplyr: filter to those rows, then summarise a sum.||filter(location=='Burnaby South', O3>25) then summarise(sum(O3)).">
   <div class="q">19. The Excel function <code>=SUMIFS(O3_col, location_col, "Burnaby South", O3_col, "&gt;25")</code> has which dplyr equivalent?</div>
   <ul class="qopts">
     <li data-correct="false">select(location, O3)</li>
