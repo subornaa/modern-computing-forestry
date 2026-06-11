@@ -47,9 +47,9 @@ By the end of this chapter you will be able to:
    - One **line chart** with two or more series overlaid (e.g.,
      harvested vs natural disturbance vs reforestation across
      years).
-   - One **histogram** of hourly PM2.5 readings.
-   - One **box plot** of PM2.5 by region.
-   - One **faceted** plot (small multiples) showing PM2.5 over
+   - One **histogram** of hourly O₃ readings.
+   - One **box plot** of O₃ by region.
+   - One **faceted** plot (small multiples) showing O₃ over
      the days of January 2000, faceted by station.
    - At least one chart with **custom labels** (`labs(title,
      subtitle, x, y, caption)`).
@@ -199,14 +199,14 @@ have required a numeric column to use as height.
 ```{r histogram}
 airdata_clean <- read_csv(here("data", "airdata3.csv"),
                           show_col_types = FALSE) |>
-  filter(!is.na(PM25))
+  filter(!is.na(O3))
 
-ggplot(airdata_clean, aes(x = PM25)) +
+ggplot(airdata_clean, aes(x = O3)) +
   geom_histogram(binwidth = 2, fill = "#2D6A4F", colour = "white")
 ```
 
-`binwidth = 2` puts each bar in a 2 μg/m³ bucket. The histogram
-reveals the **heavily right-skewed** PM2.5 distribution: most
+`binwidth = 2` puts each bar in a 2 ppb bucket. The histogram
+reveals the **heavily right-skewed** O₃ distribution: most
 hours are clean, a few are sharply elevated. This is the kind of
 pattern that a summary table can hint at but only a chart makes
 obvious.
@@ -239,13 +239,13 @@ airdata_region <- airdata_clean |>
   left_join(station_regions, by = "location") |>
   filter(!is.na(region))
 
-ggplot(airdata_region, aes(x = region, y = PM25)) +
+ggplot(airdata_region, aes(x = region, y = O3)) +
   geom_boxplot(fill = "#52B788")
 ```
 
 A boxplot shows the median (the line inside the box), the
 interquartile range (the box itself), and outlier observations
-(the dots). Reading regional PM2.5 differences from a single
+(the dots). Reading regional O₃ differences from a single
 chart is much faster than reading a summary table.
 
 # `geom_smooth()` — a fitted trend
@@ -281,7 +281,7 @@ When you have one chart you want repeated for each group, use
 `facet_wrap()`:
 
 ```{r facet-wrap}
-ggplot(airdata_region, aes(x = PM25)) +
+ggplot(airdata_region, aes(x = O3)) +
   geom_histogram(binwidth = 2, fill = "#2D6A4F", colour = "white") +
   facet_wrap(~ region)
 ```
@@ -369,7 +369,7 @@ tibble(
 ) |> kable()
 ```
 
-# A worked composite — PM2.5 by station, faceted by region
+# A worked composite — O₃ by station, faceted by region
 
 A single chart that uses several of this chapter's tools:
 
@@ -380,15 +380,15 @@ airdata_region <- airdata_clean |>
   filter(!is.na(region), !is.na(date_parsed))
 
 ggplot(airdata_region,
-       aes(x = date_parsed, y = PM25, colour = location)) +
+       aes(x = date_parsed, y = O3, colour = location)) +
   geom_line(linewidth = 0.7, alpha = 0.85) +
   facet_wrap(~ region, ncol = 1, scales = "free_y") +
   scale_x_date(date_breaks = "1 week", date_labels = "%b %d") +
   labs(
-    title    = "Hourly PM2.5, January 2000",
+    title    = "Hourly O₃, January 2000",
     subtitle = "Metro Vancouver air-quality monitoring network",
     x        = NULL,
-    y        = "PM2.5 (μg/m³)",
+    y        = "O₃ (ppb)",
     colour   = "Station",
     caption  = "Source: Environmental Reporting BC"
   ) +
@@ -417,19 +417,19 @@ one chart, coloured by series.
 
 ## Activity 3 — Histogram with sensible bins
 
-Plot a histogram of PM2.5 with `binwidth = 1`. Then try
+Plot a histogram of O₃ with `binwidth = 1`. Then try
 `binwidth = 5`. Then `binwidth = 0.5`. Which bin width shows
 the distribution shape most clearly?
 
 ## Activity 4 — Boxplot by region
 
-Plot PM2.5 by region using `geom_boxplot()`. Add a `coord_flip()`
+Plot O₃ by region using `geom_boxplot()`. Add a `coord_flip()`
 to make the regions read horizontally — easier with long region
 names.
 
 ## Activity 5 — Facet a time series
 
-Plot PM2.5 over time, faceted by station. Try `facet_wrap(~
+Plot O₃ over time, faceted by station. Try `facet_wrap(~
 location)` with the default `scales = "fixed"`. Then try
 `scales = "free_y"`. Which makes patterns easier to compare?
 
@@ -451,7 +451,7 @@ Work in groups of 3 or 4.
 question their chart will answer, e.g.:
 
 - *Did BC harvest area decline after 2010?*
-- *Which region had the most extreme PM2.5 hours in January 2000?*
+- *Which region had the most extreme O₃ hours in January 2000?*
 - *How does the relationship between harvest and reforestation
   change over decades?*
 
@@ -487,14 +487,14 @@ the caption.
    format and plot Harvested, Natural_Disturbance, and
    Reforestation as three coloured lines on one chart.
 
-3. **Histogram comparison.** Plot histograms of PM2.5 with
+3. **Histogram comparison.** Plot histograms of O₃ with
    three different binwidths in three separate chunks. In one
    paragraph, justify your final binwidth choice.
 
-4. **Box plot.** Plot PM2.5 by region. Add `coord_flip()`.
+4. **Box plot.** Plot O₃ by region. Add `coord_flip()`.
    Which region has the highest median? The widest spread?
 
-5. **Faceted plot.** Plot PM2.5 over time, faceted by station,
+5. **Faceted plot.** Plot O₃ over time, faceted by station,
    with one panel per station. Use `scales = "free_y"`.
 
 6. **Polished composite.** Take any chart from exercises 1–5
@@ -506,7 +506,7 @@ the caption.
    increasing or decreasing? By how much per year (look at the
    slope of the fitted line)?
 
-8. **Optional, harder.** Plot mean PM2.5 by day-of-month for
+8. **Optional, harder.** Plot mean O₃ by day-of-month for
    each region as lines on the same chart (`colour = region`).
    Which region has the widest range across the month?
 
@@ -562,7 +562,7 @@ Chapter 10 moves from charts to **spatial data**:
   `st_transform`.
 - A first map of the BC air-quality stations as points.
 
-The chart you just built showing PM2.5 by station becomes much
+The chart you just built showing O₃ by station becomes much
 more powerful when each station is a **dot on a map of BC**.
 Chapter 10 walks through that move.
 

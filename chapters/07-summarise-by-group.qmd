@@ -25,7 +25,13 @@ station_regions <- tribble(
   "North Vancouver Second Narrows",   "North Shore",
   "Pitt Meadows Airport",             "North-East Sector",
   "Port Coquitlam North",             "North-East Sector",
-  "Port Moody Rocky Point Park",      "North-East Sector"
+  "Port Moody Rocky Point Park",      "North-East Sector",
+  "Richmond South",                   "South of Fraser",
+  "Tsawwassen",                       "South of Fraser",
+  "Vancouver Clark Drive",            "Vancouver",
+  "Vancouver International Airport #2","South of Fraser",
+  "Vancouver Kitsilano",              "Vancouver",
+  "West Vancouver Lions Gate",        "North Shore"
 )
 
 airdata_clean <- airdata_raw |>
@@ -35,11 +41,11 @@ airdata_clean <- airdata_raw |>
          year = year(date_parsed),
          month = month(date_parsed),
          day = day(date_parsed)) |>
-  filter(!is.na(PM25)) |>
-  mutate(pm25_band = case_when(
-    PM25 < 10  ~ "low",
-    PM25 < 25  ~ "moderate",
-    PM25 < 50  ~ "high",
+  filter(!is.na(O3)) |>
+  mutate(o3_band = case_when(
+    O3 < 10  ~ "low",
+    O3 < 20  ~ "moderate",
+    O3 < 30  ~ "high",
     TRUE       ~ "very high"
   )) |>
   left_join(station_regions, by = "location")
@@ -75,13 +81,13 @@ By the end of this chapter you will be able to:
 
 1. A **rendered Quarto HTML report**
    (`frst232_ch07_learner.html`) containing:
-   - an **overall summary** of PM2.5 across the whole cleaned
+   - an **overall summary** of O₃ across the whole cleaned
      air-quality file,
    - a **by-station** summary table (one row per station),
    - a **by-region × by-day** summary table reshaped with
      `pivot_wider()` so each region is a column,
    - one short prose paragraph interpreting which station and
-     which day had the highest mean PM2.5.
+     which day had the highest mean O₃.
 2. The corresponding **`.qmd` source file**.
 3. A short **group-lab worksheet** (or screenshot) submitted to
    the course site.
@@ -105,11 +111,11 @@ chapter is that pattern at full depth.
 
 | What you did in Excel | What you do in R |
 |---|---|
-| `=AVERAGE(C2:C743)` over a column | `summarise(mean = mean(PM25, na.rm = TRUE))` |
-| `=MEDIAN(C2:C743)` | `summarise(median = median(PM25, na.rm = TRUE))` |
+| `=AVERAGE(C2:C743)` over a column | `summarise(mean = mean(O3, na.rm = TRUE))` |
+| `=MEDIAN(C2:C743)` | `summarise(median = median(O3, na.rm = TRUE))` |
 | `=COUNT(C2:C743)` | `summarise(n_obs = n())` |
-| `=SUMIF(loc, "Burnaby", pm25)` | `filter(location == "Burnaby") |> summarise(sum = sum(PM25))` |
-| `=AVERAGEIF(loc, "Burnaby", pm25)` | `filter(...) |> summarise(mean = mean(PM25))` |
+| `=SUMIF(loc, "Burnaby", o3)` | `filter(location == "Burnaby") |> summarise(sum = sum(O3))` |
+| `=AVERAGEIF(loc, "Burnaby", o3)` | `filter(...) |> summarise(mean = mean(O3))` |
 | `=SUMIFS(...)` multiple criteria | `filter(...) |> summarise(...)` with multiple conditions |
 | PivotTable (rows = station) | `group_by(location) |> summarise(...)` |
 | PivotTable (rows × columns) | `group_by(region, day) |> summarise(...) |> pivot_wider(...)` |
@@ -130,7 +136,7 @@ glimpse(airdata_clean)
 ```
 
 `r nrow(airdata_clean)` rows × `r ncol(airdata_clean)` columns,
-all with a measured PM2.5 value, parsed dates, a PM2.5 band, and
+all with a measured O₃ value, parsed dates, a O₃ band, and
 a region.
 
 # Overall summary — one row
@@ -142,11 +148,11 @@ summary statistics:
 airdata_clean |>
   summarise(
     n_obs       = n(),
-    mean_pm25   = mean(PM25, na.rm = TRUE),
-    median_pm25 = median(PM25, na.rm = TRUE),
-    sd_pm25     = sd(PM25, na.rm = TRUE),
-    min_pm25    = min(PM25, na.rm = TRUE),
-    max_pm25    = max(PM25, na.rm = TRUE)
+    mean_o3   = mean(O3, na.rm = TRUE),
+    median_o3 = median(O3, na.rm = TRUE),
+    sd_o3     = sd(O3, na.rm = TRUE),
+    min_o3    = min(O3, na.rm = TRUE),
+    max_o3    = max(O3, na.rm = TRUE)
   )
 ```
 
@@ -164,7 +170,7 @@ Every column in the result is a single number. The arguments to
 | `min()` / `max()` | extremes | Sensitive to outliers. |
 | `sd()` | standard deviation | Spread around the mean. |
 | `n_distinct()` | unique values | Useful as `n_distinct(location)`. |
-| `quantile()` | any percentile | `quantile(PM25, 0.9)` for the 90th. |
+| `quantile()` | any percentile | `quantile(O3, 0.9)` for the 90th. |
 | `IQR()` | interquartile range | Robust spread. |
 
 # By-group summary — one row per group
@@ -176,18 +182,18 @@ station_summary <- airdata_clean |>
   group_by(location) |>
   summarise(
     n_obs       = n(),
-    mean_pm25   = mean(PM25, na.rm = TRUE),
-    median_pm25 = median(PM25, na.rm = TRUE),
-    max_pm25    = max(PM25, na.rm = TRUE),
+    mean_o3   = mean(O3, na.rm = TRUE),
+    median_o3 = median(O3, na.rm = TRUE),
+    max_o3    = max(O3, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  arrange(desc(mean_pm25))
+  arrange(desc(mean_o3))
 
 station_summary
 ```
 
 This is the dplyr equivalent of an Excel PivotTable with
-`location` in Rows and `Average of PM25` in Values. Same
+`location` in Rows and `Average of O3` in Values. Same
 operation. Same answer.
 
 ::: {.callout-tip}
@@ -209,7 +215,7 @@ becomes one row:
 region_day_summary <- airdata_clean |>
   group_by(region, day) |>
   summarise(
-    mean_pm25 = mean(PM25, na.rm = TRUE),
+    mean_o3 = mean(O3, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -228,15 +234,15 @@ summary into a wide table:
 region_day_summary |>
   pivot_wider(
     names_from  = region,
-    values_from = mean_pm25
+    values_from = mean_o3
   ) |>
   arrange(day)
 ```
 
 What we just built is a true cross-tab: one row per day, one
-column per region, values = mean PM2.5. **This is what an Excel
+column per region, values = mean O₃. **This is what an Excel
 PivotTable produces** when you put `day` in Rows, `region` in
-Columns, and `Average of PM25` in Values.
+Columns, and `Average of O3` in Values.
 
 ## `pivot_wider()` arguments
 
@@ -264,7 +270,7 @@ The two most common summarise patterns:
 
 ```{r count-shortcut}
 airdata_clean |> count(region, sort = TRUE)
-airdata_clean |> count(region, pm25_band)
+airdata_clean |> count(region, o3_band)
 ```
 
 `count(x)` is exactly `group_by(x) |> summarise(n = n())`. Use
@@ -274,12 +280,12 @@ it for tallies.
 
 ```{r count-pivot}
 airdata_clean |>
-  count(region, pm25_band) |>
-  pivot_wider(names_from = pm25_band, values_from = n, values_fill = 0)
+  count(region, o3_band) |>
+  pivot_wider(names_from = o3_band, values_from = n, values_fill = 0)
 ```
 
 That's a complete cross-tab in three lines. The Excel equivalent
-was a PivotTable with `region` in Rows, `pm25_band` in Columns,
+was a PivotTable with `region` in Rows, `o3_band` in Columns,
 `Count of n` in Values, plus the "Show items with no data" toggle
 to fill empty cells with 0. Three clicks in Excel; three lines in
 R; same answer.
@@ -295,7 +301,7 @@ airdata_clean |>
   )
 ```
 
-Useful when you want *"how many unique stations report PM2.5?"*
+Useful when you want *"how many unique stations report O₃?"*
 in one line.
 
 # Multiple statistics with `across()`
@@ -307,7 +313,7 @@ columns**, `across()` is the cleaner pattern:
 airdata_clean |>
   group_by(region) |>
   summarise(
-    across(c(PM25, PM10, O3, NO2),
+    across(c(O3, PM10, O3, NO2),
            \(x) mean(x, na.rm = TRUE)),
     .groups = "drop"
   )
@@ -326,7 +332,7 @@ column:
 airdata_clean |>
   group_by(region) |>
   summarise(
-    across(PM25,
+    across(O3,
            list(mean = \(x) mean(x, na.rm = TRUE),
                 sd   = \(x) sd(x, na.rm = TRUE),
                 max  = \(x) max(x, na.rm = TRUE))),
@@ -334,7 +340,7 @@ airdata_clean |>
   )
 ```
 
-The result has columns `PM25_mean`, `PM25_sd`, `PM25_max`.
+The result has columns `O3_mean`, `O3_sd`, `O3_max`.
 
 ::: {.callout-tip}
 ## `across()` is advanced — use it when it helps
@@ -357,9 +363,9 @@ overall <- airdata_clean |>
     n_obs       = n(),
     n_stations  = n_distinct(location),
     n_regions   = n_distinct(region),
-    mean_pm25   = round(mean(PM25, na.rm = TRUE), 1),
-    median_pm25 = round(median(PM25, na.rm = TRUE), 1),
-    max_pm25    = round(max(PM25, na.rm = TRUE), 1)
+    mean_o3   = round(mean(O3, na.rm = TRUE), 1),
+    median_o3 = round(median(O3, na.rm = TRUE), 1),
+    max_o3    = round(max(O3, na.rm = TRUE), 1)
   )
 overall |> kable()
 ```
@@ -371,11 +377,11 @@ airdata_clean |>
   group_by(location) |>
   summarise(
     n_obs     = n(),
-    mean_pm25 = round(mean(PM25, na.rm = TRUE), 1),
-    max_pm25  = max(PM25, na.rm = TRUE),
+    mean_o3 = round(mean(O3, na.rm = TRUE), 1),
+    max_o3  = max(O3, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  arrange(desc(mean_pm25)) |>
+  arrange(desc(mean_o3)) |>
   kable()
 ```
 
@@ -384,21 +390,21 @@ airdata_clean |>
 ```{r report-region-day}
 airdata_clean |>
   group_by(region, day) |>
-  summarise(mean_pm25 = round(mean(PM25, na.rm = TRUE), 1),
+  summarise(mean_o3 = round(mean(O3, na.rm = TRUE), 1),
             .groups = "drop") |>
-  pivot_wider(names_from = region, values_from = mean_pm25,
+  pivot_wider(names_from = region, values_from = mean_o3,
               values_fill = NA) |>
   arrange(day) |>
   head(10) |>
   kable()
 ```
 
-## By PM2.5 band — count cross-tab
+## By O₃ band — count cross-tab
 
 ```{r report-band}
 airdata_clean |>
-  count(region, pm25_band) |>
-  pivot_wider(names_from = pm25_band, values_from = n, values_fill = 0) |>
+  count(region, o3_band) |>
+  pivot_wider(names_from = o3_band, values_from = n, values_fill = 0) |>
   kable()
 ```
 
@@ -413,13 +419,13 @@ updates automatically when you re-render.**
 ## Activity 1 — Overall summary
 
 Write a single `summarise()` call that returns the count, mean,
-median, sd, min, and max of PM2.5 across the whole cleaned
+median, sd, min, and max of O₃ across the whole cleaned
 tibble. Compare with the table in the chapter.
 
 ## Activity 2 — By-station ranking
 
-Group by `location`, summarise `mean_pm25`, and arrange
-descending. Which station has the highest mean PM2.5? Which has
+Group by `location`, summarise `mean_o3`, and arrange
+descending. Which station has the highest mean O₃? Which has
 the lowest?
 
 ## Activity 3 — `count()` shortcut
@@ -430,12 +436,12 @@ the difference?
 ## Activity 4 — Cross-tabulation
 
 Build a cross-tab where rows are `region`, columns are
-`pm25_band`, and cells are counts. Use `pivot_wider()` with
+`o3_band`, and cells are counts. Use `pivot_wider()` with
 `values_fill = 0` so empty cells show `0` instead of `NA`.
 
 ## Activity 5 — `across()` for many means
 
-Use `across(c(PM25, PM10, O3, NO2), \(x) mean(x, na.rm = TRUE))`
+Use `across(c(O3, PM10, O3, NO2), \(x) mean(x, na.rm = TRUE))`
 inside a `group_by(region) |> summarise(...)` pipeline. How does
 the output differ from writing four separate mean calls?
 
@@ -452,10 +458,10 @@ setup chunk).
 **Task 1 — Agree on the question.** As a group, pick **one**
 forestry question your summary report will answer:
 
-- Which BC region had the highest mean PM2.5 in January 2000?
+- Which BC region had the highest mean O₃ in January 2000?
 - Which day in January 2000 was the worst air-quality day, on
   average, across all stations?
-- Which monitoring station had the most "very high" PM2.5
+- Which monitoring station had the most "very high" O₃
   hours?
 
 **Task 2 — Build the summary.** Write a single dplyr pipeline
@@ -468,7 +474,7 @@ in a single screen. If it has one grouping variable, sort it.
 
 **Task 4 — Caption it.** Write a one-sentence caption above
 your table. The caption should state the **headline finding**
-(*"Region X had the highest mean PM2.5..."*).
+(*"Region X had the highest mean O₃..."*).
 
 **Task 5 — Submit.** Submit:
 - the dplyr pipeline (in a Quarto chunk),
@@ -484,39 +490,39 @@ This lab fits comfortably inside a single hands-on session.
 These are the take-home exercises for this chapter.
 
 1. **Overall summary.** Write a single `summarise()` call that
-   returns `n_obs`, `n_stations`, `mean_pm25`, `median_pm25`,
-   `sd_pm25`, and `max_pm25` for the cleaned air-quality data.
+   returns `n_obs`, `n_stations`, `mean_o3`, `median_o3`,
+   `sd_o3`, and `max_o3` for the cleaned air-quality data.
 
-2. **By region.** Group by `region`, summarise mean PM2.5,
+2. **By region.** Group by `region`, summarise mean O₃,
    arrange descending. Which region has the highest mean? Does
    the result make sense given Metro Vancouver geography?
 
 3. **By day.** Group by `day` (the day-of-month integer), then
-   summarise `n_obs` and `mean_pm25` per day. Which day in
-   January 2000 had the highest provincial mean PM2.5?
+   summarise `n_obs` and `mean_o3` per day. Which day in
+   January 2000 had the highest provincial mean O₃?
 
-4. **Cross-tabulation.** Build the region × pm25_band cross-tab
+4. **Cross-tabulation.** Build the region × o3_band cross-tab
    from Activity 4. Use `pivot_wider()` with `values_fill = 0`.
    Submit the rendered table.
 
 5. **Top station per region.** Group by `region`, then within
-   each region find the station with the highest mean PM2.5.
-   Hint: `group_by(region) |> slice_max(mean_pm25, n = 1)` after
+   each region find the station with the highest mean O₃.
+   Hint: `group_by(region) |> slice_max(mean_o3, n = 1)` after
    you have already computed per-station means.
 
 6. **`across()` for multiple pollutants.** Group by `region`
-   and compute the mean of every pollutant column (`PM25`,
+   and compute the mean of every pollutant column (`O3`,
    `PM10`, `O3`, `NO2`, `SO2`, `CO`). Use `across()`.
 
 7. **PivotTable parity.** Save your cleaned tibble to
    `outputs/airdata3_clean.csv`. Open it in Excel. Build a
-   PivotTable with `region` in Rows, `pm25_band` in Columns,
-   `Count of PM25` in Values. **Confirm the numbers match your
+   PivotTable with `region` in Rows, `o3_band` in Columns,
+   `Count of O3` in Values. **Confirm the numbers match your
    dplyr cross-tab to the last unit.**
 
-8. **Optional, harder.** Compute the 90th percentile of PM2.5
-   per station: `summarise(p90 = quantile(PM25, 0.9, na.rm =
-   TRUE))`. Which station has the highest 90th-percentile PM2.5?
+8. **Optional, harder.** Compute the 90th percentile of O₃
+   per station: `summarise(p90 = quantile(O3, 0.9, na.rm =
+   TRUE))`. Which station has the highest 90th-percentile O₃?
 
 # Optional, advanced
 
@@ -525,10 +531,10 @@ These are the take-home exercises for this chapter.
 ```r
 airdata_clean |>
   group_by(location) |>
-  slice_max(PM25, n = 3, with_ties = FALSE)
+  slice_max(O3, n = 3, with_ties = FALSE)
 ```
 
-Returns the three highest-PM2.5 hours at each station.
+Returns the three highest-O₃ hours at each station.
 
 ## `summarise()` with custom functions
 
@@ -540,7 +546,7 @@ robust_mean <- function(x) mean(x, na.rm = TRUE, trim = 0.05)
 
 airdata_clean |>
   group_by(region) |>
-  summarise(rmean_pm25 = robust_mean(PM25), .groups = "drop")
+  summarise(rmean_o3 = robust_mean(O3), .groups = "drop")
 ```
 
 The 5% trimmed mean drops the top 5% and bottom 5% before
@@ -613,7 +619,7 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q2">
-  <div class="q">2. <code>group_by(location) |> summarise(mean = mean(PM25, na.rm = TRUE))</code> returns —</div>
+  <div class="q">2. <code>group_by(location) |> summarise(mean = mean(O3, na.rm = TRUE))</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">One row total</li>
     <li data-correct="true">One row per unique location</li>
@@ -635,21 +641,21 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q4">
-  <div class="q">4. <code>count(region, pm25_band)</code> is equivalent to —</div>
+  <div class="q">4. <code>count(region, o3_band)</code> is equivalent to —</div>
   <ul class="qopts">
-    <li data-correct="false">filter(region == ..., pm25_band == ...)</li>
-    <li data-correct="true">group_by(region, pm25_band) |> summarise(n = n())</li>
-    <li data-correct="false">select(region, pm25_band)</li>
-    <li data-correct="false">arrange(region, pm25_band)</li>
+    <li data-correct="false">filter(region == ..., o3_band == ...)</li>
+    <li data-correct="true">group_by(region, o3_band) |> summarise(n = n())</li>
+    <li data-correct="false">select(region, o3_band)</li>
+    <li data-correct="false">arrange(region, o3_band)</li>
   </ul>
   <div class="explanation"><code>count(...)</code> is the dplyr shortcut for group-then-tally. Multiple grouping variables produce a row per combination.</div>
 </div>
 
 <div class="quiz" id="q5">
-  <div class="q">5. <code>pivot_wider(names_from = region, values_from = mean_pm25)</code> does what?</div>
+  <div class="q">5. <code>pivot_wider(names_from = region, values_from = mean_o3)</code> does what?</div>
   <ul class="qopts">
     <li data-correct="false">Drops the region column</li>
-    <li data-correct="true">Turns each unique value of region into a new column, with mean_pm25 values inside</li>
+    <li data-correct="true">Turns each unique value of region into a new column, with mean_o3 values inside</li>
     <li data-correct="false">Sorts by region</li>
     <li data-correct="false">Counts the regions</li>
   </ul>
@@ -657,21 +663,21 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q6">
-  <div class="q">6. The closest Excel equivalent of <code>group_by(region, day) |> summarise(mean(PM25)) |> pivot_wider(...)</code> is —</div>
+  <div class="q">6. The closest Excel equivalent of <code>group_by(region, day) |> summarise(mean(O3)) |> pivot_wider(...)</code> is —</div>
   <ul class="qopts">
     <li data-correct="false">A bar chart</li>
     <li data-correct="false">An AutoFilter</li>
-    <li data-correct="true">A PivotTable with day in Rows, region in Columns, and Average of PM25 in Values</li>
+    <li data-correct="true">A PivotTable with day in Rows, region in Columns, and Average of O3 in Values</li>
     <li data-correct="false">A VLOOKUP</li>
   </ul>
   <div class="explanation">The dplyr summarise + pivot_wider pipeline produces exactly what a PivotTable produces — same data, same answer, scriptable instead of clickable.</div>
 </div>
 
 <div class="quiz" id="q7">
-  <div class="q">7. <code>summarise(p90 = quantile(PM25, 0.9, na.rm = TRUE))</code> returns —</div>
+  <div class="q">7. <code>summarise(p90 = quantile(O3, 0.9, na.rm = TRUE))</code> returns —</div>
   <ul class="qopts">
     <li data-correct="false">The 9th percentile</li>
-    <li data-correct="true">The 90th percentile of PM25 (the value below which 90% of observations fall)</li>
+    <li data-correct="true">The 90th percentile of O3 (the value below which 90% of observations fall)</li>
     <li data-correct="false">A 90-row summary</li>
     <li data-correct="false">An error</li>
   </ul>
@@ -712,10 +718,10 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q11">
-  <div class="q">11. <code>across(c(PM25, PM10, O3), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div>
+  <div class="q">11. <code>across(c(O3, PM10, O3), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div>
   <ul class="qopts">
     <li data-correct="false">Drops three columns</li>
-    <li data-correct="true">Applies the mean function to PM25, PM10, and O3 — one column per pollutant in the output</li>
+    <li data-correct="true">Applies the mean function to O3, PM10, and O3 — one column per pollutant in the output</li>
     <li data-correct="false">Pivots the table</li>
     <li data-correct="false">Counts the three columns</li>
   </ul>
@@ -723,10 +729,10 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q12">
-  <div class="q">12. <code>filter(region == "Burrard Peninsula") |> summarise(mean = mean(PM25, na.rm = TRUE))</code> is the dplyr equivalent of which Excel formula?</div>
+  <div class="q">12. <code>filter(region == "Burrard Peninsula") |> summarise(mean = mean(O3, na.rm = TRUE))</code> is the dplyr equivalent of which Excel formula?</div>
   <ul class="qopts">
-    <li data-correct="false">=AVERAGE(PM25)</li>
-    <li data-correct="true">=AVERAGEIF(region, "Burrard Peninsula", PM25)</li>
+    <li data-correct="false">=AVERAGE(O3)</li>
+    <li data-correct="true">=AVERAGEIF(region, "Burrard Peninsula", O3)</li>
     <li data-correct="false">=SUMIFS(...)</li>
     <li data-correct="false">=VLOOKUP(...)</li>
   </ul>
@@ -738,14 +744,14 @@ Explanations appear below each question.
   <ul class="qopts">
     <li data-correct="false">736 rows were lost</li>
     <li data-correct="false">There is a bug</li>
-    <li data-correct="true">There are 6 unique stations with measured PM2.5; the 742 rows were collapsed by group</li>
+    <li data-correct="true">There are 6 unique stations with measured O₃; the 742 rows were collapsed by group</li>
     <li data-correct="false">The summary is wrong</li>
   </ul>
   <div class="explanation">Summarise collapses the rows of each group into one row. 742 rows distributed across 6 stations → 6 summary rows. Nothing was "lost".</div>
 </div>
 
 <div class="quiz" id="q14">
-  <div class="q">14. If you forget <code>na.rm = TRUE</code> in <code>summarise(mean = mean(PM25))</code> and the PM25 column has any NA values, what happens?</div>
+  <div class="q">14. If you forget <code>na.rm = TRUE</code> in <code>summarise(mean = mean(O3))</code> and the O3 column has any NA values, what happens?</div>
   <ul class="qopts">
     <li data-correct="false">R uses 0 for missing values</li>
     <li data-correct="true">The mean returns NA</li>
@@ -846,7 +852,7 @@ Explanations appear below each question.
 ::: {.callout-tip}
 ## Useful prompts for this chapter
 
-- *"In R, my `group_by(region) |> summarise(mean(PM25))` returns
+- *"In R, my `group_by(region) |> summarise(mean(O3))` returns
   NA for some groups, even though the column has values. Why?"*
 
 - *"Show me how to convert a long-format summary tibble into a
@@ -912,11 +918,11 @@ Explanations appear below each question.
 
 | Quantity | Approximate value |
 |---|---|
-| Overall mean PM2.5 (cleaned tibble) | ~6 μg/m³ |
-| Overall median PM2.5 | ~4 μg/m³ |
-| Number of unique stations with PM2.5 | 6 |
+| Overall mean O₃ (cleaned tibble) | ~10 ppb |
+| Overall median O₃ | ~6 ppb |
+| Number of unique stations with O₃ | 6 |
 | Number of unique regions in cleaned tibble | 4 |
-| Highest single-hour PM2.5 reading | ~42 μg/m³ |
+| Highest single-hour O₃ reading | ~39 ppb |
 
 ## Common stumbling points
 

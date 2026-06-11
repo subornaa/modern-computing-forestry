@@ -47,7 +47,7 @@ By the end of this chapter you will be able to:
      monitoring stations with default markers and click-popups
      showing station names.
    - A **circle-marker map** where circle colour is driven by
-     each station's **mean PM2.5** (computed from the cleaned
+     each station's **mean O₃** (computed from the cleaned
      air-quality tibble in Chapter 6), with a matching legend.
    - A **multi-layer map** combining the stations and 5 km
      buffer polygons (from Chapter 10), with a layers-control
@@ -239,43 +239,43 @@ leaflet(stations_sf) |>
 
 ## Driving size and colour from a data column
 
-Attach a mean-PM2.5 value to each station (carrying forward from
+Attach a mean-O₃ value to each station (carrying forward from
 Ch 7) and use it to size/colour the circles:
 
-```{r pm25-circles}
+```{r o3-circles}
 #| eval: false
 # Suppose airdata_clean is loaded from Ch 6
 station_means <- airdata_clean |>
   group_by(location) |>
-  summarise(mean_pm25 = mean(PM25, na.rm = TRUE), .groups = "drop")
+  summarise(mean_o3 = mean(O3, na.rm = TRUE), .groups = "drop")
 
-stations_pm25 <- stations_sf |>
+stations_o3 <- stations_sf |>
   left_join(station_means, by = "location")
 
 pal <- colorNumeric(
   palette = c("#52B788", "#B7791F", "#B05C50"),
-  domain  = stations_pm25$mean_pm25,
+  domain  = stations_o3$mean_o3,
   na.color = "grey50"
 )
 
-leaflet(stations_pm25) |>
+leaflet(stations_o3) |>
   addTiles() |>
   addCircleMarkers(
-    radius      = ~ifelse(is.na(mean_pm25), 5, mean_pm25 + 4),
+    radius      = ~ifelse(is.na(mean_o3), 5, mean_o3 + 4),
     color       = "#1B4332",
-    fillColor   = ~pal(mean_pm25),
+    fillColor   = ~pal(mean_o3),
     fillOpacity = 0.85,
     weight      = 1.5,
     popup       = ~paste0("<b>", location, "</b><br>",
-                          "Mean PM2.5: ",
-                          ifelse(is.na(mean_pm25), "no data",
-                                 paste0(round(mean_pm25, 1), " μg/m³")))
+                          "Mean O₃: ",
+                          ifelse(is.na(mean_o3), "no data",
+                                 paste0(round(mean_o3, 1), " ppb")))
   ) |>
   addLegend(
     "bottomright",
     pal     = pal,
-    values  = ~mean_pm25,
-    title   = "Mean PM2.5 (μg/m³)",
+    values  = ~mean_o3,
+    title   = "Mean O₃ (ppb)",
     opacity = 1
   )
 ```
@@ -417,7 +417,7 @@ file — easy to email, share, or open offline.
 
 ```{r complete-example}
 #| eval: false
-# All together: stations + buffers + PM2.5 colour, layered + legend
+# All together: stations + buffers + O₃ colour, layered + legend
 
 # 1. Build the buffer layer (compute in metric CRS, reproject for leaflet)
 buffers_sf <- stations_sf |>
@@ -425,13 +425,13 @@ buffers_sf <- stations_sf |>
   st_buffer(dist = 5000) |>
   st_transform(4326)
 
-# 2. Attach PM2.5 (assume station_means is from Ch 6/7)
-stations_pm25 <- stations_sf |>
+# 2. Attach O₃ (assume station_means is from Ch 6/7)
+stations_o3 <- stations_sf |>
   left_join(station_means, by = "location")
 
-# 3. Palette for PM2.5
+# 3. Palette for O₃
 pal <- colorNumeric(palette = c("#52B788", "#B7791F", "#B05C50"),
-                    domain = stations_pm25$mean_pm25,
+                    domain = stations_o3$mean_o3,
                     na.color = "grey60")
 
 # 4. Build the map
@@ -442,21 +442,21 @@ leaflet() |>
               group = "5 km buffers",
               fillColor = "#52B788", fillOpacity = 0.2,
               color = "#1B4332", weight = 1) |>
-  addCircleMarkers(data = stations_pm25,
+  addCircleMarkers(data = stations_o3,
                    group = "Stations",
-                   radius      = ~ifelse(is.na(mean_pm25), 5, mean_pm25 + 4),
-                   fillColor   = ~pal(mean_pm25),
+                   radius      = ~ifelse(is.na(mean_o3), 5, mean_o3 + 4),
+                   fillColor   = ~pal(mean_o3),
                    fillOpacity = 0.9,
                    color       = "#1B4332",
                    weight      = 1.5,
                    popup       = ~paste0("<b>", location, "</b><br>",
-                                          "Mean PM2.5: ",
-                                          ifelse(is.na(mean_pm25), "no data",
-                                                 paste0(round(mean_pm25, 1),
-                                                        " μg/m³")))) |>
+                                          "Mean O₃: ",
+                                          ifelse(is.na(mean_o3), "no data",
+                                                 paste0(round(mean_o3, 1),
+                                                        " ppb")))) |>
   addLegend("bottomright",
-            pal = pal, values = stations_pm25$mean_pm25,
-            title = "Mean PM2.5 (μg/m³)",
+            pal = pal, values = stations_o3$mean_o3,
+            title = "Mean O₃ (ppb)",
             na.label = "No data",
             opacity = 1) |>
   addLayersControl(
@@ -518,17 +518,17 @@ interactive map specified in the chapter's *Expected output*.
 **Task 1 — Build `stations_sf`** (everyone confirms 10 rows in
 WGS84, same as Ch 10).
 
-**Task 2 — Compute mean PM2.5 per station** using the Chapter 6
-cleaning pipeline + `group_by(location) |> summarise(mean_pm25 =
-mean(PM25, na.rm = TRUE))`. Join the mean back onto
+**Task 2 — Compute mean O₃ per station** using the Chapter 6
+cleaning pipeline + `group_by(location) |> summarise(mean_o3 =
+mean(O3, na.rm = TRUE))`. Join the mean back onto
 `stations_sf` with `left_join(by = "location")`.
 
-**Task 3 — Build a PM2.5 palette** with `colorNumeric()`.
+**Task 3 — Build a O₃ palette** with `colorNumeric()`.
 Discuss as a group: which colour scheme makes sense for an
 air-quality variable? (Many groups choose green→yellow→red.)
 
 **Task 4 — Build the map.** Add tiles, add circle markers
-with size/colour driven by mean_pm25, add a legend, add
+with size/colour driven by mean_o3, add a legend, add
 informative popups.
 
 **Task 5 — Add the buffer overlay.** Build 5 km buffers around
@@ -561,12 +561,12 @@ This lab fits comfortably inside a single hands-on session.
    three different `addProviderTiles()` calls. Embed all three
    in your `.qmd`.
 
-4. **Colour by PM2.5.** Compute mean PM2.5 per station (from
+4. **Colour by O₃.** Compute mean O₃ per station (from
    Ch 6 cleaning). Use `colorNumeric()` to colour the circles.
    Add `addLegend()`.
 
 5. **Popup with HTML.** Build popups that include the station
-   name in bold, a line break, and the mean PM2.5 rounded to
+   name in bold, a line break, and the mean O₃ rounded to
    one decimal.
 
 6. **Add a polygon layer.** Build 5 km buffers around all
@@ -779,8 +779,8 @@ the presentation — fully interactive when displayed live.
 | Number of stations on the map | 10 |
 | Map centre (lon, lat) | (-122.85, 49.22) |
 | Useful initial zoom | 10 or 11 |
-| Number of stations with mean PM2.5 | ~6 (the rest are NA in the cleaned file) |
-| Mean PM2.5 range (used for the colour palette) | ~2 to ~10 μg/m³ |
+| Number of stations with mean O₃ | ~6 (the rest are NA in the cleaned file) |
+| Mean O₃ range (used for the colour palette) | ~2 to ~10 ppb |
 
 ## Common stumbling points
 

@@ -45,7 +45,7 @@ By the end of this chapter you will be able to:
    rows removed where appropriate.
 2. A **rendered Quarto HTML report** (`frst232_ch06_learner.html`)
    showing the full cleaning sequence and a cleaning log.
-3. A **station-level summary table** of mean PM2.5 by
+3. A **station-level summary table** of mean O₃ by
    monitoring station, sorted in descending order.
 4. A short **group-lab worksheet** (or screenshot) submitted to
    the course site.
@@ -118,18 +118,22 @@ tibble(
 
 ## Why this dataset matters for forestry
 
-Forest health, wildfire smoke, and silvicultural planning all
-depend on air quality. PM2.5 — fine particulate matter — is the
-single most important air-quality indicator for wildfire smoke
-exposure. The 16 stations in this file are the same network BC
-uses today to monitor smoke from interior wildfires reaching the
-Lower Mainland.
+Forest health and air quality are tightly linked. **Ground-level
+ozone (O₃)** is one of the most damaging air pollutants for
+vegetation: it enters leaves and needles through the stomata,
+injures foliage, and reduces photosynthesis and growth over a
+season. Unlike a pollutant that is emitted directly, ozone *forms*
+when sunlight reacts with pollutants from vehicles, industry, and
+— during fire season — wildfire emissions. The 16 stations in this
+file are part of the network BC uses to monitor air quality across
+the Lower Mainland.
 
-The 2017 wildfire season you met in the Chapter 1 BC silviculture
-file (218,275 ha burned) caused major PM2.5 spikes at every one
-of these stations. A working analyst at a BC ministry, regional
-district, or consultancy will use exactly this format to assess
-exposure.
+A working analyst at a BC ministry, regional district, or
+consultancy will use exactly this format — hourly readings from
+many stations — to assess pollutant exposure. In this chapter we
+focus on **O₃**, which is recorded at eight of these stations, so
+that later chapters can compare readings across stations and
+regions.
 
 ::: {.callout-important}
 ## The file is intentionally messy
@@ -145,7 +149,7 @@ a state much closer to **real-world raw data**:
 - **Dates are stored as text** in `M/D/YYYY` format
   (`"1/1/2000"`). R does not recognise these as dates until we
   parse them.
-- **Many rows have no PM2.5 measurement** because not every
+- **Many rows have no O₃ measurement** because not every
   station measures every pollutant.
 
 Real forestry data looks like this. The cleaning work in this
@@ -197,7 +201,7 @@ list the columns you want:
 
 ```{r select-keep}
 airdata_raw |>
-  select(location, Date, Time, PM25, PM10, O3, NO2, SO2, CO) |>
+  select(location, Date, Time, O3, PM10, O3, NO2, SO2, CO) |>
   head(3)
 ```
 
@@ -240,14 +244,14 @@ one line.
 
 `filter()` keeps rows where a condition is `TRUE`:
 
-```{r filter-pm25}
-# Keep only rows where PM2.5 was actually measured.
+```{r filter-o3}
+# Keep only rows where O₃ was actually measured.
 airdata_step3 <- airdata_step2 |>
-  filter(!is.na(PM25))
+  filter(!is.na(O3))
 nrow(airdata_step3)
 ```
 
-`!is.na(PM25)` reads *"PM25 is NOT missing"*. The `!` is the
+`!is.na(O3)` reads *"O3 is NOT missing"*. The `!` is the
 logical NOT operator.
 
 ## Combining conditions
@@ -257,11 +261,11 @@ multiple conditions separated by commas (which dplyr treats as
 AND):
 
 ```{r filter-multi}
-# Keep only Burnaby South rows with measured PM2.5
-burnaby_pm25 <- airdata_step3 |>
+# Keep only Burnaby South rows with measured O₃
+burnaby_o3 <- airdata_step3 |>
   filter(location == "Burnaby South",
-         !is.na(PM25))
-nrow(burnaby_pm25)
+         !is.na(O3))
+nrow(burnaby_o3)
 ```
 
 Note the **double-equals `==`** for "is equal to" — single `=`
@@ -274,9 +278,9 @@ would be an assignment.
 | One specific value | `filter(col == "Burnaby South")` |
 | Not equal | `filter(col != "Burnaby South")` |
 | One of several | `filter(col %in% c("A", "B", "C"))` |
-| Numeric threshold | `filter(PM25 > 10)` |
-| Between two values | `filter(PM25 >= 10, PM25 < 25)` |
-| Non-missing | `filter(!is.na(PM25))` |
+| Numeric threshold | `filter(O3 > 10)` |
+| Between two values | `filter(O3 >= 10, O3 < 20)` |
+| Non-missing | `filter(!is.na(O3))` |
 | Date range | `filter(date >= "2000-01-15")` |
 
 The right-hand column reads naturally in English. *"Filter the
@@ -327,8 +331,8 @@ airdata_step5 <- airdata_step4 |>
          year = year(date_parsed),
          month = month(date_parsed),
          day = day(date_parsed),
-         pm25_kg_per_m3 = PM25 / 1000)
-glimpse(airdata_step5 |> select(Date, date_parsed, year, month, day, pm25_kg_per_m3))
+         o3_kg_per_m3 = O3 / 1000)
+glimpse(airdata_step5 |> select(Date, date_parsed, year, month, day, o3_kg_per_m3))
 ```
 
 `year()`, `month()`, `day()` are lubridate accessors. Each
@@ -340,8 +344,8 @@ returns a vector of the same length.
 
 ```{r arrange-asc}
 airdata_step5 |>
-  arrange(PM25) |>
-  select(location, date_parsed, PM25) |>
+  arrange(O3) |>
+  select(location, date_parsed, O3) |>
   head(5)
 ```
 
@@ -349,25 +353,25 @@ Ascending by default. For descending, wrap in `desc()`:
 
 ```{r arrange-desc}
 airdata_step5 |>
-  arrange(desc(PM25)) |>
-  select(location, date_parsed, PM25) |>
+  arrange(desc(O3)) |>
+  select(location, date_parsed, O3) |>
   head(5)
 ```
 
-The top of the list is the highest-PM2.5 hourly readings —
+The top of the list is the highest-O₃ hourly readings —
 useful for spotting the most polluted moments.
 
 ## Multi-key sort
 
 ```{r arrange-multi}
 airdata_step5 |>
-  arrange(location, desc(PM25)) |>
-  select(location, date_parsed, PM25) |>
+  arrange(location, desc(O3)) |>
+  select(location, date_parsed, O3) |>
   head(8)
 ```
 
 Sorts by `location` (alphabetical), then within each location by
-`PM25` descending. The equivalent in Excel was **Data → Sort →
+`O3` descending. The equivalent in Excel was **Data → Sort →
 Add Level**.
 
 # Verb 5 — `case_when()` (the R `IFS`)
@@ -377,20 +381,20 @@ is the direct R equivalent of Excel's `IFS`.
 
 ```{r case-when}
 airdata_step6 <- airdata_step5 |>
-  mutate(pm25_band = case_when(
-    is.na(PM25)    ~ "missing",
-    PM25 < 10      ~ "low",
-    PM25 < 25      ~ "moderate",
-    PM25 < 50      ~ "high",
-    PM25 >= 50     ~ "very high",
+  mutate(o3_band = case_when(
+    is.na(O3)    ~ "missing",
+    O3 < 10      ~ "low",
+    O3 < 20      ~ "moderate",
+    O3 < 30      ~ "high",
+    O3 >= 30     ~ "very high",
     TRUE           ~ "other"
   ))
-airdata_step6 |> count(pm25_band)
+airdata_step6 |> count(o3_band)
 ```
 
-Read it line by line: *"if PM25 is missing, return 'missing';
+Read it line by line: *"if O3 is missing, return 'missing';
 otherwise if it is less than 10, return 'low'; otherwise less
-than 25, 'moderate'; ..."*. The first match wins. The trailing
+than 20, 'moderate'; ..."*. The first match wins. The trailing
 `TRUE ~ "other"` is the catch-all, like the `TRUE` in Excel's
 `IFS`.
 
@@ -400,9 +404,9 @@ than 25, 'moderate'; ..."*. The first match wins. The trailing
 You could write the same logic with nested `if_else()`:
 
 ```r
-if_else(PM25 < 10, "low",
-  if_else(PM25 < 25, "moderate",
-    if_else(PM25 < 50, "high", "very high")))
+if_else(O3 < 10, "low",
+  if_else(O3 < 20, "moderate",
+    if_else(O3 < 30, "high", "very high")))
 ```
 
 It works, but it nests deeply and is hard to maintain. `case_when`
@@ -418,9 +422,9 @@ statistics:
 airdata_step6 |>
   summarise(
     n_obs = n(),
-    mean_pm25 = mean(PM25, na.rm = TRUE),
-    median_pm25 = median(PM25, na.rm = TRUE),
-    max_pm25 = max(PM25, na.rm = TRUE)
+    mean_o3 = mean(O3, na.rm = TRUE),
+    median_o3 = median(O3, na.rm = TRUE),
+    max_o3 = max(O3, na.rm = TRUE)
   )
 ```
 
@@ -435,10 +439,10 @@ airdata_step6 |>
   group_by(location) |>
   summarise(
     n_obs = n(),
-    n_with_pm25 = sum(!is.na(PM25)),
-    mean_pm25 = mean(PM25, na.rm = TRUE)
+    n_with_o3 = sum(!is.na(O3)),
+    mean_o3 = mean(O3, na.rm = TRUE)
   ) |>
-  arrange(desc(mean_pm25))
+  arrange(desc(mean_o3))
 ```
 
 This is the **PivotTable equivalent** from Chapter 3. Same
@@ -498,7 +502,7 @@ Attach the `region` column to the data:
 airdata_step7 <- airdata_step6 |>
   left_join(station_regions, by = "location")
 airdata_step7 |>
-  select(location, region, date_parsed, PM25) |>
+  select(location, region, date_parsed, O3) |>
   head(5)
 ```
 
@@ -537,13 +541,13 @@ airdata_clean <- read_csv(here("data", "airdata3.csv"),
          year = year(date_parsed),
          month = month(date_parsed),
          day = day(date_parsed)) |>
-  # Keep only rows with a measured PM2.5
-  filter(!is.na(PM25)) |>
-  # Classify PM2.5 into bands
-  mutate(pm25_band = case_when(
-    PM25 < 10  ~ "low",
-    PM25 < 25  ~ "moderate",
-    PM25 < 50  ~ "high",
+  # Keep only rows with a measured O₃
+  filter(!is.na(O3)) |>
+  # Classify O₃ into bands
+  mutate(o3_band = case_when(
+    O3 < 10  ~ "low",
+    O3 < 20  ~ "moderate",
+    O3 < 30  ~ "high",
     TRUE       ~ "very high"
   )) |>
   # Attach region info
@@ -586,8 +590,8 @@ For this chapter, the log might look like:
 | 2026-09-22 | 2 | Dropped 12 columns that were 100% missing | No measurements at any station for this month. |
 | 2026-09-22 | 3 | Parsed `Date` from text to `<date>` using `lubridate::mdy()` | Original was `"M/D/YYYY"` text. |
 | 2026-09-22 | 4 | Added `year`, `month`, `day` columns | Convenience for later grouping. |
-| 2026-09-22 | 5 | Filtered to rows where PM25 was measured | Reduced rows from 11,904 to 742. |
-| 2026-09-22 | 6 | Recoded PM25 into 4 bands using `case_when` | For the air-quality summary table. |
+| 2026-09-22 | 5 | Filtered to rows where O3 was measured | Reduced rows from 11,904 to 742. |
+| 2026-09-22 | 6 | Recoded O3 into 4 bands using `case_when` | For the air-quality summary table. |
 | 2026-09-22 | 7 | Left-joined a station→region reference table | To enable regional summaries. |
 | 2026-09-22 | 8 | Arranged by date then location | Final sort. |
 ````
@@ -607,11 +611,11 @@ missing?
 ## Activity 2 — Filter and count
 
 How many rows did the file have before filtering for non-missing
-PM25? How many after? What fraction of rows did you keep?
+O3? How many after? What fraction of rows did you keep?
 
 ## Activity 3 — Try a different case_when
 
-Replace the four-band PM25 classification with a three-band
+Replace the four-band O3 classification with a three-band
 version (`good` / `moderate` / `unhealthy`). Re-run the pipeline.
 How does the count of each category change?
 
@@ -650,11 +654,11 @@ every row, or did some fail? (Check with `summary(parsed_date)`
 — any `NA` count from parsing.)
 
 **Task 4 — Filter and group.** Write a `filter()` + `group_by()`
-+ `summarise()` pipeline that returns mean PM2.5 per station.
-**Sort descending** by mean PM2.5.
++ `summarise()` pipeline that returns mean O₃ per station.
+**Sort descending** by mean O₃.
 
 **Task 5 — Discuss the result.** Which station has the highest
-mean PM2.5 in this month? Does that make sense given what the
+mean O₃ in this month? Does that make sense given what the
 group members know about Metro Vancouver geography?
 
 **Task 6 — Submit.** Each group submits:
@@ -676,18 +680,18 @@ These are the take-home exercises for this chapter.
 2. **Clean step by step.** Build the pipeline yourself, one step
    at a time, in separate chunks. After each step, print
    `nrow()` and `ncol()`. The final cleaned tibble should have
-   742 rows (rows with PM2.5 measured).
+   742 rows (rows with O₃ measured).
 
 3. **Per-station summary.** Group by `location` and compute
-   `n_obs`, `mean_pm25`, `median_pm25`, `max_pm25`. Sort
-   descending by `mean_pm25`.
+   `n_obs`, `mean_o3`, `median_o3`, `max_o3`. Sort
+   descending by `mean_o3`.
 
 4. **Per-day summary.** Group by your parsed `date_parsed` column
-   and compute mean PM2.5 across all stations per day. Which day
-   in January 2000 had the highest provincial mean PM2.5?
+   and compute mean O₃ across all stations per day. Which day
+   in January 2000 had the highest provincial mean O₃?
 
 5. **Add a category.** Use `case_when()` to add a column
-   `aq_alert` that is `"alert"` if PM2.5 ≥ 25 and `"normal"`
+   `aq_alert` that is `"alert"` if O₃ ≥ 25 and `"normal"`
    otherwise. How many `"alert"` hours are in the file?
 
 6. **Lookup challenge.** Build a small `station_lat_lon` tibble
@@ -712,7 +716,7 @@ These are the take-home exercises for this chapter.
 ```r
 airdata_step1 |>
   rename(station = location,
-         pm25_ugm3 = PM25)
+         o3_ugm3 = O3)
 ```
 
 ## `if_else()` for binary recodes
@@ -721,7 +725,7 @@ When you only need two outcomes, `if_else()` is briefer than
 `case_when()`:
 
 ```r
-mutate(aq_alert = if_else(PM25 >= 25, "alert", "normal"))
+mutate(aq_alert = if_else(O3 >= 25, "alert", "normal"))
 ```
 
 ## `across()` for applying a function to many columns
@@ -754,14 +758,14 @@ already familiar; what we add is:
 ```{r ch7-preview}
 #| eval: false
 airdata_clean |>
-  group_by(region, pm25_band) |>
+  group_by(region, o3_band) |>
   summarise(n = n(), .groups = "drop") |>
-  pivot_wider(names_from = pm25_band, values_from = n, values_fill = 0)
+  pivot_wider(names_from = o3_band, values_from = n, values_fill = 0)
 ```
 
-That's a cross-tabulation: rows = region, columns = PM2.5 band,
+That's a cross-tabulation: rows = region, columns = O₃ band,
 values = count. Equivalent to a PivotTable with `region` in
-Rows, `pm25_band` in Columns, and `Count of n_obs` in Values —
+Rows, `o3_band` in Columns, and `Count of n_obs` in Values —
 but as one line of dplyr.
 
 Chapter 7 walks through this in detail.
@@ -824,10 +828,10 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q4">
-  <div class="q">4. <code>arrange(desc(PM25))</code> sorts the tibble —</div>
+  <div class="q">4. <code>arrange(desc(O3))</code> sorts the tibble —</div>
   <ul class="qopts">
-    <li data-correct="false">Ascending by PM25</li>
-    <li data-correct="true">Descending by PM25 (largest first)</li>
+    <li data-correct="false">Ascending by O3</li>
+    <li data-correct="true">Descending by O3 (largest first)</li>
     <li data-correct="false">Alphabetically</li>
     <li data-correct="false">By row number</li>
   </ul>
@@ -879,22 +883,22 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q9">
-  <div class="q">9. <code>group_by(location) |> summarise(mean(PM25, na.rm = TRUE))</code> is equivalent to which Excel feature?</div>
+  <div class="q">9. <code>group_by(location) |> summarise(mean(O3, na.rm = TRUE))</code> is equivalent to which Excel feature?</div>
   <ul class="qopts">
     <li data-correct="false">AutoFilter</li>
     <li data-correct="false">VLOOKUP</li>
-    <li data-correct="true">A PivotTable with location in Rows and Average of PM25 in Values</li>
+    <li data-correct="true">A PivotTable with location in Rows and Average of O3 in Values</li>
     <li data-correct="false">Conditional Formatting</li>
   </ul>
   <div class="explanation">Group-then-summarise is the conceptual ancestor of every PivotTable. Same answer, scriptable.</div>
 </div>
 
 <div class="quiz" id="q10">
-  <div class="q">10. Why include <code>na.rm = TRUE</code> in <code>mean(PM25, na.rm = TRUE)</code>?</div>
+  <div class="q">10. Why include <code>na.rm = TRUE</code> in <code>mean(O3, na.rm = TRUE)</code>?</div>
   <ul class="qopts">
     <li data-correct="false">It makes R faster</li>
     <li data-correct="true">Without it, the mean returns NA whenever any value in the column is NA</li>
-    <li data-correct="false">It removes the PM25 column</li>
+    <li data-correct="false">It removes the O3 column</li>
     <li data-correct="false">It is required syntax</li>
   </ul>
   <div class="explanation">By default, R refuses to silently skip missing values. <code>na.rm = TRUE</code> tells the aggregation function to skip them. Forgetting it is the most common silent bug in summarise pipelines.</div>
@@ -923,14 +927,14 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q13">
-  <div class="q">13. <code>airdata_raw |> filter(!is.na(PM25))</code> keeps —</div>
+  <div class="q">13. <code>airdata_raw |> filter(!is.na(O3))</code> keeps —</div>
   <ul class="qopts">
-    <li data-correct="false">Only rows where PM25 is missing</li>
-    <li data-correct="true">Only rows where PM25 is NOT missing</li>
+    <li data-correct="false">Only rows where O3 is missing</li>
+    <li data-correct="true">Only rows where O3 is NOT missing</li>
     <li data-correct="false">All rows, unchanged</li>
     <li data-correct="false">An error</li>
   </ul>
-  <div class="explanation"><code>is.na()</code> returns TRUE for missing values. The <code>!</code> negates it. So this keeps rows where PM25 is non-missing.</div>
+  <div class="explanation"><code>is.na()</code> returns TRUE for missing values. The <code>!</code> negates it. So this keeps rows where O3 is non-missing.</div>
 </div>
 
 <div class="quiz" id="q14">
@@ -989,12 +993,12 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q19">
-  <div class="q">19. The Excel function <code>=SUMIFS(PM25_col, location_col, "Burnaby South", PM25_col, "&gt;25")</code> has which dplyr equivalent?</div>
+  <div class="q">19. The Excel function <code>=SUMIFS(O3_col, location_col, "Burnaby South", O3_col, "&gt;25")</code> has which dplyr equivalent?</div>
   <ul class="qopts">
-    <li data-correct="false">select(location, PM25)</li>
-    <li data-correct="true">filter(location == "Burnaby South", PM25 > 25) |> summarise(total = sum(PM25))</li>
+    <li data-correct="false">select(location, O3)</li>
+    <li data-correct="true">filter(location == "Burnaby South", O3 > 25) |> summarise(total = sum(O3))</li>
     <li data-correct="false">mutate(SUMIFS = ...)</li>
-    <li data-correct="false">arrange(PM25)</li>
+    <li data-correct="false">arrange(O3)</li>
   </ul>
   <div class="explanation">SUMIFS = sum the values subject to multiple criteria. In dplyr: filter to the criteria, then summarise the sum. Same answer.</div>
 </div>
@@ -1039,8 +1043,8 @@ Explanations appear below each question.
   have a TRUE catch-all at the end. What might be wrong?"*
 
 - *"Explain step by step what this pipeline does:
-  `data |> filter(!is.na(PM25)) |> group_by(location) |>
-  summarise(mean_pm25 = mean(PM25))`"*
+  `data |> filter(!is.na(O3)) |> group_by(location) |>
+  summarise(mean_o3 = mean(O3))`"*
 
 - *"I parsed a date with `mdy()` but the result is `NA` for some
   rows. The original strings look like '1/15/2000'. What are the
