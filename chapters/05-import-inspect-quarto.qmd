@@ -437,7 +437,7 @@ summary(bc)
 # 5. Missing-value audit
 colSums(is.na(bc))
 
-# 6. Sanity-check the verification identity from Chapter 1
+# 6. Spot-check the verification identity from Chapter 1
 identical_check <- all.equal(
   bc$Harvested_ha + bc$Natural_Disturbance_ha,
   bc$Total_Disturbance_ha

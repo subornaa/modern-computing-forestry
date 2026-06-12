@@ -735,7 +735,7 @@ class. Compare across groups.
 - Average area for *Mature* combinations (use `AVERAGEIF`)
 - Count of rows where `SumOfTotalHa > 100,000` (use `COUNTIF`)
 
-Write the formula. Confirm the result with a sanity check.
+Write the formula. Confirm the result with a spot check.
 
 **Task 5 — Submit.** Submit either a short worksheet (a one-page
 document with your group's answers to Tasks 1–4) **or** a
@@ -1247,7 +1247,7 @@ verify against the data.
 | Save working copy (Task 1) | 10 % | Cleaned file in `outputs/`; raw file untouched. |
 | Structured table (Task 2) | 20 % | Table named meaningfully; autofilter present. |
 | size_class column (Task 3) | 30 % | `IFS` formula correct; counts in each class confirmed. |
-| Conditional aggregation (Task 4) | 30 % | Correct formula AND a sanity check. |
+| Conditional aggregation (Task 4) | 30 % | Correct formula AND a spot check. |
 | Submission (Task 5) | 10 % | Worksheet or screenshot is legible; group members named. |
 
 ## Common stumbling points

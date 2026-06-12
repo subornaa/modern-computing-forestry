@@ -523,7 +523,7 @@ The fix is `install.packages("tidyverse")`, then try again.
 
 # Active learning
 
-## Activity 1 — Sanity-check the install
+## Activity 1 — Spot-check the install
 
 In the Console, type:
 

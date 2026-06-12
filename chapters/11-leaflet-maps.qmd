@@ -99,7 +99,7 @@ HTML.
 Excel does not have a direct equivalent of leaflet. You could
 embed a Bing Maps chart in Excel 365 (limited), or paste a
 screenshot of a web map. Neither is interactive in the leaflet
-sense. **This is one of the places where R simply does something
+sense. **This is one of the places where R does something
 Excel cannot.**
 
 # Installing leaflet

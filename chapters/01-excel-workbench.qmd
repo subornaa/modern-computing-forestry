@@ -348,7 +348,7 @@ extremes* of every column.
 | `Reforestation_ha` | Number (hectares) | Area planted or naturally regenerated that year. |
 
 ::: {.callout-tip}
-## A small sanity check
+## A small spot check
 
 `Total_Disturbance_ha` is the sum of `Harvested_ha` and
 `Natural_Disturbance_ha`. Pick any one row — say row 38 (year
@@ -478,7 +478,7 @@ tibble(
 
 # Checking whether values make sense
 
-Before you trust any number you compute, run a sanity check.
+Before you trust any number you compute, run a spot check.
 
 ## Three quick checks
 
@@ -568,7 +568,7 @@ Every time you compute a number, verify it against something:
 
 - **Against a published total.** If the BC Ministry says the
   total reforestation in 2020 was X, your formula should equal X.
-- **Against a sanity check.** A mean cannot be larger than the
+- **Against a spot check.** A mean cannot be larger than the
   max or smaller than the min.
 - **Against a second method.** If you computed it with `SUM`,
   also compute it with a PivotTable (Chapter 3). If both agree,
@@ -643,7 +643,7 @@ choose one of these:
 - Total `Harvested_ha` across all 37 fiscal years.
 
 Write the formula on the Data sheet. Confirm the result with a
-quick sanity check (does it sit between the min and max for that
+quick spot check (does it sit between the min and max for that
 column?).
 
 **Task 4 — Verify one formula.** Pick any row of the Data sheet.
@@ -1152,7 +1152,7 @@ Explanations appear below each question.
 |---|---|---|
 | Inspect workbook (Task 1) | 20 % | Group can articulate source, columns, row count. |
 | Data dictionary (Task 2) | 20 % | Two columns described in own words; compared with ReadMe. |
-| Summary value (Task 3) | 30 % | Correct formula AND a sanity check. |
+| Summary value (Task 3) | 30 % | Correct formula AND a spot check. |
 | Verify identity (Task 4) | 20 % | `Harvested + Natural = Total` confirmed on at least one row. |
 | Submission (Task 5) | 10 % | Worksheet or screenshot is legible; group members named. |
 
