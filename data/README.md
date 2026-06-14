@@ -1,4 +1,4 @@
-# Data provenance — *Modern R for Forestry and Natural Resources Data*
+# Data provenance — *Modern Data Analytics for Forestry and Natural Resources*
 
 All datasets are **open, public-domain Canadian / BC / Ontario / federal**
 data, used under open government licences. This file records what each

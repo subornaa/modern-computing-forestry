@@ -1,0 +1,24 @@
+# Authors {.unnumbered}
+
+## Suborna Ahmed
+
+**Dr. Suborna Ahmed** is the principal author and project lead. She is
+an Assistant Professor of Teaching in the Department of Forest Resources
+Management, Faculty of Forestry & Environmental Stewardship, University
+of British Columbia. Her teaching and research bridge forestry,
+statistics, and data analytics; she teaches FRST 232 (Computer
+Applications in Forestry) and FRST 531.
+
+## OER Team
+
+This resource was developed with the OER Team:
+
+| Contributor | Affiliation |
+|---|---|
+| Ehsan Karim | Associate Professor, School of Population and Public Health, Faculty of Medicine, UBC |
+| Jiaxin Wen | BSc, Faculty of Arts and Economics; Statistics, UBC |
+| Peace Damasco Uychiaoco | Natural Resources Conservation, UBC |
+| Bennett Wardman | Department of Forest and Conservation Sciences, Faculty of Forestry & Environmental Stewardship, UBC |
+| Rachel Lim | Forest Resources Management Department, Faculty of Forestry & Environmental Stewardship, UBC |
+
+: The OER Team {tbl-colwidths="[32,68]"}

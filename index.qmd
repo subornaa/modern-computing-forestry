@@ -9,8 +9,9 @@ Code under the [MIT licence](https://opensource.org/licenses/MIT).
 
 **Repository:** <https://github.com/subornaa/modern-computing-forestry>
 
-**Cite as:** Ahmed, S. (2026). *Modern R for Forestry and
-Natural Resources Data.* UBC Faculty of Forestry. CC BY 4.0.
+**Cite as:** Ahmed, S. (2026). *Modern Data Analytics for
+Forestry and Natural Resources.* UBC Faculty of Forestry & Environmental
+Stewardship. CC BY 4.0.
 :::
 
 This open textbook teaches data analysis for forestry and natural
@@ -32,33 +33,11 @@ accessibility statement, the EDI commitment, and *How to use
 this book* — are part of the resource, not boilerplate; please
 read them before the chapters.
 
-# Acknowledgments {.unnumbered}
-
-This work was funded by the **UBC OER Fund Affordability Grant**.
-We are grateful to the UBC OER Coordinator's Office, to the
-Faculty of Forestry, and to classroom learners across FRST 232
-(and the coming FRST 531 cohort) who provided feedback during
-development.
-
-We acknowledge the broader open-source community — the
-authors and maintainers of R, RStudio, Quarto, tidyverse, sf,
-leaflet, and the dozens of supporting packages — whose work
-makes this book possible.
-
-We acknowledge **Environmental Reporting BC**, the **Government
-of Ontario**, **Environment and Climate Change Canada**, and
-**Natural Resources Canada** for publishing the forestry and
-natural-resources datasets used throughout this book under open
-government licences, making genuine learning with real data
-possible.
-
-# Author {.unnumbered}
-
-**Dr. Suborna Ahmed** is a faculty member in the Faculty of
-Forestry at the University of British Columbia, where her
-teaching and research bridges forestry, statistics, and data
-analytics. She teaches FRST 232 (Computer Applications in
-Forestry) and FRST 531.
+See the **[Authors](frontmatter/authors.qmd)** and
+**[Acknowledgements](frontmatter/acknowledgements.qmd)** pages for the
+full project team and funding acknowledgement, and the
+**[Datasets Used in This Book](datasets.qmd)** page for every dataset
+and its download link.
 
 # Errata and contributing {.unnumbered}
 

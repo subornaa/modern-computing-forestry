@@ -51,6 +51,13 @@ airdata_clean <- airdata_raw |>
   left_join(station_regions, by = "location")
 ```
 
+::: {.callout-note appearance="simple"}
+## Data for this chapter
+This chapter uses the **BC air-quality** file (`airdata3.csv`). Download
+it from the [Datasets Used in This Book](../datasets.qmd) page and put it
+in your `data/` folder.
+:::
+
 # Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:

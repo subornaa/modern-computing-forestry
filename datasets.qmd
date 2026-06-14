@@ -1,0 +1,110 @@
+# Datasets Used in This Book {.unnumbered}
+
+Every dataset in this book is **open government data** — free to
+download, no account required. This page collects them all in one place
+with download links so you can get the data before you start a chapter.
+Each data-using chapter also links back here.
+
+::: {.callout-tip}
+## Where the data goes
+Put each downloaded file in your project's `data/` folder, **unchanged**
+from the source. Read it with `here("data", "<filename>")` in R, or open
+it directly in Excel. Keep the raw file; save any cleaned version
+separately in `outputs/`.
+:::
+
+::: {.callout-note}
+## "Direct download" vs "source page"
+Where a stable direct-download link exists, it is given. Where the
+publisher distributes through a catalogue (so the exact file URL changes
+over time), the **official source page** is linked instead — open it and
+download the current resource. **No links on this page are invented**;
+all point to official Canadian or BC government sources.
+:::
+
+## All datasets at a glance
+
+| Dataset · local file | Source (licence) | Link | Type | Used in |
+|---|---|---|---|---|
+| **BC silviculture** — *Trends in Silviculture in B.C.*<br>`bc_disturbance_reforestation.xlsx` | Environmental Reporting BC / BC Ministry of Forests (OGL — BC) | [Source page](https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c-) | `.xlsx` | Ch 1, 3, 4, 5, 8, 9, 12, 13 |
+| **Ontario forest statistics** — *Forest Resources of Ontario 2021*<br>`on_forest_statistics_1.xlsx` | Government of Ontario (OGL — Ontario) | [Source page](https://data.ontario.ca/dataset/forest-resources-of-ontario-2021) | `.xlsx` | Ch 2, 3, 4, 5, 8 |
+| **BC air quality** — *Verified Hourly Air Quality & Meteorological Data*<br>`airdata3.csv` | BC Ministry of Environment (OGL — BC) | [Source page](https://open.canada.ca/data/en/dataset/77eeadf4-0c19-48bf-a47a-fa9eef01f409) | `.csv` | Ch 5, 6, 7, 8, 9, 11 |
+| **ECCC weather** — daily climate, Vancouver Int'l A (Climate ID 1108447)<br>`inter_air_van_weather.csv` | Environment and Climate Change Canada | [Source page](https://climate.weather.gc.ca/historical_data/search_historic_data_e.html) · [Direct CSV](https://climate.weather.gc.ca/climate_data/bulk_data_e.html?format=csv&stationID=51442&Year=2000&Month=1&Day=1&timeframe=2) | `.csv` | Ch 8 |
+| **NRCan wildfire** — National Fire Database, fire points<br>`nfdb_fires_2021_2024.csv` | Natural Resources Canada / CWFIS | [Download page](https://cwfis.cfs.nrcan.gc.ca/datamart/download/nfdbpnt) | `.csv` (from shapefile) | Ch 4; Ch 9 (derived) |
+| **CSRD parks** — Park Locations<br>`csrd_parks.geojson` | Columbia Shuswap Regional District Open Data | [Portal](https://data-csrd.opendata.arcgis.com/) · [Direct GeoJSON](https://services5.arcgis.com/wjH30HL7rqC55zVw/arcgis/rest/services/Park_Locations/FeatureServer/0/query?where=1=1&outFields=*&f=geojson) | `.geojson` | Ch 10, 11, 13 |
+
+: Open datasets used across the book {tbl-colwidths="[30,24,22,10,14]"}
+
+## Dataset details
+
+### BC silviculture — `bc_disturbance_reforestation.xlsx`
+- **Source:** Environmental Reporting BC, *Trends in Silviculture in
+  B.C.* (BC Ministry of Forests). Open Government Licence — British
+  Columbia.
+- **How it's used:** the running example for the Excel chapters (1–3) and
+  the first reproducible R import (Ch 4–5); annual harvested,
+  natural-disturbance, and reforested area by fiscal year, 1987–2023.
+- **File:** ~37 rows × 8 columns, three sheets (*About* / *ReadMe* /
+  *Data*). Read the **Data** sheet. Small and clean — no preparation
+  needed.
+
+### Ontario forest statistics — `on_forest_statistics_1.xlsx`
+- **Source:** Government of Ontario, *Forest Resources of Ontario 2021*.
+  Open Government Licence — Ontario.
+- **How it's used:** the messier, categorical file for Excel cleaning,
+  PivotTables, and grouped summaries; a cross-classification of area by
+  ownership × seral stage × forest type × age class.
+- **File:** the book uses a **Region 3E teaching extract** (~179 rows × 8
+  columns) of the larger published file.
+
+### BC air quality — `airdata3.csv`
+- **Source:** BC Ministry of Environment, *Air Quality and Climate
+  Monitoring: Verified Hourly Air Quality and Meteorological Data*. Open
+  Government Licence — British Columbia.
+- **How it's used:** the real, messy file for cleaning (Ch 6), grouped
+  summaries (Ch 7), the air + weather join (Ch 8), `ggplot2` (Ch 9), and
+  station mapping (Ch 11). The book focuses on **ground-level ozone
+  (O₃)**, which is recorded at eight Lower Mainland stations.
+- **File:** a **teaching extract** prepared from the source (selected
+  Lower Mainland stations, hourly, January 2000), ~11,900 rows × 26
+  columns, with realistic missingness across pollutants.
+
+### ECCC weather — `inter_air_van_weather.csv`
+- **Source:** Environment and Climate Change Canada, Historical Climate
+  Data — Vancouver International Airport (Climate ID 1108447; web station
+  ID 51442).
+- **How it's used:** joined to the hourly air-quality data in Ch 8 to
+  demonstrate a safe **many-to-one** join (hourly readings → daily
+  weather).
+- **File:** daily climate for the year 2000 (~366 rows × 31 columns). The
+  *Direct CSV* link above is the ECCC bulk-download endpoint; the script
+  `scripts/download_eccc_yvr_climate.R` regenerates it.
+
+### NRCan wildfire — `nfdb_fires_2021_2024.csv`
+- **Source:** Natural Resources Canada, Canadian Wildland Fire
+  Information System — Canadian National Fire Database (NFDB), fire point
+  data.
+- **How it's used:** a first-import practice file (Ch 4); in Ch 9 it is
+  aggregated to an annual area-burned summary by
+  `scripts/build_wildfire_summary.R`.
+- **File:** the book uses a **2021–2024 subset** of the national
+  point dataset (the source download is a shapefile covering 1950–present;
+  convert/subset as needed).
+
+### CSRD parks — `csrd_parks.geojson`
+- **Source:** Columbia Shuswap Regional District Open Data (ArcGIS Hub),
+  *Park Locations* feature layer.
+- **How it's used:** the real spatial layer for Ch 10 (`sf`: inspect CRS,
+  reproject to BC Albers, static `geom_sf` map) and Ch 11 (interactive
+  `leaflet` map).
+- **File:** 66 point features in WGS 84 (EPSG:4326). The *Direct GeoJSON*
+  link is a live query; `scripts/download_csrd_parks.R` regenerates it.
+
+## Reproducible download scripts
+
+Three small R scripts in [`scripts/`](https://github.com/subornaa/modern-computing-forestry/tree/main/scripts)
+let you regenerate the data files from source:
+
+- `download_eccc_yvr_climate.R` → `inter_air_van_weather.csv`
+- `download_csrd_parks.R` → `csrd_parks.geojson`
+- `build_wildfire_summary.R` → annual wildfire summary (from the NFDB points)

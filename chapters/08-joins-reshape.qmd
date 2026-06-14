@@ -11,6 +11,16 @@ library(knitr)
 library(scales)
 ```
 
+::: {.callout-note appearance="simple"}
+## Data for this chapter
+This chapter uses the **BC silviculture**
+(`bc_disturbance_reforestation.xlsx`), **Ontario forest statistics**
+(`on_forest_statistics_1.xlsx`), **BC air-quality** (`airdata3.csv`), and
+**ECCC weather** (`inter_air_van_weather.csv`) files. Download them from
+the [Datasets Used in This Book](../datasets.qmd) page into your `data/`
+folder.
+:::
+
 # Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:

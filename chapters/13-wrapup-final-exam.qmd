@@ -11,6 +11,15 @@ library(knitr)
 library(sf)
 ```
 
+::: {.callout-note appearance="simple"}
+## Data for this chapter
+The end-to-end case study uses the **BC silviculture**
+(`bc_disturbance_reforestation.xlsx`) and **CSRD parks**
+(`csrd_parks.geojson`) files. Download them from the
+[Datasets Used in This Book](../datasets.qmd) page into your `data/`
+folder.
+:::
+
 # Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:

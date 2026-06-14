@@ -1,4 +1,4 @@
-# Modern R for Forestry and Natural Resources Data
+# Modern Data Analytics for Forestry and Natural Resources
 
 *Efficient Coding, Data Analysis, and AI-Assisted Debugging*
 

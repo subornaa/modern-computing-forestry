@@ -59,8 +59,8 @@ jobs:
             any::kableExtra
             any::gt
 
-      - name: Render the book
-        run: quarto render
+      - name: Render the book (HTML site only)
+        run: quarto render --to html   # PDF is built locally; CI needs no LaTeX
 
       - name: Upload the rendered site as a Pages artifact
         uses: actions/upload-pages-artifact@v3

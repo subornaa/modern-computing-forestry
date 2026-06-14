@@ -10,6 +10,13 @@ library(here)
 library(knitr)
 ```
 
+::: {.callout-note appearance="simple"}
+## Data for this chapter
+This chapter uses the **CSRD parks** layer (`csrd_parks.geojson`).
+Download it from the [Datasets Used in This Book](../datasets.qmd) page
+and put it in your `data/` folder.
+:::
+
 # Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:

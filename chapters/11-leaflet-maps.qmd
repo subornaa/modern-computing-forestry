@@ -11,6 +11,14 @@ library(here)
 library(knitr)
 ```
 
+::: {.callout-note appearance="simple"}
+## Data for this chapter
+This chapter uses the **CSRD parks** layer (`csrd_parks.geojson`); the
+optional air-quality examples reuse `airdata3.csv`. Download from the
+[Datasets Used in This Book](../datasets.qmd) page into your `data/`
+folder.
+:::
+
 # Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
@@ -474,12 +482,15 @@ dashboard.**
 
 # A real interactive map: CSRD parks
 
+::: {.content-visible when-format="html"}
+
 The maps above used the synthetic station tibble so you could see
 each piece in isolation. Here is the real thing — the **Columbia
 Shuswap Regional District parks** layer from Chapter 10, as a live
 interactive map you can pan, zoom, and click:
 
 ```{r csrd-leaflet}
+#| eval: !expr knitr::is_html_output()
 parks <- st_read(here("data", "csrd_parks.geojson"), quiet = TRUE)
 
 pal <- colorFactor("viridis", domain = parks$ParkType)
@@ -512,6 +523,16 @@ This is the interactive counterpart to the static map in Chapter
 the interactive version when exploration helps (a reader wants to
 find a specific park); use the static version when the map must
 work in print, in a PDF, or for a screen-reader user.
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+The interactive CSRD parks map appears in the HTML edition of this book.
+In print, see the static `geom_sf` map of the same CSRD parks layer in
+Chapter 10 — *same data, same question, two presentation choices.*
+
+:::
 
 # Active learning
 

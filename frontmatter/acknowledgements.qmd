@@ -1,0 +1,49 @@
+# Acknowledgements {.unnumbered}
+
+## Project team
+
+This open educational resource was created by the FRST 232 OER project
+team, supported by the **UBC OER Fund Affordability Grant**.
+
+| Role | Team member | Affiliation |
+|---|---|---|
+| Principal Applicant | Dr. Suborna Ahmed | Faculty of Forestry & Environmental Stewardship, UBC |
+| Co-Applicant | Dr. Ehsan Karim | Associate Professor, School of Population and Public Health, Faculty of Medicine, UBC |
+| Team Member | Sophie Huang | Undergraduate Student, Bachelor of Arts in Psychology, Faculty of Arts, UBC |
+| Team Member | Rebecca McCracken | Undergraduate Student, Bachelor of Science, Faculty of Forestry & Environmental Stewardship, UBC |
+| Team Member | Rachel Lim | Graduate Student, Forest Resources Management Department, Faculty of Forestry & Environmental Stewardship, UBC |
+| Team Member | Libby Taylor-Manning | Graduate Student, Forest Resources Management Department, Faculty of Forestry & Environmental Stewardship, UBC |
+| Team Member | Michelle Zeng | Associate Director, Teaching and Learning Support, Dean's Office, Faculty of Forestry & Environmental Stewardship, UBC |
+| Team Member | Dr. Stella Acquah | Senior Research Scientist, CSIR-Forestry Research Institute of Ghana; Adjunct Professor, Faculty of Forestry & Environmental Stewardship, UBC |
+
+: FRST 232 OER project team {tbl-colwidths="[20,22,58]"}
+
+## Funding and support
+
+This OER project was supported by the **Dean's Office of the Faculty of
+Forestry & Environmental Stewardship**. I gratefully acknowledge the
+support of **Dr. Robert Kozak**, **Dr. Sarah Gergel**, and **Jill Yu**. I
+am especially grateful to Dr. Sarah Gergel for her enormous encouragement
+and valuable suggestions, which helped move forward the modernization of
+FRST 232 and the development of this open educational resource.
+
+## Open data and open source
+
+We acknowledge **Environmental Reporting BC**, the **Government of
+British Columbia**, the **Government of Ontario**, **Environment and
+Climate Change Canada**, **Natural Resources Canada**, and the **Columbia
+Shuswap Regional District** for publishing the forestry and
+natural-resources datasets used throughout this book under open
+government licences — making genuine learning with real data possible.
+(See the [Datasets Used in This Book](../datasets.qmd) page for full
+sources and download links.)
+
+We also thank the open-source community — the authors and maintainers of
+R, RStudio, Quarto, the tidyverse, `sf`, `leaflet`, and the many
+supporting packages — whose work makes this resource possible.
+
+## Learners and reviewers
+
+We thank the FRST 232 learners (and the coming FRST 531 cohort) whose
+feedback shaped this resource, and the reviewers whose comments improved
+the curriculum and the open datasets behind it.

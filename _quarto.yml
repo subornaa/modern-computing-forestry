@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 book:
-  title: "Modern R for Forestry and Natural Resources Data"
+  title: "Modern Data Analytics for Forestry and Natural Resources"
   subtitle: "Efficient Coding, Data Analysis, and AI-Assisted Debugging"
   author: "Dr. Suborna Ahmed"
   date: today
@@ -14,11 +14,14 @@ book:
     - index.qmd
     - part: "Front matter"
       chapters:
+        - frontmatter/authors.qmd
+        - frontmatter/acknowledgements.qmd
         - frontmatter/land-acknowledgment.qmd
         - frontmatter/indigenous-data-sovereignty.qmd
         - frontmatter/accessibility.qmd
         - frontmatter/edi-commitment.qmd
         - frontmatter/how-to-use.qmd
+        - datasets.qmd
     - part: "Excel foundations"
       chapters:
         - chapters/01-excel-workbench.qmd
@@ -55,6 +58,25 @@ format:
     linkcolor: "#1B4332"
     code-copy: true
     include-after-body: assets/quiz-enhance.html
+  pdf:
+    output-file: "Modern_Data_Analytics_for_Forestry_and_Natural_Resources"
+    documentclass: scrreprt
+    papersize: letter
+    geometry: margin=1in
+    toc: true
+    number-sections: true
+    fig-cap-location: bottom
+    colorlinks: true          # keep dataset/source links visible in print
+    pdf-engine: xelatex        # native Unicode handling
+    code-block-bg: true
+    keep-tex: false
+    include-in-header:
+      text: |
+        % Render chemistry subscripts (e.g., O₃) correctly in print
+        \usepackage{newunicodechar}
+        \newunicodechar{₂}{\textsubscript{2}}
+        \newunicodechar{₃}{\textsubscript{3}}
+        \newunicodechar{₅}{\textsubscript{5}}
 
 execute:
   freeze: auto
