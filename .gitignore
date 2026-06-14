@@ -24,3 +24,10 @@
 Thumbs.db
 
 **/*.quarto_ipynb
+
+# Private planning and draft materials (kept local, not published)
+OER grant/
+Draft_chapters/
+Previous_materials/
+plan/
+transition_matrix_files/
