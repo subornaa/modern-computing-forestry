@@ -14,26 +14,27 @@ separately in `outputs/`.
 :::
 
 ::: {.callout-note}
-## "Direct download" vs "source page"
-Where a stable direct-download link exists, it is given. Where the
-publisher distributes through a catalogue (so the exact file URL changes
-over time), the **official source page** is linked instead — open it and
-download the current resource. **No links on this page are invented**;
-all point to official Canadian or BC government sources.
+## Download directly from this book
+Click a **download link** (the file name) in the table below to get the
+**exact file used in the chapters**, served straight from this book — no
+GitHub or account needed. Beside each is a **source** link to the
+official publisher for provenance. Some files are *teaching extracts*
+prepared from the larger published dataset, so the source may hold more
+data than the file used here. **No links on this page are invented.**
 :::
 
 ## All datasets at a glance
 
-| Dataset · local file | Source (licence) | Link | Type | Used in |
+| Dataset | Source (licence) | Download · source | Type | Used in |
 |---|---|---|---|---|
-| **BC silviculture** — *Trends in Silviculture in B.C.*<br>`bc_disturbance_reforestation.xlsx` | Environmental Reporting BC / BC Ministry of Forests (OGL — BC) | [Source page](https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c-) | `.xlsx` | Ch 1, 3, 4, 5, 8, 9, 12, 13 |
-| **Ontario forest statistics** — *Forest Resources of Ontario 2021*<br>`on_forest_statistics_1.xlsx` | Government of Ontario (OGL — Ontario) | [Source page](https://data.ontario.ca/dataset/forest-resources-of-ontario-2021) | `.xlsx` | Ch 2, 3, 4, 5, 8 |
-| **BC air quality** — *Verified Hourly Air Quality & Meteorological Data*<br>`airdata3.csv` | BC Ministry of Environment (OGL — BC) | [Source page](https://open.canada.ca/data/en/dataset/77eeadf4-0c19-48bf-a47a-fa9eef01f409) | `.csv` | Ch 5, 6, 7, 8, 9, 11 |
-| **ECCC weather** — daily climate, Vancouver Int'l A (Climate ID 1108447)<br>`inter_air_van_weather.csv` | Environment and Climate Change Canada | [Source page](https://climate.weather.gc.ca/historical_data/search_historic_data_e.html) · [Direct CSV](https://climate.weather.gc.ca/climate_data/bulk_data_e.html?format=csv&stationID=51442&Year=2000&Month=1&Day=1&timeframe=2) | `.csv` | Ch 8 |
-| **NRCan wildfire** — National Fire Database, fire points<br>`nfdb_fires_2021_2024.csv` | Natural Resources Canada / CWFIS | [Download page](https://cwfis.cfs.nrcan.gc.ca/datamart/download/nfdbpnt) | `.csv` (from shapefile) | Ch 4; Ch 9 (derived) |
-| **CSRD parks** — Park Locations<br>`csrd_parks.geojson` | Columbia Shuswap Regional District Open Data | [Portal](https://data-csrd.opendata.arcgis.com/) · [Direct GeoJSON](https://services5.arcgis.com/wjH30HL7rqC55zVw/arcgis/rest/services/Park_Locations/FeatureServer/0/query?where=1=1&outFields=*&f=geojson) | `.geojson` | Ch 10, 11, 13 |
+| **BC silviculture** — *Trends in Silviculture in B.C.* | Environmental Reporting BC / BC Ministry of Forests (OGL — BC) | [`bc_disturbance_reforestation.xlsx`](data/bc_disturbance_reforestation.xlsx) · [source](https://catalogue.data.gov.bc.ca/dataset/indicator-summary-data-trends-in-silviculture-in-b-c-) | `.xlsx` | Ch 1, 3, 4, 5, 8, 9, 12, 13 |
+| **Ontario forest statistics** — *Forest Resources of Ontario 2021* | Government of Ontario (OGL — Ontario) | [`on_forest_statistics_1.xlsx`](data/on_forest_statistics_1.xlsx) · [source](https://data.ontario.ca/dataset/forest-resources-of-ontario-2021) | `.xlsx` | Ch 2, 3, 4, 5, 8 |
+| **BC air quality** — *Verified Hourly Air Quality & Meteorological Data* | BC Ministry of Environment (OGL — BC) | [`airdata3.csv`](data/airdata3.csv) · [source](https://open.canada.ca/data/en/dataset/77eeadf4-0c19-48bf-a47a-fa9eef01f409) | `.csv` | Ch 5, 6, 7, 8, 9, 11 |
+| **ECCC weather** — daily climate, Vancouver Int'l A (Climate ID 1108447) | Environment and Climate Change Canada | [`inter_air_van_weather.csv`](data/inter_air_van_weather.csv) · [source](https://climate.weather.gc.ca/historical_data/search_historic_data_e.html) | `.csv` | Ch 8 |
+| **NRCan wildfire** — National Fire Database, fire points | Natural Resources Canada / CWFIS | [`nfdb_fires_2021_2024.csv`](data/nfdb_fires_2021_2024.csv) · [source](https://cwfis.cfs.nrcan.gc.ca/datamart/download/nfdbpnt) | `.csv` | Ch 4; Ch 9 (derived) |
+| **CSRD parks** — Park Locations | Columbia Shuswap Regional District Open Data | [`csrd_parks.geojson`](data/csrd_parks.geojson) · [source](https://data-csrd.opendata.arcgis.com/) | `.geojson` | Ch 10, 11, 13 |
 
-: Open datasets used across the book {tbl-colwidths="[30,24,22,10,14]"}
+: Open datasets used across the book — click a file name to download it directly {tbl-colwidths="[26,24,34,7,9]"}
 
 ## Dataset details
 

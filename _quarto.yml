@@ -1,6 +1,15 @@
 project:
   type: book
   output-dir: docs
+  # Ship the datasets with the site so learners can download them
+  # directly from the "Datasets Used in This Book" page (no GitHub needed).
+  resources:
+    - data/bc_disturbance_reforestation.xlsx
+    - data/on_forest_statistics_1.xlsx
+    - data/airdata3.csv
+    - data/inter_air_van_weather.csv
+    - data/nfdb_fires_2021_2024.csv
+    - data/csrd_parks.geojson
 
 book:
   title: "Modern Data Analytics for Forestry and Natural Resources"

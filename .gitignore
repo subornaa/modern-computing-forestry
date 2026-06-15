@@ -33,3 +33,7 @@ Draft_chapters/
 Previous_materials/
 plan/
 transition_matrix_files/
+
+# Instructor solutions / answer keys — kept local, distributed via Canvas only
+*_solutions.qmd
+*_solutions.xlsx
