@@ -14,10 +14,12 @@ library(sf)
 ::: {.callout-note appearance="simple"}
 ## Data for this chapter
 The end-to-end case study uses the **BC silviculture**
-(`bc_disturbance_reforestation.xlsx`) and **CSRD parks**
-(`csrd_parks.geojson`) files. Download them from the
-[Datasets Used in This Book](../datasets.qmd) page into your `data/`
-folder.
+([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"})
+and **CSRD parks**
+([`csrd_parks.geojson`](../data/csrd_parks.geojson){download="csrd_parks.geojson"})
+files. Click each file name to download it directly, then save it in your
+`data/` folder. For sources and details, see the
+[Datasets Used in This Book](../datasets.qmd) page.
 :::
 
 # Chapter goals {.unnumbered}

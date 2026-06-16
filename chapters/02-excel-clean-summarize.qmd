@@ -15,9 +15,10 @@ library(scales)
 ::: {.callout-note appearance="simple"}
 ## Data for this chapter
 This chapter uses the **Ontario forest statistics** workbook
-(`on_forest_statistics_1.xlsx`). Download it from the
-[Datasets Used in This Book](../datasets.qmd) page and put it in your
-`data/` folder.
+([`on_forest_statistics_1.xlsx`](../data/on_forest_statistics_1.xlsx){download="on_forest_statistics_1.xlsx"}).
+Click the file name to download it directly, then save it in your `data/`
+folder. For the source and details, see the
+[Datasets Used in This Book](../datasets.qmd) page.
 :::
 
 # Chapter goals {.unnumbered}

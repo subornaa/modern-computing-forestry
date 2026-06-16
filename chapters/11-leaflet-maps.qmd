@@ -13,10 +13,13 @@ library(knitr)
 
 ::: {.callout-note appearance="simple"}
 ## Data for this chapter
-This chapter uses the **CSRD parks** layer (`csrd_parks.geojson`); the
-optional air-quality examples reuse `airdata3.csv`. Download from the
-[Datasets Used in This Book](../datasets.qmd) page into your `data/`
-folder.
+This chapter uses the **CSRD parks** layer
+([`csrd_parks.geojson`](../data/csrd_parks.geojson){download="csrd_parks.geojson"});
+the optional air-quality examples reuse
+([`airdata3.csv`](../data/airdata3.csv){download="airdata3.csv"}). Click a
+file name to download it directly, then save it in your `data/` folder.
+For sources and details, see the
+[Datasets Used in This Book](../datasets.qmd) page.
 :::
 
 # Chapter goals {.unnumbered}
