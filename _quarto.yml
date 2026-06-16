@@ -14,7 +14,7 @@ project:
 book:
   title: "Modern Data Analytics for Forestry and Natural Resources"
   subtitle: "Efficient Coding, Data Analysis, and AI-Assisted Debugging"
-  author: "Dr. Suborna Ahmed"
+  author: "Dr. Suborna Ahmed and OER Team"
   date: today
   cover-image: cover.png
   repo-url: https://github.com/subornaa/modern-computing-forestry
