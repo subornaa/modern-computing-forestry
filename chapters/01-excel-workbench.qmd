@@ -46,12 +46,14 @@ At the end of this chapter, each learner (or group) will produce:
 ## What you will hand in
 
 1. The raw workbook **`bc_disturbance_reforestation.xlsx`** placed in
-   your `chapter01/data/` folder, **unchanged from the BC Data
+   your `data/` folder, **unchanged from the BC Data
    Catalogue download**.
 2. A working copy you may modify, saved as
    **`bc_disturbance_reforestation_clean.xlsx`** in your
-   `chapter01/outputs/` folder, containing:
-   - a completed *About / ReadMe / Data* structure,
+   `outputs/` folder, containing:
+   - the original three sheets (**About**, **ReadMe**, **Data**) kept
+     intact — you add to them, you do **not** create new sheets or
+     delete the originals,
    - one short **data dictionary entry** in your own words for any
      column you choose, and
    - the five **simple formulas** from this chapter computed in any
@@ -66,7 +68,7 @@ it in view while you work.
 # Why we start with Excel
 
 Excel has flaws. It hides decisions in invisible mouse clicks. It is
-hard to reproduce. It is hard to version-control. We will spend most
+hard to reproduce or recreate. It is hard to version-control. We will spend most
 of this book moving away from it.
 
 We still start with Excel deliberately. The interface is forgiving.
@@ -598,15 +600,23 @@ metadata before the data.
 
 ## Activity 2 — Five-question inspection
 
-On your own, write your answers to the five inspection questions
-from the *Inspecting the Data sheet* section. Compare with a
-partner.
+On your own, complete this inspection worksheet, then compare with a
+partner. If your answers differ, go back to the About, ReadMe, and Data
+sheets to resolve them.
+
+| Check | Your answer |
+|---|---|
+| Number of rows | |
+| Number of columns | |
+| Earliest and latest fiscal year | |
+| One column name, its unit, and meaning | |
+| One value or pattern that seems important or surprising | |
 
 ## Activity 3 — Write five simple formulas
 
-In the workbook, type each formula from the *Writing simple
-formulas* section into an empty cell. Confirm each result matches
-the expected value in the table.
+In your **working copy** (not the raw download), type each formula from
+the *Writing simple formulas* section into an empty cell. Confirm each
+result matches the expected value in the table.
 
 ## Activity 4 — Verify one identity
 
@@ -651,9 +661,14 @@ choose one of these:
 - Maximum `Natural_Disturbance_ha` and the year it happened.
 - Total `Harvested_ha` across all 37 fiscal years.
 
-Write the formula on the Data sheet. Confirm the result with a
-quick spot check (does it sit between the min and max for that
-column?).
+Write the formula on the Data sheet. Then sanity-check the result
+**with the check that fits your statistic**:
+
+- **Mean** — must fall *between* the column's `MIN` and `MAX`.
+- **Maximum** — must *equal* the single largest value in the column
+  (and be ≥ every other row).
+- **Total** — must be *at least as large as the* `MAX` (usually much
+  larger), and never negative for an area column.
 
 **Task 4 — Verify one formula.** Pick any row of the Data sheet.
 Verify that
@@ -694,12 +709,12 @@ These are the take-home exercises that go with this chapter.
 
 5. Set up the folder structure from the *Project folder
    structure* section above. Place a copy of the BC silviculture
-   file in `chapter01/data/`. Take a screenshot of your folder
+   file in `data/`. Take a screenshot of your folder
    structure.
 
 6. Save a cleaned copy of the workbook (rename it
    `bc_disturbance_reforestation_clean.xlsx`) into the
-   `chapter01/outputs/` folder. The raw file in `chapter01/data/`
+   `outputs/` folder. The raw file in `data/`
    should remain unchanged.
 
 7. Apply ISO date format (`yyyy-mm-dd`) to any date in any file.
@@ -1139,10 +1154,10 @@ Explanations appear below each question.
 
 ## Expected output checklist (matches the top-of-chapter callout)
 
-1. Raw `bc_disturbance_reforestation.xlsx` in `chapter01/data/`,
+1. Raw `bc_disturbance_reforestation.xlsx` in `data/`,
    unchanged.
 2. Working `bc_disturbance_reforestation_clean.xlsx` in
-   `chapter01/outputs/` containing About / ReadMe / Data,
+   `outputs/` containing About / ReadMe / Data,
    a one-row data dictionary entry, and the five chapter formulas.
 3. Group-lab worksheet or screenshot.
 
@@ -1183,4 +1198,59 @@ Explanations appear below each question.
   (b) Chapter 4 deliberately uses the *same file* to make the
   transition explicit. The "A glimpse of Chapter 4" table at the
   end of this chapter is the preview of that bridge.
+:::
+
+
+---
+
+# Working with AI on this chapter {.unnumbered}
+
+Use AI as a **verification and debugging partner**, not an answer machine.
+The goal is not to make AI do the work — it is to use AI to help you
+**understand, check, and improve your own work.**
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Fill in the brackets and paste this into your AI assistant. It should
+*explain and check*, not hand you a final assignment answer:
+
+> *"I am working on FRST 232, this chapter. My dataset is `[file name]`
+> with columns `[columns]`. My task is `[what you are trying to do]`. I
+> tried `[paste your code or steps]` and got `[paste the exact output or
+> error]`. Explain what this does line by line, tell me whether it answers
+> the question, and list the checks I should run to verify it. Do not give
+> me the final answer."*
+:::
+
+**Verify it yourself** — before trusting any result (yours *or* an AI's):
+
+- the rows, columns, and units are what you expect;
+- the row count changes sensibly after a `filter()` or a join;
+- group sizes and summary values are plausible;
+- the figure answers the question and axis labels include units.
+
+**Common AI mistakes to watch for:** inventing a column, function, or value
+that is not in your data; choosing a tool before reading the question; and
+(in Excel) suggesting the wrong cell range or forgetting to refresh a
+PivotTable.
+
+::: {.callout-tip collapse="true"}
+## Compare your solution with the reference
+When a reference solution is available, do **not** just copy it — use it to
+check your own work:
+
+- **Expected result** — does your output match the target shape and values?
+- **Required components** — did you include every step the task asked for?
+- **If your result differs** — say *where* it matched, *where* it differed,
+  *what* caused the difference, *how* you fixed it, and *what* you learned.
+:::
+
+::: {.callout-tip collapse="true"}
+## AI replication challenge
+Write a prompt that would guide an AI *toward* the reference solution
+without handing over the final answer. Include the dataset, the columns,
+the task goal, the output format you need, and the verification checks.
+Then paste (or summarise) the AI's response and answer: did its approach
+match the book's? did it miss a verification step? did it invent a column,
+function, or value? what did your group change after checking it?
 :::

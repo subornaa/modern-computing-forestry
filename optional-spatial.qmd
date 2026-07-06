@@ -1,0 +1,21 @@
+# Optional: Spatial Data Analysis in R {.unnumbered}
+
+Spatial data analysis is an important skill in forestry and
+natural-resources work, but it is now treated as **optional extension
+material** in this book. The required FRST 232 pathway focuses on Excel, R,
+tidyverse workflows, data cleaning, joins, visualization, an **integrated
+case study**, and **communication**.
+
+If you want additional help with spatial data analysis in R, you can use the
+optional spatial chapters — **Spatial Data in R with `sf`** and **Map
+Forestry Data with `leaflet`** — kept as a separate resource. They cover
+coordinate reference systems, reading and reprojecting spatial files,
+distances and buffers (`sf`), static thematic maps with `geom_sf()`, and
+interactive web maps with `leaflet`, using the open CSRD parks dataset.
+
+::: {.callout-tip}
+## Spatial data analysis in R — additional support
+Continue to the optional spatial-data resource:
+
+> **[Spatial Data Analysis in R — additional support](https://subornaa.github.io/spatial-analysis-r/)**
+:::

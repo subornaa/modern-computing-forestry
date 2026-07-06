@@ -46,12 +46,12 @@ book:
         - chapters/07-summarise-by-group.qmd
         - chapters/08-joins-reshape.qmd
         - chapters/09-ggplot2.qmd
-    - part: "Spatial data & communication"
+    - part: "Case Study & Communication"
       chapters:
-        - chapters/10-spatial-sf.qmd
-        - chapters/11-leaflet-maps.qmd
+        - chapters/10-case-study.qmd
         - chapters/12-presentations-portfolio.qmd
         - chapters/13-wrapup-final-exam.qmd
+    - optional-spatial.qmd
     - references.qmd
     - glossary.qmd
 

@@ -67,8 +67,9 @@ By the end of this chapter you will be able to:
 - Write an **overall summary** of one or more columns with
   `summarise()` — counts, means, medians, standard deviations,
   ranges.
-- Write a **by-group summary** by adding `group_by()` before
-  `summarise()`.
+- Write a **by-group summary** by adding
+  [`group_by()`](../glossary.qmd#group_by) before
+  [`summarise()`](../glossary.qmd#summarize).
 - Group by **multiple columns** at once (e.g., region × day) to
   build cross-tabulations.
 - Use the **shortcut functions** `count()`, `tally()`, and
@@ -181,6 +182,17 @@ Every column in the result is a single number. The arguments to
 | `n_distinct()` | unique values | Useful as `n_distinct(location)`. |
 | `quantile()` | any percentile | `quantile(O3, 0.9)` for the 90th. |
 | `IQR()` | interquartile range | Robust spread. |
+
+::: {.callout-note}
+## `mutate()` vs `summarise()` — don't mix them up
+Chapter 6 used `mutate()` to add or change columns; this chapter uses
+`summarise()` to collapse rows into summary values.
+
+| Function | What it does | Rows out |
+|---|---|---|
+| `mutate()` | Adds or changes a column | **Same** number of rows |
+| `summarise()` | Computes summary values | **Fewer** rows — one overall, or one per group |
+:::
 
 # By-group summary — one row per group
 
@@ -299,7 +311,7 @@ was a PivotTable with `region` in Rows, `o3_band` in Columns,
 to fill empty cells with 0. Three clicks in Excel; three lines in
 R; same answer.
 
-# `n_distinct()` — unique values
+# Counting unique values with `n_distinct()`
 
 ```{r n-distinct}
 airdata_clean |>
@@ -313,6 +325,13 @@ airdata_clean |>
 Useful when you want *"how many unique stations report O₃?"*
 in one line.
 
+To *see* the actual unique values — not just how many — use `unique()`
+(handy when inspecting a column in Chapter 5 too):
+
+```{r unique-vals}
+unique(airdata_clean$region)
+```
+
 # Multiple statistics with `across()`
 
 When you want the same summary (e.g., mean) on **several
@@ -322,14 +341,14 @@ columns**, `across()` is the cleaner pattern:
 airdata_clean |>
   group_by(region) |>
   summarise(
-    across(c(O3, PM10, O3, NO2),
+    across(c(O3, PM10, NO2),
            \(x) mean(x, na.rm = TRUE)),
     .groups = "drop"
   )
 ```
 
-This summarises four pollutant columns at once, one mean per
-column per region. Far less repetitive than writing four
+This summarises three pollutant columns at once, one mean per
+column per region. Far less repetitive than writing three
 `mean(...)` calls manually.
 
 ## Multiple statistics on the same column
@@ -450,9 +469,16 @@ Build a cross-tab where rows are `region`, columns are
 
 ## Activity 5 — `across()` for many means
 
-Use `across(c(O3, PM10, O3, NO2), \(x) mean(x, na.rm = TRUE))`
+Use `across(c(O3, PM10, NO2), \(x) mean(x, na.rm = TRUE))`
 inside a `group_by(region) |> summarise(...)` pipeline. How does
-the output differ from writing four separate mean calls?
+the output differ from writing three separate mean calls?
+
+## Activity 6 — Interpret one summary
+
+Pick any one row of your by-group summary and write **one sentence** that
+names the group, the statistic, the value, and the unit — e.g. *"The
+Fraser Valley West region had the highest mean O₃, at about 39 ppb."* A
+number is only useful once you can say what it means.
 
 # Group lab activity
 
@@ -727,10 +753,10 @@ Explanations appear below each question.
 </div>
 
 <div class="quiz" id="q11" data-hints="across applies one function to several columns at once.||Each listed column gets the same calculation.||It computes the mean of each named column.">
-  <div class="q">11. <code>across(c(O3, PM10, O3), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div>
+  <div class="q">11. <code>across(c(O3, PM10, NO2), \(x) mean(x, na.rm = TRUE))</code> inside <code>summarise()</code> —</div>
   <ul class="qopts">
     <li data-correct="false">Drops three columns</li>
-    <li data-correct="true">Applies the mean function to O3, PM10, and O3 — one column per pollutant in the output</li>
+    <li data-correct="true">Applies the mean function to O3, PM10, and NO2 — one column per pollutant in the output</li>
     <li data-correct="false">Pivots the table</li>
     <li data-correct="false">Counts the three columns</li>
   </ul>
@@ -951,4 +977,59 @@ Explanations appear below each question.
   Excel and verify the numbers match. The visceral
   "they're identical" moment is the chapter's pedagogical
   payoff.
+:::
+
+
+---
+
+# Working with AI on this chapter {.unnumbered}
+
+Use AI as a **verification and debugging partner**, not an answer machine.
+The goal is not to make AI do the work — it is to use AI to help you
+**understand, check, and improve your own work.**
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Fill in the brackets and paste this into your AI assistant. It should
+*explain and check*, not hand you a final assignment answer:
+
+> *"I am working on FRST 232, this chapter. My dataset is `[file name]`
+> with columns `[columns]`. My task is `[what you are trying to do]`. I
+> tried `[paste your code or steps]` and got `[paste the exact output or
+> error]`. Explain what this does line by line, tell me whether it answers
+> the question, and list the checks I should run to verify it. Do not give
+> me the final answer."*
+:::
+
+**Verify it yourself** — before trusting any result (yours *or* an AI's):
+
+- the rows, columns, and units are what you expect;
+- the row count changes sensibly after a `filter()` or a join;
+- group sizes and summary values are plausible;
+- the figure answers the question and axis labels include units.
+
+**Common AI mistakes to watch for:** inventing a column, function, or value
+that is not in your data; choosing a tool before reading the question; and
+(in Excel) suggesting the wrong cell range or forgetting to refresh a
+PivotTable.
+
+::: {.callout-tip collapse="true"}
+## Compare your solution with the reference
+When a reference solution is available, do **not** just copy it — use it to
+check your own work:
+
+- **Expected result** — does your output match the target shape and values?
+- **Required components** — did you include every step the task asked for?
+- **If your result differs** — say *where* it matched, *where* it differed,
+  *what* caused the difference, *how* you fixed it, and *what* you learned.
+:::
+
+::: {.callout-tip collapse="true"}
+## AI replication challenge
+Write a prompt that would guide an AI *toward* the reference solution
+without handing over the final answer. Include the dataset, the columns,
+the task goal, the output format you need, and the verification checks.
+Then paste (or summarise) the AI's response and answer: did its approach
+match the book's? did it miss a verification step? did it invent a column,
+function, or value? what did your group change after checking it?
 :::

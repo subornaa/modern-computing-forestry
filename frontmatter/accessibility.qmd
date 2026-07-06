@@ -68,11 +68,10 @@ This is an honest list. We are working on each item.
   announce μg/m³ correctly, the spelled-out *"micrograms per
   cubic metre"* is provided in parentheses on first use in
   each chapter.
-- **Interactive leaflet maps** (Chapter 11) are dependent on
-  JavaScript and may not be fully usable by screen reader
-  users. A static `geom_sf` version of every interactive map
-  is provided as an alternative in the chapter (see Chapter
-  10).
+- **Interactive leaflet maps** (in the optional spatial-data
+  resource) depend on JavaScript and may not be fully usable by
+  screen-reader users; a static `geom_sf` version of every
+  interactive map is provided there as an alternative.
 - **Spatial buffer and intersection results** are visual by
   nature; we describe what the result *shows* in prose
   immediately after each map.

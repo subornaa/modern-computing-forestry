@@ -1,0 +1,283 @@
+---
+title: "Integrated Case Study: Choosing the Right Tools"
+---
+
+```{r setup-ch10cs}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(here)
+library(knitr)
+```
+
+::: {.callout-note appearance="simple"}
+## Data for this chapter
+This chapter uses the **BC silviculture** workbook
+([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"}).
+Click the file name to download it directly, then save it in your `data/`
+folder. For the source and details, see the
+[Datasets Used in This Book](../datasets.qmd) page.
+:::
+
+# Chapter goals {.unnumbered}
+
+By the end of this case-study chapter you will be able to:
+
+- **read** a realistic forestry or natural-resources question and decide
+  what data-analysis steps are needed;
+- **identify** which functions from previous chapters are most efficient
+  for the task;
+- **combine** skills from multiple chapters — import, inspect, clean,
+  `filter`, `mutate`, `group_by`, `summarise`, `pivot`, `left_join`,
+  visualize, and report;
+- **justify** why you chose one function or workflow over another;
+- **check** whether your results are plausible using row counts,
+  missing-value checks, summary statistics, and visual inspection;
+- **write** a short interpretation for a non-technical forestry audience;
+- **use AI as a verification partner** without letting it decide the whole
+  analysis.
+
+# Expected output for this chapter {.unnumbered}
+
+::: {.callout-tip appearance="default"}
+## What you will hand in
+A short **case-study report** (rendered from a `.qmd`) that:
+
+1. states a **question** in plain language;
+2. shows your **chosen workflow** with a one-line justification for each
+   step ("I used `group_by()` because …");
+3. includes **one clear figure**;
+4. shows your **plausibility checks** (row counts, missing-value checks,
+   summary statistics);
+5. ends with a **two- to three-sentence interpretation** a non-technical
+   forestry reader could follow.
+:::
+
+# Why this chapter is different
+
+Every earlier chapter taught **one main skill at a time** — importing,
+cleaning, summarising, joining, or visualizing — and told you which one to
+practice. Real analysis does not arrive labelled. You are handed a
+**question and a dataset**, and *you* decide which tools to reach for and
+in what order.
+
+The goal of this chapter is to move you from
+
+> *"I know this chapter uses `summarise()`"*
+
+to
+
+> *"I can decide **when** `summarise()` is the right tool."*
+
+# The decision framework — think before you code
+
+Before writing a single line, answer these six questions:
+
+1. **What is the unit of observation?** One row = one what (a fiscal year?
+   a station? a plot)?
+2. **Which columns do I actually need** to answer the question?
+3. **Does anything need cleaning or recoding first** (missing values, odd
+   codes, a date to parse)?
+4. **What *kind* of problem is this** — a filter, a grouped summary, a
+   trend over time, a reshape, or a join?
+5. **Which function is the most efficient** for that kind of problem — and
+   what would be a slower but still-correct alternative?
+6. **How will I verify the result** (row counts, `n()`, plausible ranges,
+   a quick plot)?
+
+Use this quick map from "kind of problem" to "reach for":
+
+| The question is about … | Reach for |
+|---|---|
+| keeping only some rows | `filter()` |
+| a new or derived column | `mutate()` |
+| one number per group | `group_by()` + `summarise()` |
+| how something changes over time | a trend plot (`geom_line`/`geom_col`) |
+| the table being the wrong shape | `pivot_longer()` / `pivot_wider()` |
+| combining two tables | `left_join()` (check keys + row counts) |
+| showing the result to a person | `ggplot2` + a clear caption |
+
+# A worked example — the process end to end
+
+**Question:** *Which decade saw the highest average reforestation in
+British Columbia, and how does it compare with harvesting?*
+
+**Think first.**
+
+- *Unit of observation:* one row per fiscal year.
+- *Columns needed:* `Fiscal_Year`, `Reforestation_ha`, `Harvested_ha`.
+- *Cleaning:* none needed — this file is small and complete.
+- *Kind of problem:* a **derived variable** (decade) + a **grouped
+  summary**. Not a join, not a reshape.
+- *Most efficient tools:* `mutate()` to build `decade`, then
+  `group_by(decade) |> summarise()`.
+- *Verify:* check the number of years per decade and that the values are in
+  a plausible range (BC reforests very roughly 150,000–250,000 ha/yr).
+
+**Then code:**
+
+```{r cs-worked}
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
+                 sheet = "Data")
+
+by_decade <- bc |>
+  mutate(decade = floor(Fiscal_Year / 10) * 10) |>
+  group_by(decade) |>
+  summarise(
+    n_years            = n(),
+    mean_reforested_ha = round(mean(Reforestation_ha, na.rm = TRUE)),
+    mean_harvested_ha  = round(mean(Harvested_ha,     na.rm = TRUE)),
+    .groups = "drop"
+  ) |>
+  arrange(desc(mean_reforested_ha))
+
+by_decade |> kable()
+```
+
+**Verify before trusting it:** `n_years` should be small (about 10 per full
+decade, fewer for partial decades at the ends), and the hectare figures
+should sit in the hundred-thousands — both true above. A quick plot
+confirms the pattern:
+
+```{r cs-worked-plot}
+#| fig-alt: "Bar chart of mean annual reforested area by decade in British
+#|   Columbia, showing which decade reforested the most on average."
+by_decade |>
+  ggplot(aes(x = factor(decade), y = mean_reforested_ha)) +
+  geom_col(fill = "#2D6A4F") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(x = "Decade", y = "Mean reforested area (ha/yr)",
+       title = "Average annual reforestation by decade, BC",
+       caption = "Source: Environmental Reporting BC") +
+  theme_minimal()
+```
+
+**Interpret (for a non-technical reader):** *"On average, the decade with
+the highest annual reforestation was the one shown tallest above.
+Reforestation broadly tracks harvesting, but the two are not equal in every
+decade — a gap worth a second look."*
+
+Notice what we did **not** do: no join (only one table), no reshape (the
+shape already answered the question). Choosing *not* to use a tool is part
+of choosing the right tool.
+
+# Choose the function — activities
+
+For each task, decide the workflow **before** you write code.
+
+**Activity 1.** You want **one row per forest management category** showing
+its **total area** and **average age class**.
+
+1. Which function groups the data?
+2. Which function calculates the summaries?
+3. Which function sorts the result?
+4. Which plot type would communicate it best?
+5. What checks should you run before trusting the result?
+
+**Activity 2.** You have a wide table with **one column per year** and want
+to **plot area over time**.
+
+- Is this a filtering, summarising, reshaping, joining, or visualization
+  problem *first*? Which function do you reach for, and why?
+
+**Activity 3.** You have a **tree table** and a separate **species lookup
+table**, and you want the species *name* (not code) on every tree row.
+
+- Which single verb does this? What must you check immediately afterward?
+
+# Integrated case-study questions — decide the tools
+
+These need skills from several chapters at once. **Do not** jump to code —
+work through the framework questions first, then justify each step.
+
+**Question A.** *Which forest type or management category shows the largest
+change over time?*
+Decide whether you need `filter()`, `mutate()`, `group_by()`,
+`summarise()`, `arrange()`, `pivot_*()`, `left_join()`, and/or `ggplot()` —
+and in what order.
+
+**Question B.** *Are years with more harvesting also years with more
+reforestation?*
+Ask: what is the unit of observation? Is this a trend, a comparison, or a
+join problem? How would you show it, and how would you check the result is
+plausible?
+
+For every question, be ready to answer:
+
+- What is the **unit of observation**?
+- Which **columns** are needed?
+- Do we need to **clean or recode** any values first?
+- Is this a **grouped summary, a comparison, a trend, or a join**?
+- What function is **most efficient** here — and what is a slower but valid
+  alternative?
+- How can we **verify** the result?
+
+# Verify before you trust it
+
+Run the checks that fit each step you took:
+
+| After you … | Check that … |
+|---|---|
+| import | rows, columns, and units look right; note missing values |
+| `filter()` | the row count dropped by a sensible amount |
+| `summarise()` | group sizes (`n()`) are reasonable and values are plausible |
+| `left_join()` | the row count did **not** unexpectedly grow; note unmatched rows |
+| plot | the figure answers the question and axis labels include units |
+
+# AI as a verification partner — not the analyst
+
+In this chapter especially, AI is a **checking and debugging** partner, not
+the decision-maker. It is easy for an assistant to pick a function *before*
+reading the question carefully, or to assume a column that is not in your
+file.
+
+- Decide the **workflow yourself** first; then ask AI to critique it.
+- Ask the AI to **explain**, not just produce code, and to list
+  **verification steps**.
+- Watch for AI that **chose a tool too quickly**, ignored the unit of
+  observation, or **invented a column, function, or value**.
+
+> The goal is not to make AI do the work. The goal is to use AI to help you
+> understand, check, and improve your own reasoning.
+
+# Self-check quiz
+
+<div class="quiz" id="cs-q1" data-hints="One row per group is the tell.||Which pair collapses rows into per-group values?||group_by() then summarise().">
+  <div class="q">1. You want the mean reforested area <em>for each decade</em>. The most efficient tools are —</div>
+  <ul class="qopts">
+    <li data-correct="false"><code>filter()</code> then <code>arrange()</code></li>
+    <li data-correct="true"><code>mutate()</code> a decade column, then <code>group_by(decade) |&gt; summarise()</code></li>
+    <li data-correct="false"><code>pivot_wider()</code></li>
+    <li data-correct="false"><code>left_join()</code></li>
+  </ul>
+  <div class="explanation">One value per group = <code>group_by()</code> + <code>summarise()</code>; the decade first needs <code>mutate()</code>. No second table, so no join; the shape is already fine, so no pivot.</div>
+</div>
+
+<div class="quiz" id="cs-q2" data-hints="You are combining two tables on a shared column.||A join attaches columns from another table.||left_join, then check row counts.">
+  <div class="q">2. You need the species <em>name</em> from a lookup table added to every tree row. You should —</div>
+  <ul class="qopts">
+    <li data-correct="false">reshape the tree table with <code>pivot_longer()</code></li>
+    <li data-correct="true"><code>left_join()</code> the lookup on the species key, then check the row count did not grow</li>
+    <li data-correct="false"><code>summarise()</code> the tree table</li>
+    <li data-correct="false">add the names by hand</li>
+  </ul>
+  <div class="explanation">Combining two tables on a shared key is a join. After a <code>left_join()</code>, verify the row count is unchanged — a non-unique key would multiply rows.</div>
+</div>
+
+<div class="quiz" id="cs-q3" data-hints="Ask what could be wrong before trusting AI.||AI can assume data it never saw.||Check for invented columns/functions/values.">
+  <div class="q">3. An AI suggests code that uses a column your file does not contain. This is an example of —</div>
+  <ul class="qopts">
+    <li data-correct="false">a reproducible workflow</li>
+    <li data-correct="true">a hallucination — verify against your actual data and the documentation</li>
+    <li data-correct="false">a valid shortcut you should submit</li>
+    <li data-correct="false">a facet</li>
+  </ul>
+  <div class="explanation">When AI invents a column, function, or value, that is a hallucination. Always check its output against your real data and the package documentation before using it.</div>
+</div>
+
+# Done
+
+When your case-study `.qmd` renders cleanly — question, justified workflow,
+one figure, plausibility checks, and a plain-language interpretation —
+you have done the core skill of this course: **turning a real question into
+a verified, reproducible answer.**

@@ -37,3 +37,12 @@ transition_matrix_files/
 # Instructor solutions / answer keys — kept local, distributed via Canvas only
 *_solutions.qmd
 *_solutions.xlsx
+
+# TA answer-key bundle (solutions + data, organized by chapter) — never publish
+/TA_solutions/
+
+# New lab assignment set (Set B) — student starters, TA solutions, data, Canvas package — keep local
+/Lab_assignments_SetB/
+
+# Private project handoff doc — inventories confidential materials; keep local
+/HANDOFF.md

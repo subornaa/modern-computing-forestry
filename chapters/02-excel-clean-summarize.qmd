@@ -152,9 +152,10 @@ download it directly from the catalogue URL above.
 Where the BC silviculture file (Chapter 1) was a **time series** of
 provincial totals, this Ontario file is a **cross-classification** —
 every row is one combination of region × ownership × seral stage ×
-forest type × age class, with the total area for that cell.
+forest type × age class, with the total area for **that combination**.
 
-This shape is what a working forester sees most often:
+This **shape** — how the rows and columns are laid out (here, one row per
+category combination) — is what a working forester sees most often:
 
 - The Government of Ontario uses cross-classified tables like this
   to track stand structure across the landbase.
@@ -552,6 +553,20 @@ Available in Excel 2019+:
 condition returns its value. The trailing `TRUE` is a catch-all
 for "everything else". Without it, unmatched rows return `#N/A`.
 
+## `SWITCH` — exact-match recoding
+
+When you are recoding based on **one cell's exact value** (not a
+threshold test), `SWITCH` is often clearer than a nested `IF`:
+
+```text
+=SWITCH(D2, "Mature", "old", "Young", "new", "other")
+```
+
+`SWITCH` compares `D2` to each value in turn and returns the label
+after the first match; the final lone argument is the catch-all
+default. Rule of thumb: use `IFS` for **range/threshold** tests and
+`SWITCH` for **exact-match** recoding.
+
 ```{r case-when-verify}
 #| echo: false
 ontario |>
@@ -600,6 +615,14 @@ in column E. In column I you want the plain-English name.
 
 Arguments: *value to find, where to look, what to return, default
 if not found*. Clear and modern.
+
+::: {.callout-note}
+## The sheet name in the formula must match
+`codes!A:A` refers to a sheet named **`codes`**. If your lookup sheet has
+a different name — or you paste the formula before renaming the sheet —
+Excel returns `#REF!` or `#N/A`. Rename the reference sheet first, or fix
+the sheet name in the formula.
+:::
 
 ## `VLOOKUP` (everywhere)
 
@@ -1032,7 +1055,7 @@ Explanations appear below each question.
     <li data-correct="false">The data is encrypted</li>
     <li data-correct="false">It is sorted by region</li>
   </ul>
-  <div class="explanation">Every row is one unique combination of region × ownership × seral stage × forest type × age class, with the total area for that cell.</div>
+  <div class="explanation">Every row is one unique combination of region × ownership × seral stage × forest type × age class, with the total area for that combination.</div>
 </div>
 
 <div class="quiz" id="q11" data-hints="No single column identifies a row uniquely here.||The key is the set of classifying columns taken together.||region + ownership + seral stage + forest type + age class.">
@@ -1272,4 +1295,59 @@ verify against the data.
   the end of this chapter previews how the same logic appears in
   R. Refer to it when learners ask why we are still in Excel —
   the bridge is concrete and forward-pointing.
+:::
+
+
+---
+
+# Working with AI on this chapter {.unnumbered}
+
+Use AI as a **verification and debugging partner**, not an answer machine.
+The goal is not to make AI do the work — it is to use AI to help you
+**understand, check, and improve your own work.**
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Fill in the brackets and paste this into your AI assistant. It should
+*explain and check*, not hand you a final assignment answer:
+
+> *"I am working on FRST 232, this chapter. My dataset is `[file name]`
+> with columns `[columns]`. My task is `[what you are trying to do]`. I
+> tried `[paste your code or steps]` and got `[paste the exact output or
+> error]`. Explain what this does line by line, tell me whether it answers
+> the question, and list the checks I should run to verify it. Do not give
+> me the final answer."*
+:::
+
+**Verify it yourself** — before trusting any result (yours *or* an AI's):
+
+- the rows, columns, and units are what you expect;
+- the row count changes sensibly after a `filter()` or a join;
+- group sizes and summary values are plausible;
+- the figure answers the question and axis labels include units.
+
+**Common AI mistakes to watch for:** inventing a column, function, or value
+that is not in your data; choosing a tool before reading the question; and
+(in Excel) suggesting the wrong cell range or forgetting to refresh a
+PivotTable.
+
+::: {.callout-tip collapse="true"}
+## Compare your solution with the reference
+When a reference solution is available, do **not** just copy it — use it to
+check your own work:
+
+- **Expected result** — does your output match the target shape and values?
+- **Required components** — did you include every step the task asked for?
+- **If your result differs** — say *where* it matched, *where* it differed,
+  *what* caused the difference, *how* you fixed it, and *what* you learned.
+:::
+
+::: {.callout-tip collapse="true"}
+## AI replication challenge
+Write a prompt that would guide an AI *toward* the reference solution
+without handing over the final answer. Include the dataset, the columns,
+the task goal, the output format you need, and the verification checks.
+Then paste (or summarise) the AI's response and answer: did its approach
+match the book's? did it miss a verification step? did it invent a column,
+function, or value? what did your group change after checking it?
 :::

@@ -1,34 +1,290 @@
-# Glossary {.unnumbered}
+# Key Terms and Coding Vocabulary {.unnumbered}
 
-::: {.callout-note}
-This plain-language glossary is being expanded (an accessibility
-and ESL-support goal of the project). Terms are defined on first
-use within each chapter; this page collects the most common ones
-in one place.
+This is a **learning-support page**, not just a dictionary. Terms are
+grouped by topic. Each entry gives a plain-language definition, a small
+forestry example, a short code example where it helps, one common mistake,
+and often a *check your understanding* question. Throughout the book, the
+first time a hard term appears in a chapter it links here.
+
+::: {.callout-tip}
+Use the table of contents (or your browser's find, `Ctrl`/`Cmd` + `F`) to
+jump to a term. Every term heading is a link target.
 :::
 
-**Tibble** — a modern kind of data frame (table) used by the
-tidyverse. Each column is a variable; each row is an
-observation.
+## Excel and data basics
 
-**Pipe (`|>`)** — the native R operator that passes the result
-on its left into the function on its right, so a workflow reads
-left to right, top to bottom.
+### Data dictionary
+A short table — one row per column — recording each variable's **name**,
+**meaning**, **units**, and **type**.
+*Forestry example:* for the BC silviculture file, one row says
+`Reforestation_ha` = "area reforested that fiscal year, in hectares,
+numeric."
+*Common mistake:* writing the dictionary from memory instead of checking
+the file's About/ReadMe sheets.
+*Check:* what three things should every dictionary row record?
 
-**Data dictionary** — a short document, one row per column, that
-records each variable's name, meaning, units, and type.
+### Cleaning log
+A running record of **every change** you make to raw data and **why**, so
+another analyst can reproduce your cleaned file.
+*Forestry example:* "Dropped 12 all-missing pollutant columns because no
+station measured them this month."
+*Common mistake:* cleaning data with clicks and never writing down what you
+did.
 
-**Cleaning log** — a transparent record of every change made to
-raw data on the way to an analysis-ready dataset.
+### Cell reference (relative vs absolute)
+How an Excel formula points at other cells. A **relative** reference
+(`H2`) shifts when copied down; an **absolute** reference (`$H$2`) stays
+fixed.
+*Common mistake:* forgetting the `$` in a lookup range, so the range
+"slides" as you copy the formula and returns wrong answers.
+*Check:* which reference stays put when you copy a formula, `G2` or `$G$2`?
 
-**CRS (coordinate reference system)** — the system that ties
-spatial coordinates to locations on Earth (e.g., WGS 84, BC
-Albers). Reprojecting converts data from one CRS to another.
+### Structured table
+An Excel range converted to a named table (**Ctrl+T**) so sorting,
+filtering, and formulas stay safe as data grows.
+*Common mistake:* sorting one column by itself and scrambling the rows —
+a structured table sorts all columns together.
 
-**Quarto** — the open-source publishing system that combines
-prose, code, and output into a single rendered report
-(HTML, PDF, Word, slides).
+### PivotTable
+An Excel tool that **summarises** a table by dragging fields into Rows,
+Columns, Values, and Filters — the spreadsheet equivalent of
+`group_by()` + `summarise()`.
+*Forestry example:* mean harvested area by decade; total area by forest
+type × seral stage.
 
-**Open Government Licence (OGL)** — the licence under which BC,
-Ontario, and federal open data are released, permitting reuse
-with attribution.
+### Missing value
+A value that is **not recorded**. In Excel it is a blank cell; in R it is
+`NA`. It is *not* zero and *not* an empty string — it means "we do not
+know."
+*Forestry example:* a station with no ozone sensor has `NA` for O₃, which
+is different from a real reading of `0` ppb.
+*Common mistake:* letting `NA` be treated as `0`, which silently corrupts
+every sum and mean. Use `mean(x, na.rm = TRUE)`.
+*Check:* is a missing DBH the same as a DBH of 0?
+
+### Open Government Licence (OGL)
+The licence under which BC, Ontario, and federal open data are released,
+permitting reuse **with attribution**. Every dataset in this book is open
+data.
+
+## R basics
+
+### Object
+Anything you store in R with a name using `<-` (data, a number, a plot).
+```r
+bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"))
+```
+Here `bc` is an object.
+*Common mistake:* using an object before you have created it →
+`object 'bc' not found`.
+
+### Vector
+An ordered set of values of the **same type** — R's most basic data
+container. A column of a table is a vector.
+```r
+ha <- c(220000, 180000, 250000)   # a numeric vector
+```
+*Check:* can one vector hold both numbers and text at the same time?
+
+### Function
+A named command that **does something** to its inputs and returns a
+result. You call it with parentheses: `mean(x)`.
+*Forestry example:* `sum(bc$Reforestation_ha)` adds up a column.
+*Common mistake:* forgetting the parentheses (`mean` vs `mean(x)`).
+
+### Argument
+An **input** you give a function, inside its parentheses. In
+`read_excel(path, sheet = "Data")`, `path` and `sheet` are arguments.
+*Common mistake:* misspelling an argument name (`sheets =` instead of
+`sheet =`) or passing arguments in the wrong order.
+
+### Package
+A bundle of extra functions you **install once** and **load each session**
+with `library()`.
+```r
+install.packages("readxl")   # once
+library(readxl)              # every session
+```
+*Common mistake:* `could not find function "read_excel"` — the package is
+installed but you forgot `library(readxl)`.
+
+### Working directory
+The folder R treats as "here" when it looks for files. In this course you
+never set it by hand — the **`here` package** finds the project root for
+you.
+```r
+here("data", "airdata3.csv")   # a portable path
+```
+*Common mistake:* hard-coding `C:/Users/you/Desktop/...`, which breaks on
+every other computer.
+
+### Data frame
+R's classic rectangular table: rows are observations, columns are
+variables. *See also:* **[Tibble](#tibble)**, the tidyverse's tidier data
+frame.
+
+### Tibble
+A modern data frame used by the tidyverse. It prints a compact preview,
+shows column types, and never silently changes your data.
+*Forestry example:* `read_csv("airdata3.csv")` returns a tibble of hourly
+air-quality readings.
+*Common mistake:* expecting a tibble to behave exactly like a spreadsheet —
+you change it with code (`mutate`, `filter`), not by clicking cells.
+*Check:* how does a tibble differ from an Excel sheet?
+
+### Pipe
+The native operator `|>` that passes the result on its left into the
+function on its right, so a workflow reads left-to-right.
+```r
+bc |> filter(Fiscal_Year >= 2000) |> summarise(mean(Reforestation_ha))
+```
+Read `|>` as **"and then."**
+*Common mistake:* starting a new line with `|>` at the front instead of
+ending the previous line with it.
+
+## Tidyverse vocabulary
+
+### Filter
+Keep or drop **rows** by a condition. `filter()` ends in "**R**" — think
+**R**ows.
+```r
+airdata |> filter(!is.na(O3))     # keep rows where O3 was measured
+```
+*Common mistake:* using `filter()` when you meant `select()` (columns).
+
+### Select
+Keep or drop **columns** by name. `select()` ends in "**C**" — think
+**C**olumns.
+```r
+bc |> select(Fiscal_Year, Reforestation_ha)
+```
+
+### Mutate
+**Add or change a column.** The number of rows stays the same.
+```r
+bc |> mutate(decade = floor(Fiscal_Year / 10) * 10)
+```
+*Common mistake:* confusing `mutate()` (adds columns, same rows) with
+`summarise()` (collapses to fewer rows).
+
+### Summarize
+Collapse many rows into **summary values** (a mean, a count). Usually
+paired with `group_by()`.
+```r
+airdata |> group_by(location) |> summarise(mean_o3 = mean(O3, na.rm = TRUE))
+```
+*Common mistake:* forgetting `na.rm = TRUE`, so one `NA` makes the whole
+summary `NA`. (Spelled `summarise` or `summarize` — both work.)
+
+### group_by
+Split a table into groups so the next `summarise()` (or `mutate()`) runs
+**per group**.
+*Forestry example:* `group_by(region)` then `summarise()` gives one row per
+region.
+*Common mistake:* leaving a table grouped after you are done — add
+`.groups = "drop"` or `ungroup()`.
+
+### Join
+Combine **two tables** by a matching column. `left_join()` keeps every row
+of the left table and attaches matching columns from the right.
+```r
+airdata |> left_join(station_regions, by = "location")
+```
+*Common mistake:* not checking row counts before and after — a duplicated
+key can multiply your rows.
+*Check:* after a `left_join`, should the left table have more rows than
+before?
+
+### Key
+The column(s) two tables are **joined on** (e.g., `location`). A good key is
+**unique** in at least one table.
+*Common mistake:* joining on a key that repeats in *both* tables, creating
+an unexpected many-to-many explosion.
+
+### Pivot
+Change a table's **shape**. `pivot_longer()` folds many columns into
+key/value rows; `pivot_wider()` spreads a key column across new columns.
+*Forestry example:* turn a wide table (one column per year) into a long
+table (one row per year) so it is easy to plot.
+*Common mistake:* reshaping when you did not need to — pivot only when the
+current shape can't answer the question.
+
+## Quarto and reproducible reporting
+
+### Quarto
+The open-source publishing system that turns a `.qmd` file (prose + code +
+output) into an HTML report, PDF, Word document, or slides.
+*Forestry example:* your lab report, its code, and its figures all live in
+one `.qmd`.
+
+### Chunk
+A block of code inside a `.qmd`, fenced by `` ```{r} `` … `` ``` ``. When
+you render, R runs the chunk and inserts its output.
+*Common mistake:* code that works in the console but errors on render
+because an earlier chunk (that created an object) was skipped.
+
+### Render
+The act of running a `.qmd` from top to bottom to produce the finished
+document. In RStudio, the **Render** button.
+*Common mistake:* assuming a report is reproducible without rendering it
+from a clean session — always render before submitting.
+
+### Reproducible workflow
+An analysis another person (or future you) can **re-run from the raw data
+to the same result**, because every step is recorded in code.
+*Check:* if you deleted all your outputs, could you regenerate them by
+pressing Render?
+
+## Visualization
+
+### Visualization
+A chart or map that turns numbers into a picture so patterns are easy to
+see and communicate.
+*Forestry example:* a line chart of reforested area by fiscal year.
+
+### Geom
+A `ggplot2` **geometry** — the kind of mark a layer draws: `geom_point()`,
+`geom_line()`, `geom_col()`, `geom_boxplot()`.
+*Common mistake:* using `geom_bar()` (which counts rows) when you have
+pre-computed values and need `geom_col()`.
+
+### Aesthetic mapping
+The `aes()` part of a plot: **which columns** are shown by **which visual
+properties** (x-axis, y-axis, colour, fill, size, shape).
+```r
+ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha))
+```
+*Common mistake:* putting a constant colour inside `aes()` (which makes a
+misleading legend) instead of outside it.
+
+### Facet
+Splitting one plot into **small multiples** — one panel per group — with
+`facet_wrap()`.
+*Forestry example:* one ozone time-series panel per monitoring region.
+
+## AI-assisted debugging
+
+### Prompt
+The message you give an AI assistant. A good prompt gives **context +
+dataset + task + what you tried + the error/output + what you need** (see
+*How to use this book → How to write a useful AI prompt*).
+
+### Hallucination
+When an AI **invents** something that looks right but is false — a function
+that does not exist, a column you never had, or a made-up number.
+*Common mistake:* pasting AI code that calls an invented function and
+trusting it. Check functions against the package documentation.
+*Check:* how would you catch an AI that invented a column name?
+
+### Verification
+Confirming a result is correct **yourself** — with row counts,
+missing-value checks, summary statistics, and visual inspection — rather
+than trusting code (yours or an AI's) on faith. Verification is the habit
+this whole book is built around.
+
+## Spatial terms (optional extension)
+
+### CRS (coordinate reference system)
+The system that ties spatial coordinates to locations on Earth (e.g.,
+WGS 84, BC Albers). Reprojecting converts data from one CRS to another.
+Covered in the optional *Spatial Data Analysis in R* resource.

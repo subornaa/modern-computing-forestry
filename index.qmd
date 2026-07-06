@@ -16,10 +16,10 @@ Stewardship. CC BY 4.0.
 
 This open textbook teaches data analysis for forestry and natural
 resources using free, modern, openly licensed tools: Microsoft
-Excel (Chapters 1–3), R with the tidyverse (Chapters 4–9), the
-`sf` and `leaflet` packages for spatial work (Chapters 10–11),
-and Quarto for reproducible reporting and presentations
-(Chapters 5–13). Every dataset used is openly licensed Canadian,
+Excel (Chapters 1–3), R with the tidyverse (Chapters 4–9), and
+Quarto for reproducible reporting, an integrated case study, and
+presentations. Spatial analysis with the `sf` and `leaflet`
+packages is available as an optional extension. Every dataset used is openly licensed Canadian,
 BC, or Ontario government data. The book is designed to bridge
 from Excel to R for learners who have never written code before,
 while preparing them for advanced study in statistical

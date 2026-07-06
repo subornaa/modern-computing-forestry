@@ -33,7 +33,8 @@ By the end of this chapter you will be able to:
 - Use `c()` to combine values into a vector, and apply
   vectorized functions (`sum`, `mean`, `length`) directly to a
   vector.
-- Distinguish a **tibble** from a **data.frame** and explain why
+- Distinguish a **[tibble](../glossary.qmd#tibble)** from a
+  **[data.frame](../glossary.qmd#data-frame)** and explain why
   the tidyverse uses tibbles.
 - Identify column types from `glimpse()` output (`<int>`,
   `<dbl>`, `<chr>`, `<lgl>`, `<date>`).
@@ -58,7 +59,9 @@ By the end of this chapter you will be able to:
    - The result of importing both
      `bc_disturbance_reforestation.xlsx` and
      `on_forest_statistics_1.xlsx`.
-   - `dim()`, `names()`, and `glimpse()` output for each file.
+   - The inspection output — `dim()`, `names()`, `glimpse()`,
+     `summary()`, `head()`, and `tail()` — for each file (the
+     inspection moves taught in this chapter).
    - A **missing-value summary** for each file (one cell per
      column showing how many `NA` values it has).
    - A **data dictionary table** for the BC file, written by you
@@ -233,8 +236,9 @@ that matter for this course:
 | Subset with `[, "col"]` | Returns a vector | Returns a tibble |
 | Created by | `read.csv()`, `data.frame()` | `read_excel()`, `read_csv()`, `tibble()` |
 
-You can always convert: `as_tibble(df)` and `as.data.frame(tib)`.
-For tidyverse work, stay with tibbles.
+You can always convert **in either direction**: `as_tibble(df)` turns a
+data.frame *into* a tibble, and `as.data.frame(tib)` turns a tibble *back
+into* a data.frame. For tidyverse work, stay with tibbles.
 
 # Importing files
 
@@ -281,9 +285,9 @@ Arguments to remember:
 All readr functions return a tibble. All accept a file path as
 the first argument.
 
-# Inspecting a tibble — the six moves
+# Inspecting a tibble — the eight moves
 
-Whenever you load a new file, run these six commands. They take
+Whenever you load a new file, run these eight commands. They take
 seconds and catch most problems.
 
 ```{r six-moves}
@@ -363,7 +367,9 @@ bc$Reforestation_ha <- as.numeric(bc$Reforestation_ha)
 
 In R, missing values are represented by `NA`. `NA` is **not**
 zero. It is **not** an empty string. It is its own thing: a
-flag meaning *"we do not know this value"*.
+flag meaning *"we do not know this value"*. If that distinction
+is new to you, skim **`NA` vs `0`** (below) first — treating an
+unknown value as `0` silently corrupts every sum and mean.
 
 ## Counting NAs in one column
 
@@ -594,6 +600,33 @@ That renders as:
 The point: **the dictionary travels with the analysis**. When you
 hand your `.qmd` to a colleague, they see the table and the
 code that built the numbers, in the same file.
+
+::: {.callout-tip}
+## Starter for the BC file
+The BC silviculture file has these eight columns. Copy this table into
+your report and fill in the **Type**, **Unit**, and **Description**
+yourself (use `glimpse(bc)` for the types):
+
+| Column | Type | Unit | Description |
+|---|---|---|---|
+| `Fiscal_Year` | | | |
+| `Clearcutting_ha` | | | |
+| `Clearcutting_with_reserves_ha` | | | |
+| `Partial_cutting_ha` | | | |
+| `Harvested_ha` | | | |
+| `Natural_Disturbance_ha` | | | |
+| `Total_Disturbance_ha` | | | |
+| `Reforestation_ha` | | | |
+
+**File-summary template.** After the dictionary, add two or three
+sentences that turn your inspection output into prose, e.g.:
+
+> *"The BC silviculture file has 37 rows and 8 columns. The variables are
+> numeric areas in hectares plus a fiscal-year integer, and the
+> missing-value audit shows no missing values. The main variables describe
+> harvested, natural-disturbance, total-disturbance, and reforested area by
+> fiscal year."*
+:::
 
 # Active learning
 
@@ -1239,4 +1272,59 @@ After AI suggests a fix, **check**:
   chapter is *"every move you used to do by looking at Excel is
   now a scripted R call"*. Refer back to it whenever a learner
   asks why a particular function exists.
+:::
+
+
+---
+
+# Working with AI on this chapter {.unnumbered}
+
+Use AI as a **verification and debugging partner**, not an answer machine.
+The goal is not to make AI do the work — it is to use AI to help you
+**understand, check, and improve your own work.**
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Fill in the brackets and paste this into your AI assistant. It should
+*explain and check*, not hand you a final assignment answer:
+
+> *"I am working on FRST 232, this chapter. My dataset is `[file name]`
+> with columns `[columns]`. My task is `[what you are trying to do]`. I
+> tried `[paste your code or steps]` and got `[paste the exact output or
+> error]`. Explain what this does line by line, tell me whether it answers
+> the question, and list the checks I should run to verify it. Do not give
+> me the final answer."*
+:::
+
+**Verify it yourself** — before trusting any result (yours *or* an AI's):
+
+- the rows, columns, and units are what you expect;
+- the row count changes sensibly after a `filter()` or a join;
+- group sizes and summary values are plausible;
+- the figure answers the question and axis labels include units.
+
+**Common AI mistakes to watch for:** inventing a column, function, or value
+that is not in your data; choosing a tool before reading the question; and
+(in Excel) suggesting the wrong cell range or forgetting to refresh a
+PivotTable.
+
+::: {.callout-tip collapse="true"}
+## Compare your solution with the reference
+When a reference solution is available, do **not** just copy it — use it to
+check your own work:
+
+- **Expected result** — does your output match the target shape and values?
+- **Required components** — did you include every step the task asked for?
+- **If your result differs** — say *where* it matched, *where* it differed,
+  *what* caused the difference, *how* you fixed it, and *what* you learned.
+:::
+
+::: {.callout-tip collapse="true"}
+## AI replication challenge
+Write a prompt that would guide an AI *toward* the reference solution
+without handing over the final answer. Include the dataset, the columns,
+the task goal, the output format you need, and the verification checks.
+Then paste (or summarise) the AI's response and answer: did its approach
+match the book's? did it miss a verification step? did it invent a column,
+function, or value? what did your group change after checking it?
 :::

@@ -27,7 +27,8 @@ folder. For sources and details, see the
 
 By the end of this chapter you will be able to:
 
-- Explain the **grammar of graphics**: data → aesthetic mappings
+- Explain the **grammar of graphics**: data →
+  [aesthetic mappings](../glossary.qmd#aesthetic-mapping)
   → geometric objects → coordinate system → theme.
 - Build a **basic plot in three lines** using
   `ggplot(data, aes(...)) + geom_*()`.
@@ -54,7 +55,8 @@ By the end of this chapter you will be able to:
 
 1. A **rendered Quarto HTML report**
    (`frst232_ch09_learner.html`) containing at least:
-   - One **bar chart** of BC reforestation by fiscal year.
+   - One **chart** of BC reforestation by fiscal year — a bar or line
+     chart; pick the type that best shows change over time.
    - One **line chart** with two or more series overlaid (e.g.,
      harvested vs natural disturbance vs reforestation across
      years).
@@ -130,7 +132,7 @@ Three things to notice:
   `Reforestation_ha` to the y-axis"*.
 - `geom_line()` draws lines connecting the (x, y) points.
 - The `+` sign **adds layers** — not the pipe `|>`. This is
-  ggplot2's one syntactic quirk. Read `+` as *"and also draw"*.
+  ggplot2's one bit of unusual syntax. Read `+` as *"and also draw"*.
 
 # `geom_point()` — scatter plot
 
@@ -210,6 +212,16 @@ ggplot(events, aes(x = type)) +
 
 `geom_bar` produced the count of each `type`. `geom_col` would
 have required a numeric column to use as height.
+
+::: {.callout-note}
+## A fresh import for this chapter
+The `airdata_clean` object below is a **new import made here** for
+plotting — it is *not* the cleaned, region-joined tibble of the same name
+from Chapter 6. The `region` column is added later, in the box-plot
+example (via the station → region lookup). If you copy code that uses
+`region`, run that `left_join()` first, or you will see
+`object 'region' not found`.
+:::
 
 # `geom_histogram()` — distribution of one variable
 
@@ -367,7 +379,7 @@ Always set explicit `width` and `height` (in inches by default)
 and a high `dpi` for print-quality output. `ggsave()` infers
 the file format from the extension (`.png`, `.pdf`, `.svg`).
 
-# Six geoms in one place
+# Seven geoms in one place
 
 ```{r summary-table}
 #| echo: false
@@ -415,8 +427,9 @@ ggplot(airdata_region,
     colour   = "Station",
     caption  = "Source: Environmental Reporting BC"
   ) +
-  theme_minimal(base_size = 11) +
-  theme(legend.position = "bottom",
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "right",
+        axis.text = element_text(size = 7),
         plot.title = element_text(face = "bold"))
 ```
 
@@ -490,11 +503,22 @@ colours.
 with `scale_*_continuous(labels = label_comma())` or
 `scale_x_date()`.
 
-**Task 5 — Save.** Save the chart to `outputs/` as PNG with
-`ggsave()`.
+**Task 5 — Save.** Before saving, run this quick **plot checklist**:
 
-**Task 6 — Caption it.** Write a one-sentence caption that states
-the **headline finding** of the chart in plain language.
+- Is the **geom** right for the question (bar / line / point / box)?
+- Are **x** and **y** the variables you intended?
+- Do the **axis labels include units**?
+- Are the **title / subtitle** informative, and is a **source caption**
+  present?
+- Will it save into **`outputs/`** (not your Desktop)?
+
+Then save the chart to `outputs/` as PNG with `ggsave()`.
+
+**Task 6 — Caption it.** Write a one-sentence caption that states the
+**headline finding** in plain language. A useful template:
+
+> *"This chart shows [variable] by [group / time]. The main pattern is
+> [finding], measured in [unit]."*
 
 **Task 7 — Submit.** Each group submits the PNG, the code, and
 the caption.
@@ -732,4 +756,59 @@ Chapter 10 walks through that move.
   first.
 - **Forgetting `group = ...`** in line charts with categorical
   x. Symptom: zig-zag lines.
+:::
+
+
+---
+
+# Working with AI on this chapter {.unnumbered}
+
+Use AI as a **verification and debugging partner**, not an answer machine.
+The goal is not to make AI do the work — it is to use AI to help you
+**understand, check, and improve your own work.**
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Fill in the brackets and paste this into your AI assistant. It should
+*explain and check*, not hand you a final assignment answer:
+
+> *"I am working on FRST 232, this chapter. My dataset is `[file name]`
+> with columns `[columns]`. My task is `[what you are trying to do]`. I
+> tried `[paste your code or steps]` and got `[paste the exact output or
+> error]`. Explain what this does line by line, tell me whether it answers
+> the question, and list the checks I should run to verify it. Do not give
+> me the final answer."*
+:::
+
+**Verify it yourself** — before trusting any result (yours *or* an AI's):
+
+- the rows, columns, and units are what you expect;
+- the row count changes sensibly after a `filter()` or a join;
+- group sizes and summary values are plausible;
+- the figure answers the question and axis labels include units.
+
+**Common AI mistakes to watch for:** inventing a column, function, or value
+that is not in your data; choosing a tool before reading the question; and
+(in Excel) suggesting the wrong cell range or forgetting to refresh a
+PivotTable.
+
+::: {.callout-tip collapse="true"}
+## Compare your solution with the reference
+When a reference solution is available, do **not** just copy it — use it to
+check your own work:
+
+- **Expected result** — does your output match the target shape and values?
+- **Required components** — did you include every step the task asked for?
+- **If your result differs** — say *where* it matched, *where* it differed,
+  *what* caused the difference, *how* you fixed it, and *what* you learned.
+:::
+
+::: {.callout-tip collapse="true"}
+## AI replication challenge
+Write a prompt that would guide an AI *toward* the reference solution
+without handing over the final answer. Include the dataset, the columns,
+the task goal, the output format you need, and the verification checks.
+Then paste (or summarise) the AI's response and answer: did its approach
+match the book's? did it miss a verification step? did it invent a column,
+function, or value? what did your group change after checking it?
 :::

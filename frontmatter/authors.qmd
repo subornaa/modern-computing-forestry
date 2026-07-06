@@ -2,12 +2,26 @@
 
 ## Suborna Ahmed
 
-**Dr. Suborna Ahmed** is the principal author and project lead. She is
-an Assistant Professor of Teaching in the Department of Forest Resources
-Management, Faculty of Forestry & Environmental Stewardship, University
-of British Columbia. Her teaching and research bridge forestry,
-statistics, and data analytics; she teaches FRST 232 (Computer
-Applications in Forestry) and FRST 531.
+Dr. Suborna Ahmed is an Associate Professor of Teaching in the Department
+of Forest Resources Management, Faculty of Forestry & Environmental
+Stewardship, at the University of British Columbia. She teaches data
+analytics, computing, forest biometrics, and quantitative methods for
+forestry and natural-resources students.
+
+Her teaching focuses on helping students move from spreadsheet-based data
+analysis to reproducible workflows in R, Quarto, and modern open-source
+tools. She develops open educational resources that use real forestry and
+environmental datasets, scaffolded practice, active learning, and
+AI-assisted debugging to support students with different levels of coding
+experience.
+
+Dr. Ahmed's scholarly and teaching interests include forestry data
+analytics, forest biometrics, reproducible research, open education,
+inclusive quantitative pedagogy, and the responsible use of generative AI
+in technical learning. She is the project lead for this OER and has
+developed it with support from student contributors and collaborators to
+make data-analysis training more accessible, practical, and relevant for
+forestry and natural-resources education.
 
 ## OER Team
 

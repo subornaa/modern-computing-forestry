@@ -59,6 +59,37 @@ In order of who to ask first:
    answer machines. The chapter has guidance on how to prompt
    effectively (and when NOT to use AI).
 
+### How to write a useful AI prompt
+
+When you do reach for an AI assistant, a good prompt gets a useful
+answer. Use this formula:
+
+> **Context + dataset + task + what I tried + error/output + what I
+> need help with**
+
+**Worked example:**
+
+> *"I am using R in FRST 232. I have a tibble called `bc` from
+> `bc_disturbance_reforestation.xlsx`. I want to calculate the total
+> reforested area by decade. I tried this code: `[paste your code]`. I
+> got this error/output: `[paste the exact error/output]`. Please
+> explain what went wrong and suggest a fix. Do not skip steps, and tell
+> me how to verify the answer."*
+
+**Every time you ask AI for help:**
+
+- Paste the **exact** error message — not a paraphrase.
+- Include the **dataset and column names** you are working with.
+- Ask the AI to **explain the code line by line**, not just hand you code.
+- Ask it for **verification steps** you can run yourself.
+- When you are unsure, **compare answers across two AI tools**.
+- Check every suggestion against the **book, the package documentation,
+  and your actual data**.
+- **Never submit AI output you do not understand and have not verified.**
+
+The goal is not to make AI do the work. The goal is to use AI to help
+you **understand, check, and improve your own work.**
+
 ## Recommended pacing
 
 The book is designed for a one-term course (12 chapters of
@@ -70,7 +101,7 @@ each chapter being the in-class hands-on time.
 - **Chapters 4–5** (R foundations, Quarto): 2 weeks
 - **Chapters 6–8** (dplyr, summarising, joining): 3 weeks
 - **Chapter 9** (ggplot2): 1 week
-- **Chapters 10–11** (sf, leaflet): 2 weeks
+- **Optional:** spatial analysis (`sf`, `leaflet`) — extension material
 - **Chapter 12** (presentations + portfolio): 1 week
 - **Chapter 13** (review + final exam): 1 week
 

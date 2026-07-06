@@ -32,7 +32,7 @@ data than the file used here. **No links on this page are invented.**
 | **BC air quality** — *Verified Hourly Air Quality & Meteorological Data* | BC Ministry of Environment (OGL — BC) | [`airdata3.csv`](data/airdata3.csv) · [source](https://open.canada.ca/data/en/dataset/77eeadf4-0c19-48bf-a47a-fa9eef01f409) | `.csv` | Ch 5, 6, 7, 8, 9, 11 |
 | **ECCC weather** — daily climate, Vancouver Int'l A (Climate ID 1108447) | Environment and Climate Change Canada | [`inter_air_van_weather.csv`](data/inter_air_van_weather.csv) · [source](https://climate.weather.gc.ca/historical_data/search_historic_data_e.html) | `.csv` | Ch 8 |
 | **NRCan wildfire** — National Fire Database, fire points | Natural Resources Canada / CWFIS | [`nfdb_fires_2021_2024.csv`](data/nfdb_fires_2021_2024.csv) · [source](https://cwfis.cfs.nrcan.gc.ca/datamart/download/nfdbpnt) | `.csv` | Ch 4; Ch 9 (derived) |
-| **CSRD parks** — Park Locations | Columbia Shuswap Regional District Open Data | [`csrd_parks.geojson`](data/csrd_parks.geojson) · [source](https://data-csrd.opendata.arcgis.com/) | `.geojson` | Ch 10, 11, 13 |
+| **CSRD parks** — Park Locations | Columbia Shuswap Regional District Open Data | [`csrd_parks.geojson`](data/csrd_parks.geojson) · [source](https://data-csrd.opendata.arcgis.com/) | `.geojson` | *Optional spatial resource* |
 
 : Open datasets used across the book — click a file name to download it directly {tbl-colwidths="[26,24,34,7,9]"}
 
@@ -63,8 +63,8 @@ data than the file used here. **No links on this page are invented.**
   Monitoring: Verified Hourly Air Quality and Meteorological Data*. Open
   Government Licence — British Columbia.
 - **How it's used:** the real, messy file for cleaning (Ch 6), grouped
-  summaries (Ch 7), the air + weather join (Ch 8), `ggplot2` (Ch 9), and
-  station mapping (Ch 11). The book focuses on **ground-level ozone
+  summaries (Ch 7), the air + weather join (Ch 8), and `ggplot2` (Ch 9).
+  The book focuses on **ground-level ozone
   (O₃)**, which is recorded at eight Lower Mainland stations.
 - **File:** a **teaching extract** prepared from the source (selected
   Lower Mainland stations, hourly, January 2000), ~11,900 rows × 26
@@ -95,9 +95,10 @@ data than the file used here. **No links on this page are invented.**
 ### CSRD parks — `csrd_parks.geojson`
 - **Source:** Columbia Shuswap Regional District Open Data (ArcGIS Hub),
   *Park Locations* feature layer.
-- **How it's used:** the real spatial layer for Ch 10 (`sf`: inspect CRS,
-  reproject to BC Albers, static `geom_sf` map) and Ch 11 (interactive
-  `leaflet` map).
+- **How it's used:** the real spatial layer for the **optional spatial
+  extension** (`sf`: inspect CRS, reproject to BC Albers, static `geom_sf`
+  map; interactive `leaflet` map). Spatial analysis is no longer part of
+  the required book — see *Optional: Spatial Data Analysis in R*.
 - **File:** 66 point features in WGS 84 (EPSG:4326). The *Direct GeoJSON*
   link is a live query; `scripts/download_csrd_parks.R` regenerates it.
 
