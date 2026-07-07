@@ -476,7 +476,39 @@ labels, and a caption. Save it as a 7"x5" PNG with
 `ggsave(here("outputs", "myplot.png"))`. Confirm the file
 exists.
 
-# Group lab activity
+# Practice Demo Lab
+
+::: {.callout-important}
+## Practice demo only
+This is a **guided practice lab in the OER book**, designed to help you
+learn the workflow before completing the official lab assignment on
+**Canvas**. The Canvas lab is the graded assignment. Use this activity to
+practice, compare your work with the reference solution, and learn how to
+write an AI verification prompt.
+:::
+
+This demo lab has **six parts** — work them in order:
+
+1. **Your attempt.** Work through the tasks below.
+2. **Reference solution.** Compare against the **worked examples earlier in
+   this chapter** (your public reference). The graded Canvas lab has its own
+   private answer key — do not copy demo solutions into a Canvas submission.
+3. **Compare your work with the reference.** Where did it match? Where did
+   it differ? What caused the difference, and how did you fix it?
+4. **Write your own AI verification prompt.** Ask an AI to *check* your
+   reasoning, code, and outputs — not to produce the answer for you.
+5. **Model AI verification prompt.**
+
+   > *"I am doing a FRST 232 practice demo lab. My dataset is `[file name]`
+   > (columns `[columns]`). I attempted `[paste your steps or code]` and got
+   > `[paste the output]`. Explain what my work does line by line, tell me
+   > whether it answers the task, and list the checks I can run to verify it
+   > against the chapter's worked example. Do not give me the final answer."*
+
+6. **Reflection: what changed after checking?** In two or three sentences —
+   did your attempt hold up? what did you fix? what will you check first
+   next time?
+
 
 ::: {.callout-note appearance="default"}
 ## Lab: Build a chart that tells a story
@@ -756,59 +788,4 @@ Chapter 10 walks through that move.
   first.
 - **Forgetting `group = ...`** in line charts with categorical
   x. Symptom: zig-zag lines.
-:::
-
-
----
-
-# Working with AI on this chapter {.unnumbered}
-
-Use AI as a **verification and debugging partner**, not an answer machine.
-The goal is not to make AI do the work — it is to use AI to help you
-**understand, check, and improve your own work.**
-
-::: {.callout-note collapse="true"}
-## AI prompt to check your work
-Fill in the brackets and paste this into your AI assistant. It should
-*explain and check*, not hand you a final assignment answer:
-
-> *"I am working on FRST 232, this chapter. My dataset is `[file name]`
-> with columns `[columns]`. My task is `[what you are trying to do]`. I
-> tried `[paste your code or steps]` and got `[paste the exact output or
-> error]`. Explain what this does line by line, tell me whether it answers
-> the question, and list the checks I should run to verify it. Do not give
-> me the final answer."*
-:::
-
-**Verify it yourself** — before trusting any result (yours *or* an AI's):
-
-- the rows, columns, and units are what you expect;
-- the row count changes sensibly after a `filter()` or a join;
-- group sizes and summary values are plausible;
-- the figure answers the question and axis labels include units.
-
-**Common AI mistakes to watch for:** inventing a column, function, or value
-that is not in your data; choosing a tool before reading the question; and
-(in Excel) suggesting the wrong cell range or forgetting to refresh a
-PivotTable.
-
-::: {.callout-tip collapse="true"}
-## Compare your solution with the reference
-When a reference solution is available, do **not** just copy it — use it to
-check your own work:
-
-- **Expected result** — does your output match the target shape and values?
-- **Required components** — did you include every step the task asked for?
-- **If your result differs** — say *where* it matched, *where* it differed,
-  *what* caused the difference, *how* you fixed it, and *what* you learned.
-:::
-
-::: {.callout-tip collapse="true"}
-## AI replication challenge
-Write a prompt that would guide an AI *toward* the reference solution
-without handing over the final answer. Include the dataset, the columns,
-the task goal, the output format you need, and the verification checks.
-Then paste (or summarise) the AI's response and answer: did its approach
-match the book's? did it miss a verification step? did it invent a column,
-function, or value? what did your group change after checking it?
 :::

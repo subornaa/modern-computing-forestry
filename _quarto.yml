@@ -36,6 +36,7 @@ book:
         - chapters/01-excel-workbench.qmd
         - chapters/02-excel-clean-summarize.qmd
         - chapters/03-excel-pivot-charts.qmd
+        - chapters/03b-excel-case-study.qmd
     - part: "R foundations"
       chapters:
         - chapters/04-r-getting-started.qmd
