@@ -771,7 +771,7 @@ You can then `purrr::map()` over them to read all sheets. We will
 get to `purrr` later in the course; just know that batch-import is
 possible.
 
-# A glimpse of Chapter 5: From Excel to Quarto
+# A glimpse ahead: From Excel to Quarto
 
 In Chapter 5 you will write your first **Quarto** document. Quarto
 mixes:
@@ -797,9 +797,17 @@ the documentation, the code, and the output are now one file.
 
 # Self-assessment quiz {#sec-quiz-ch04}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>
@@ -1184,7 +1192,11 @@ check is to look up the function in R's own help.
 | `frst232_ch04_starter.zip` | A pre-built starter project containing the .Rproj file, folder structure, learner .qmd, and a placeholder data folder. |
 | `quiz_ch04.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested grading guidance for the group lab
+## Suggested facilitation guidance for the Practice Demo Lab
+
+*These are optional facilitation and feedback suggestions for instructors
+running this book demo — **not** a grading key. The percentages below are
+relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 
 | Task | Weight | What to look for |
 |---|---|---|

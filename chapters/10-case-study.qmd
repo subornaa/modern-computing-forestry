@@ -242,6 +242,12 @@ file.
 
 # Self-check quiz
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
 <div class="quiz" id="cs-q1" data-hints="One row per group is the tell.||Which pair collapses rows into per-group values?||group_by() then summarise().">
   <div class="q">1. You want the mean reforested area <em>for each decade</em>. The most efficient tools are —</div>
   <ul class="qopts">

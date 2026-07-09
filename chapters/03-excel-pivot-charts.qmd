@@ -237,6 +237,13 @@ through **Format Axis → Display units → Thousands**.
 
 # PivotTables
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"I built a PivotTable with `[fields]` in Rows/Columns and `[field]` summarised by `[Sum/Average/Count]`. Check whether that layout answers my question, whether Sum vs Average vs Count is the right summary, and what to verify (grand totals, blank cells, a manual spot-check, refreshing after data changes). Do not build a different pivot for me."*
+:::
+
 A PivotTable is Excel's most underused feature for forestry data.
 It takes a **tidy** table — one row per observation, one column per
 variable — and rearranges it into a summary.
@@ -661,7 +668,7 @@ Example: in the Ontario file you could add a `area_per_age_class`
 calculated field equal to `SumOfTotalHa / AC_10`. Use sparingly —
 calculated fields are powerful but easy to hide a typo inside.
 
-# A glimpse of Chapter 9: From Excel to `ggplot2`
+# A glimpse ahead: From Excel to `ggplot2`
 
 In Chapter 9 you will rebuild the BC and Ontario charts from this
 chapter using `ggplot2` in R. The Excel moves you learned here map
@@ -687,9 +694,17 @@ transfers directly.
 
 # Self-assessment quiz {#sec-quiz-ch03}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>
@@ -1034,7 +1049,7 @@ yours.
 
 - This chapter is the **bridge chapter** from raw Excel work into
   tidy-data thinking. Spend time on the PivotTable → R parallel
-  in the "A glimpse of Chapter 9" section — it is the most
+  in the "A glimpse ahead" section — it is the most
   important conceptual move of the first half of the book.
 - The main path covers six skills: chart choice, chart anatomy,
   PivotTable construction, aggregation switching, PivotChart, and
@@ -1066,7 +1081,11 @@ yours.
 | `frst232_ch03_pivot_solutions.xlsx` | Instructor solutions. **Do not distribute to learners.** |
 | `quiz_ch03.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested grading guidance for the group lab
+## Suggested facilitation guidance for the Practice Demo Lab
+
+*These are optional facilitation and feedback suggestions for instructors
+running this book demo — **not** a grading key. The percentages below are
+relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 
 | Task | Weight | What to look for |
 |---|---|---|
@@ -1088,7 +1107,7 @@ yours.
 - Some will compute "average" on a column already summed in a
   PivotTable, double-aggregating. Walk through what `Sum` vs
   `Average` actually does at the cell level.
-- *Excel-to-R bridge:* The "A glimpse of Chapter 9" section is the
+- *Excel-to-R bridge:* The "A glimpse ahead" section is the
   single most important paragraph in Chapter 3 for the long arc
   of the course. Refer to it explicitly when learners ask why we
   are still in Excel.

@@ -187,6 +187,13 @@ tables**. When you meet a new task, match it here first:
 
 # The four mutating joins
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"I plan to `left_join([A], [B], by = "[key]")` to add `[columns]`. Check whether `left_join` is the right join type, whether my key is unique in `[B]`, and which pre/post-join row-count checks I should run so the join does not silently fan out. Do not give me the merged table."*
+:::
+
 You met `left_join()` in Chapter 6. Now the other three.
 
 ## Set up a small worked example
@@ -680,7 +687,7 @@ If `districts` accidentally has duplicate keys, the join now
 errors instead of silently fanning out. Adopt this for any
 production analysis.
 
-# A glimpse of Chapter 9: From combined data to charts
+# A glimpse ahead: From combined data to charts
 
 Now that you can build a clean, combined tibble, the next step
 is to **visualise** it. Chapter 9 covers `ggplot2`:
@@ -704,7 +711,15 @@ in this chapter.
 
 # Self-assessment quiz {#sec-quiz-ch08}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct.
+:::
 
 ```{=html}
 <style>

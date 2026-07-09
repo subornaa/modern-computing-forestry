@@ -786,7 +786,7 @@ This is one of the most powerful patterns in dplyr — but also
 one of the most confusing. We will use it sparingly in this
 course.
 
-# A glimpse of Chapter 7: From cleaning to summarizing
+# A glimpse ahead: From cleaning to summarizing
 
 In Chapter 7 we go deeper into `summarise()`. The verbs are
 already familiar; what we add is:
@@ -815,9 +815,17 @@ Chapter 7 walks through this in detail.
 
 # Self-assessment quiz {#sec-quiz-ch06}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>

@@ -78,6 +78,13 @@ Write your three answers down — you will check them against R next.
 
 # Part B — answer it in early R
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"My question is `[question]`, and I plan to answer it with these steps: `[list your Excel and early-R steps]`. Check whether my plan uses the simplest tools that answer the question, whether the order makes sense, and which checks would confirm the result. Do not solve the case study for me."*
+:::
+
 The same three answers, now reproducibly. This uses only Chapter 4–5
 skills: `read_excel()`, inspection, base functions, and the pipe.
 

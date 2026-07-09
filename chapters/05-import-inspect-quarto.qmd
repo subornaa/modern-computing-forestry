@@ -242,6 +242,13 @@ into* a data.frame. For tidyverse work, stay with tibbles.
 
 # Importing files
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"I imported `[file]` and got a tibble of `[rows] x [cols]`. Check whether the column types look right, whether any column that should be numeric came in as text (or a date as character), and which inspection commands I should run next. Do not hand me a finished import script."*
+:::
+
 Two import functions cover almost every real-world file:
 
 ## `readxl::read_excel()`
@@ -364,6 +371,13 @@ bc$Reforestation_ha <- as.numeric(bc$Reforestation_ha)
 ```
 
 # Missing values — `NA` is its own thing
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"`colSums(is.na(df))` shows `[which columns]` have missing values. Check whether my plan to handle them (`[drop / keep / na.rm = TRUE]`) is appropriate for this dataset, and explain what could go wrong if I treated `NA` as zero. Do not decide the whole cleaning strategy for me."*
+:::
 
 In R, missing values are represented by `NA`. `NA` is **not**
 zero. It is **not** an empty string. It is its own thing: a
@@ -833,7 +847,7 @@ read_csv("file.csv",
 This is overkill for clean BC and Ontario files. It becomes
 useful when you import messy real-world CSVs in Chapter 6.
 
-# A glimpse of Chapter 6: From inspection to cleaning
+# A glimpse ahead: From inspection to cleaning
 
 In Chapter 6 you move from *inspecting* to *cleaning*. The core
 moves of `dplyr`:
@@ -860,9 +874,17 @@ problems that real forestry data presents.
 
 # Self-assessment quiz {#sec-quiz-ch05}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>

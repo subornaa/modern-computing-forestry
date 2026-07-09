@@ -186,6 +186,13 @@ plotting, long is almost always the right shape.
 
 # `geom_col()` vs `geom_bar()`
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"I want a chart that shows `[change over time / a distribution / a comparison across groups]` from `[columns]`, and I picked `[geom_*]`. Check whether that geom is the clearest choice for my message, suggest a better alternative if there is one, and list the labels and units the figure needs. Do not produce the final chart code for me."*
+:::
+
 The two bar geoms are confused often. The rule:
 
 - `geom_col()` — you give it `y` values to plot.
@@ -629,23 +636,36 @@ p1 | p2          # p1 and p2 side by side
 interactive HTML charts (hover for values, zoom, pan). Useful
 for web reports.
 
-# A glimpse of Chapter 10: From plots to maps
+# A glimpse ahead: the Integrated Case Study
 
-Chapter 10 moves from charts to **spatial data**:
+The next required chapter, **Integrated Case Study: Choosing the Right
+Tools**, is where the separate skills come together. Instead of being told
+which function to practice, you are handed a **question and a dataset** and
+decide the workflow yourself:
 
-- The `sf` package — *simple features* for vector spatial data
-  (points, lines, polygons).
-- Coordinate reference systems (CRS) and why they matter.
-- Reading and writing shapefiles and GeoJSON.
-- Basic spatial operations: `st_buffer`, `st_intersection`,
-  `st_transform`.
-- A first map of the BC air-quality stations as points.
+- Read a realistic forestry question and choose the steps it needs.
+- Combine **import, inspect, clean, `filter`, `mutate`, `group_by`,
+  `summarise`, `pivot`, `left_join`**, and **`ggplot2`** in the right
+  order.
+- Justify *why* each tool is the efficient choice — and when *not* to use
+  one.
+- Verify every result with row counts, missing-value checks, and a quick
+  plot, then interpret it for a non-technical reader.
 
-The chart you just built showing O₃ by station becomes much
-more powerful when each station is a **dot on a map of BC**.
-Chapter 10 walks through that move.
+The O₃-by-station chart you just built is one piece; the case study is
+where *you* decide which pieces a real question calls for.
+
+*Spatial mapping is available as an **optional** extension — see the
+[Optional: Spatial Data Analysis in R](../optional-spatial.qmd) page — but
+it is not required for the case study.*
 
 # Self-assessment quiz {#sec-quiz-ch09}
+
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
 
 ```{=html}
 <style>

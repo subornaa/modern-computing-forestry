@@ -309,6 +309,13 @@ inspect it next.
 
 # Inspecting the Data sheet
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"I read the About, ReadMe, and Data sheets of `bc_disturbance_reforestation.xlsx` and concluded it has one row per fiscal year with area columns in hectares. Check whether my reading of the sheets and column meanings is complete and consistent, and tell me what a careful analyst might have missed on a first inspection. Do not summarise the file for me from scratch."*
+:::
+
 Open the Data sheet. Before computing anything, answer these five
 questions:
 
@@ -516,6 +523,13 @@ formula, not just the answer.
 :::
 
 # Building a data dictionary
+
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"Here is my data-dictionary entry for one column: `[paste your column name, type, unit, and plain-language description]`. Check whether my description matches the ReadMe, whether I named the correct type and unit, and what a reviewer might question. Do not rewrite the dictionary for me."*
+:::
 
 A data dictionary is a separate sheet that lists every column
 with:
@@ -785,7 +799,7 @@ This is useful for at-a-glance unit labels, but use sparingly —
 too much custom formatting can make a workbook harder for a
 collaborator to read.
 
-# A glimpse of Chapter 4: From Excel to R
+# A glimpse ahead: From Excel to R
 
 In Chapter 4 we will install R and re-open *this same file*
 reproducibly. The Excel moves you learned in this chapter map
@@ -811,9 +825,17 @@ detail.
 
 # Self-assessment quiz {#sec-quiz-ch01}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>
@@ -1202,7 +1224,11 @@ Explanations appear below each question.
 | `bc_disturbance_reforestation_solutions.xlsx` | Instructor solutions with completed formulas and worked answers. **Do not distribute to learners.** |
 | `quiz_ch01.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested grading guidance for the group lab
+## Suggested facilitation guidance for the Practice Demo Lab
+
+*These are optional facilitation and feedback suggestions for instructors
+running this book demo — **not** a grading key. The percentages below are
+relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 
 | Task | Weight | What to look for |
 |---|---|---|
@@ -1228,6 +1254,6 @@ Explanations appear below each question.
   twofold: (a) the column meanings and forestry context are
   easier to learn with the data sitting visible on screen, and
   (b) Chapter 4 deliberately uses the *same file* to make the
-  transition explicit. The "A glimpse of Chapter 4" table at the
+  transition explicit. The "A glimpse ahead" table at the
   end of this chapter is the preview of that bridge.
 :::

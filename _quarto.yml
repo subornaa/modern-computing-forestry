@@ -74,7 +74,7 @@ format:
     papersize: letter
     geometry: margin=1in
     toc: true
-    number-sections: true
+    number-sections: false     # chapters use H1s as sections; global numbers confuse
     fig-cap-location: bottom
     colorlinks: true          # keep dataset/source links visible in print
     pdf-engine: xelatex        # native Unicode handling

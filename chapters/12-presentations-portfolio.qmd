@@ -29,13 +29,14 @@ By the end of this chapter you will be able to:
   of YAML in a `.qmd` file.
 - Apply the **one-idea-per-slide** rule and use slide separators
   (`---` or `## Heading`) effectively.
-- Embed R code chunks (charts, tables, leaflet maps) directly in
-  slides so the slide refreshes whenever the data changes.
+- Embed R code chunks (charts, tables, and — only if your group
+  used the optional spatial extension — maps) directly in slides
+  so the slide refreshes whenever the data changes.
 - Add **incremental reveals**, **speaker notes**, and **footnote
   citations** to slides.
 - Assemble a **portfolio** — a single Quarto site or HTML
-  collection — that showcases your best analyses from
-  Chapters 4–11.
+  collection — that showcases your best analyses from the
+  earlier chapters.
 - Cite **data sources** (BC Data Catalogue, Environmental
   Reporting BC) and **R packages** properly.
 - Apply an **open licence** (CC BY 4.0) to your deliverables so
@@ -276,11 +277,11 @@ reveals can frustrate audiences if overused.
 For comparing two charts or putting text next to an image:
 
 ```markdown
-## Static vs interactive maps
+## Static vs interactive charts
 
 ::: {.columns}
 ::: {.column width="50%"}
-**Static** — `geom_sf`
+**Static** — `ggplot2`
 
 - One PNG
 - Fixed view
@@ -288,10 +289,10 @@ For comparing two charts or putting text next to an image:
 :::
 
 ::: {.column width="50%"}
-**Interactive** — `leaflet`
+**Interactive** — `plotly`
 
 - HTML widget
-- Pan, zoom, click
+- Hover, zoom, pan
 - Goes in HTML deliverables
 :::
 :::
@@ -617,8 +618,8 @@ the term, using a revealjs deck they have built in advance.
 **Format**
 
 - 4 groups × 12 minutes each (10 min talk + 2 min Q&A).
-- Each group covers one chapter's headline analysis (Ch 6
-  cleaning, Ch 7 summarising, Ch 9 charts, Ch 11 maps).
+- Each group covers one chapter's headline analysis (e.g., Ch 6
+  cleaning, Ch 7 summarising, Ch 8 joining, or Ch 9 charts).
 - Each group member speaks for at least 2 minutes.
 
 **Required slide structure**
@@ -737,7 +738,7 @@ For a group presentation, share the `.qmd` source via Git
 (Chapter 12 references for more). Each member edits one section.
 Render only when merging.
 
-# A glimpse of Chapter 13: Wrap-up and final exam preparation
+# A glimpse ahead: Wrap-up and final exam preparation
 
 Chapter 13 is the term-end consolidation:
 
@@ -751,6 +752,12 @@ The chapter lab is the **final exam itself** — closed-AI,
 open-notes, covering everything from Chapter 1 to Chapter 12.
 
 # Self-assessment quiz {#sec-quiz-ch12}
+
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
 
 ```{=html}
 <style>

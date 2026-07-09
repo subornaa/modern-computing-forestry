@@ -223,6 +223,13 @@ recover the original order:
 
 # Filtering
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"In Excel I filtered the data to show only `[describe your criteria]` and got `[N]` visible rows. Check whether my criteria actually capture what I intended, whether I might be hiding rows I meant to keep, and how to confirm the visible count is right. Do not give me the final filter."*
+:::
+
 Two ways: **AutoFilter** and **Slicers**.
 
 ## AutoFilter
@@ -872,7 +879,7 @@ compatibility or for *left-of-lookup-column* returns (which
 `INDEX(codes!B:B, n)` returns the value in column B at that row.
 Combining them gives you a fully flexible lookup.
 
-# A glimpse of Chapter 7: From Excel to R
+# A glimpse ahead: From Excel to R
 
 In Chapter 7 (Summarize forestry data overall and by group) you
 will do exactly what this chapter does — but in R. The Excel moves
@@ -895,9 +902,17 @@ familiar — you will just be writing it in a different language.
 
 # Self-assessment quiz {#sec-quiz-ch02}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>
@@ -1304,7 +1319,11 @@ verify against the data.
 | `on_forest_statistics_1_solutions.xlsx` | Instructor solutions with completed formulas and worked answers. **Do not distribute to learners.** |
 | `quiz_ch02.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested grading guidance for the group lab
+## Suggested facilitation guidance for the Practice Demo Lab
+
+*These are optional facilitation and feedback suggestions for instructors
+running this book demo — **not** a grading key. The percentages below are
+relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 
 | Task | Weight | What to look for |
 |---|---|---|
@@ -1323,7 +1342,7 @@ verify against the data.
   `ontario_data[SumOfTotalHa]`, not `SumOfTotalHa` alone.
 - A few will edit the raw `on_forest_statistics_1.xlsx` in place.
   Remind them often that the raw file stays unchanged.
-- *Excel-to-R bridge:* The "A glimpse of Chapter 7" section at
+- *Excel-to-R bridge:* The "A glimpse ahead" section at
   the end of this chapter previews how the same logic appears in
   R. Refer to it when learners ask why we are still in Excel —
   the bridge is concrete and forward-pointing.

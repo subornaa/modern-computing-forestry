@@ -196,6 +196,13 @@ Chapter 6 used `mutate()` to add or change columns; this chapter uses
 
 # By-group summary — one row per group
 
+::: {.callout-note collapse="true"}
+## AI prompt to check your work
+Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
+
+> *"I wrote `df |> group_by([group]) |> summarise([stat])`. Check whether `group_by()` + `summarise()` is the efficient choice here, whether I should report `n()` beside each summary, and how to confirm the group sizes are plausible. Do not write the final pipeline for me."*
+:::
+
 Add `group_by()` *before* `summarise()`:
 
 ```{r by-station}
@@ -631,7 +638,7 @@ These two are easily confused:
 Use `summary()` for quick interactive inspection. Use
 `summarise()` for output that goes into a report.
 
-# A glimpse of Chapter 8: From summarising to reshaping and combining
+# A glimpse ahead: From summarising to reshaping and combining
 
 Chapter 7 used `pivot_wider()` for the first time. In Chapter 8
 you will meet:
@@ -652,9 +659,17 @@ answer.
 
 # Self-assessment quiz {#sec-quiz-ch07}
 
+::: {.content-visible when-format="pdf"}
+*The self-assessment quiz is interactive: it appears in the online (HTML)
+book, and you can also take it on Canvas. This PDF does not display the
+interactive quiz questions.*
+:::
+
+::: {.content-visible when-format="html"}
 Click the answer you think is correct. The right answer turns
 green; wrong answers turn red and the correct one is revealed.
 Explanations appear below each question.
+:::
 
 ```{=html}
 <style>
