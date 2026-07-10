@@ -11,7 +11,7 @@ library(knitr)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC silviculture** workbook
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"}).
 Click the file name to download it directly, then save it in your `data/`
@@ -19,7 +19,7 @@ folder. For the source and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this case-study chapter you will be able to:
 
@@ -37,10 +37,10 @@ By the end of this case-study chapter you will be able to:
 - **use AI as a verification partner** without letting it decide the whole
   analysis.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 A short **case-study report** (rendered from a `.qmd`) that:
 
 1. states a **question** in plain language;
@@ -53,7 +53,7 @@ A short **case-study report** (rendered from a `.qmd`) that:
    forestry reader could follow.
 :::
 
-# Why this chapter is different
+## Why this chapter is different
 
 Every earlier chapter taught **one main skill at a time** — importing,
 cleaning, summarising, joining, or visualizing — and told you which one to
@@ -69,7 +69,7 @@ to
 
 > *"I can decide **when** `summarise()` is the right tool."*
 
-# The decision framework — think before you code
+## The decision framework — think before you code
 
 Before writing a single line, answer these six questions:
 
@@ -97,7 +97,7 @@ Use this quick map from "kind of problem" to "reach for":
 | combining two tables | `left_join()` (check keys + row counts) |
 | showing the result to a person | `ggplot2` + a clear caption |
 
-# A worked example — the process end to end
+## A worked example — the process end to end
 
 **Question:** *Which decade saw the highest average reforestation in
 British Columbia, and how does it compare with harvesting?*
@@ -140,6 +140,7 @@ should sit in the hundred-thousands — both true above. A quick plot
 confirms the pattern:
 
 ```{r cs-worked-plot}
+#| fig-cap: "Mean annual reforested area (ha) by decade, British Columbia."
 #| fig-alt: "Bar chart of mean annual reforested area by decade in British
 #|   Columbia, showing which decade reforested the most on average."
 by_decade |>
@@ -161,7 +162,7 @@ Notice what we did **not** do: no join (only one table), no reshape (the
 shape already answered the question). Choosing *not* to use a tool is part
 of choosing the right tool.
 
-# Choose the function — activities
+## Choose the function — activities
 
 For each task, decide the workflow **before** you write code.
 
@@ -185,7 +186,7 @@ table**, and you want the species *name* (not code) on every tree row.
 
 - Which single verb does this? What must you check immediately afterward?
 
-# Integrated case-study questions — decide the tools
+## Integrated case-study questions — decide the tools
 
 These need skills from several chapters at once. **Do not** jump to code —
 work through the framework questions first, then justify each step.
@@ -212,7 +213,7 @@ For every question, be ready to answer:
   alternative?
 - How can we **verify** the result?
 
-# Verify before you trust it
+## Verify before you trust it
 
 Run the checks that fit each step you took:
 
@@ -224,7 +225,7 @@ Run the checks that fit each step you took:
 | `left_join()` | the row count did **not** unexpectedly grow; note unmatched rows |
 | plot | the figure answers the question and axis labels include units |
 
-# AI as a verification partner — not the analyst
+## AI as a verification partner — not the analyst
 
 In this chapter especially, AI is a **checking and debugging** partner, not
 the decision-maker. It is easy for an assistant to pick a function *before*
@@ -240,7 +241,7 @@ file.
 > The goal is not to make AI do the work. The goal is to use AI to help you
 > understand, check, and improve your own reasoning.
 
-# Self-check quiz
+## Self-check quiz
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -281,7 +282,7 @@ interactive quiz questions.*
   <div class="explanation">When AI invents a column, function, or value, that is a hallucination. Always check its output against your real data and the package documentation before using it.</div>
 </div>
 
-# Done
+## Done
 
 When your case-study `.qmd` renders cleanly — question, justified workflow,
 one figure, plausibility checks, and a plain-language interpretation —

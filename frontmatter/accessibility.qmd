@@ -1,19 +1,26 @@
 # Accessibility statement {.unnumbered}
 
-This book is designed to meet **Web Content Accessibility
-Guidelines (WCAG) 2.1, Level AA**, in alignment with the
+This book is designed to **align with** the **Web Content
+Accessibility Guidelines (WCAG) 2.1, Level AA**, and with the
 **BC Accessibility Act (2021)** and UBC's Disability
-Accommodation policies. Where we fall short, we welcome
-correction — please open an issue on the GitHub repository or
-email the author.
+Accommodation policies. The **rendered HTML** has been checked
+directly against the criteria below; the **PDF** has known
+limitations (see *Verification and known limitations*). This is
+an alignment goal, not a certified conformance claim. Where we
+fall short, we welcome correction — please open an issue on the
+GitHub repository or email the author.
 
 ## What we have done
 
 - **Semantic HTML** with proper heading hierarchy (h1 → h2 →
   h3) for screen reader navigation.
-- **Text labels on all colour-coded indicators.** Quiz answers
-  and status badges include ✓ / ✗ symbols and text in addition
-  to colour, so that no information is conveyed by colour
+- **Text labels alongside colour.** Quiz answers and status
+  badges include ✓ / ✗ symbols and text in addition to colour.
+  Most charts carry meaning in position, height, and labelled
+  axes rather than colour; the few multi-series line charts that
+  distinguish series mainly by colour also provide a labelled
+  legend and descriptive alt text, and we are adding non-colour
+  cues (such as line type) so no information depends on colour
   alone.
 - **Keyboard accessibility** — every interactive element
   (quiz options, expand/collapse callouts, navigation) is
@@ -21,9 +28,9 @@ email the author.
 - **Alt-text on charts** — every R-generated chart includes a
   `fig-alt` description that conveys the chart's content to
   screen reader users.
-- **High-contrast colour palette** — all foreground/background
-  combinations meet WCAG AA contrast ratios (4.5:1 for normal
-  text, 3:1 for large text).
+- **High-contrast colour palette** — foreground/background
+  combinations are chosen to align with WCAG AA contrast targets
+  (4.5:1 for normal text, 3:1 for large text).
 - **Embedded-resources HTML** — every rendered chapter is a
   single self-contained file that works offline, on slow
   connections, and with browser extensions for screen
@@ -32,8 +39,9 @@ email the author.
   describe what the section does, not abstract jargon.
 - **Free tools throughout** — no paid software required.
 - **Multiple output formats** — chapter sources render to
-  HTML, PDF, and Word so learners can choose the format that
-  works best for their assistive technology.
+  HTML and PDF so learners can choose the format that works best
+  for their assistive technology. The HTML is the most
+  accessible output; see *Verification and known limitations*.
 - **Lab session flexibility** — every chapter's lab activity
   is structured to allow individual or group completion at the
   learner's pace.
@@ -46,7 +54,7 @@ email the author.
   accommodations may include extended time, alternative
   formats, scribes, rest breaks, captioning, or remote
   participation.
-- **Where the timed final exam (Chapter 13) creates equity
+- **Where the timed final exam creates equity
   concerns**, consider an alternative assessment format
   (e.g., a take-home practical exam, or an oral exam) for the
   *entire cohort*, not just learners with formal
@@ -58,9 +66,30 @@ email the author.
   book, please report it on the GitHub repository.** Your
   report will lead to a fix in the next revision.
 
-## Known limitations
+## Verification and known limitations
 
-This is an honest list. We are working on each item.
+**What has been checked.** The rendered **HTML** was audited
+directly: all 16 displayed charts carry a meaningful `fig-alt`
+description (with units such as hectares, parts per billion, and
+fiscal year), the book cover now has descriptive alt text, and
+the self-assessment quizzes include text and symbol labels plus a
+PDF-friendly fallback note. Contrast and colour-only checks are
+ongoing rather than certified.
+
+The list below is honest about what still needs work. We are
+working on each item.
+
+- **Figure alt text in the PDF.** The `fig-alt` descriptions are
+  screen-reader accessible in the **HTML** edition, but the
+  **PDF** does not expose them to assistive technology (a standard
+  LaTeX PDF is not tagged). In the PDF each figure shows a visible
+  in-image title; we are adding visible captions so the
+  description is available in print as well. There is currently
+  **no Word output**; request one if needed and we will generate a
+  version with image alt text.
+- **A few multi-series line charts** distinguish series mainly by
+  colour; we are adding non-colour cues (such as line type) so
+  they do not rely on colour alone.
 
 - **Math notation** for statistical formulas (e.g., μg/m³)
   uses Unicode characters; screen readers handle these

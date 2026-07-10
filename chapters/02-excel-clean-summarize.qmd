@@ -13,7 +13,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **Ontario forest statistics** workbook
 ([`on_forest_statistics_1.xlsx`](../data/on_forest_statistics_1.xlsx){download="on_forest_statistics_1.xlsx"}).
 Click the file name to download it directly, then save it in your `data/`
@@ -21,7 +21,7 @@ folder. For the source and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -43,10 +43,10 @@ By the end of this chapter you will be able to:
 - Maintain a **cleaning log** that documents every change you made
   to the data.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. The raw workbook **`on_forest_statistics_1.xlsx`** placed in
    your `chapter02/data/` folder, **unchanged from the Ontario Open
@@ -67,7 +67,7 @@ This list is the same as the rubric for the chapter assignment.
 Keep it in view while you work.
 :::
 
-# Why a cleaning log matters
+## Why a cleaning log matters
 
 Real data arrives messy. Duplicate stems. Inconsistent species
 labels. Missing measurements. Unit ambiguity. The discipline
@@ -90,7 +90,7 @@ Keep the cleaning log next to your data forever. When someone asks
 answer is in the cleaning log.
 
 ::: {.callout-warning}
-## The two cardinal sins of data cleaning
+### The two cardinal sins of data cleaning
 
 1. **Editing raw data in place.** Once you change a cell, the
    original is gone. Always work on a *copy* of the raw file.
@@ -101,7 +101,7 @@ A cleaning log is your audit trail. It protects you when a manager,
 reviewer, or collaborator questions your numbers months later.
 :::
 
-# The dataset for this chapter
+## The dataset for this chapter
 
 This chapter uses one openly licensed Excel workbook from the
 **Government of Ontario Open Data Catalogue**, alongside the BC
@@ -130,7 +130,7 @@ tibble(
 ```
 
 ::: {.callout-important}
-## Where the data comes from — and what to do with it
+### Where the data comes from — and what to do with it
 
 This dataset is published by the **Government of Ontario** and
 distributed through the **Ontario Open Data Catalogue**. Two rules
@@ -147,7 +147,7 @@ need the full multi-region file (all landscape guide regions),
 download it directly from the catalogue URL above.
 :::
 
-## Why this dataset matters for forestry
+### Why this dataset matters for forestry
 
 Where the BC silviculture file (Chapter 1) was a **time series** of
 provincial totals, this Ontario file is a **cross-classification** —
@@ -168,7 +168,7 @@ category combination) — is what a working forester sees most often:
 Learning to navigate, summarize, and recode a cross-classified
 file is one of the most transferable skills in forestry data work.
 
-## The columns
+### The columns
 
 | Column | Type | What it represents |
 |---|---|---|
@@ -181,7 +181,7 @@ file is one of the most transferable skills in forestry data work.
 | `AC_10` | number (year) | Age-class midpoint, in 10-year bins |
 | `SumOfTotalHa` | number | Total area in hectares for that combination |
 
-# Sorting
+## Sorting
 
 Click any cell inside the data, then choose **Data → Sort**.
 
@@ -197,7 +197,7 @@ Lowland area of over 300,000 ha. Look at the context: `MCL`,
 3E mature lowland that has been growing for over a century? Yes —
 old conifer lowland covers much of northern Ontario.
 
-## Multi-key sort
+### Multi-key sort
 
 Sort by `PFTName` (A→Z), then by `AC_10` (smallest to largest),
 then by `SumOfTotalHa` (largest to smallest). Use **Data → Sort →
@@ -209,7 +209,7 @@ area is on top. This is the human equivalent of `group_by() |>
 arrange()` in R, which you will meet in Chapter 7.
 
 ::: {.callout-tip}
-## Sorting changes the file
+### Sorting changes the file
 
 Unlike filtering, sorting **rearranges** the underlying rows. To
 recover the original order:
@@ -221,10 +221,10 @@ recover the original order:
   you have an `original_row_number` column.
 :::
 
-# Filtering
+## Filtering
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"In Excel I filtered the data to show only `[describe your criteria]` and got `[N]` visible rows. Check whether my criteria actually capture what I intended, whether I might be hiding rows I meant to keep, and how to confirm the visible count is right. Do not give me the final filter."*
@@ -232,7 +232,7 @@ Use this **after** your own attempt. It should check your reasoning, not hand yo
 
 Two ways: **AutoFilter** and **Slicers**.
 
-## AutoFilter
+### AutoFilter
 
 Click any cell in your data, then **Data → Filter**. Each column
 gets a dropdown arrow.
@@ -245,7 +245,7 @@ them.
 To re-show everything, click the arrow again and choose *Clear
 Filter From*.
 
-## Multiple filter criteria
+### Multiple filter criteria
 
 Click the arrow on `SumOfTotalHa`. Choose **Number Filters →
 Greater Than**. Type `50000`. The view filters to rows where the
@@ -256,7 +256,7 @@ You can stack column filters: first filter `PFTName = "Jack Pine"`,
 matching **both** conditions — equivalent to
 `filter(PFTName == "Jack Pine" & SumOfTotalHa > 5000)` in R.
 
-## Slicers (with structured tables)
+### Slicers (with structured tables)
 
 Slicers are visual filter panels. They only work on **structured
 tables** (next section). Click any cell in a structured table,
@@ -268,7 +268,7 @@ visual, fun, and dangerous: a slicer can be on without the viewer
 noticing. The number changes but the title does not. Always check
 the slicer state before trusting a screenshot.
 
-# Structured tables (`Ctrl+T`)
+## Structured tables (`Ctrl+T`)
 
 Excel's most undersold feature.
 
@@ -300,7 +300,7 @@ The structured version is **self-documenting** and
 automatically includes it.
 
 ::: {.callout-tip}
-## Always start with Ctrl+T
+### Always start with Ctrl+T
 
 When you open any new Excel file, the first thing to do is
 convert each sheet's data into a structured table. The benefits
@@ -308,7 +308,7 @@ compound: slicers work, formulas are readable, growth is
 automatic, and references are stable.
 :::
 
-## Renaming the table
+### Renaming the table
 
 Click anywhere in the table. Look at the **Table Design** ribbon.
 In the leftmost field labelled *Table Name*, type a meaningful
@@ -322,13 +322,13 @@ Use snake_case (lowercase with underscores). No spaces, no special
 characters. This matches the R convention you will meet in
 Chapter 4.
 
-# Detecting duplicates
+## Detecting duplicates
 
 A real summary table should have **one row per combination** of
 the grouping columns. If two rows have the same combination,
 something went wrong upstream.
 
-## On a single column
+### On a single column
 
 Select the column you want to check (e.g., `PFTName`). Choose
 **Home → Conditional Formatting → Highlight Cells Rules →
@@ -339,7 +339,7 @@ the file has many seral × age combinations per forest type). That
 is expected — not a bug. Duplicates on a *single* column only
 signal a problem when the column should be a *unique key*.
 
-## On a composite key
+### On a composite key
 
 In a cross-classification like this file, the natural unique key
 is `(landscape_guide_region, own_group, LGDS, PFTName, AC_10)`. A
@@ -371,14 +371,14 @@ cat(sprintf(
 For this file, the answer is zero. Good — the upstream pipeline is
 clean.
 
-## Removing duplicates
+### Removing duplicates
 
 If you do find duplicates and want to remove them, **Data → Remove
 Duplicates**. A dialog asks which columns to use as the key.
 Always work on a copy. Document the removal in your cleaning log
 with row counts before and after.
 
-# Summary formulas — the essentials
+## Summary formulas — the essentials
 
 The seven most-used aggregating functions:
 
@@ -397,7 +397,7 @@ The distinction between `COUNT` and `COUNTA` matters: `COUNT` skips
 text cells. If your column should have 179 numeric entries and
 `COUNT` says 177, two cells contain text or are blank.
 
-## Worked examples on the Ontario file
+### Worked examples on the Ontario file
 
 ```{r ontario-formulas-verify}
 #| echo: false
@@ -422,12 +422,12 @@ a few very large rows pull the average up. The median is closer to
 the *typical* combination. Both numbers are correct; they answer
 different questions.
 
-# Conditional aggregation: SUMIF, COUNTIF, AVERAGEIF
+## Conditional aggregation: SUMIF, COUNTIF, AVERAGEIF
 
 What if you want the sum, count, or average **only for rows that
 match a condition**?
 
-## `COUNTIF(range, criterion)`
+### `COUNTIF(range, criterion)`
 
 How many rows describe Jack Pine?
 
@@ -445,7 +445,7 @@ The criterion can be a number, text, a comparison, or a wildcard:
 | `"Jack*"` | Text starting with "Jack" |
 | `"*pine*"` | Text containing "pine" (case-insensitive) |
 
-## `SUMIF(criterion_range, criterion, sum_range)`
+### `SUMIF(criterion_range, criterion, sum_range)`
 
 What is the total area of "Mature" forest in Region 3E?
 
@@ -456,7 +456,7 @@ What is the total area of "Mature" forest in Region 3E?
 Read it: *"sum the `SumOfTotalHa` values for rows where
 `SERAL_NAME` equals 'Mature'"*.
 
-## `AVERAGEIF(criterion_range, criterion, average_range)`
+### `AVERAGEIF(criterion_range, criterion, average_range)`
 
 What is the average area for "Jack Pine" combinations?
 
@@ -464,7 +464,7 @@ What is the average area for "Jack Pine" combinations?
 =AVERAGEIF(F2:F180, "Jack Pine", H2:H180)
 ```
 
-## `SUMIFS`, `COUNTIFS`, `AVERAGEIFS` — multiple criteria
+### `SUMIFS`, `COUNTIFS`, `AVERAGEIFS` — multiple criteria
 
 The plural versions allow multiple criteria. The argument order
 is different — the sum range comes **first**, then criterion
@@ -478,7 +478,7 @@ Read it: *"sum the `SumOfTotalHa` values for rows where `PFTName`
 is 'Jack Pine' AND `SERAL_NAME` is 'Mature'"*.
 
 ::: {.callout-tip}
-## When to use these vs a PivotTable
+### When to use these vs a PivotTable
 
 For a one-off number, `SUMIF` is fastest. For a whole table of
 numbers (cross-classification across multiple categories), a
@@ -486,7 +486,7 @@ PivotTable is the right tool. We will meet PivotTables in
 Chapter 3.
 :::
 
-# Safe cell references: the dollar sign
+## Safe cell references: the dollar sign
 
 Type `=B2 + C2` in cell `D2`. Copy down. `D3` becomes `=B3 + C3`.
 `D4` becomes `=B4 + C4`. The references **moved** with the
@@ -503,7 +503,7 @@ You can mix:
 - `A$1` — row locked, column moves.
 - `$A$1` — both locked.
 
-## A worked bug
+### A worked bug
 
 A common bug: you want to divide every value by the total. You
 write `=H2 / H180` in cell `I2`, where `H180` is the grand total.
@@ -513,7 +513,7 @@ percentage below the first is wrong.
 The fix is `=H2 / $H$180`. The denominator stays put.
 
 ::: {.callout-tip}
-## A keyboard shortcut worth memorizing
+### A keyboard shortcut worth memorizing
 
 While editing a cell reference, press **F4** to cycle through:
 
@@ -522,9 +522,9 @@ While editing a cell reference, press **F4** to cycle through:
 This is the fastest way to add or remove dollar signs.
 :::
 
-# Conditional logic: IF, nested IF, IFS
+## Conditional logic: IF, nested IF, IFS
 
-## `IF(condition, value_if_true, value_if_false)`
+### `IF(condition, value_if_true, value_if_false)`
 
 Basic form. Returns one of two values based on a logical test.
 
@@ -532,7 +532,7 @@ Basic form. Returns one of two values based on a logical test.
 =IF(H2 > 1000, "large", "small")
 ```
 
-## Nested `IF` — multiple categories
+### Nested `IF` — multiple categories
 
 Add a `size_class` column on the Ontario file based on
 `SumOfTotalHa`:
@@ -546,7 +546,7 @@ This **nested IF** evaluates left to right. If the first condition
 is true, return "small". Otherwise check the second. Otherwise
 return "large".
 
-## `IFS` — cleaner for many conditions
+### `IFS` — cleaner for many conditions
 
 Available in Excel 2019+:
 
@@ -560,7 +560,7 @@ Available in Excel 2019+:
 condition returns its value. The trailing `TRUE` is a catch-all
 for "everything else". Without it, unmatched rows return `#N/A`.
 
-## `SWITCH` — exact-match recoding
+### `SWITCH` — exact-match recoding
 
 When you are recoding based on **one cell's exact value** (not a
 threshold test), `SWITCH` is often clearer than a nested `IF`:
@@ -586,7 +586,7 @@ ontario |>
   kable()
 ```
 
-## `AND`, `OR`, `NOT` — combining conditions
+### `AND`, `OR`, `NOT` — combining conditions
 
 ```text
 =IF(AND(H2 > 1000, F2 = "Jack Pine"), "flag", "")
@@ -595,7 +595,7 @@ ontario |>
 Use `AND` when *all* conditions must be true. Use `OR` when *any*
 condition can be true. Use `NOT` to reverse a condition.
 
-# Lookups: VLOOKUP and XLOOKUP
+## Lookups: VLOOKUP and XLOOKUP
 
 Suppose you have a small reference sheet mapping forest-type
 codes to plain-English names:
@@ -614,7 +614,7 @@ codes to plain-English names:
 Place this on a new sheet called `codes`. Your data uses the code
 in column E. In column I you want the plain-English name.
 
-## `XLOOKUP` (Excel 2019+, recommended)
+### `XLOOKUP` (Excel 2019+, recommended)
 
 ```text
 =XLOOKUP(E2, codes!A:A, codes!B:B, "unknown")
@@ -624,14 +624,14 @@ Arguments: *value to find, where to look, what to return, default
 if not found*. Clear and modern.
 
 ::: {.callout-note}
-## The sheet name in the formula must match
+### The sheet name in the formula must match
 `codes!A:A` refers to a sheet named **`codes`**. If your lookup sheet has
 a different name — or you paste the formula before renaming the sheet —
 Excel returns `#REF!` or `#N/A`. Rename the reference sheet first, or fix
 the sheet name in the formula.
 :::
 
-## `VLOOKUP` (everywhere)
+### `VLOOKUP` (everywhere)
 
 ```text
 =VLOOKUP(E2, codes!A:B, 2, FALSE)
@@ -644,7 +644,7 @@ of `TRUE` (approximate match) silently returns the wrong value if
 the lookup table is unsorted.
 
 ::: {.callout-important}
-## When lookups go wrong
+### When lookups go wrong
 
 - **Missing key** — `#N/A`. Either the value is missing, or the
   key is misspelled. Wrap with `IFERROR` to flag rather than
@@ -658,7 +658,7 @@ the lookup table is unsorted.
   `=TRIM(...)` to clean strings first.
 :::
 
-# Putting it together — a worked cleaning sequence
+## Putting it together — a worked cleaning sequence
 
 You receive a colleague's spreadsheet. Here is a complete
 cleaning sequence:
@@ -680,12 +680,12 @@ Each step is reversible because we are working on a copy and
 never modifying the raw values directly. Every step is documented
 in the log. **This is what reproducible Excel looks like.**
 
-# Active learning
+## Active learning
 
 These short activities are designed to be done alongside the
 chapter.
 
-## Activity 1 — Find duplicates in the Ontario file
+### Activity 1 — Find duplicates in the Ontario file
 
 Apply the duplicate-detection technique to the Ontario file. Use
 the natural composite key. Report how many duplicates you found.
@@ -699,7 +699,7 @@ dup_n <- ontario |>
 cat(sprintf("Verification: %d duplicates on the natural key (should be zero).\n", dup_n))
 ```
 
-## Activity 2 — Mature area by forest type
+### Activity 2 — Mature area by forest type
 
 Using `SUMIF` (or `SUMIFS`), compute the total area of *mature*
 forest in Region 3E for each forest type.
@@ -715,13 +715,13 @@ ontario |>
   kable()
 ```
 
-## Activity 3 — Classify and count
+### Activity 3 — Classify and count
 
 On the Ontario file, add the `size_class` column from the
 conditional-logic section. Then count rows in each class. Compare
 with your neighbour.
 
-## Activity 4 — Multi-criteria SUMIFS
+### Activity 4 — Multi-criteria SUMIFS
 
 Compute the total area where `PFTName = "Jack Pine"` **AND**
 `SERAL_NAME = "Mature"` **AND** `AC_10 >= 95` (older mature jack
@@ -737,7 +737,7 @@ cat(sprintf("Verification: %s ha of older mature jack pine.\n",
             format(round(ans), big.mark = ",")))
 ```
 
-## Activity 5 — Build a lookup
+### Activity 5 — Build a lookup
 
 Build a reference sheet `codes` with the 8 forest-type codes
 (`PJK`, `MCU`, `MCL`, etc.) and their plain-English names.
@@ -745,10 +745,10 @@ Then use `XLOOKUP` (or `VLOOKUP`) to retrieve the name from the
 `PFT` column of the Data sheet. Compare your retrieved column to
 the existing `PFTName` column.
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -780,7 +780,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Clean and summarize the Ontario forest file together
+### Lab: Clean and summarize the Ontario forest file together
 
 Work in groups of 3 or 4. Use one shared copy of
 `on_forest_statistics_1.xlsx`.
@@ -818,7 +818,7 @@ This lab is designed to fit comfortably inside a single hands-on
 session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises that go with this chapter.
 
@@ -854,18 +854,18 @@ These are the take-home exercises that go with this chapter.
    columns = seral stage, values = sum of `SumOfTotalHa` and
    count of combinations.
 
-# Optional, advanced
+## Optional, advanced
 
 Items in this section are not required for the main path.
 
-## Custom number formats
+### Custom number formats
 
 Beyond standard formats, Excel supports custom format codes. For
 example, the custom format `#,##0 "ha"` displays `216,305 ha`.
 The `"ha"` is part of the format, not the value — formulas still
 treat the cell as a plain number.
 
-## `INDEX` / `MATCH` — the classic lookup combo
+### `INDEX` / `MATCH` — the classic lookup combo
 
 `VLOOKUP` and `XLOOKUP` cover most cases. For old-Excel
 compatibility or for *left-of-lookup-column* returns (which
@@ -879,7 +879,7 @@ compatibility or for *left-of-lookup-column* returns (which
 `INDEX(codes!B:B, n)` returns the value in column B at that row.
 Combining them gives you a fully flexible lookup.
 
-# A glimpse ahead: From Excel to R
+## A glimpse ahead: From Excel to R
 
 In Chapter 7 (Summarize forestry data overall and by group) you
 will do exactly what this chapter does — but in R. The Excel moves
@@ -900,7 +900,7 @@ shareable; the Excel version is visible and forgiving. By the
 time you reach Chapter 7, this whole chapter's logic will be
 familiar — you will just be writing it in a different language.
 
-# Self-assessment quiz {#sec-quiz-ch02}
+## Self-assessment quiz {#sec-quiz-ch02}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -1238,10 +1238,10 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts for this chapter
+### Useful prompts for this chapter
 
 - *"In Excel, my formula `=VLOOKUP(A2, codes!A:B, 2, FALSE)`
   returns `#N/A` for some rows. The values in column A look the
@@ -1255,7 +1255,7 @@ Explanations appear below each question.
   column whenever `PFTName` is one of `{Jack Pine, Mixedwood,
   Poplar}`. Can I do this in a single formula?"*
 
-## Verifying AI's answers
+### Verifying AI's answers
 
 After AI tells you why your `VLOOKUP` fails, **check**:
 
@@ -1269,7 +1269,7 @@ After AI tells you why your `VLOOKUP` fails, **check**:
 AI's answer is a *starting point*, not the final answer. Always
 verify against the data.
 
-## When not to use AI
+### When not to use AI
 
 - Do not use AI to *write the cleaning log for you*. The log is a
   record of *your* decisions.
@@ -1277,17 +1277,17 @@ verify against the data.
   reference table. If a value is missing, document the gap.
 :::
 
-# Reading
+## Reading
 
 - Microsoft Excel official documentation on [VLOOKUP](https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1).
 - Microsoft Excel official documentation on [XLOOKUP](https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929).
 - Ontario open-data dataset page: <https://data.ontario.ca/dataset/forest-resources-of-ontario-2021>
 - Open Government Licence — Ontario: <https://www.ontario.ca/page/open-government-licence-ontario>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - This chapter is heavier than Chapter 1. Plan to spread it
   across multiple sessions.
@@ -1300,7 +1300,7 @@ verify against the data.
 - The group lab is the central hands-on deliverable. Plan for
   one full session.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. Raw `on_forest_statistics_1.xlsx` in `chapter02/data/`,
    unchanged.
@@ -1310,7 +1310,7 @@ verify against the data.
    `codes` lookup sheet wired with `XLOOKUP`.
 3. Group-lab worksheet or screenshot.
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -1319,7 +1319,7 @@ verify against the data.
 | `on_forest_statistics_1_solutions.xlsx` | Instructor solutions with completed formulas and worked answers. **Do not distribute to learners.** |
 | `quiz_ch02.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested facilitation guidance for the Practice Demo Lab
+### Suggested facilitation guidance for the Practice Demo Lab
 
 *These are optional facilitation and feedback suggestions for instructors
 running this book demo — **not** a grading key. The percentages below are
@@ -1333,7 +1333,7 @@ relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 | Conditional aggregation (Task 4) | 30 % | Correct formula AND a spot check. |
 | Submission (Task 5) | 10 % | Worksheet or screenshot is legible; group members named. |
 
-## Common stumbling points
+### Common stumbling points
 
 - Some learners forget the trailing `TRUE` in `IFS` and get
   `#N/A` on rows that don't match any explicit condition.

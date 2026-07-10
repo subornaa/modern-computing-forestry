@@ -11,7 +11,7 @@ library(knitr)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 The end-to-end case study uses the **BC silviculture** workbook
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"}).
 Click the file name to download it directly, then save it in your `data/`
@@ -19,32 +19,33 @@ folder. For the source and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
 - Trace the full reproducible workflow taught in this book —
   **import → clean → summarize → reshape → join → visualize →
-  map → render → explain** — on a single forestry dataset.
+  render → explain** — on a single forestry dataset.
 - Reproduce a complete analysis from a clean project, from a raw
   file to a rendered Quarto report.
 - Apply a repeatable **debugging ladder** to any error you meet
   in the final exam (and on the job).
 - Name concrete **next steps** for learning beyond this course.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will produce
+### What you will produce
 
 A complete **end-to-end case-study report**: take one of the
 course datasets, start from the raw file, document your cleaning,
-summarize by group, produce **one figure** and **one map**, and
+summarize by group, produce **one figure** (and an **optional map** only
+if you used the spatial extension), and
 render it as a single Quarto HTML report. This is both your final
 review and the best possible exam practice.
 :::
 
-# Where we are
+## Where we are
 
 You started in Excel (Chapters 1–3), crossed the bridge into R
 (Chapter 4), and built — one chapter at a time — every stage of a
@@ -63,12 +64,12 @@ reproducible analysis:
 
 This chapter threads them all together.
 
-# End-to-end case study: BC silviculture
+## End-to-end case study: BC silviculture
 
 We use one dataset — the BC silviculture file you have known since
 Chapter 1 — and run it through the whole pipeline.
 
-## 1. Import
+### 1. Import
 
 ```{r case-import}
 bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
@@ -76,14 +77,14 @@ bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
 dim(bc)
 ```
 
-## 2. Inspect
+### 2. Inspect
 
 ```{r case-inspect}
 glimpse(bc)
 colSums(is.na(bc))   # missing values per column
 ```
 
-## 3. Clean and derive
+### 3. Clean and derive
 
 We add a **decade** grouping variable and a **reforestation
 ratio** (reforested area per hectare harvested), documenting each
@@ -99,7 +100,7 @@ bc_clean |> select(Fiscal_Year, decade, Harvested_ha,
                    Reforestation_ha, reforest_ratio) |> head()
 ```
 
-## 4. Summarize by group
+### 4. Summarize by group
 
 ```{r case-summary}
 by_decade <- bc_clean |>
@@ -118,34 +119,39 @@ Note the discipline from Chapter 7: **`n_years` is reported beside
 every mean**, so a reader can see that the 1980s and 2020s
 decades are partial.
 
-## 5. Visualize — one figure
+### 5. Visualize — one figure
 
 ```{r case-figure}
-#| fig-alt: "Line chart of BC harvested area and reforested area
-#|   by fiscal year, 1987 to 2023, with the two series tracking
-#|   each other and reforestation generally following harvest."
+#| fig-cap: "BC harvested and reforested area (ha) by fiscal year, 1987–2023."
+#| fig-alt: "Line chart of BC harvested area (solid amber line) and
+#|   reforested area (dashed green line) by fiscal year, 1987 to 2023,
+#|   with the two series tracking each other and reforestation
+#|   generally following harvest."
 bc_long <- bc_clean |>
   select(Fiscal_Year, Harvested_ha, Reforestation_ha) |>
   pivot_longer(-Fiscal_Year, names_to = "series", values_to = "area_ha")
 
-ggplot(bc_long, aes(Fiscal_Year, area_ha, colour = series)) +
+ggplot(bc_long, aes(Fiscal_Year, area_ha, colour = series, linetype = series)) +
   geom_line(linewidth = 1) +
-  scale_colour_manual(values = c("#B05C50", "#2D6A4F"),
+  scale_colour_manual(values = c("#B7791F", "#2D6A4F"),
                       labels = c("Harvested", "Reforested")) +
+  scale_linetype_manual(values = c("solid", "dashed"),
+                        labels = c("Harvested", "Reforested")) +
   labs(title = "BC harvest and reforestation, 1987–2023",
-       x = "Fiscal year", y = "Area (hectares)", colour = NULL,
+       x = "Fiscal year", y = "Area (hectares)",
+       colour = NULL, linetype = NULL,
        caption = "Source: Environmental Reporting BC") +
   theme_minimal()
 ```
 
-## 6. Render and explain
+### 6. Render and explain
 
 Everything above lives in one `.qmd` file. Pressing **Render**
 produces a single HTML report that another analyst can reproduce
 from the raw file — no hidden clicks, no copy-paste. That
 reproducibility is the whole point of this course.
 
-# Final-exam preparation: the debugging ladder
+## Final-exam preparation: the debugging ladder
 
 The exam is not about memorizing function names — it is about
 **recovering when something breaks**. When you hit an error,
@@ -167,7 +173,7 @@ climb this ladder one rung at a time:
    confirmed it — a row count, a spot check, a re-render.
 
 ::: {.callout-note}
-## Using AI during study (not during a closed exam)
+### Using AI during study (not during a closed exam)
 
 When studying, AI is excellent for *explaining* an error or
 *generating practice variants*. Paste the **exact** error, your R
@@ -177,23 +183,23 @@ discipline the rest of the book taught. In a closed-book exam,
 the ladder above is what you carry in your head.
 :::
 
-# Active learning — exam practice
+## Active learning — exam practice
 
-## Activity 1 — Full pipeline, new dataset
+### Activity 1 — Full pipeline, new dataset
 Run the seven-step pipeline above on a *different* course dataset
 (Ontario forest stats, or the cleaned air-quality file). Produce
 one summary table and one figure.
 
-## Activity 2 — Break and fix
+### Activity 2 — Break and fix
 Introduce a deliberate bug (misspell a column, drop a
 `library()`, swap `lat`/`lon`). Use the debugging ladder to find
 and fix it. Write one sentence per rung.
 
-## Activity 3 — Reproduce from clean
+### Activity 3 — Reproduce from clean
 Move your `.qmd` and `data/` to a fresh folder and render. Does it
 work with no manual steps? If not, find the hidden dependency.
 
-# Where to go next
+## Where to go next
 
 This course is a foundation. Natural next steps:
 
@@ -216,25 +222,26 @@ Recommended reading mixes canonical and diverse voices:
 - Kimmerer, R. W. (2013). *Braiding Sweetgrass.* Milkweed.
 - BC First Nations Forestry Council. <https://www.bcfnfc.ca/>
 
-# AI as a debugging companion {.unnumbered}
+## AI as a debugging companion {.unnumbered}
 
-Across thirteen chapters, AI has been a **verification companion**,
+Across the book's chapters, AI has been a **verification companion**,
 not an author: it explains errors, drafts starting code, and
 suggests alternatives — and you check every line against the data
 and the documentation. That habit, more than any single function,
 is what makes you employable in a world where code is cheap and
 *judgment* is scarce.
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note collapse="true"}
-## Pacing, exam logistics, and accommodations
+### Pacing, exam logistics, and accommodations
 
 - **Pacing.** One session of review, one of Q&A / sample-exam
   walkthrough, one wrap-up. No graded lab this week.
 - **Final exam** covers import, clean, summarize, reshape, join,
-  visualize, and map with R, tidyverse, ggplot2, and `sf` —
-  weighted 30% per the syllabus.
+  and visualize with R, tidyverse, and ggplot2 — weighted 30% per the
+  syllabus. (Spatial mapping with `sf` is an optional extension and is
+  not required on the exam.)
 - **Accommodations.** Confirm Centre for Accessibility
   arrangements *before* the exam (extended time, alternative
   formats, rest breaks). Where the timed format raises equity
@@ -243,20 +250,20 @@ is what makes you employable in a world where code is cheap and
   *Accessibility statement* in the front matter.
 - **Common stumbling points.** Forgotten `library()` calls; data
   paths that work locally but not from a clean project; reading
-  `NA` as zero; `lat`/`lon` reversed in `st_as_sf()`.
+  `NA` as zero.
 :::
 
 
 ---
 
-# Working with AI on this chapter {.unnumbered}
+## Working with AI on this chapter {.unnumbered}
 
 Use AI as a **verification and debugging partner**, not an answer machine.
 The goal is not to make AI do the work — it is to use AI to help you
 **understand, check, and improve your own work.**
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Fill in the brackets and paste this into your AI assistant. It should
 *explain and check*, not hand you a final assignment answer:
 
@@ -281,7 +288,7 @@ that is not in your data; choosing a tool before reading the question; and
 PivotTable.
 
 ::: {.callout-tip collapse="true"}
-## Compare your solution with the reference
+### Compare your solution with the reference
 When a reference solution is available, do **not** just copy it — use it to
 check your own work:
 
@@ -292,7 +299,7 @@ check your own work:
 :::
 
 ::: {.callout-tip collapse="true"}
-## AI replication challenge
+### AI replication challenge
 Write a prompt that would guide an AI *toward* the reference solution
 without handing over the final answer. Include the dataset, the columns,
 the task goal, the output format you need, and the verification checks.

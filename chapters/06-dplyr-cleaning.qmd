@@ -13,7 +13,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC air-quality** file
 ([`airdata3.csv`](../data/airdata3.csv){download="airdata3.csv"}). Click
 the file name to download it directly, then save it in your `data/`
@@ -21,7 +21,7 @@ folder. For the source and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -43,10 +43,10 @@ By the end of this chapter you will be able to:
 - Maintain a **cleaning log** inside a Quarto document — text and
   code side by side, every change documented.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. A **cleaned tibble** of `airdata3.csv`, saved as
    `outputs/airdata3_clean.csv`, containing only the useful
@@ -63,7 +63,7 @@ This list is the same as the rubric for the chapter assignment.
 Keep it in view while you work.
 :::
 
-# Why dplyr
+## Why dplyr
 
 In Chapter 2 you cleaned data in Excel using AutoFilter, sorts,
 helper columns with `IF`/`IFS`, `VLOOKUP`, and `SUMIFS`. Every
@@ -80,7 +80,7 @@ verbs do exactly what your Excel moves did, with three changes:
 3. Moves **chain together** with the pipe `|>`, so a multi-step
    cleaning is one block of code that reads top to bottom.
 
-# Excel-to-dplyr bridge
+## Excel-to-dplyr bridge
 
 This is the cleaning bridge that Chapter 2 previewed and Chapter
 5 introduced. Now you write the right-hand column for real.
@@ -102,7 +102,7 @@ After this chapter, you will be able to clean a dataset in R as
 fluently as you cleaned one in Excel — with the bonus that the
 work is now reproducible.
 
-# The dataset for this chapter
+## The dataset for this chapter
 
 This chapter uses one openly licensed file from the **BC
 Government — Environmental Reporting BC** program:
@@ -125,7 +125,7 @@ tibble(
 ) |> kable()
 ```
 
-## Why this dataset matters for forestry
+### Why this dataset matters for forestry
 
 Forest health and air quality are tightly linked. **Ground-level
 ozone (O₃)** is one of the most damaging air pollutants for
@@ -145,7 +145,7 @@ that later chapters can compare readings across stations and
 regions.
 
 ::: {.callout-important}
-## The file is intentionally messy
+### The file is intentionally messy
 
 Unlike the BC silviculture and Ontario forest stats files (which
 were pre-cleaned by their publishers), `airdata3.csv` arrives in
@@ -166,7 +166,7 @@ chapter is the cleaning work you will do all the time as a
 working analyst.
 :::
 
-# Importing the file
+## Importing the file
 
 In your `frst232/` project (from Chapter 4 or 5), the file should
 live at `data/airdata3.csv`. If you do not have it yet, download
@@ -182,7 +182,7 @@ Notice the variable name: **`airdata_raw`**. We never modify this
 in place. Every cleaning step creates a new variable. The raw
 tibble stays untouched in memory in case we need to start over.
 
-# Inspect first — the six-move check from Chapter 5
+## Inspect first — the six-move check from Chapter 5
 
 ```{r inspect-airdata}
 dim(airdata_raw)
@@ -203,7 +203,7 @@ distributed: the schema reserves room for variables that *some*
 stations might measure, but the stations in this extract do not
 all measure them. Our first cleaning move is to drop them.
 
-# Verb 1 — `select()` (keep or drop columns)
+## Verb 1 — `select()` (keep or drop columns)
 
 `select()` chooses which columns to keep. The simplest form is to
 list the columns you want:
@@ -217,7 +217,7 @@ airdata_raw |>
 The pipe `|>` reads: *"take `airdata_raw`, then pass it into
 `select()`, then take just the first 3 rows"*.
 
-## Dropping columns with `-`
+### Dropping columns with `-`
 
 To drop named columns, prefix them with `-`:
 
@@ -235,7 +235,7 @@ match that grabs every column whose name starts with `"Unnamed"`.
 Other helpers: `ends_with()`, `contains()`, `matches()` (regex),
 and `where()` (predicate).
 
-## Dropping all-NA columns programmatically
+### Dropping all-NA columns programmatically
 
 We saw above that several columns are entirely missing. We can
 drop them in one move with `where()`:
@@ -251,7 +251,7 @@ Read it: *"keep columns where it is **not** the case that all
 values are NA"*. We just removed twelve dead-weight columns with
 one line.
 
-# Verb 2 — `filter()` (keep or drop rows)
+## Verb 2 — `filter()` (keep or drop rows)
 
 `filter()` keeps rows where a condition is `TRUE`:
 
@@ -265,7 +265,7 @@ nrow(airdata_step3)
 `!is.na(O3)` reads *"O3 is NOT missing"*. The `!` is the
 logical NOT operator.
 
-## Combining conditions
+### Combining conditions
 
 You can combine conditions with `&` (AND), `|` (OR), or by adding
 multiple conditions separated by commas (which dplyr treats as
@@ -282,7 +282,7 @@ nrow(burnaby_o3)
 Note the **double-equals `==`** for "is equal to" — single `=`
 would be an assignment.
 
-## Common filter patterns
+### Common filter patterns
 
 | You want | Filter expression |
 |---|---|
@@ -298,7 +298,7 @@ The right-hand column reads naturally in English. *"Filter the
 data where location is in 'A', 'B', or 'C'."* That's the dplyr
 design.
 
-# Verb 3 — `mutate()` (add or change columns)
+## Verb 3 — `mutate()` (add or change columns)
 
 `mutate()` adds new columns or replaces existing ones. The most
 common use in this chapter is **parsing the text date column into
@@ -322,7 +322,7 @@ Other parsers:
 | `"15-Jan-2000"` | `dmy()` (handles abbreviations) |
 
 ::: {.callout-warning}
-## Date ambiguity
+### Date ambiguity
 
 A string like `"3/4/2000"` could be March 4 or April 3 depending
 on convention. **lubridate trusts the function name** — call
@@ -334,7 +334,7 @@ and confirm the parsed date is what you expected. A wrong date
 parser is a silent bug that ruins every later analysis.
 :::
 
-## Multiple new columns at once
+### Multiple new columns at once
 
 ```{r mutate-many}
 airdata_step5 <- airdata_step4 |>
@@ -349,7 +349,7 @@ glimpse(airdata_step5 |> select(Date, date_parsed, year, month, day, o3_kg_per_m
 `year()`, `month()`, `day()` are lubridate accessors. Each
 returns a vector of the same length.
 
-# Verb 4 — `arrange()` (sort rows)
+## Verb 4 — `arrange()` (sort rows)
 
 `arrange()` sorts the tibble:
 
@@ -372,7 +372,7 @@ airdata_step5 |>
 The top of the list is the highest-O₃ hourly readings —
 useful for spotting the most polluted moments.
 
-## Multi-key sort
+### Multi-key sort
 
 ```{r arrange-multi}
 airdata_step5 |>
@@ -385,7 +385,7 @@ Sorts by `location` (alphabetical), then within each location by
 `O3` descending. The equivalent in Excel was **Data → Sort →
 Add Level**.
 
-# Verb 5 — `case_when()` (the R `IFS`)
+## Verb 5 — `case_when()` (the R `IFS`)
 
 `case_when()` recodes values into categories based on rules. It
 is the direct R equivalent of Excel's `IFS`.
@@ -410,7 +410,7 @@ than 20, 'moderate'; ..."*. The first match wins. The trailing
 `IFS`.
 
 ::: {.callout-tip}
-## Why `case_when` beats nested `if_else`
+### Why `case_when` beats nested `if_else`
 
 You could write the same logic with nested `if_else()`:
 
@@ -424,7 +424,7 @@ It works, but it nests deeply and is hard to maintain. `case_when`
 is flat — one row per rule — and easy to extend.
 :::
 
-# Verb 6 — `summarise()` overall, `group_by()` for groups
+## Verb 6 — `summarise()` overall, `group_by()` for groups
 
 `summarise()` collapses a tibble to **one row** of summary
 statistics:
@@ -460,7 +460,7 @@ This is the **PivotTable equivalent** from Chapter 3. Same
 operation. Same answer. Now scriptable.
 
 ::: {.callout-tip}
-## Always remember `na.rm = TRUE`
+### Always remember `na.rm = TRUE`
 
 When summarising a column that *might* have missing values, add
 `na.rm = TRUE` to every aggregation function: `mean()`, `sum()`,
@@ -469,7 +469,7 @@ for any group with even one missing value, which is rarely what
 you want.
 :::
 
-## `count()` — the most common summarise
+### `count()` — the most common summarise
 
 `count(col)` is a shortcut for `group_by(col) |> summarise(n =
 n())`:
@@ -482,7 +482,7 @@ airdata_step6 |>
 `sort = TRUE` orders the result descending by count. Useful for
 spotting which categories dominate.
 
-# Verb 7 — `left_join()` (the R `VLOOKUP`)
+## Verb 7 — `left_join()` (the R `VLOOKUP`)
 
 A real-world cleaning task often needs a **lookup**: take a code
 column, attach a description from a reference table. `left_join`
@@ -523,7 +523,7 @@ the column to match on. Stations not in the reference table get
 `left` means).
 
 ::: {.callout-tip}
-## `left_join` vs `inner_join` vs `right_join`
+### `left_join` vs `inner_join` vs `right_join`
 
 | Join | Keeps |
 |---|---|
@@ -536,7 +536,7 @@ For lookups, `left_join` is the default — it keeps every row in
 your main data, even if the lookup misses.
 :::
 
-# Putting it all together — the full cleaning pipeline
+## Putting it all together — the full cleaning pipeline
 
 Now the entire chapter in one pipeline:
 
@@ -574,7 +574,7 @@ glimpse(airdata_clean)
 Reproducible. Documented. This is what cleaning data in R looks
 like once you are fluent.
 
-## Save the cleaned tibble
+### Save the cleaned tibble
 
 ```{r write-csv}
 #| eval: false
@@ -585,7 +585,7 @@ write_csv(airdata_clean,
 The cleaned file is your **Expected output** for the chapter
 assignment. The raw `data/airdata3.csv` stays untouched.
 
-# The cleaning log
+## The cleaning log
 
 In Excel you kept a cleaning log on a separate sheet. In Quarto
 you keep it as **Markdown text between the code chunks**.
@@ -611,42 +611,42 @@ That table goes in your `.qmd` directly above the cleaning
 pipeline. Anyone reading the rendered report sees what you did,
 why, and the code that did it.
 
-# Active learning
+## Active learning
 
-## Activity 1 — Find the dirty columns
+### Activity 1 — Find the dirty columns
 
 Run `colSums(is.na(airdata_raw)) |> sort(decreasing = TRUE)`.
 How many columns are 100% missing? How many are partially
 missing?
 
-## Activity 2 — Filter and count
+### Activity 2 — Filter and count
 
 How many rows did the file have before filtering for non-missing
 O3? How many after? What fraction of rows did you keep?
 
-## Activity 3 — Try a different case_when
+### Activity 3 — Try a different case_when
 
 Replace the four-band O3 classification with a three-band
 version (`good` / `moderate` / `unhealthy`). Re-run the pipeline.
 How does the count of each category change?
 
-## Activity 4 — Add a new station to the lookup
+### Activity 4 — Add a new station to the lookup
 
 Add one row to `station_regions` for a station you noticed in the
 data but is missing from the reference. Re-run the `left_join`.
 Confirm the new station now has a region.
 
-## Activity 5 — Save and re-import
+### Activity 5 — Save and re-import
 
 Save your cleaned tibble to `outputs/airdata3_clean.csv`. Then in
 a fresh R session, import it with `read_csv()`. Confirm the date
 column is still `<date>` (not `<chr>`). If it is, your earlier
 parsing held.
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -678,7 +678,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Clean the air-quality file together
+### Lab: Clean the air-quality file together
 
 Work in groups of 3 or 4. Each member should be inside their own
 `frst232/` RStudio Project. The file `airdata3.csv` must be in
@@ -713,7 +713,7 @@ group members know about Metro Vancouver geography?
 This lab fits comfortably inside a single hands-on session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises for this chapter.
 
@@ -750,9 +750,9 @@ These are the take-home exercises for this chapter.
    meet `pivot_wider` formally in Chapter 8 — try it now if you
    want to look ahead.)
 
-# Optional, advanced
+## Optional, advanced
 
-## Renaming columns
+### Renaming columns
 
 `rename()` lets you give a column a new name:
 
@@ -762,7 +762,7 @@ airdata_step1 |>
          o3_ugm3 = O3)
 ```
 
-## `if_else()` for binary recodes
+### `if_else()` for binary recodes
 
 When you only need two outcomes, `if_else()` is briefer than
 `case_when()`:
@@ -771,7 +771,7 @@ When you only need two outcomes, `if_else()` is briefer than
 mutate(aq_alert = if_else(O3 >= 25, "alert", "normal"))
 ```
 
-## `across()` for applying a function to many columns
+### `across()` for applying a function to many columns
 
 If you want the mean of *every* numeric column grouped by
 station, you can use `across()`:
@@ -786,7 +786,7 @@ This is one of the most powerful patterns in dplyr — but also
 one of the most confusing. We will use it sparingly in this
 course.
 
-# A glimpse ahead: From cleaning to summarizing
+## A glimpse ahead: From cleaning to summarizing
 
 In Chapter 7 we go deeper into `summarise()`. The verbs are
 already familiar; what we add is:
@@ -813,7 +813,7 @@ but as one line of dplyr.
 
 Chapter 7 walks through this in detail.
 
-# Self-assessment quiz {#sec-quiz-ch06}
+## Self-assessment quiz {#sec-quiz-ch06}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -1085,10 +1085,10 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts for this chapter
+### Useful prompts for this chapter
 
 - *"In R, my `case_when()` returns NA for some rows even though I
   have a TRUE catch-all at the end. What might be wrong?"*
@@ -1101,7 +1101,7 @@ Explanations appear below each question.
   rows. The original strings look like '1/15/2000'. What are the
   most common reasons mdy() returns NA?"*
 
-## A cleaning prompt template
+### A cleaning prompt template
 
 When you ask AI for cleaning help, include four things:
 
@@ -1113,7 +1113,7 @@ When you ask AI for cleaning help, include four things:
 Without these four, AI's suggestion will be too generic to use
 directly.
 
-## When *not* to use AI
+### When *not* to use AI
 
 - Do not let AI write your cleaning log. The log records *your*
   decisions about *your* data.
@@ -1122,7 +1122,7 @@ directly.
   name against `names(your_tibble)`.
 :::
 
-# Reading
+## Reading
 
 - *R for Data Science* — chapter 4 *Data transformation*, the
   canonical dplyr reference. Free at <https://r4ds.hadley.nz/>.
@@ -1131,10 +1131,10 @@ directly.
 - BC Air Data background:
   <https://www2.gov.bc.ca/gov/content/environment/air-land-water/air/air-quality/air-data>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - The chapter has **seven new R concepts** (the six core verbs
   plus `case_when` / `left_join`). Plan to teach the verbs in
@@ -1148,14 +1148,14 @@ directly.
   skill. Insist learners write one for every cleaning task,
   starting with this chapter.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. `outputs/airdata3_clean.csv` (saved tibble).
 2. `frst232_ch06_learner.html` (rendered Quarto report).
 3. Station-ranked summary table.
 4. Group-lab worksheet or screenshot.
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -1164,7 +1164,7 @@ directly.
 | `frst232_ch06_solutions.qmd` | Completed solutions. **Do not distribute to learners.** |
 | `quiz_ch06.html` | Standalone interactive quiz. |
 
-## Common stumbling points
+### Common stumbling points
 
 - **Confusing `filter` with `select`.** Walk through "rows vs
   columns" explicitly. *"`filter` chooses some of the rows.

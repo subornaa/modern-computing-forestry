@@ -12,7 +12,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC silviculture** workbook
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"}).
 Click the file name to download it directly, then save it in your `data/`
@@ -20,7 +20,7 @@ folder. For the source and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -38,12 +38,12 @@ By the end of this chapter you will be able to:
 - Set up a clean **project folder structure** that separates raw
   data from cleaned files.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 At the end of this chapter, each learner (or group) will produce:
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. The raw workbook **`bc_disturbance_reforestation.xlsx`** placed in
    your `data/` folder, **unchanged from the BC Data
@@ -65,7 +65,7 @@ This list is the same as the rubric for the chapter assignment. Keep
 it in view while you work.
 :::
 
-# Why we start with Excel
+## Why we start with Excel
 
 Excel has flaws. It hides decisions in invisible mouse clicks. It is
 hard to reproduce or recreate. It is hard to version-control. We will spend most
@@ -82,7 +82,7 @@ analyse in Excel here. The continuity is the point: R is not a fresh
 start; it is a more honest version of what you already do. (See *A
 glimpse of Chapter 4* at the end of this chapter for a preview.)
 
-## What "data analysis" actually means
+### What "data analysis" actually means
 
 People say *"data analysis"* to mean different things. In this
 course it means a sequence of five repeatable steps:
@@ -100,7 +100,7 @@ course it means a sequence of five repeatable steps:
 Chapter 1 covers steps 1 and 2 — *inspect* and *document*. The rest
 of the book builds the other three steps on top of that foundation.
 
-# The dataset for this chapter
+## The dataset for this chapter
 
 This chapter uses one real, openly licensed Excel workbook from the
 **BC Government / BC Data Catalogue**:
@@ -132,7 +132,7 @@ The file is **directly downloadable** from the BC Data Catalogue.
 You do not need an account. There is no shapefile bundle to manage.
 It is one Excel file with three sheets.
 
-## Why this dataset matters for forestry
+### Why this dataset matters for forestry
 
 This is not a textbook dataset. Every number was published by the
 BC Ministry of Forests under the **Trends in Silviculture in B.C.**
@@ -156,7 +156,7 @@ The dataset captures the story of BC silviculture from 1987 onward:
   total disturbance in most years.
 
 ::: {.callout-important}
-## Where the data comes from — and what to do with it
+### Where the data comes from — and what to do with it
 
 This dataset is published by the BC Government and distributed
 through the **BC Data Catalogue**. Two rules:
@@ -174,7 +174,7 @@ This is the single most important habit in this chapter.
 :::
 
 ::: {.callout-tip}
-## Why this dataset is right for this chapter
+### Why this dataset is right for this chapter
 
 - **It is real.** Every number was published by the BC Ministry of
   Forests. You can verify any value against the official indicator
@@ -188,7 +188,7 @@ This is the single most important habit in this chapter.
   above.
 :::
 
-## What the dataset measures
+### What the dataset measures
 
 Each row is one **fiscal year** in BC. Each column is one
 **area-based forestry indicator** — harvested area, naturally
@@ -198,7 +198,7 @@ A fiscal year in BC runs from **April 1 to March 31** of the
 following calendar year. So "Fiscal Year 2023" means April 2023
 through March 2024.
 
-# Project folder structure
+## Project folder structure
 
 Before you open the file, set up where it will live. The way you
 organize files now saves a hundred *"where is that file?"* moments
@@ -231,7 +231,7 @@ Three rules:
    small folders than in one huge dump.
 
 ::: {.callout-tip}
-## Where the file goes in this course
+### Where the file goes in this course
 
 For every code chunk in this book to work, the data file should
 live at:
@@ -244,7 +244,7 @@ When you see `here("data", "bc_disturbance_reforestation.xlsx")`
 in a later chapter, that is the path it refers to.
 :::
 
-# The three-sheet pattern: About, ReadMe, Data
+## The three-sheet pattern: About, ReadMe, Data
 
 Download `bc_disturbance_reforestation.xlsx` from the BC Data
 Catalogue and place it in your `data/` folder. Open the file. You
@@ -260,7 +260,7 @@ will see three tabs at the bottom:
 before reading About means computing something before you know
 what it measures.
 
-## About sheet
+### About sheet
 
 The About sheet answers *where did this file come from?*. Typical
 fields:
@@ -278,7 +278,7 @@ The point of the About sheet is **provenance**. A reader who finds
 this file two years from now needs to know where it came from and
 under what licence they can use it.
 
-## ReadMe sheet
+### ReadMe sheet
 
 The ReadMe sheet answers *what does each column mean?*:
 
@@ -294,7 +294,7 @@ One row per column. Notice how the unit (hectares) appears in
 every numeric row. Never assume the unit; check it.
 
 ::: {.callout-tip}
-## A pattern to keep forever
+### A pattern to keep forever
 
 Every dataset you create for this course should ship with About
 and ReadMe sheets like these. They cost an hour to write and
@@ -302,15 +302,15 @@ save many hours of *"what does this column mean?"* arguments
 later.
 :::
 
-## Data sheet
+### Data sheet
 
 The Data sheet holds the 37 rows of forestry indicators. We will
 inspect it next.
 
-# Inspecting the Data sheet
+## Inspecting the Data sheet
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"I read the About, ReadMe, and Data sheets of `bc_disturbance_reforestation.xlsx` and concluded it has one row per fiscal year with area columns in hectares. Check whether my reading of the sheets and column meanings is complete and consistent, and tell me what a careful analyst might have missed on a first inspection. Do not summarise the file for me from scratch."*
@@ -352,7 +352,7 @@ wildfire season. The dataset would look like a flat trend without
 it. The 2017 row alone is a lesson in why you *always look at the
 extremes* of every column.
 
-## The eight columns, one by one
+### The eight columns, one by one
 
 | Column | Type | What it measures |
 |---|---|---|
@@ -366,7 +366,7 @@ extremes* of every column.
 | `Reforestation_ha` | Number (hectares) | Area planted or naturally regenerated that year. |
 
 ::: {.callout-tip}
-## A small spot check
+### A small spot check
 
 `Total_Disturbance_ha` is the sum of `Harvested_ha` and
 `Natural_Disturbance_ha`. Pick any one row — say row 38 (year
@@ -374,7 +374,7 @@ extremes* of every column.
 to `TRUE`. If it does, the dataset is internally consistent.
 :::
 
-# Data types — and why they matter
+## Data types — and why they matter
 
 Every cell in Excel has a **type**. The three you care about for
 this chapter:
@@ -395,12 +395,12 @@ at the bottom of the Excel window. It usually shows `Sum`,
 `Average`, and `Count`. If `Count` matches your row count but
 `Sum` is suspiciously small, some cells are stored as text.
 
-# Navigation: freeze panes and a few shortcuts
+## Navigation: freeze panes and a few shortcuts
 
 A 37-row file does not need navigation tricks. A 37 000-row file
 does. Learn these now while the file is small.
 
-## Freeze panes
+### Freeze panes
 
 Click row 2 (the row below the header). Then choose
 **View → Freeze Panes → Freeze Top Row**. The header row stays
@@ -410,7 +410,7 @@ For wider files, select cell B2 and choose **View → Freeze Panes →
 Freeze Panes**. Both the first row and the first column stay
 visible.
 
-## A few keyboard shortcuts
+### A few keyboard shortcuts
 
 | Shortcut | What it does |
 |---|---|
@@ -422,7 +422,7 @@ visible.
 
 Learning a handful of shortcuts saves real time on bigger files.
 
-# Number formats: display vs value
+## Number formats: display vs value
 
 A single cell carries two pieces of information:
 
@@ -431,7 +431,7 @@ A single cell carries two pieces of information:
 
 These are different. Changing the format never changes the value.
 
-## A worked example
+### A worked example
 
 Type `216304.919` into a cell. The cell displays `216304.919`.
 
@@ -447,7 +447,7 @@ shows `216305 ha`. The string `"ha"` is part of the *format*, not
 the value — formulas referencing this cell still treat it as a
 plain number.
 
-## Why this matters
+### Why this matters
 
 Two cells can display the same thing but have different values.
 If cell A holds `100000` and cell B holds `99999.999999`, both can
@@ -457,14 +457,14 @@ This is the single most common silent bug in Excel-based analysis.
 **Always be aware of the underlying value, not just the display.**
 
 ::: {.callout-tip}
-## Two formats worth knowing
+### Two formats worth knowing
 
 - `#,##0` — thousands separator, no decimals. Use for hectares.
 - `yyyy-mm-dd` — ISO 8601 date format. Sorts correctly as text
   *and* as a date. Universally readable across regions.
 :::
 
-# Writing simple formulas
+## Writing simple formulas
 
 The five most-used aggregating formulas. Type each in any empty
 cell on the Data sheet.
@@ -494,11 +494,11 @@ tibble(
 ) |> kable()
 ```
 
-# Checking whether values make sense
+## Checking whether values make sense
 
 Before you trust any number you compute, run a spot check.
 
-## Three quick checks
+### Three quick checks
 
 1. **Range check.** A mean should sit between the min and the max.
    If `MIN = 50,000`, `MAX = 250,000`, and your `AVERAGE` says
@@ -514,7 +514,7 @@ Before you trust any number you compute, run a spot check.
 These three checks take seconds and catch most bugs.
 
 ::: {.callout-tip}
-## Read the value, not the display
+### Read the value, not the display
 
 After you write a formula, click the result cell and look at the
 formula bar. If the formula says `=SUM(B2:B38)` but you wanted
@@ -522,10 +522,10 @@ column H, you have selected the wrong column. Always read the
 formula, not just the answer.
 :::
 
-# Building a data dictionary
+## Building a data dictionary
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"Here is my data-dictionary entry for one column: `[paste your column name, type, unit, and plain-language description]`. Check whether my description matches the ReadMe, whether I named the correct type and unit, and what a reviewer might question. Do not rewrite the dictionary for me."*
@@ -543,7 +543,7 @@ with:
 The ReadMe sheet of `bc_disturbance_reforestation.xlsx` already
 has one. Look at it.
 
-## How to build your own
+### How to build your own
 
 In any new workbook:
 
@@ -556,7 +556,7 @@ In any new workbook:
    hectares"* is better.
 
 ::: {.callout-warning}
-## Test your dictionary
+### Test your dictionary
 
 After you write a dictionary, hand the workbook to someone who
 has never seen the data and ask them to compute one statistic
@@ -565,11 +565,11 @@ dictionary is good. If they ask what a column means, the
 dictionary needs work.
 :::
 
-# The three habits: inspect first, compute second, verify always
+## The three habits: inspect first, compute second, verify always
 
 If you take only one thing from this chapter, take this.
 
-## Inspect first
+### Inspect first
 
 Before you compute *any* number, look at the data. Open the file.
 Read the About sheet. Read the ReadMe. Scroll through a few rows.
@@ -579,7 +579,7 @@ newest.
 This takes a few minutes and catches more bugs than any other
 practice in data analysis.
 
-## Compute second
+### Compute second
 
 Only after you have inspected do you start typing formulas. You
 should be able to **predict** what your formula will return
@@ -587,7 +587,7 @@ before you press Enter. If the answer surprises you, that
 surprise is information — either the data is interesting or the
 formula is wrong.
 
-## Verify always
+### Verify always
 
 Every time you compute a number, verify it against something:
 
@@ -599,12 +599,12 @@ Every time you compute a number, verify it against something:
   also compute it with a PivotTable (Chapter 3). If both agree,
   trust the number.
 
-# Active learning
+## Active learning
 
 These short activities are designed to be done alongside the
 chapter. Pick whichever match the pace of your session.
 
-## Activity 1 — Read the About sheet aloud
+### Activity 1 — Read the About sheet aloud
 
 In pairs, one learner reads the About sheet, the other listens
 and asks one clarifying question. Switch.
@@ -612,7 +612,7 @@ and asks one clarifying question. Switch.
 The point is **slowing down**. Force yourself to read the
 metadata before the data.
 
-## Activity 2 — Five-question inspection
+### Activity 2 — Five-question inspection
 
 On your own, complete this inspection worksheet, then compare with a
 partner. If your answers differ, go back to the About, ReadMe, and Data
@@ -626,13 +626,13 @@ sheets to resolve them.
 | One column name, its unit, and meaning | |
 | One value or pattern that seems important or surprising | |
 
-## Activity 3 — Write five simple formulas
+### Activity 3 — Write five simple formulas
 
 In your **working copy** (not the raw download), type each formula from
 the *Writing simple formulas* section into an empty cell. Confirm each
 result matches the expected value in the table.
 
-## Activity 4 — Verify one identity
+### Activity 4 — Verify one identity
 
 On any one row of the Data sheet, verify that
 `Harvested_ha + Natural_Disturbance_ha = Total_Disturbance_ha`.
@@ -640,16 +640,16 @@ Use a formula like `=E2 + F2 - G2`. The result should be 0 (or
 very close — Excel sometimes shows tiny non-zero values for
 floating-point reasons).
 
-## Activity 5 — Build a one-row data dictionary
+### Activity 5 — Build a one-row data dictionary
 
 Pick any column from the Data sheet. Write a one-sentence
 description for it without looking at the ReadMe. Then compare
 with the ReadMe. How close did you get?
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -681,7 +681,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Inspect a real BC dataset together
+### Lab: Inspect a real BC dataset together
 
 Work in groups of 3 or 4. Use one shared copy of
 `bc_disturbance_reforestation.xlsx` (one machine per group, or
@@ -730,7 +730,7 @@ This lab is designed to fit comfortably inside a single
 hands-on session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises that go with this chapter.
 
@@ -766,13 +766,13 @@ These are the take-home exercises that go with this chapter.
 7. Apply ISO date format (`yyyy-mm-dd`) to any date in any file.
    Sort by that column. Confirm the sort works correctly.
 
-# Optional, advanced
+## Optional, advanced
 
 Items in this section are not required for the main path through
 the chapter. Read them once you are comfortable with the basics
 above.
 
-## Named ranges
+### Named ranges
 
 You can give a range of cells a name and refer to it by that
 name in formulas:
@@ -789,7 +789,7 @@ Skip named ranges in Chapter 1 if you find them overwhelming —
 the chapter does not depend on them. Chapter 2 will show
 **structured tables**, which solve the same problem more cleanly.
 
-## Custom number formats
+### Custom number formats
 
 Beyond the standard formats, Excel supports custom format codes.
 For example, the custom format `0.000 "ha"` displays
@@ -799,7 +799,7 @@ This is useful for at-a-glance unit labels, but use sparingly —
 too much custom formatting can make a workbook harder for a
 collaborator to read.
 
-# A glimpse ahead: From Excel to R
+## A glimpse ahead: From Excel to R
 
 In Chapter 4 we will install R and re-open *this same file*
 reproducibly. The Excel moves you learned in this chapter map
@@ -823,7 +823,7 @@ see that R is not a fresh start. Everything you learn in Chapters
 1–3 transfers directly. Chapter 4 will walk through each step in
 detail.
 
-# Self-assessment quiz {#sec-quiz-ch01}
+## Self-assessment quiz {#sec-quiz-ch01}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -1161,17 +1161,17 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## When to use AI in this chapter
+### When to use AI in this chapter
 
 - Ask AI to **define** a forestry term that appears in the ReadMe
   but is new to you. *"What does 'silvicultural system' mean?"*
 - Ask AI to **explain** an Excel formula. Paste the formula
   verbatim and ask what it does.
 
-## When *not* to use AI in this chapter
+### When *not* to use AI in this chapter
 
 - AI is not the source of truth for what a BC dataset measures.
   The BC indicator page is. Use the ReadMe and the source URL
@@ -1180,7 +1180,7 @@ Explanations appear below each question.
   back. The point of an exercise is the thinking, not the result.
 :::
 
-# Reading
+## Reading
 
 - *About* and *ReadMe* sheets of `bc_disturbance_reforestation.xlsx`.
 - BC Government silviculture indicator background:
@@ -1190,10 +1190,10 @@ Explanations appear below each question.
 - Open Government Licence — British Columbia:
   <https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - This chapter is deliberately beginner-friendly. The main path
   covers six skills: inspecting About / ReadMe / Data; identifying
@@ -1206,7 +1206,7 @@ Explanations appear below each question.
 - The group lab is the central hands-on deliverable. Plan to give
   learners time to complete all five tasks in one session.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. Raw `bc_disturbance_reforestation.xlsx` in `data/`,
    unchanged.
@@ -1215,7 +1215,7 @@ Explanations appear below each question.
    a one-row data dictionary entry, and the five chapter formulas.
 3. Group-lab worksheet or screenshot.
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -1224,7 +1224,7 @@ Explanations appear below each question.
 | `bc_disturbance_reforestation_solutions.xlsx` | Instructor solutions with completed formulas and worked answers. **Do not distribute to learners.** |
 | `quiz_ch01.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested facilitation guidance for the Practice Demo Lab
+### Suggested facilitation guidance for the Practice Demo Lab
 
 *These are optional facilitation and feedback suggestions for instructors
 running this book demo — **not** a grading key. The percentages below are
@@ -1238,7 +1238,7 @@ relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 | Verify identity (Task 4) | 20 % | `Harvested + Natural = Total` confirmed on at least one row. |
 | Submission (Task 5) | 10 % | Worksheet or screenshot is legible; group members named. |
 
-## Common stumbling points
+### Common stumbling points
 
 - Some learners try to compute the answer to Task 3 from the
   Summary sheet of the solutions file. Hide that file.

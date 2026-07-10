@@ -12,7 +12,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC silviculture**
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"})
 and **Ontario forest statistics**
@@ -22,7 +22,7 @@ your `data/` folder. For sources and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -46,10 +46,10 @@ By the end of this chapter you will be able to:
 - Use the **native pipe `|>`** to chain operations.
 - Recognize and read common error messages.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. A **working RStudio Project** named `frst232/` (or
    `frst232-yourname/`), either on your local machine or on Posit
@@ -81,7 +81,7 @@ This list is the same as the rubric for the chapter assignment.
 Keep it in view while you work.
 :::
 
-# Why R, why now
+## Why R, why now
 
 For three chapters, every analysis lived inside Excel. You wrote
 formulas, dragged them across grids, built PivotTables, made
@@ -109,7 +109,7 @@ file you import today is the same
 you compute will be identical. **What changes is that the steps
 are now scriptable.**
 
-# R, RStudio, Quarto, Posit Cloud — what each thing is
+## R, RStudio, Quarto, Posit Cloud — what each thing is
 
 These four words show up everywhere. They are not the same thing.
 
@@ -121,7 +121,7 @@ These four words show up everywhere. They are not the same thing.
 | **Posit Cloud** | A free, browser-based version of RStudio that runs in the cloud — no install needed. | When you do not want to (or cannot) install R locally. |
 
 ::: {.callout-tip}
-## The recommended path for this course
+### The recommended path for this course
 
 If you have never used R before, **start with Posit Cloud**. No
 installation. No version conflicts. Works on any laptop, any
@@ -132,7 +132,7 @@ Switch to a local install only if (a) you need to work offline or
 yourself.
 :::
 
-# Path A — Posit Cloud (recommended)
+## Path A — Posit Cloud (recommended)
 
 1. Go to <https://posit.cloud>.
 2. Click **Sign Up** (free plan is fine for this course).
@@ -142,28 +142,28 @@ yourself.
 
 That is it. Skip Path B and go to *Your first R commands*.
 
-# Path B — Install R and RStudio locally
+## Path B — Install R and RStudio locally
 
 If you prefer (or need) a local install:
 
-## Install R
+### Install R
 
 - Windows: <https://cran.r-project.org/bin/windows/base/>
 - macOS: <https://cran.r-project.org/bin/macosx/>
 - Pick the latest release. Accept all defaults.
 
-## Install RStudio
+### Install RStudio
 
 - All platforms: <https://posit.co/download/rstudio-desktop/>
 - Install **after** R is installed. RStudio finds R automatically.
 
-## Install Quarto
+### Install Quarto
 
 - <https://quarto.org/docs/get-started/>
 - Quarto often comes bundled with recent RStudio; if so, you can
   skip this step.
 
-## Verify
+### Verify
 
 Open RStudio. In the **Console** pane (bottom-left), type:
 
@@ -174,7 +174,7 @@ R.version.string
 You should see something like `"R version 4.5.0 (2025-04-11)"`.
 If you do, you are ready.
 
-# Creating an RStudio Project
+## Creating an RStudio Project
 
 Whether on Posit Cloud or local, **always work inside an RStudio
 Project**. Never run R code without a project.
@@ -186,7 +186,7 @@ A project is just a folder with a `.Rproj` file inside it. The
 - which files belong to this project,
 - how to keep your R session separate from other projects.
 
-## To create the project
+### To create the project
 
 In RStudio: **File → New Project → New Directory → New Project**.
 
@@ -199,7 +199,7 @@ In RStudio: **File → New Project → New Directory → New Project**.
 RStudio opens a fresh session inside the new folder. The top-right
 corner of the window now reads `frst232`.
 
-## Why this matters
+### Why this matters
 
 Without a project, your R session has **no anchor**. You end up
 typing absolute paths like
@@ -211,7 +211,7 @@ With a project, you type **relative paths** like
 `data/bc_disturbance_reforestation.xlsx`. R knows the project root
 and resolves the rest. Portable forever.
 
-# Folder structure (same as Chapters 1–3, now used by R)
+## Folder structure (same as Chapters 1–3, now used by R)
 
 Inside your `frst232` project folder, create these subfolders.
 In RStudio, use the **Files** pane (bottom-right) → **New Folder**.
@@ -234,7 +234,7 @@ Same three rules from Chapter 1:
 3. **One folder per chapter** (or per topic). Easier to find
    things later.
 
-## Place the BC file
+### Place the BC file
 
 If you do not have it already, download
 `bc_disturbance_reforestation.xlsx` from the BC Data Catalogue
@@ -244,7 +244,7 @@ and drop it into `data/`.
 On Posit Cloud, you upload files through the **Files pane →
 Upload** button.
 
-# Installing packages
+## Installing packages
 
 R on its own can do a lot, but most real work uses **packages**
 — pre-written collections of functions. You install a package once,
@@ -258,7 +258,7 @@ The three packages we use this chapter:
 | `readxl` | Reads `.xlsx` and `.xls` files. |
 | `here` | Builds portable, project-relative file paths. |
 
-## To install
+### To install
 
 In the RStudio Console, type:
 
@@ -270,7 +270,7 @@ Press Enter. This will take a minute or two the first time — R
 downloads each package and its dependencies.
 
 ::: {.callout-warning}
-## install vs library
+### install vs library
 
 - **`install.packages(...)`** — runs **once per machine**.
   Downloads and installs.
@@ -282,7 +282,7 @@ installed it but R says it can't find the function"* — almost
 always means you forgot the `library()` call.
 :::
 
-## To load
+### To load
 
 At the top of every R script or Quarto document for this course,
 include:
@@ -293,7 +293,7 @@ library(readxl)
 library(here)
 ```
 
-# `here()` — portable paths
+## `here()` — portable paths
 
 The `here()` function builds a path relative to your project root.
 Type this in the Console:
@@ -315,7 +315,7 @@ The point: **the same code works for everyone**. You do not need
 to know the full path; `here()` figures it out.
 
 ::: {.callout-tip}
-## Why this matters for collaboration
+### Why this matters for collaboration
 
 When you share your project folder with a classmate (or with a TA
 for grading), they may unzip it to a completely different
@@ -326,7 +326,7 @@ This is the reproducibility win that pure-Excel work cannot give
 you.
 :::
 
-# Your first R commands
+## Your first R commands
 
 Open a new R script: **File → New File → R Script**. Save it
 into `R/` as `01_first_import.R`.
@@ -367,7 +367,7 @@ glimpse(bc)
 37 rows × 8 columns — exactly the BC file you knew from Chapter 1,
 now living inside R.
 
-## Line by line — what each command did
+### Line by line — what each command did
 
 Several new ideas appear at once above. Here is what each line does:
 
@@ -384,7 +384,7 @@ Several new ideas appear at once above. Here is what each line does:
 | `glimpse(bc)` | A compact preview of every column's type and first values. |
 
 ::: {.callout-warning}
-## Keep the workbook as `.xlsx` — don't export it to CSV
+### Keep the workbook as `.xlsx` — don't export it to CSV
 If you open the workbook in Excel and use **File → Export / Save As →
 CSV**, Excel writes **only the active sheet** — you can end up with
 `bc_disturbance_reforestation(About).csv` containing just the About tab.
@@ -392,7 +392,7 @@ The import needs the **Data** sheet, so keep the original `.xlsx` and read
 it with `read_excel(…, sheet = "Data")`.
 :::
 
-## The assignment operator `<-`
+### The assignment operator `<-`
 
 You probably noticed the `<-` symbol. It is the **assignment
 operator** — *"store this on the right into this name on the
@@ -402,7 +402,7 @@ left"*. In R, `<-` is preferred over `=` for assignment because
 A keyboard shortcut: **Alt+-** (Windows / Linux) or **Option+-**
 (Mac) inserts `<- ` with a space.
 
-# The Excel-to-R bridge — side by side
+## The Excel-to-R bridge — side by side
 
 The following table is what Chapters 1, 2, and 3 have been
 previewing. Now you can actually run the right-hand column.
@@ -421,7 +421,7 @@ previewing. Now you can actually run the right-hand column.
 The data is the same. The columns are the same. The only thing
 that changed is *how you ask for the answer*.
 
-# Accessing columns with `$`
+## Accessing columns with `$`
 
 `bc$Reforestation_ha` means *"the column called Reforestation_ha
 inside the tibble bc"*. The `$` is the column selector.
@@ -436,13 +436,13 @@ mean(bc$Reforestation_ha)       # mean annual reforestation
 length(bc$Reforestation_ha)     # how many values (= 37)
 ```
 
-## Tab completion saves typos
+### Tab completion saves typos
 
 In RStudio, after you type `bc$`, press **Tab**. A dropdown shows
 every column name. Click one (or arrow-down + Tab) to insert it.
 This prevents the *"I spelled the column wrong"* class of bugs.
 
-# Computing the chapter's five statistics
+## Computing the chapter's five statistics
 
 ```r
 sum(bc$Reforestation_ha)
@@ -477,7 +477,7 @@ last decimal. If anything does not match, something is wrong —
 either with your import or with the file you handed in for
 Chapter 1.
 
-# The native pipe `|>`
+## The native pipe `|>`
 
 The pipe operator `|>` takes the thing on its left and sends it
 into the first argument of the function on its right. It reads
@@ -503,7 +503,7 @@ PivotTables**: a sequence of operations applied one after the
 other. The pipe is how that sequence looks in R.
 
 ::: {.callout-tip}
-## When pipes help, when they hurt
+### When pipes help, when they hurt
 
 - Pipes **help** when you have 3 or more steps that read naturally
   as a sequence. `bc |> filter() |> group_by() |> summarise()`.
@@ -514,7 +514,7 @@ Use the pipe when it makes the code easier to read. Skip it when
 it does not.
 :::
 
-# Reading error messages
+## Reading error messages
 
 Errors in R look intimidating. They are not.
 
@@ -536,7 +536,7 @@ Two facts from that message:
 R errors usually tell you **where** and **why**. Read every word.
 The fix is often in the message itself.
 
-## A second common error
+### A second common error
 
 ```r
 > library(tidyverse)
@@ -547,7 +547,7 @@ R is saying *"you tried to load a package you haven't installed"*.
 The fix is `install.packages("tidyverse")`, then try again.
 
 ::: {.callout-tip}
-## How to read any R error in 30 seconds
+### How to read any R error in 30 seconds
 
 1. **Read the function name** in the error (e.g., `$`, `library`,
    `read_excel`). That tells you where the problem is.
@@ -558,9 +558,9 @@ The fix is `install.packages("tidyverse")`, then try again.
    it. Vague *"my code doesn't work"* prompts give vague answers.
 :::
 
-# Active learning
+## Active learning
 
-## Activity 1 — Spot-check the install
+### Activity 1 — Spot-check the install
 
 In the Console, type:
 
@@ -573,7 +573,7 @@ The first line should report your R version (4.5 or newer). The
 second should list `tidyverse`, `readxl`, and `here` among the
 loaded packages (after you have run `library(...)` on each).
 
-## Activity 2 — Verify your folder structure
+### Activity 2 — Verify your folder structure
 
 In the Console, type:
 
@@ -584,7 +584,7 @@ list.files(here("data"))
 You should see `"bc_disturbance_reforestation.xlsx"`. If you see
 an empty result, the file is not where you think it is.
 
-## Activity 3 — Import and inspect
+### Activity 3 — Import and inspect
 
 Run the import code from the *Your first R commands* section.
 Then answer in your own words:
@@ -593,13 +593,13 @@ Then answer in your own words:
 - How many rows does it have?
 - What are the column names?
 
-## Activity 4 — Compute and compare
+### Activity 4 — Compute and compare
 
 Compute the five statistics from this chapter. Compare each value
 to the same statistic in your Chapter 1 deliverable workbook. Do
 they match?
 
-## Activity 5 — Write your first pipe
+### Activity 5 — Write your first pipe
 
 Take this sequence:
 
@@ -610,10 +610,10 @@ round(mean(bc$Total_Disturbance_ha), 0)
 Rewrite it as a pipe with three steps. Confirm the answer is the
 same.
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -645,7 +645,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Set up a working R project together
+### Lab: Set up a working R project together
 
 Work in groups of 3 or 4. Each member follows the same setup
 steps on their own computer (or in their own Posit Cloud project).
@@ -690,7 +690,7 @@ This lab is designed to fit comfortably inside a single hands-on
 session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises that go with this chapter.
 
@@ -733,9 +733,9 @@ These are the take-home exercises that go with this chapter.
    numeric vector and returns a named list with `mean`, `median`,
    `min`, and `max`. Apply it to `bc$Reforestation_ha`.
 
-# Optional, advanced
+## Optional, advanced
 
-## The old pipe `%>%`
+### The old pipe `%>%`
 
 You may see `%>%` (the magrittr pipe) in older R code. It does
 almost the same thing as the native `|>` but is not built into
@@ -746,7 +746,7 @@ If you see `%>%` in a tutorial, treat it as equivalent to `|>` for
 most purposes. The differences are minor and only matter in
 advanced cases.
 
-## RStudio Project options
+### RStudio Project options
 
 In the project menu (top-right of RStudio), choose **Project
 Options → General**. Recommended settings for this course:
@@ -759,7 +759,7 @@ every time. This sounds inconvenient but is the right discipline:
 if your code only works because of *leftover variables from
 yesterday*, your code is broken.
 
-## Reading multiple sheets at once
+### Reading multiple sheets at once
 
 `readxl::excel_sheets()` returns the sheet names of a file:
 
@@ -771,7 +771,7 @@ You can then `purrr::map()` over them to read all sheets. We will
 get to `purrr` later in the course; just know that batch-import is
 possible.
 
-# A glimpse ahead: From Excel to Quarto
+## A glimpse ahead: From Excel to Quarto
 
 In Chapter 5 you will write your first **Quarto** document. Quarto
 mixes:
@@ -795,7 +795,7 @@ The principle is the same as Excel's *About / ReadMe / Data*
 pattern: documentation lives with the data. The difference is that
 the documentation, the code, and the output are now one file.
 
-# Self-assessment quiz {#sec-quiz-ch04}
+## Self-assessment quiz {#sec-quiz-ch04}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -1093,10 +1093,10 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts for this chapter
+### Useful prompts for this chapter
 
 - *"I am brand new to R. I just installed it and I'm seeing this
   error message when I run `library(tidyverse)`. What does it
@@ -1109,7 +1109,7 @@ Explanations appear below each question.
   column name in my Excel file is `Reforestation_ha`. What's wrong
   and how do I fix it?"*
 
-## Verifying AI's answers
+### Verifying AI's answers
 
 After AI suggests a fix, **check**:
 
@@ -1123,7 +1123,7 @@ AI's R suggestions are usually correct but occasionally include
 non-existent functions (called "hallucinations"). The two-second
 check is to look up the function in R's own help.
 
-## When *not* to use AI
+### When *not* to use AI
 
 - Do not paste an exercise question into AI and copy the answer
   back. The point of the exercise is the thinking.
@@ -1134,7 +1134,7 @@ check is to look up the function in R's own help.
   course.
 :::
 
-# Reading
+## Reading
 
 - The *R for Data Science* book by Wickham, Çetinkaya-Rundel,
   & Grolemund — free at <https://r4ds.hadley.nz/>. Chapter 2
@@ -1147,10 +1147,10 @@ check is to look up the function in R's own help.
 - RStudio Education resources:
   <https://education.rstudio.com/learn/beginner/>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - Chapter 4 is structurally different from Chapters 1–3. The
   first half is **installation and setup**, which can swallow an
@@ -1165,7 +1165,7 @@ check is to look up the function in R's own help.
   difference rarely matters for beginners, and consistency makes
   the course easier to teach.
 
-## Posit Cloud vs local install
+### Posit Cloud vs local install
 
 - **Strongly recommend Posit Cloud** for the first lab. It
   eliminates 90% of "my install isn't working" tickets.
@@ -1174,7 +1174,7 @@ check is to look up the function in R's own help.
 - For the lab session, have one TA ready to help with local
   installs and another with Posit Cloud account creation.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. RStudio Project named `frst232/` with the correct folder
    structure (verify with `list.files(here("data"))`).
@@ -1182,7 +1182,7 @@ check is to look up the function in R's own help.
    `glimpse(bc)`, and the five basic statistics.
 3. Group-lab worksheet or screenshot.
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -1192,7 +1192,7 @@ check is to look up the function in R's own help.
 | `frst232_ch04_starter.zip` | A pre-built starter project containing the .Rproj file, folder structure, learner .qmd, and a placeholder data folder. |
 | `quiz_ch04.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested facilitation guidance for the Practice Demo Lab
+### Suggested facilitation guidance for the Practice Demo Lab
 
 *These are optional facilitation and feedback suggestions for instructors
 running this book demo — **not** a grading key. The percentages below are
@@ -1208,7 +1208,7 @@ relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 | Sum matches Excel (Task 6) | 15 % | `sum(bc$Reforestation_ha)` matches the Chapter 1 deliverable to the cent. |
 | Screenshot submission (Task 7) | 10 % | Screenshot legible; all group members named. |
 
-## Common stumbling points
+### Common stumbling points
 
 - **install vs library** confusion. Walk through the distinction
   explicitly at the start of the lab.

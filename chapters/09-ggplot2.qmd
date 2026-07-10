@@ -13,7 +13,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC silviculture**
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"})
 and **BC air-quality**
@@ -23,7 +23,7 @@ folder. For sources and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -48,10 +48,10 @@ By the end of this chapter you will be able to:
 - Recognize when long-format data is needed (and when to call
   `pivot_longer()` before plotting).
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. A **rendered Quarto HTML report**
    (`frst232_ch09_learner.html`) containing at least:
@@ -71,7 +71,7 @@ By the end of this chapter you will be able to:
    the course site.
 :::
 
-# Where we are
+## Where we are
 
 Through Chapters 4–8 you imported, inspected, cleaned, summarised,
 reshaped, and combined forestry data. Chapter 9 turns those
@@ -84,7 +84,7 @@ explicit. Every axis, scale, colour, and label is in your code.
 Choices that Excel hides in menu dialogs are written down where
 your reader (and future you) can see them.
 
-# Excel-chart-to-ggplot bridge
+## Excel-chart-to-ggplot bridge
 
 | Excel chart | ggplot2 geom + extras |
 |---|---|
@@ -103,7 +103,7 @@ your reader (and future you) can see them.
 | Chart title / subtitle / data label | `labs(title = "...", subtitle = "...", caption = "...")` |
 | Saving as PNG | `ggsave("outputs/myplot.png", width = 7, height = 5)` |
 
-# The grammar of graphics — three sentences
+## The grammar of graphics — three sentences
 
 A ggplot is built from three pieces:
 
@@ -117,6 +117,7 @@ A ggplot call says, *"Take this tibble, map these columns to
 these visual properties, and draw these shapes."*
 
 ```{r minimal-ggplot}
+#| fig-cap: "BC reforested area (ha) by fiscal year, 1987–2023."
 #| fig-alt: "Line chart of BC reforested area in hectares by fiscal year, 1987 to 2023, fluctuating from year to year."
 bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
                  sheet = "Data")
@@ -134,9 +135,10 @@ Three things to notice:
 - The `+` sign **adds layers** — not the pipe `|>`. This is
   ggplot2's one bit of unusual syntax. Read `+` as *"and also draw"*.
 
-# `geom_point()` — scatter plot
+## `geom_point()` — scatter plot
 
 ```{r geom-point}
+#| fig-cap: "BC annual harvested area versus natural-disturbance area (ha), one point per year."
 #| fig-alt: "Scatter plot of BC annual harvested area against natural-disturbance area; most years cluster at low values with a few high natural-disturbance outliers."
 ggplot(bc, aes(x = Harvested_ha, y = Natural_Disturbance_ha)) +
   geom_point()
@@ -147,9 +149,10 @@ but the chart immediately reveals a few **outlier years** (large
 natural-disturbance values) — useful for spotting the 2017
 wildfire spike.
 
-## Mapping a third variable to colour
+### Mapping a third variable to colour
 
 ```{r point-colour}
+#| fig-cap: "Harvested versus natural-disturbance area (ha), points coloured by fiscal year."
 #| fig-alt: "Scatter plot of harvested area versus natural-disturbance area, points coloured by fiscal year along a continuous colour gradient."
 ggplot(bc, aes(x = Harvested_ha,
                y = Natural_Disturbance_ha,
@@ -160,10 +163,11 @@ ggplot(bc, aes(x = Harvested_ha,
 `colour = Fiscal_Year` adds a third dimension. A continuous
 variable like year gets a gradient legend.
 
-# `geom_line()` — time series
+## `geom_line()` — time series
 
 ```{r line-multiple-series}
-#| fig-alt: "Line chart with three series — harvested, natural-disturbance, and reforested area in hectares — plotted against fiscal year, each in its own colour."
+#| fig-cap: "Harvested, natural-disturbance, and reforested area (ha) by fiscal year."
+#| fig-alt: "Line chart with three series — harvested, natural-disturbance, and reforested area in hectares — plotted against fiscal year, each drawn with its own colour and line type."
 # First reshape to long format so each series is a row
 bc_long <- bc |>
   select(Fiscal_Year, Harvested_ha,
@@ -172,7 +176,8 @@ bc_long <- bc |>
                names_to = "series",
                values_to = "area_ha")
 
-ggplot(bc_long, aes(x = Fiscal_Year, y = area_ha, colour = series)) +
+ggplot(bc_long, aes(x = Fiscal_Year, y = area_ha, colour = series,
+                    linetype = series)) +
   geom_line(linewidth = 1)
 ```
 
@@ -184,10 +189,10 @@ separate `geom_line()` calls — much less elegant.
 **This is why Chapter 8 spent time on `pivot_longer()`.** For
 plotting, long is almost always the right shape.
 
-# `geom_col()` vs `geom_bar()`
+## `geom_col()` vs `geom_bar()`
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"I want a chart that shows `[change over time / a distribution / a comparison across groups]` from `[columns]`, and I picked `[geom_*]`. Check whether that geom is the clearest choice for my message, suggest a better alternative if there is one, and list the labels and units the figure needs. Do not produce the final chart code for me."*
@@ -199,6 +204,7 @@ The two bar geoms are confused often. The rule:
 - `geom_bar()` — you give it `x` values and it **counts** them.
 
 ```{r col-vs-bar}
+#| fig-cap: "BC reforested area (ha) by fiscal year (geom_col)."
 #| fig-alt: "Bar chart of BC reforested area in hectares for each fiscal year, 1987 to 2023."
 # geom_col — you supply the y value
 ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
@@ -206,6 +212,7 @@ ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
 ```
 
 ```{r geom-bar-count}
+#| fig-cap: "Count of disturbance events by type in a small sample (geom_bar)."
 #| fig-alt: "Bar chart counting disturbance events by type in a small sample, with fire the most frequent category."
 # geom_bar — it counts for you
 # Build a small tibble with one row per disturbance event
@@ -221,7 +228,7 @@ ggplot(events, aes(x = type)) +
 have required a numeric column to use as height.
 
 ::: {.callout-note}
-## A fresh import for this chapter
+### A fresh import for this chapter
 The `airdata_clean` object below is a **new import made here** for
 plotting — it is *not* the cleaned, region-joined tibble of the same name
 from Chapter 6. The `region` column is added later, in the box-plot
@@ -230,9 +237,10 @@ example (via the station → region lookup). If you copy code that uses
 `object 'region' not found`.
 :::
 
-# `geom_histogram()` — distribution of one variable
+## `geom_histogram()` — distribution of one variable
 
 ```{r histogram}
+#| fig-cap: "Distribution of hourly ozone (O₃, ppb)."
 #| fig-alt: "Histogram of hourly ozone readings in parts per billion; the distribution is strongly right-skewed, with most hours low and a long tail of higher values."
 airdata_clean <- read_csv(here("data", "airdata3.csv"),
                           show_col_types = FALSE) |>
@@ -248,9 +256,10 @@ hours are clean, a few are sharply elevated. This is the kind of
 pattern that a summary table can hint at but only a chart makes
 obvious.
 
-# `geom_boxplot()` — distributions by group
+## `geom_boxplot()` — distributions by group
 
 ```{r boxplot}
+#| fig-cap: "Hourly ozone (O₃, ppb) by Metro Vancouver region."
 #| fig-alt: "Box plots of hourly ozone in parts per billion for each Metro Vancouver region, comparing medians, interquartile ranges, and outliers across regions."
 # First add a region column (from the Ch 6 lookup)
 station_regions <- tribble(
@@ -286,9 +295,10 @@ interquartile range (the box itself), and outlier observations
 (the dots). Reading regional O₃ differences from a single
 chart is much faster than reading a summary table.
 
-# `geom_smooth()` — a fitted trend
+## `geom_smooth()` — a fitted trend
 
 ```{r smooth}
+#| fig-cap: "Reforested area (ha) by fiscal year with a loess trend line."
 #| fig-alt: "Scatter plot of reforested area by fiscal year with a loess trend curve and a shaded 95 percent confidence band."
 ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
   geom_point() +
@@ -304,7 +314,7 @@ The shaded ribbon is the 95% confidence band. Toggle with
 `se = FALSE` if you do not want it.
 
 ::: {.callout-tip}
-## Layers draw in order
+### Layers draw in order
 
 Every `+ geom_*()` adds a layer on top of the previous one. In
 the example above, `geom_point()` draws the dots first, then
@@ -314,12 +324,13 @@ hide the dots behind the ribbon.
 Read `+` as *"and also draw"*, in order.
 :::
 
-# Faceting — small multiples
+## Faceting — small multiples
 
 When you have one chart you want repeated for each group, use
 `facet_wrap()`:
 
 ```{r facet-wrap}
+#| fig-cap: "Hourly ozone (O₃, ppb) distribution, one panel per region."
 #| fig-alt: "Small-multiple histograms of hourly ozone in parts per billion, one panel per Metro Vancouver region."
 ggplot(airdata_region, aes(x = O3)) +
   geom_histogram(binwidth = 2, fill = "#2D6A4F", colour = "white") +
@@ -332,12 +343,13 @@ One panel per region. Same axes by default — change with
 `facet_grid(rows ~ cols)` produces a 2D grid; less common but
 useful when you have two grouping variables.
 
-# Polish — labels, scales, theme
+## Polish — labels, scales, theme
 
 A scientific or professional chart needs labels, formatted
 axes, and a clean theme:
 
 ```{r polish}
+#| fig-cap: "BC reforestation area (ha), 1987–2023 (polished chart)."
 #| fig-alt: "Polished bar chart titled BC Reforestation Area 1987 to 2023, showing reforested hectares per fiscal year with a comma-formatted y-axis, title, subtitle, and source caption."
 ggplot(bc, aes(x = Fiscal_Year, y = Reforestation_ha)) +
   geom_col(fill = "#2D6A4F") +
@@ -367,7 +379,7 @@ Key polishing pieces:
 - **`theme(...)`** — fine-grained overrides like fonts and
   colours.
 
-# Saving a plot
+## Saving a plot
 
 ```{r save-plot}
 #| eval: false
@@ -386,7 +398,7 @@ Always set explicit `width` and `height` (in inches by default)
 and a high `dpi` for print-quality output. `ggsave()` infers
 the file format from the extension (`.png`, `.pdf`, `.svg`).
 
-# Seven geoms in one place
+## Seven geoms in one place
 
 ```{r summary-table}
 #| echo: false
@@ -410,11 +422,12 @@ tibble(
 ) |> kable()
 ```
 
-# A worked composite — O₃ by station, faceted by region
+## A worked composite — O₃ by station, faceted by region
 
 A single chart that uses several of this chapter's tools:
 
 ```{r composite}
+#| fig-cap: "Hourly ozone (O₃, ppb) over January 2000, one panel per region."
 #| fig-alt: "Faceted line chart of hourly ozone over January 2000, one panel per region, with a separate coloured line for each monitoring station."
 airdata_region <- airdata_clean |>
   mutate(date_parsed = mdy(Date)) |>
@@ -445,48 +458,48 @@ Six tools applied: `geom_line`, `aes(colour = ...)`,
 `theme()` overrides. **One chart, six choices, every choice in
 the code.**
 
-# Active learning
+## Active learning
 
-## Activity 1 — Bar chart
+### Activity 1 — Bar chart
 
 Build a bar chart of `Reforestation_ha` by `Fiscal_Year` for the
 BC silviculture file. Make the bars dark green.
 
-## Activity 2 — Three-line chart
+### Activity 2 — Three-line chart
 
 Reshape `bc` to long format with three series (Harvested,
 Natural_Disturbance, Reforestation). Plot all three as lines on
 one chart, coloured by series.
 
-## Activity 3 — Histogram with sensible bins
+### Activity 3 — Histogram with sensible bins
 
 Plot a histogram of O₃ with `binwidth = 1`. Then try
 `binwidth = 5`. Then `binwidth = 0.5`. Which bin width shows
 the distribution shape most clearly?
 
-## Activity 4 — Boxplot by region
+### Activity 4 — Boxplot by region
 
 Plot O₃ by region using `geom_boxplot()`. Add a `coord_flip()`
 to make the regions read horizontally — easier with long region
 names.
 
-## Activity 5 — Facet a time series
+### Activity 5 — Facet a time series
 
 Plot O₃ over time, faceted by station. Try `facet_wrap(~
 location)` with the default `scales = "fixed"`. Then try
 `scales = "free_y"`. Which makes patterns easier to compare?
 
-## Activity 6 — Polish and save
+### Activity 6 — Polish and save
 
 Take any chart from this chapter. Add a title, subtitle, axis
 labels, and a caption. Save it as a 7"x5" PNG with
 `ggsave(here("outputs", "myplot.png"))`. Confirm the file
 exists.
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -518,7 +531,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Build a chart that tells a story
+### Lab: Build a chart that tells a story
 
 Work in groups of 3 or 4.
 
@@ -563,7 +576,7 @@ Then save the chart to `outputs/` as PNG with `ggsave()`.
 the caption.
 :::
 
-# Exercises
+## Exercises
 
 1. **Bar chart.** Recreate the polished BC reforestation bar
    chart from the *Polish* section above. Confirm it renders
@@ -596,16 +609,16 @@ the caption.
    each region as lines on the same chart (`colour = region`).
    Which region has the widest range across the month?
 
-# Optional, advanced
+## Optional, advanced
 
-## Plot themes
+### Plot themes
 
 Built-in themes you can swap in: `theme_minimal()`,
 `theme_classic()`, `theme_bw()`, `theme_void()`, `theme_grey()`
 (the default). For publication-quality plots in journals,
 `theme_classic()` is usually safest.
 
-## Colour palettes
+### Colour palettes
 
 ggplot2's default colour palette is fine for exploration but
 weak for publication. Better:
@@ -618,7 +631,7 @@ weak for publication. Better:
 For BC and Canadian forestry palettes, the `colorspace` package
 includes many options.
 
-## `patchwork` for multi-panel layouts
+### `patchwork` for multi-panel layouts
 
 If you want two completely different plots side by side (not just
 facets of one plot), use the `patchwork` package:
@@ -630,13 +643,13 @@ p1 | p2          # p1 and p2 side by side
 (p1 | p2) / p3   # two-column top row, single-row bottom
 ```
 
-## Interactive plots
+### Interactive plots
 
 `plotly::ggplotly(p)` converts most ggplot objects into
 interactive HTML charts (hover for values, zoom, pan). Useful
 for web reports.
 
-# A glimpse ahead: the Integrated Case Study
+## A glimpse ahead: the Integrated Case Study
 
 The next required chapter, **Integrated Case Study: Choosing the Right
 Tools**, is where the separate skills come together. Instead of being told
@@ -659,7 +672,7 @@ where *you* decide which pieces a real question calls for.
 [Optional: Spatial Data Analysis in R](../optional-spatial.qmd) page — but
 it is not required for the case study.*
 
-# Self-assessment quiz {#sec-quiz-ch09}
+## Self-assessment quiz {#sec-quiz-ch09}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -749,10 +762,10 @@ interactive quiz questions.*
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts
+### Useful prompts
 
 - *"My ggplot only draws one line, but my long-format tibble has
   three series. What did I miss in aes()?"* (Almost always:
@@ -765,7 +778,7 @@ interactive quiz questions.*
   do I fix it?"* (Answer: `scale_y_continuous(labels = label_comma())`.)
 :::
 
-# Reading
+## Reading
 
 - *R for Data Science* — chapters 1 *Data visualisation* and 12
   *Communication*. Free at <https://r4ds.hadley.nz/>.
@@ -775,10 +788,10 @@ interactive quiz questions.*
 - The ggplot2 cheatsheet (PDF):
   <https://rstudio.github.io/cheatsheets/data-visualization.pdf>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - Spend most time on **`geom_col`, `geom_line`, `geom_histogram`,
   `geom_boxplot`, and `facet_wrap`** — these five cover 90% of
@@ -789,7 +802,7 @@ interactive quiz questions.*
 - **`ggsave` matters.** Students will hand in screenshots
   instead of PNG files if you do not insist on `ggsave`.
 
-## Materials provided
+### Materials provided
 
 | File | Purpose |
 |---|---|
@@ -797,7 +810,7 @@ interactive quiz questions.*
 | `frst232_ch09_solutions.qmd` | Completed solutions. **Do not distribute.** |
 | `quiz_ch09.html` | Standalone interactive quiz. |
 
-## Common stumbling points
+### Common stumbling points
 
 - **`+` instead of `|>` in pipelines.** Walk through: `|>` for
   data transformation, `+` for ggplot layers.

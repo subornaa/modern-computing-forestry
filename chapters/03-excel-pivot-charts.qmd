@@ -12,7 +12,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC silviculture**
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"})
 and **Ontario forest statistics**
@@ -22,7 +22,7 @@ your `data/` folder. For sources and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -44,10 +44,10 @@ By the end of this chapter you will be able to:
 - Export a finished chart to a **PNG** with a caption ready for a
   report or a course-site submission.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. **One PivotTable + PivotChart** built on
    `on_forest_statistics_1.xlsx`, answering one forestry question
@@ -67,7 +67,7 @@ This list is the same as the rubric for the chapter assignment.
 Keep it in view while you work.
 :::
 
-# Why visualization matters
+## Why visualization matters
 
 A number in a cell is a fact. A chart is an argument. The same
 data, in the same workbook, can become a *story about reforestation
@@ -87,7 +87,7 @@ For now, the goal is to be **fluent** in the Excel versions, so
 that when we move to R, you already know what each command is
 doing.
 
-# The two datasets for this chapter
+## The two datasets for this chapter
 
 This chapter uses two openly licensed files you have already met:
 
@@ -118,7 +118,7 @@ tibble(
 ```
 
 ::: {.callout-important}
-## File-handling rules carry over
+### File-handling rules carry over
 
 Same two rules as Chapters 1 and 2:
 
@@ -130,7 +130,7 @@ Same two rules as Chapters 1 and 2:
 You will work mostly on the *clean* copies for this chapter.
 :::
 
-# Choosing the right chart type
+## Choosing the right chart type
 
 Before opening the chart dialog, answer one question: **what is the
 chart for?**
@@ -145,7 +145,7 @@ chart for?**
 | How does one group differ from another over time? | **Multi-series line chart** |
 
 ::: {.callout-warning}
-## When **not** to use a pie chart
+### When **not** to use a pie chart
 
 Pie charts are easy to draw and hard to read. The human eye is bad
 at comparing angles. Use a sorted bar chart instead, except for:
@@ -157,7 +157,7 @@ at comparing angles. Use a sorted bar chart instead, except for:
 In every other case, a **sorted bar chart** is the better tool.
 :::
 
-## Worked example — choosing a chart for BC silviculture
+### Worked example — choosing a chart for BC silviculture
 
 Suppose you want to answer: *"How has BC reforestation kept pace
 with disturbance since 1987?"*
@@ -169,6 +169,7 @@ two series:
 - `Reforestation_ha` over `Fiscal_Year`
 
 ```{r bc-line-chart}
+#| fig-cap: "Preview of an Excel time-series chart: BC total disturbance and reforestation area (ha) by fiscal year, 1987–2023."
 #| echo: false
 #| fig.width: 7
 #| fig.height: 3.5
@@ -202,7 +203,7 @@ In Excel:
 The 2017 spike — BC's record wildfire season — is the most visible
 feature. The chart itself is the argument.
 
-# Chart anatomy
+## Chart anatomy
 
 A finished chart has six elements. Every one is editable; many are
 hidden by default.
@@ -216,7 +217,7 @@ hidden by default.
 | **Source / caption** | One line at the bottom naming the data source and date. | Insert → Text Box, anchor below chart |
 | **Theme** | Colour and font choices. Should match the rest of the deliverable. | Chart Design ribbon → Chart Styles |
 
-## Title rules
+### Title rules
 
 A bad title is *"Chart 1"* or *"Reforestation_ha vs Fiscal_Year"*.
 
@@ -226,7 +227,7 @@ since the late 1990s"* — a one-sentence claim the chart supports.
 If you cannot write a one-sentence claim for the chart, the chart
 is the wrong chart for your question.
 
-## Axis labels and units
+### Axis labels and units
 
 Always include units in axis labels: *"Hectares"*, not just
 *"Area"*. *"Fiscal year"*, not just *"Year"*.
@@ -235,10 +236,10 @@ For very large numbers, use a thousands separator and consider
 abbreviating the axis (200K instead of 200,000). Excel does this
 through **Format Axis → Display units → Thousands**.
 
-# PivotTables
+## PivotTables
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"I built a PivotTable with `[fields]` in Rows/Columns and `[field]` summarised by `[Sum/Average/Count]`. Check whether that layout answers my question, whether Sum vs Average vs Count is the right summary, and what to verify (grand totals, blank cells, a manual spot-check, refreshing after data changes). Do not build a different pivot for me."*
@@ -251,7 +252,7 @@ variable — and rearranges it into a summary.
 The Ontario file is tidy and cross-classified, which makes it
 perfect for a PivotTable.
 
-## What a PivotTable does
+### What a PivotTable does
 
 Given the 179-row Ontario file, a PivotTable can produce any of:
 
@@ -273,7 +274,7 @@ ontario |>
   kable(caption = "Total area (ha) by forest type × seral stage — what your PivotTable should look like")
 ```
 
-## Building one — step by step
+### Building one — step by step
 
 1. Click any cell inside the Ontario `Data` sheet.
 2. **Insert → PivotTable**. A dialog opens.
@@ -290,7 +291,7 @@ ontario |>
 
 You should now see the cross-tab shown above.
 
-## Changing the aggregation
+### Changing the aggregation
 
 Right-click any value in the PivotTable → **Value Field Settings**.
 A list of aggregations appears:
@@ -306,7 +307,7 @@ A list of aggregations appears:
 **The same PivotTable can answer multiple questions** by switching
 the aggregation. Try it.
 
-## Drag-and-drop pivot
+### Drag-and-drop pivot
 
 The most useful PivotTable habit is **moving fields around**:
 
@@ -317,7 +318,7 @@ The most useful PivotTable habit is **moving fields around**:
 
 This is the *fluency* PivotTables train. Drag, observe, drag back.
 
-## Refreshing
+### Refreshing
 
 A PivotTable is a **snapshot** of the data at the moment you built
 it. If the underlying Data sheet changes, the PivotTable does
@@ -327,14 +328,14 @@ To refresh: click anywhere in the PivotTable, then **PivotTable
 Analyze → Refresh** (or right-click → **Refresh**).
 
 ::: {.callout-warning}
-## A silent-bug warning
+### A silent-bug warning
 
 If you change the Data sheet and forget to refresh the PivotTable,
 the chart you export will be based on **stale data**. There is no
 warning. Always refresh before exporting.
 :::
 
-# PivotCharts
+## PivotCharts
 
 A PivotChart is a chart **wired** to a PivotTable. When you change
 the PivotTable, the chart changes with it.
@@ -351,6 +352,7 @@ interactive — clicking them filters the chart (and the PivotTable
 behind it).
 
 ```{r pivot-chart-preview}
+#| fig-cap: "Preview of an Excel PivotChart: total area (ha) by Ontario forest type."
 #| echo: false
 #| fig.width: 7
 #| fig.height: 3.5
@@ -372,7 +374,7 @@ ontario |>
         plot.caption = element_text(hjust = 0, colour = "grey40", size = 8))
 ```
 
-## Slicers
+### Slicers
 
 A **Slicer** is a visual filter panel. Click any PivotTable →
 **PivotTable Analyze → Insert Slicer**. Check `PFTName`. Click OK.
@@ -384,7 +386,7 @@ A panel of buttons appears, one per forest type. Click "Jack Pine"
 Slicers are excellent for **presentations** because they let a
 non-technical reader explore the data without learning Excel.
 
-# Recreating a PivotTable with formulas
+## Recreating a PivotTable with formulas
 
 PivotTables are fast and visual, but they are not the only way to
 build a cross-tab. You can recreate one with `SUMIFS` and
@@ -393,7 +395,7 @@ build a cross-tab. You can recreate one with `SUMIFS` and
 This matters because **the formula version is the closest thing to
 what you will write in R**.
 
-## Example: SUMIFS cross-tab on the Ontario file
+### Example: SUMIFS cross-tab on the Ontario file
 
 Build a small table on a new sheet:
 
@@ -429,7 +431,7 @@ The result is the same numbers as the PivotTable, but the
 formulas are explicit, auditable, and version-controllable.
 
 ::: {.callout-tip}
-## When to use which
+### When to use which
 
 - For **exploration** — drag-and-drop PivotTable. Fast.
 - For **production reports** that need to be reproducible — formula
@@ -437,17 +439,17 @@ formulas are explicit, auditable, and version-controllable.
 - For **scripted analysis** — neither, use R (Chapter 7).
 :::
 
-# Exporting a chart with a caption
+## Exporting a chart with a caption
 
 A chart in Excel is not a deliverable. A chart **outside** Excel —
 saved as a PNG with a caption — is a deliverable.
 
-## To save as PNG
+### To save as PNG
 
 Right-click the chart border → **Save as Picture**. Choose PNG.
 Save into your `outputs/` folder.
 
-## Caption format
+### Caption format
 
 A caption is one short sentence that:
 
@@ -464,7 +466,7 @@ Example:
 
 Put the caption in the report document, not in the PNG itself.
 
-# Connecting charts to the data dictionary
+## Connecting charts to the data dictionary
 
 Every chart should be **traceable** back to the ReadMe sheet of the
 file it came from. Three habits make this easy:
@@ -480,22 +482,22 @@ file it came from. Three habits make this easy:
 This sounds fussy but pays off the first time someone asks *"which
 column is this from?"*.
 
-# Active learning
+## Active learning
 
-## Activity 1 — Choose the right chart
+### Activity 1 — Choose the right chart
 
 A list of forestry questions appears in the learner workbook.
 Match each one to its best chart type from this menu: line, bar,
 column, scatter, stacked column, pie. Defend your choices in pairs.
 
-## Activity 2 — Build the BC time-series chart
+### Activity 2 — Build the BC time-series chart
 
 Open `bc_disturbance_reforestation_clean.xlsx` (your working copy).
 Select `Fiscal_Year`, `Total_Disturbance_ha`, and `Reforestation_ha`.
 **Insert → Charts → Line**. Add a title, axis labels, and a
 caption. Save as `outputs/bc_disturbance_reforestation_chart.png`.
 
-## Activity 3 — Build a PivotTable
+### Activity 3 — Build a PivotTable
 
 Open `on_forest_statistics_1_clean.xlsx`. Insert a PivotTable with
 `PFTName` in Rows, `SERAL_NAME` in Columns, `SumOfTotalHa` in
@@ -512,7 +514,7 @@ ontario |>
   kable(caption = "Total area by forest type — should match the row totals of your PivotTable")
 ```
 
-## Activity 4 — Switch the aggregation
+### Activity 4 — Switch the aggregation
 
 Right-click any value in your PivotTable → **Value Field Settings →
 Count**. The cell values change from total hectares to *number of
@@ -527,16 +529,16 @@ ontario |>
   kable(caption = "Number of age-class combinations per forest type")
 ```
 
-## Activity 5 — Add a slicer
+### Activity 5 — Add a slicer
 
 To your PivotTable, add a Slicer on `LGDS` (the seral-stage code).
 Click each button in turn. Which forest types disappear at the
 "Pre-Sapling" stage? Which dominate at "Mature"?
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -568,7 +570,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Build a chart-and-PivotTable deliverable together
+### Lab: Build a chart-and-PivotTable deliverable together
 
 Work in groups of 3 or 4. One submission per group.
 
@@ -604,7 +606,7 @@ This lab is designed to fit comfortably inside a single hands-on
 session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises that go with this chapter.
 
@@ -640,9 +642,9 @@ These are the take-home exercises that go with this chapter.
    both. (Hint: a slicer can connect to multiple PivotTables
    built from the same data source.)
 
-# Optional, advanced
+## Optional, advanced
 
-## Sparklines
+### Sparklines
 
 A sparkline is a tiny chart inside a single cell. Useful for
 trend-at-a-glance summaries inside a table.
@@ -651,14 +653,14 @@ To insert: **Insert → Sparklines → Line** (or Column, or Win/Loss).
 Select the data range, then choose the cell where the sparkline
 goes.
 
-## Conditional-formatted data bars
+### Conditional-formatted data bars
 
 Inside a PivotTable, you can add **Data Bars** to a value column.
 Select the values → **Home → Conditional Formatting → Data Bars**.
 The cells now show a tiny in-cell horizontal bar proportional to
 the value — a quick way to add visual rank to a table.
 
-## Calculated fields
+### Calculated fields
 
 A **Calculated Field** is a column in a PivotTable derived from
 other PivotTable fields. To add one: **PivotTable Analyze →
@@ -668,7 +670,7 @@ Example: in the Ontario file you could add a `area_per_age_class`
 calculated field equal to `SumOfTotalHa / AC_10`. Use sparingly —
 calculated fields are powerful but easy to hide a typo inside.
 
-# A glimpse ahead: From Excel to `ggplot2`
+## A glimpse ahead: From Excel to `ggplot2`
 
 In Chapter 9 you will rebuild the BC and Ontario charts from this
 chapter using `ggplot2` in R. The Excel moves you learned here map
@@ -692,7 +694,7 @@ Chapter 9 will walk through each row of this table in detail. The
 point right now is that the chart vocabulary you learn here
 transfers directly.
 
-# Self-assessment quiz {#sec-quiz-ch03}
+## Self-assessment quiz {#sec-quiz-ch03}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -993,10 +995,10 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts for this chapter
+### Useful prompts for this chapter
 
 - *"In Excel, my PivotTable shows only zeros for one row. The
   underlying Data sheet has values. What are the three most common
@@ -1009,7 +1011,7 @@ Explanations appear below each question.
   of `SumOfTotalHa` for `PFTName = 'Jack Pine'` and `SERAL_NAME =
   'Mature'`. What is the SUMIFS formula?"*
 
-## Verifying AI's answers
+### Verifying AI's answers
 
 After AI suggests a chart type or PivotTable layout, **check**:
 
@@ -1022,7 +1024,7 @@ After AI suggests a chart type or PivotTable layout, **check**:
 AI's chart suggestions are starting points. The interpretation is
 yours.
 
-## When *not* to use AI
+### When *not* to use AI
 
 - Do not let AI choose the chart type without you stating the
   question. The chart serves the question; the question serves
@@ -1031,7 +1033,7 @@ yours.
   verified.
 :::
 
-# Reading
+## Reading
 
 - Microsoft Excel official documentation on [PivotTables](https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576).
 - Microsoft Excel official documentation on [PivotCharts](https://support.microsoft.com/en-us/office/create-a-pivotchart-c1b1e057-6990-4c38-b52b-8255538e7b1c).
@@ -1042,10 +1044,10 @@ yours.
 - Ontario open-data dataset page:
   <https://data.ontario.ca/dataset/forest-resources-of-ontario-2021>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - This chapter is the **bridge chapter** from raw Excel work into
   tidy-data thinking. Spend time on the PivotTable → R parallel
@@ -1061,7 +1063,7 @@ yours.
 - The group lab is the central hands-on deliverable. Plan for one
   full session.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. One PivotTable + PivotChart on `on_forest_statistics_1.xlsx`,
    exported as PNG with caption.
@@ -1071,7 +1073,7 @@ yours.
 3. A short chart-choice worksheet (from the learner workbook).
 4. Group-lab worksheet or screenshot.
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -1081,7 +1083,7 @@ yours.
 | `frst232_ch03_pivot_solutions.xlsx` | Instructor solutions. **Do not distribute to learners.** |
 | `quiz_ch03.html` | Standalone interactive quiz. Embedded in the rendered chapter; can also be hosted separately. |
 
-## Suggested facilitation guidance for the Practice Demo Lab
+### Suggested facilitation guidance for the Practice Demo Lab
 
 *These are optional facilitation and feedback suggestions for instructors
 running this book demo — **not** a grading key. The percentages below are
@@ -1095,7 +1097,7 @@ relative emphasis, not Canvas marks; the graded lab assignment is on Canvas.*
 | PNG export + caption (Task 5) | 25 % | PNG file submitted; one-sentence caption includes source. |
 | Submission (Task 6) | 10 % | Worksheet is legible; group members named. |
 
-## Common stumbling points
+### Common stumbling points
 
 - Some learners build a PivotTable, change the Data sheet, and
   then export from the stale PivotTable. Emphasize the **Refresh

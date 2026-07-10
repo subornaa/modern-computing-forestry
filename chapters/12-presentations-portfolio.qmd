@@ -10,7 +10,7 @@ library(knitr)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter's fresh dataset is the **BC silviculture** workbook
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"}) —
 click to download it into your `data/` folder (source and details on the
@@ -21,7 +21,7 @@ used the spatial extension) that you will assemble into a presentation and
 a portfolio.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -44,10 +44,10 @@ By the end of this chapter you will be able to:
 - Publish a rendered Quarto site to a free hosting service
   (Quarto Pub, GitHub Pages, Netlify).
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. A **rendered group presentation** in revealjs HTML format,
    covering one analysis from the term (10–15 slides for a
@@ -63,7 +63,7 @@ By the end of this chapter you will be able to:
    presentation and the portfolio.
 :::
 
-# Where we are
+## Where we are
 
 Through the earlier chapters you produced a body of work: cleaned
 datasets, summary reports, and charts (and optional maps, only if you used
@@ -80,7 +80,7 @@ Two questions this chapter answers:
 Both answers use the same tool you have been using since
 Chapter 5: Quarto.
 
-# Quarto outputs — three formats from one file
+## Quarto outputs — three formats from one file
 
 The same `.qmd` source can produce different outputs by changing
 the YAML `format` field. Through this course you have already
@@ -107,7 +107,7 @@ That single-source-many-outputs property is the difference
 between PowerPoint+Word+PDF as separate deliverables and Quarto
 as a publishing system.
 
-# PowerPoint-to-Quarto bridge
+## PowerPoint-to-Quarto bridge
 
 | What you would do in PowerPoint | What you do in Quarto revealjs |
 |---|---|
@@ -127,7 +127,7 @@ as a publishing system.
 **Every PowerPoint move has a Quarto equivalent, and most are one
 line of code instead of a menu hunt.**
 
-# Your first revealjs file
+## Your first revealjs file
 
 Change one line of YAML at the top of any `.qmd` file:
 
@@ -142,7 +142,7 @@ format: revealjs
 
 Render. Open the resulting `.html`. You are presenting.
 
-## Slide separators — two patterns
+### Slide separators — two patterns
 
 Inside the document, two patterns create a new slide:
 
@@ -176,7 +176,7 @@ untitled slide. Useful for image-only slides or section
 transitions.
 
 ::: {.callout-tip}
-## Heading hierarchy in revealjs
+### Heading hierarchy in revealjs
 
 - **`# Section Title`** (h1) — creates a *section divider* slide.
 - **`## Slide title`** (h2) — creates a *content slide*.
@@ -186,7 +186,7 @@ A talk with three sections, each containing three slides, has
 `#` × 3 and `##` × 9.
 :::
 
-# The one-idea-per-slide rule
+## The one-idea-per-slide rule
 
 The strongest discipline in slide design: **one slide, one
 idea**. If your slide has two unrelated points, split it.
@@ -201,7 +201,7 @@ Symptoms of slides that need splitting:
 A revealjs deck of 20 short slides is almost always clearer than
 the same content jammed into 8 dense slides.
 
-# Embedding R output in slides
+## Embedding R output in slides
 
 Code chunks work the same way in revealjs as in HTML reports —
 the output appears on the slide where the chunk lives:
@@ -234,7 +234,7 @@ than report text. A 12-point chart that reads fine in a printed
 report is illegible on a projector. **Always increase font sizes
 in slide charts.**
 
-# Speaker notes
+## Speaker notes
 
 A `::: {.notes}` block adds notes that you see in presenter mode
 but the audience never sees:
@@ -254,7 +254,7 @@ to predict 2024.
 Press **`S`** during the live presentation to open presenter mode
 in a separate window.
 
-# Incremental reveals
+## Incremental reveals
 
 Sometimes you want bullets to appear one at a time:
 
@@ -272,7 +272,7 @@ The reader sees the first bullet, presses → to reveal the
 second, again for the third. Use sparingly — incremental
 reveals can frustrate audiences if overused.
 
-# Two-column layout
+## Two-column layout
 
 For comparing two charts or putting text next to an image:
 
@@ -298,7 +298,7 @@ For comparing two charts or putting text next to an image:
 :::
 ```
 
-# A complete revealjs `.qmd` skeleton
+## A complete revealjs `.qmd` skeleton
 
 Copy this as a starting point for a 10-slide talk:
 
@@ -372,14 +372,14 @@ Questions?
 
 Render. Adjust. Iterate.
 
-# Building a portfolio
+## Building a portfolio
 
 A **portfolio** is a single landing page that links to your
 previously rendered analyses. Your future employer, TA, or
 classmate visits one URL and can browse everything you have
 built.
 
-## Simple folder structure
+### Simple folder structure
 
 ```
 frst232/
@@ -392,7 +392,7 @@ frst232/
     ├── ...
 ```
 
-## Minimal `_quarto.yml`
+### Minimal `_quarto.yml`
 
 ```yaml
 project:
@@ -426,7 +426,7 @@ format:
 Drop that folder anywhere — a USB stick, a web server, GitHub
 Pages — and it renders as a real website.
 
-## A minimal `index.qmd`
+### A minimal `index.qmd`
 
 ```markdown
 ---
@@ -463,7 +463,7 @@ Code is released under the MIT licence.
 - Ontario forest stats: Government of Ontario
 ```
 
-# Citation — citing data, code, and packages
+## Citation — citing data, code, and packages
 
 Every analysis you publish should make three things easy to
 find:
@@ -474,7 +474,7 @@ find:
 3. **The methods.** Which previously published work did you
    build on?
 
-## A `CITATION.md` in your project root
+### A `CITATION.md` in your project root
 
 ```markdown
 # Citations
@@ -503,7 +503,7 @@ find:
 In R, `citation("package_name")` returns the BibTeX entry for any
 package. Copy the entries into your `CITATION.md`.
 
-# Licensing — choose one openly
+## Licensing — choose one openly
 
 Three commonly used licences for student work:
 
@@ -522,7 +522,7 @@ Add a one-line statement to the bottom of your portfolio:
 © 2026 Your Name · Content licensed under CC BY 4.0 · Code under MIT
 ```
 
-# Publishing — three free hosts
+## Publishing — three free hosts
 
 Once `quarto render` produces a `docs/` folder, you can drop it
 on:
@@ -537,47 +537,47 @@ All three are zero-cost for student-scale traffic. The first one
 is the easiest by far — `quarto publish quarto-pub` from your
 project root, sign in, done.
 
-# Active learning
+## Active learning
 
-## Activity 1 — Convert a chapter to slides
+### Activity 1 — Convert a chapter to slides
 
 Take your `frst232_ch09_learner.qmd` (charts chapter). Change
 the YAML `format:` from `html` to `revealjs`. Re-render. Inspect
 what changes — which charts make readable slides, which need
 bigger fonts.
 
-## Activity 2 — One idea per slide
+### Activity 2 — One idea per slide
 
 Take the rendered HTML from Activity 1. Identify any slide with
 more than one chart or more than ~50 words of text. Split each
 into two slides.
 
-## Activity 3 — Two-column layout
+### Activity 3 — Two-column layout
 
 Build a two-column slide: left column has a chart, right column
 has three bullet takeaways.
 
-## Activity 4 — Citation
+### Activity 4 — Citation
 
 Run `citation("tidyverse")` and `citation("sf")` in the R
 console. Copy the output into a `CITATION.md` file in your
 `frst232/` project root.
 
-## Activity 5 — Apply a licence
+### Activity 5 — Apply a licence
 
 Add a one-line licence statement to the bottom of your
 `index.qmd` (CC BY 4.0 for content, MIT for code).
 
-## Activity 6 — Publish
+### Activity 6 — Publish
 
 Run `quarto publish quarto-pub` from your project root. Sign
 in to Quarto Pub when prompted. Confirm the resulting URL
 loads in a browser.
 
-# Practice Demo Lab — In-class presentations
+## Practice Demo Lab — In-class presentations
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -609,7 +609,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: The synthesis presentations
+### Lab: The synthesis presentations
 
 The lab session for this chapter is given over to **in-class
 group presentations**. Each group presents one analysis from
@@ -652,7 +652,7 @@ scoring:
 - The peer-eval forms.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises for this chapter.
 
@@ -688,9 +688,9 @@ These are the take-home exercises for this chapter.
    resulting URL with one classmate. Confirm it loads on their
    computer without any R install.
 
-# Optional, advanced
+## Optional, advanced
 
-## Slide themes and templates
+### Slide themes and templates
 
 revealjs ships with multiple built-in themes:
 
@@ -704,7 +704,7 @@ Pick one that matches the venue. For most academic/professional
 talks, `simple` or `serif` is safest. `dark` works well in
 dim conference rooms.
 
-## Custom CSS
+### Custom CSS
 
 If a built-in theme is not quite right:
 
@@ -727,20 +727,20 @@ Then in `my-custom.css`:
 }
 ```
 
-## Print to PDF during the talk
+### Print to PDF during the talk
 
 While presenting in revealjs, press **`E`** to enter print mode,
 then **Ctrl+P** / **Cmd+P** to save as PDF. Useful for handouts.
 
-## Multi-author Quarto projects
+### Multi-author Quarto projects
 
 For a group presentation, share the `.qmd` source via Git
-(Chapter 12 references for more). Each member edits one section.
+(see this chapter for more). Each member edits one section.
 Render only when merging.
 
-# A glimpse ahead: Wrap-up and final exam preparation
+## A glimpse ahead: Wrap-up and final exam preparation
 
-Chapter 13 is the term-end consolidation:
+The final chapter is the term-end consolidation:
 
 - A complete review of all 12 chapters.
 - The Excel-to-R bridge in one summary table.
@@ -749,9 +749,9 @@ Chapter 13 is the term-end consolidation:
   reproducibility frameworks.
 
 The chapter lab is the **final exam itself** — closed-AI,
-open-notes, covering everything from Chapter 1 to Chapter 12.
+open-notes, covering the whole course.
 
-# Self-assessment quiz {#sec-quiz-ch12}
+## Self-assessment quiz {#sec-quiz-ch12}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -841,10 +841,10 @@ interactive quiz questions.*
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts
+### Useful prompts
 
 - *"My revealjs slide has too much text. Help me split it into
   three shorter slides."* (Paste the slide content.)
@@ -856,7 +856,7 @@ interactive quiz questions.*
 - *"Write a CITATION.md entry for the readxl R package."*
 :::
 
-# Reading
+## Reading
 
 - *Quarto Presentations* guide — the canonical reference:
   <https://quarto.org/docs/presentations/revealjs/>
@@ -869,10 +869,10 @@ interactive quiz questions.*
 - Open Government Licence — BC:
   <https://www2.gov.bc.ca/gov/content/data/policy-standards/open-data/open-government-licence-bc>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Lab logistics
+### Lab logistics
 
 - The lab session for this chapter is in-class group
   presentations.
@@ -884,7 +884,7 @@ interactive quiz questions.*
   talk — speaker notes are vastly more useful than memorising
   bullet points.
 
-## Grading rubric
+### Grading rubric
 
 | Criterion | Weight | What to look for |
 |---|---|---|
@@ -897,7 +897,7 @@ interactive quiz questions.*
 | Limitations | 10 % | What the analysis does NOT show |
 | Acknowledgements | 5 % | Data citations + R-package citations |
 
-## Materials provided
+### Materials provided
 
 | File | Purpose |
 |---|---|
@@ -906,7 +906,7 @@ interactive quiz questions.*
 | `frst232_ch12_slides_template.qmd` | A ready-to-customize revealjs presentation skeleton. |
 | `quiz_ch12.html` | Standalone interactive quiz. |
 
-## Common stumbling points
+### Common stumbling points
 
 - **Chart fonts too small on projector.** Insist on
   `theme_*(base_size = 18)` in slide chunks.

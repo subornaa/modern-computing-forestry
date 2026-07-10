@@ -12,7 +12,7 @@ library(scales)
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC silviculture**
 ([`bc_disturbance_reforestation.xlsx`](../data/bc_disturbance_reforestation.xlsx){download="bc_disturbance_reforestation.xlsx"}),
 **Ontario forest statistics**
@@ -24,7 +24,7 @@ folder. For sources and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -49,10 +49,10 @@ By the end of this chapter you will be able to:
 - Render a complete **Quarto HTML report** that another reader
   could open without R.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. A **rendered Quarto HTML report** named
    `frst232_ch05_learner.html`, containing:
@@ -79,7 +79,7 @@ This list is the same as the rubric for the chapter assignment.
 Keep it in view while you work.
 :::
 
-# Where we are in the course
+## Where we are in the course
 
 In Chapter 4 you:
 
@@ -96,7 +96,7 @@ In Chapter 4 you:
 Chapter 5 deepens the R fundamentals: vectors, tibbles, column
 types, missing values, and your first full **Quarto report**.
 
-# Excel-to-R bridge — the inspection moves
+## Excel-to-R bridge — the inspection moves
 
 From Chapter 4 you already know:
 
@@ -118,7 +118,7 @@ moves that Excel cannot do cleanly:
 By the end of this chapter, every move you used to do by *looking*
 at Excel is now a scripted R call.
 
-# Vectors — the building block
+## Vectors — the building block
 
 Almost everything in R is a **vector**: an ordered sequence of
 values, all of the same type.
@@ -140,7 +140,7 @@ is_old
 The `c()` function (**c** for *combine*) is how you build a
 vector. Type the values, comma-separated, inside `c(...)`.
 
-## The four atomic types
+### The four atomic types
 
 Every value in R has a type. The four most common:
 
@@ -154,7 +154,7 @@ Every value in R has a type. The four most common:
 Numbers without an `L` suffix are `<dbl>` (double-precision) by
 default. Most numeric R work uses doubles.
 
-## Vectorized operations
+### Vectorized operations
 
 Most R functions work on a *whole vector at once*, not one
 element at a time:
@@ -179,7 +179,7 @@ That last result — `ha > 200000` returns a vector of
 `TRUE`/`FALSE` — is the bedrock of every filter and condition you
 will write in R.
 
-## Subsetting with `[`
+### Subsetting with `[`
 
 You can pull out specific positions from a vector with square
 brackets:
@@ -195,7 +195,7 @@ That third example reads: *"return the elements of `ha` where
 subsetting** pattern — the conceptual ancestor of `dplyr::filter()`
 which you will meet in Chapter 6.
 
-# Tibbles — vectors arranged in columns
+## Tibbles — vectors arranged in columns
 
 A **tibble** is a tidyverse-flavored data.frame: a rectangular
 table where every column is a vector and all columns have the
@@ -224,7 +224,7 @@ see things like `<dbl>`, `<dbl>`, ... — the column types. **A
 tibble always shows its column types when printed.** That alone
 is reason enough to use tibbles over base R data.frames.
 
-## Tibble vs data.frame
+### Tibble vs data.frame
 
 For most purposes, a tibble *is* a data.frame. The differences
 that matter for this course:
@@ -240,10 +240,10 @@ You can always convert **in either direction**: `as_tibble(df)` turns a
 data.frame *into* a tibble, and `as.data.frame(tib)` turns a tibble *back
 into* a data.frame. For tidyverse work, stay with tibbles.
 
-# Importing files
+## Importing files
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"I imported `[file]` and got a tibble of `[rows] x [cols]`. Check whether the column types look right, whether any column that should be numeric came in as text (or a date as character), and which inspection commands I should run next. Do not hand me a finished import script."*
@@ -251,7 +251,7 @@ Use this **after** your own attempt. It should check your reasoning, not hand yo
 
 Two import functions cover almost every real-world file:
 
-## `readxl::read_excel()`
+### `readxl::read_excel()`
 
 ```{r read-excel}
 bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
@@ -269,7 +269,7 @@ Arguments to remember:
 - `na = c("", "NA", "n/a")` tells `read_excel` which strings to
   treat as missing.
 
-## `readr::read_csv()`
+### `readr::read_csv()`
 
 ```r
 # Example (you do not need to run this; we use it in Chapter 6).
@@ -284,7 +284,7 @@ Arguments to remember:
 - `na = c("", "NA", "-9999")` is useful for fields that use
   sentinel values for missing.
 
-## Other readr siblings (briefly)
+### Other readr siblings (briefly)
 
 - `read_tsv()` — tab-separated.
 - `read_delim()` — generic, any delimiter.
@@ -292,7 +292,7 @@ Arguments to remember:
 All readr functions return a tibble. All accept a file path as
 the first argument.
 
-# Inspecting a tibble — the eight moves
+## Inspecting a tibble — the eight moves
 
 Whenever you load a new file, run these eight commands. They take
 seconds and catch most problems.
@@ -326,7 +326,7 @@ Each one answers a different question:
 `glimpse()` is the single most valuable function in this list.
 Make it your default first move on any tibble.
 
-# Column types — and why they matter
+## Column types — and why they matter
 
 In the `glimpse(bc)` output above, you see types like `<dbl>`
 next to each column name. The type tells you *what R thinks
@@ -354,7 +354,7 @@ where it matters is when something *looks* numeric but
 arrives as text (often because of an extra space or a stray
 character).
 
-## How to spot a type bug
+### How to spot a type bug
 
 If you compute `sum(bc$Reforestation_ha)` and get the wrong
 answer — or an error message like *"non-numeric argument to
@@ -370,10 +370,10 @@ If it returns `"character"`, fix it:
 bc$Reforestation_ha <- as.numeric(bc$Reforestation_ha)
 ```
 
-# Missing values — `NA` is its own thing
+## Missing values — `NA` is its own thing
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"`colSums(is.na(df))` shows `[which columns]` have missing values. Check whether my plan to handle them (`[drop / keep / na.rm = TRUE]`) is appropriate for this dataset, and explain what could go wrong if I treated `NA` as zero. Do not decide the whole cleaning strategy for me."*
@@ -385,7 +385,7 @@ flag meaning *"we do not know this value"*. If that distinction
 is new to you, skim **`NA` vs `0`** (below) first — treating an
 unknown value as `0` silently corrupts every sum and mean.
 
-## Counting NAs in one column
+### Counting NAs in one column
 
 ```{r is-na-vector}
 is.na(bc$Reforestation_ha)            # logical vector — TRUE for each NA
@@ -397,7 +397,7 @@ input — `TRUE` for each `NA`, `FALSE` for each real value. Sum
 that vector to count the missing values (`TRUE` is treated as
 `1`, `FALSE` as `0`).
 
-## Counting NAs in every column at once
+### Counting NAs in every column at once
 
 ```{r colsums-isna}
 colSums(is.na(bc))
@@ -418,7 +418,7 @@ no missing values, which matches what you saw in Excel for
 Chapter 1. (The Ontario file is the same — we will check in the
 exercises.)
 
-## `NA` vs `0` — a habit worth forming
+### `NA` vs `0` — a habit worth forming
 
 | Situation | What to record |
 |---|---|
@@ -432,7 +432,7 @@ including 12 unmeasured years coded as `0` will be 12 zeros
 pulled into the average. Coded as `NA`, they would be skipped
 (if you use `na.rm = TRUE`).
 
-# Skipping `NA` in calculations
+## Skipping `NA` in calculations
 
 ```{r na-rm}
 # If a column had NAs, the default behaviour is:
@@ -447,7 +447,7 @@ mean(c(1, 2, NA, 4), na.rm = TRUE)   # returns 7/3 = 2.33
 might have missing values. Forgetting it is the most common
 silent bug in first-year R.
 
-# A worked inspection — the BC file end-to-end
+## A worked inspection — the BC file end-to-end
 
 Here is the canonical inspection sequence on a freshly imported
 file:
@@ -491,12 +491,12 @@ Six lines. Six confirmations. You now know:
 That sequence is **what professional R analysts do every time
 they open a new file**. Do it on every dataset you touch.
 
-# First Quarto report
+## First Quarto report
 
 You have been *reading* Quarto documents through this whole book.
 Now you write one.
 
-## The four parts of a `.qmd` file
+### The four parts of a `.qmd` file
 
 A Quarto file has four ingredients:
 
@@ -534,7 +534,7 @@ Save as `my_first_report.qmd`. Click **Render** (or
 **Ctrl+Shift+K** / **Cmd+Shift+K**). You get a single self-contained
 HTML file.
 
-## Common chunk options
+### Common chunk options
 
 Chunk options go right after the ```` ```{r} ```` line, prefixed
 with `#|`:
@@ -562,7 +562,7 @@ bc <- read_excel(here("data", "bc_disturbance_reforestation.xlsx"),
 | `fig.width: 6` | Plot width in inches (Chapter 9) |
 | `fig.cap: "..."` | Caption for figures |
 
-## What rendering does
+### What rendering does
 
 When you click **Render**, Quarto:
 
@@ -579,7 +579,7 @@ was only created in your console (and not in an earlier chunk),
 rendering will fail.
 
 ::: {.callout-tip}
-## A reproducibility test
+### A reproducibility test
 
 If your `.qmd` renders cleanly from a fresh R session, your work
 is reproducible. If it does not, your work depends on state that
@@ -590,7 +590,7 @@ no one else can see — and that is the bug.
 you are good.
 :::
 
-# Writing a data dictionary in Quarto
+## Writing a data dictionary in Quarto
 
 A data dictionary lives next to your code. In Quarto, it is just
 a Markdown table:
@@ -616,7 +616,7 @@ hand your `.qmd` to a colleague, they see the table and the
 code that built the numbers, in the same file.
 
 ::: {.callout-tip}
-## Starter for the BC file
+### Starter for the BC file
 The BC silviculture file has these eight columns. Copy this table into
 your report and fill in the **Type**, **Unit**, and **Description**
 yourself (use `glimpse(bc)` for the types):
@@ -642,9 +642,9 @@ sentences that turn your inspection output into prose, e.g.:
 > fiscal year."*
 :::
 
-# Active learning
+## Active learning
 
-## Activity 1 — Vectors
+### Activity 1 — Vectors
 
 ```r
 ha <- c(220000, 180000, 250000, 190000, 210000)
@@ -657,7 +657,7 @@ In the console, compute:
 - the count of values greater than 200,000 (hint: `sum(ha > 200000)`),
 - the values greater than 200,000 themselves.
 
-## Activity 2 — Inspect two files
+### Activity 2 — Inspect two files
 
 Run the six-move inspection on the BC silviculture file, then
 on the Ontario forest stats file. Note the differences:
@@ -671,28 +671,28 @@ dim(ontario); glimpse(ontario)
 How are the column types different from the BC file? Which file
 has any character columns?
 
-## Activity 3 — Missing-value audit
+### Activity 3 — Missing-value audit
 
 Run `colSums(is.na(bc))` and `colSums(is.na(ontario))`. Are there
 any missing values? Confirm against what you saw in Excel for
 Chapters 1 and 2.
 
-## Activity 4 — Render your first Quarto report
+### Activity 4 — Render your first Quarto report
 
 Open the chapter learner file `frst232_ch05_learner.qmd`.
 Render it. Confirm the HTML opens and shows all expected output.
 
-## Activity 5 — Break and fix
+### Activity 5 — Break and fix
 
 In `frst232_ch05_learner.qmd`, deliberately misspell
 `Reforestation_ha` somewhere. Render. Read the error message
 carefully. Fix it. Re-render. The error message taught you
 something useful — what?
 
-# Lab session — Excel midterm
+## Lab session — Excel midterm
 
 ::: {.callout-important appearance="default"}
-## The lab session for Chapter 5 is the Excel midterm
+### The lab session for Chapter 5 is the Excel midterm
 
 There is no separate practice lab this chapter. The lab session
 is given over to the **Excel midterm**, covering material from
@@ -724,13 +724,13 @@ The R material is assessed through homework exercises, the
 chapter quizzes, and the final exam at the end of the term.
 :::
 
-# Group activity — Peer review of Quarto reports
+## Group activity — Peer review of Quarto reports
 
 Outside the midterm session, run this peer-review activity at any
 time during the chapter (e.g., during a lecture session).
 
 ::: {.callout-note appearance="default"}
-## Group: Peer review a rendered HTML report
+### Group: Peer review a rendered HTML report
 
 Work in pairs (or threes). Each member should have a rendered
 `frst232_ch05_learner.html` to share.
@@ -757,7 +757,7 @@ own name and the author's name) to the course site.
 This activity is designed to fit inside a single lecture session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises that go with this chapter.
 
@@ -795,9 +795,9 @@ These are the take-home exercises that go with this chapter.
    `names`, `glimpse`, and `colSums(is.na(...))` all at once.
    Apply it to `bc` and `ontario`.
 
-# Optional, advanced
+## Optional, advanced
 
-## Lists — the catch-all data structure
+### Lists — the catch-all data structure
 
 A **list** in R is like a vector except its elements can be of
 different types. A tibble is technically a list of equal-length
@@ -812,10 +812,10 @@ my_list$name
 my_list$tibble
 ```
 
-You will use lists in Chapter 11 when working with spatial data
-(where each "row" is a complex geometry).
+You will use lists in the **optional** spatial-data material, where
+each "row" is a complex geometry.
 
-## Factors — categorical variables with order
+### Factors — categorical variables with order
 
 A **factor** is a vector with a fixed set of allowed values
 (levels). Useful when you want ordered categories (`small` <
@@ -830,7 +830,7 @@ size
 
 We will use factors more in Chapter 9 (ggplot2 axis ordering).
 
-## Locking column types at import time
+### Locking column types at import time
 
 If `read_excel` or `read_csv` guesses a column type wrong, you
 can override it:
@@ -847,7 +847,7 @@ read_csv("file.csv",
 This is overkill for clean BC and Ontario files. It becomes
 useful when you import messy real-world CSVs in Chapter 6.
 
-# A glimpse ahead: From inspection to cleaning
+## A glimpse ahead: From inspection to cleaning
 
 In Chapter 6 you move from *inspecting* to *cleaning*. The core
 moves of `dplyr`:
@@ -872,7 +872,7 @@ Chapter 6 walks through each verb on the BC air-quality dataset
 with actual missing values, mixed date formats, and the kind of
 problems that real forestry data presents.
 
-# Self-assessment quiz {#sec-quiz-ch05}
+## Self-assessment quiz {#sec-quiz-ch05}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -1170,10 +1170,10 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts for this chapter
+### Useful prompts for this chapter
 
 - *"My Quarto document fails to render with the error
   `object 'bc' not found`. The variable works fine in my console.
@@ -1186,7 +1186,7 @@ Explanations appear below each question.
   was read as character. What's the most common cause and how do
   I fix it?"*
 
-## A prompt template for the rest of the course
+### A prompt template for the rest of the course
 
 When you ask AI for help with R code, include four things:
 
@@ -1197,7 +1197,7 @@ When you ask AI for help with R code, include four things:
 
 Without these four, the answer will be too generic to use.
 
-## Verifying AI's answers
+### Verifying AI's answers
 
 After AI suggests a fix, **check**:
 
@@ -1207,7 +1207,7 @@ After AI suggests a fix, **check**:
 3. If AI rewrites a chunk for you, render the whole document
    afterwards to confirm nothing else broke.
 
-## When *not* to use AI
+### When *not* to use AI
 
 - Do not let AI write your data dictionary. The dictionary
   describes *your* analysis decisions.
@@ -1215,7 +1215,7 @@ After AI suggests a fix, **check**:
   `suppressWarnings()`. Warnings exist for a reason — read them.
 :::
 
-# Reading
+## Reading
 
 - *R for Data Science* — chapter 2 *Workflow: basics* and chapter
   8 *Data import*. Free at <https://r4ds.hadley.nz/>.
@@ -1226,10 +1226,10 @@ After AI suggests a fix, **check**:
   conventions: <https://speakerdeck.com/jennybc/how-to-name-files>.
 - The `readxl` documentation: <https://readxl.tidyverse.org/>.
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - The chapter has two big new ideas: **vectors / tibbles** (the
   R type system) and **Quarto** (the new deliverable format).
@@ -1242,7 +1242,7 @@ After AI suggests a fix, **check**:
   the "render from a fresh session" check into the grading
   rubric.
 
-## Excel midterm logistics
+### Excel midterm logistics
 
 - The lab session for this chapter is the midterm.
 - Material is Chapter 1, 2, 3 Excel only.
@@ -1256,7 +1256,7 @@ After AI suggests a fix, **check**:
   questions at the start of the session — have a backup
   computer ready.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. `frst232_ch05_learner.html` (rendered) with imports for both
    BC and Ontario files.
@@ -1265,7 +1265,7 @@ After AI suggests a fix, **check**:
 4. Peer-review worksheet (during the lecture peer-review
    activity).
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -1275,7 +1275,7 @@ After AI suggests a fix, **check**:
 | `frst232_ch05_solutions.qmd` | Completed Quarto document. **Do not distribute to learners.** |
 | `quiz_ch05.html` | Standalone interactive quiz. |
 
-## Common stumbling points
+### Common stumbling points
 
 - **"Object not found on render."** Almost always: the variable
   was created in the console, not in a chunk. Solution: Restart
@@ -1299,14 +1299,14 @@ After AI suggests a fix, **check**:
 
 ---
 
-# Working with AI on this chapter {.unnumbered}
+## Working with AI on this chapter {.unnumbered}
 
 Use AI as a **verification and debugging partner**, not an answer machine.
 The goal is not to make AI do the work — it is to use AI to help you
 **understand, check, and improve your own work.**
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Fill in the brackets and paste this into your AI assistant. It should
 *explain and check*, not hand you a final assignment answer:
 
@@ -1331,7 +1331,7 @@ that is not in your data; choosing a tool before reading the question; and
 PivotTable.
 
 ::: {.callout-tip collapse="true"}
-## Compare your solution with the reference
+### Compare your solution with the reference
 When a reference solution is available, do **not** just copy it — use it to
 check your own work:
 
@@ -1342,7 +1342,7 @@ check your own work:
 :::
 
 ::: {.callout-tip collapse="true"}
-## AI replication challenge
+### AI replication challenge
 Write a prompt that would guide an AI *toward* the reference solution
 without handing over the final answer. Include the dataset, the columns,
 the task goal, the output format you need, and the verification checks.

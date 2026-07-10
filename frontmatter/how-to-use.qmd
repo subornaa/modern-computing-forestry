@@ -92,8 +92,8 @@ you **understand, check, and improve your own work.**
 
 ## Recommended pacing
 
-The book is designed for a one-term course (12 chapters of
-content + final exam preparation in Chapter 13). A reasonable
+The book is designed for a one-term course (twelve numbered
+chapters of content; the last is final-exam preparation). A reasonable
 pace is **one chapter per week**, with the lab session for
 each chapter being the in-class hands-on time.
 
@@ -101,9 +101,10 @@ each chapter being the in-class hands-on time.
 - **Chapters 4–5** (R foundations, Quarto): 2 weeks
 - **Chapters 6–8** (dplyr, summarising, joining): 3 weeks
 - **Chapter 9** (ggplot2): 1 week
+- **Chapter 10** (integrated case study): 1 week
 - **Optional:** spatial analysis (`sf`, `leaflet`) — extension material
-- **Chapter 12** (presentations + portfolio): 1 week
-- **Chapter 13** (review + final exam): 1 week
+- **Chapter 11** (presentations + portfolio): 1 week
+- **Chapter 12** (review + final-exam preparation): 1 week
 
 For FRST 531 (graduate students), the same material can be
 compressed into 10 weeks with Chapters 1–3 (Excel) treated as

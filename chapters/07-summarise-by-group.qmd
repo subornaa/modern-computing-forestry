@@ -52,7 +52,7 @@ airdata_clean <- airdata_raw |>
 ```
 
 ::: {.callout-note appearance="simple"}
-## Data for this chapter
+### Data for this chapter
 This chapter uses the **BC air-quality** file
 ([`airdata3.csv`](../data/airdata3.csv){download="airdata3.csv"}). Click
 the file name to download it directly, then save it in your `data/`
@@ -60,7 +60,7 @@ folder. For the source and details, see the
 [Datasets Used in This Book](../datasets.qmd) page.
 :::
 
-# Chapter goals {.unnumbered}
+## Chapter goals {.unnumbered}
 
 By the end of this chapter you will be able to:
 
@@ -84,10 +84,10 @@ By the end of this chapter you will be able to:
 - Write summary tables that read cleanly in a rendered Quarto
   report.
 
-# Expected output for this chapter {.unnumbered}
+## Expected output for this chapter {.unnumbered}
 
 ::: {.callout-tip appearance="default"}
-## What you will hand in
+### What you will hand in
 
 1. A **rendered Quarto HTML report**
    (`frst232_ch07_learner.html`) containing:
@@ -106,7 +106,7 @@ This list is the same as the rubric for the chapter assignment.
 Keep it in view while you work.
 :::
 
-# Where we are
+## Where we are
 
 In Chapter 6 you cleaned `airdata3.csv` with the six dplyr verbs.
 The cleaned tibble (`airdata_clean`) is the starting point for
@@ -117,7 +117,7 @@ your reader can use?**
 Chapter 6 introduced `group_by() |> summarise()` briefly. This
 chapter is that pattern at full depth.
 
-# Excel-to-R bridge — summarising
+## Excel-to-R bridge — summarising
 
 | What you did in Excel | What you do in R |
 |---|---|
@@ -136,7 +136,7 @@ The right-hand column is the rest of this chapter. **Every Excel
 summary move from Chapters 2 and 3 has a one-line dplyr
 equivalent.**
 
-# The starting point — the cleaned tibble
+## The starting point — the cleaned tibble
 
 For the rest of this chapter, assume `airdata_clean` is already
 in memory (built by the Chapter 6 pipeline).
@@ -149,7 +149,7 @@ glimpse(airdata_clean)
 all with a measured O₃ value, parsed dates, a O₃ band, and
 a region.
 
-# Overall summary — one row
+## Overall summary — one row
 
 The simplest case: collapse the whole tibble to one row of
 summary statistics:
@@ -169,7 +169,7 @@ airdata_clean |>
 Every column in the result is a single number. The arguments to
 `summarise()` are named: `<name> = <expression>`.
 
-## The functions you will use most
+### The functions you will use most
 
 | Function | Returns | Notes |
 |---|---|---|
@@ -184,7 +184,7 @@ Every column in the result is a single number. The arguments to
 | `IQR()` | interquartile range | Robust spread. |
 
 ::: {.callout-note}
-## `mutate()` vs `summarise()` — don't mix them up
+### `mutate()` vs `summarise()` — don't mix them up
 Chapter 6 used `mutate()` to add or change columns; this chapter uses
 `summarise()` to collapse rows into summary values.
 
@@ -194,10 +194,10 @@ Chapter 6 used `mutate()` to add or change columns; this chapter uses
 | `summarise()` | Computes summary values | **Fewer** rows — one overall, or one per group |
 :::
 
-# By-group summary — one row per group
+## By-group summary — one row per group
 
 ::: {.callout-note collapse="true"}
-## AI prompt to check your work
+### AI prompt to check your work
 Use this **after** your own attempt. It should check your reasoning, not hand you the answer:
 
 > *"I wrote `df |> group_by([group]) |> summarise([stat])`. Check whether `group_by()` + `summarise()` is the efficient choice here, whether I should report `n()` beside each summary, and how to confirm the group sizes are plausible. Do not write the final pipeline for me."*
@@ -225,7 +225,7 @@ This is the dplyr equivalent of an Excel PivotTable with
 operation. Same answer.
 
 ::: {.callout-tip}
-## Always add `.groups = "drop"` (or your code will warn)
+### Always add `.groups = "drop"` (or your code will warn)
 
 dplyr keeps the grouping after `summarise()` by default for
 backward compatibility, which causes confusing behaviour in
@@ -234,7 +234,7 @@ clear the grouping after summarise. Treat it as a habit, not a
 choice.
 :::
 
-## Multi-key grouping
+### Multi-key grouping
 
 Group by two or more variables at once. Each unique combination
 becomes one row:
@@ -253,7 +253,7 @@ region_day_summary |> head(10)
 The result is in **long format**: one row per (region, day)
 combination. Useful for plotting (Chapter 9) but hard to scan.
 
-# Reshaping with `pivot_wider()` — the PivotTable equivalent
+## Reshaping with `pivot_wider()` — the PivotTable equivalent
 
 For human-readable cross-tabulations, reshape the long-format
 summary into a wide table:
@@ -272,7 +272,7 @@ column per region, values = mean O₃. **This is what an Excel
 PivotTable produces** when you put `day` in Rows, `region` in
 Columns, and `Average of O3` in Values.
 
-## `pivot_wider()` arguments
+### `pivot_wider()` arguments
 
 | Argument | What it does |
 |---|---|
@@ -281,7 +281,7 @@ Columns, and `Average of O3` in Values.
 | `values_fill` | what to put in cells where no data exists (default: NA; often `0` for counts) |
 
 ::: {.callout-tip}
-## When to use long vs wide
+### When to use long vs wide
 
 - **Long format** (one row per combination) is what
   `summarise()` and `ggplot2` prefer. Use it for analysis.
@@ -292,7 +292,7 @@ Convert between them with `pivot_longer()` and `pivot_wider()`.
 The two are inverses.
 :::
 
-# Shortcut: `count()` and `tally()`
+## Shortcut: `count()` and `tally()`
 
 The two most common summarise patterns:
 
@@ -318,7 +318,7 @@ was a PivotTable with `region` in Rows, `o3_band` in Columns,
 to fill empty cells with 0. Three clicks in Excel; three lines in
 R; same answer.
 
-# Counting unique values with `n_distinct()`
+## Counting unique values with `n_distinct()`
 
 ```{r n-distinct}
 airdata_clean |>
@@ -339,7 +339,7 @@ To *see* the actual unique values — not just how many — use `unique()`
 unique(airdata_clean$region)
 ```
 
-# Multiple statistics with `across()`
+## Multiple statistics with `across()`
 
 When you want the same summary (e.g., mean) on **several
 columns**, `across()` is the cleaner pattern:
@@ -358,7 +358,7 @@ This summarises three pollutant columns at once, one mean per
 column per region. Far less repetitive than writing three
 `mean(...)` calls manually.
 
-## Multiple statistics on the same column
+### Multiple statistics on the same column
 
 You can also use `across()` to apply multiple statistics to one
 column:
@@ -378,19 +378,19 @@ airdata_clean |>
 The result has columns `O3_mean`, `O3_sd`, `O3_max`.
 
 ::: {.callout-tip}
-## `across()` is advanced — use it when it helps
+### `across()` is advanced — use it when it helps
 
 For two or three columns, plain `summarise(mean1 = mean(x),
 mean2 = mean(y), ...)` is more readable. For five or more,
 `across()` shines. Use whichever is clearer for your reader.
 :::
 
-# Putting it together — a worked summary report
+## Putting it together — a worked summary report
 
 Here is what a complete summary section of a forestry data
 report might look like.
 
-## Overall
+### Overall
 
 ```{r report-overall}
 overall <- airdata_clean |>
@@ -405,7 +405,7 @@ overall <- airdata_clean |>
 overall |> kable()
 ```
 
-## By station
+### By station
 
 ```{r report-by-station}
 airdata_clean |>
@@ -420,7 +420,7 @@ airdata_clean |>
   kable()
 ```
 
-## By region × day (wide)
+### By region × day (wide)
 
 ```{r report-region-day}
 airdata_clean |>
@@ -434,7 +434,7 @@ airdata_clean |>
   kable()
 ```
 
-## By O₃ band — count cross-tab
+### By O₃ band — count cross-tab
 
 ```{r report-band}
 airdata_clean |>
@@ -449,48 +449,48 @@ output in Excel would be three or four PivotTables, each requiring
 a manual refresh after every data update. **The dplyr version
 updates automatically when you re-render.**
 
-# Active learning
+## Active learning
 
-## Activity 1 — Overall summary
+### Activity 1 — Overall summary
 
 Write a single `summarise()` call that returns the count, mean,
 median, sd, min, and max of O₃ across the whole cleaned
 tibble. Compare with the table in the chapter.
 
-## Activity 2 — By-station ranking
+### Activity 2 — By-station ranking
 
 Group by `location`, summarise `mean_o3`, and arrange
 descending. Which station has the highest mean O₃? Which has
 the lowest?
 
-## Activity 3 — `count()` shortcut
+### Activity 3 — `count()` shortcut
 
 Use `count(region)` and `count(region, sort = TRUE)`. What is
 the difference?
 
-## Activity 4 — Cross-tabulation
+### Activity 4 — Cross-tabulation
 
 Build a cross-tab where rows are `region`, columns are
 `o3_band`, and cells are counts. Use `pivot_wider()` with
 `values_fill = 0` so empty cells show `0` instead of `NA`.
 
-## Activity 5 — `across()` for many means
+### Activity 5 — `across()` for many means
 
 Use `across(c(O3, PM10, NO2), \(x) mean(x, na.rm = TRUE))`
 inside a `group_by(region) |> summarise(...)` pipeline. How does
 the output differ from writing three separate mean calls?
 
-## Activity 6 — Interpret one summary
+### Activity 6 — Interpret one summary
 
 Pick any one row of your by-group summary and write **one sentence** that
 names the group, the statistic, the value, and the unit — e.g. *"The
 Fraser Valley West region had the highest mean O₃, at about 39 ppb."* A
 number is only useful once you can say what it means.
 
-# Practice Demo Lab
+## Practice Demo Lab
 
 ::: {.callout-important}
-## Practice demo only
+### Practice demo only
 This is a **guided practice lab in the OER book**, designed to help you
 learn the workflow before completing the official lab assignment on
 **Canvas**. The Canvas lab is the graded assignment. Use this activity to
@@ -522,7 +522,7 @@ This demo lab has **six parts** — work them in order:
 
 
 ::: {.callout-note appearance="default"}
-## Lab: Produce a summary report together
+### Lab: Produce a summary report together
 
 Work in groups of 3 or 4. Each member should already have
 `airdata_clean` in memory (from Chapter 6, or by re-running the
@@ -559,7 +559,7 @@ your table. The caption should state the **headline finding**
 This lab fits comfortably inside a single hands-on session.
 :::
 
-# Exercises
+## Exercises
 
 These are the take-home exercises for this chapter.
 
@@ -598,9 +598,9 @@ These are the take-home exercises for this chapter.
    per station: `summarise(p90 = quantile(O3, 0.9, na.rm =
    TRUE))`. Which station has the highest 90th-percentile O₃?
 
-# Optional, advanced
+## Optional, advanced
 
-## `slice_max()` and `slice_min()` — top-N per group
+### `slice_max()` and `slice_min()` — top-N per group
 
 ```r
 airdata_clean |>
@@ -610,7 +610,7 @@ airdata_clean |>
 
 Returns the three highest-O₃ hours at each station.
 
-## `summarise()` with custom functions
+### `summarise()` with custom functions
 
 You can define a helper function and call it inside
 `summarise()`:
@@ -626,7 +626,7 @@ airdata_clean |>
 The 5% trimmed mean drops the top 5% and bottom 5% before
 averaging — more robust to outliers than a plain mean.
 
-## `summary()` of a tibble vs `summarise()` of a tibble
+### `summary()` of a tibble vs `summarise()` of a tibble
 
 These two are easily confused:
 
@@ -638,7 +638,7 @@ These two are easily confused:
 Use `summary()` for quick interactive inspection. Use
 `summarise()` for output that goes into a report.
 
-# A glimpse ahead: From summarising to reshaping and combining
+## A glimpse ahead: From summarising to reshaping and combining
 
 Chapter 7 used `pivot_wider()` for the first time. In Chapter 8
 you will meet:
@@ -657,7 +657,7 @@ this course. After Chapter 8, every cleaning, summarising,
 reshaping, and joining task you face has a one-line dplyr
 answer.
 
-# Self-assessment quiz {#sec-quiz-ch07}
+## Self-assessment quiz {#sec-quiz-ch07}
 
 ::: {.content-visible when-format="pdf"}
 *The self-assessment quiz is interactive: it appears in the online (HTML)
@@ -929,10 +929,10 @@ Explanations appear below each question.
 </script>
 ```
 
-# AI as a debugging companion
+## AI as a debugging companion
 
 ::: {.callout-tip}
-## Useful prompts for this chapter
+### Useful prompts for this chapter
 
 - *"In R, my `group_by(region) |> summarise(mean(O3))` returns
   NA for some groups, even though the column has values. Why?"*
@@ -946,7 +946,7 @@ Explanations appear below each question.
   to one row per group; mutate keeps every row and broadcasts
   the result across the group.)
 
-## When *not* to use AI
+### When *not* to use AI
 
 - Do not let AI choose what to summarise. The choice of mean
   vs median vs 90th percentile is an analytical decision —
@@ -955,7 +955,7 @@ Explanations appear below each question.
   Always cross-check with `names(your_tibble)`.
 :::
 
-# Reading
+## Reading
 
 - *R for Data Science* — chapter 5 *Data tidying* (covers
   pivot_wider and pivot_longer), chapter 13 *Quantitative
@@ -963,10 +963,10 @@ Explanations appear below each question.
 - The dplyr cheatsheet (PDF): <https://rstudio.github.io/cheatsheets/data-transformation.pdf>
 - The tidyr cheatsheet (PDF): <https://rstudio.github.io/cheatsheets/tidyr.pdf>
 
-# Instructor notes {.unnumbered}
+## Instructor notes {.unnumbered}
 
 ::: {.callout-note appearance="minimal" collapse="true"}
-## Pacing and emphasis
+### Pacing and emphasis
 
 - This chapter is shorter on new verbs than Chapter 6 — only
   `summarise()` (deeper), `pivot_wider()`, `count()`,
@@ -981,13 +981,13 @@ Explanations appear below each question.
   users. Mention it once, demo it once, then let learners use
   whichever pattern (plain summarise vs across) feels clearer.
 
-## Expected output checklist (matches the top-of-chapter callout)
+### Expected output checklist (matches the top-of-chapter callout)
 
 1. `frst232_ch07_learner.html` (rendered).
 2. `frst232_ch07_learner.qmd` (source).
 3. Group-lab worksheet or screenshot.
 
-## Materials provided alongside this chapter
+### Materials provided alongside this chapter
 
 | File | Purpose |
 |---|---|
@@ -996,7 +996,7 @@ Explanations appear below each question.
 | `frst232_ch07_solutions.qmd` | Completed solutions. **Do not distribute.** |
 | `quiz_ch07.html` | Standalone interactive quiz. |
 
-## Sample numbers (reference)
+### Sample numbers (reference)
 
 | Quantity | Approximate value |
 |---|---|
@@ -1006,7 +1006,7 @@ Explanations appear below each question.
 | Number of unique regions in cleaned tibble | 4 |
 | Highest single-hour O₃ reading | ~39 ppb |
 
-## Common stumbling points
+### Common stumbling points
 
 - **Confusing `summarise()` with `summary()`.** Walk through
   the distinction explicitly in the lecture: one is a verb that
