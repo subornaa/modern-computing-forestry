@@ -46,3 +46,9 @@ transition_matrix_files/
 
 # Private project handoff doc — inventories confidential materials; keep local
 /HANDOFF.md
+
+# Per-file HTML render artifacts that leak next to .qmd sources
+# (the real site is built to docs/ by CI; these are not source)
+/frontmatter/*.html
+/chapters/*.html
+/index.html
