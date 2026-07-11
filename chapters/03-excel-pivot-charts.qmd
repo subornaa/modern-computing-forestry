@@ -608,7 +608,7 @@ session.
 
 ::: {.callout-tip}
 ## Reference solution — download
-[**Open the Chapter 3 reference solution (HTML answer key)**](../lab-solutions/ch03-excel-reference-solution.html) — the completed, task-by-task answer key for this demo lab. Open it **after** your own attempt and use it to
+[**Open the Chapter 3 reference solution (HTML answer key)**](../lab-solutions/ch03-excel-reference-solution.html) — the completed, task-by-task answer key — or **[download the completed Excel workbook](../lab-solutions/ch03-excel-reference-solution.xlsx){download="ch03-excel-reference-solution.xlsx"}** with the formulas worked into the sheets (it recalculates when you open it in Excel). Open it **after** your own attempt and use it to
 check your work.
 
 *This is the **public practice** solution. The **graded lab on Canvas** has
