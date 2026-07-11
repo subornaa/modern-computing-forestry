@@ -559,6 +559,15 @@ your table. The caption should state the **headline finding**
 This lab fits comfortably inside a single hands-on session.
 :::
 
+::: {.callout-tip}
+## Reference solution — download
+[**Open the Chapter 7 reference solution (rendered HTML)**](../lab-solutions/ch07-r-reference-solution.html) — the completed, rendered solution for this demo lab. Open it **after** your own attempt and use it to
+check your work.
+
+*This is the **public practice** solution. The **graded lab on Canvas** has
+its own private answer key — do not copy this into a Canvas submission.*
+:::
+
 ## Exercises
 
 These are the take-home exercises for this chapter.

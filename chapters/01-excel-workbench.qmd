@@ -730,6 +730,15 @@ This lab is designed to fit comfortably inside a single
 hands-on session.
 :::
 
+::: {.callout-tip}
+## Reference solution — download
+[**Download the Chapter 1 reference solution (Excel workbook)**](../lab-solutions/ch01-excel-reference-solution.xlsx){download="ch01-excel-reference-solution.xlsx"} — a completed workbook for this demo lab. Open it **after** your own attempt and use it to
+check your work.
+
+*This is the **public practice** solution. The **graded lab on Canvas** has
+its own private answer key — do not copy this into a Canvas submission.*
+:::
+
 ## Exercises
 
 These are the take-home exercises that go with this chapter.

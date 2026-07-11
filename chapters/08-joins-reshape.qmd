@@ -608,6 +608,15 @@ for you? (Hint: units, time aggregation, scope.)
 - all group members' names.
 :::
 
+::: {.callout-tip}
+## Reference solution — download
+[**Open the Chapter 8 reference solution (rendered HTML)**](../lab-solutions/ch08-r-reference-solution.html) — the completed, rendered solution for this demo lab. Open it **after** your own attempt and use it to
+check your work.
+
+*This is the **public practice** solution. The **graded lab on Canvas** has
+its own private answer key — do not copy this into a Canvas submission.*
+:::
+
 ## Exercises
 
 1. **Pivot wider then longer.** Take `bc_long` (built in the

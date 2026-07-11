@@ -10,6 +10,7 @@ project:
     - data/inter_air_van_weather.csv
     - data/nfdb_fires_2021_2024.csv
     - data/csrd_parks.geojson
+    - lab-solutions/
 
 book:
   title: "Modern Data Analytics for Forestry and Natural Resources"

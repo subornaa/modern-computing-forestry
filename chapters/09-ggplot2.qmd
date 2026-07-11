@@ -576,6 +576,15 @@ Then save the chart to `outputs/` as PNG with `ggsave()`.
 the caption.
 :::
 
+::: {.callout-tip}
+## Reference solution — download
+[**Open the Chapter 9 reference solution (rendered HTML)**](../lab-solutions/ch09-r-reference-solution.html) — the completed, rendered solution for this demo lab. Open it **after** your own attempt and use it to
+check your work.
+
+*This is the **public practice** solution. The **graded lab on Canvas** has
+its own private answer key — do not copy this into a Canvas submission.*
+:::
+
 ## Exercises
 
 1. **Bar chart.** Recreate the polished BC reforestation bar
