@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Instructor reference">
-<meta name="dcterms.date" content="2026-07-10">
 
-<title>Chapter 7 — Instructor Solutions</title>
+<title>Chapter 7 — Practice Demo Lab: Reference Solution</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -2209,21 +2207,11 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#about-this-file" id="toc-about-this-file" class="nav-link active" data-scroll-target="#about-this-file">About this file</a></li>
-  <li><a href="#setup-rebuild-cleaned-tibble" id="toc-setup-rebuild-cleaned-tibble" class="nav-link" data-scroll-target="#setup-rebuild-cleaned-tibble">Setup — rebuild cleaned tibble</a></li>
-  <li><a href="#exercise-1-overall-summary" id="toc-exercise-1-overall-summary" class="nav-link" data-scroll-target="#exercise-1-overall-summary">Exercise 1 — Overall summary</a></li>
-  <li><a href="#exercise-2-by-station-summary" id="toc-exercise-2-by-station-summary" class="nav-link" data-scroll-target="#exercise-2-by-station-summary">Exercise 2 — By-station summary</a></li>
-  <li><a href="#exercise-3-by-day-summary" id="toc-exercise-3-by-day-summary" class="nav-link" data-scroll-target="#exercise-3-by-day-summary">Exercise 3 — By-day summary</a></li>
-  <li><a href="#exercise-4-cross-tab" id="toc-exercise-4-cross-tab" class="nav-link" data-scroll-target="#exercise-4-cross-tab">Exercise 4 — Cross-tab</a></li>
-  <li><a href="#exercise-5-across-for-multiple-pollutants" id="toc-exercise-5-across-for-multiple-pollutants" class="nav-link" data-scroll-target="#exercise-5-across-for-multiple-pollutants">Exercise 5 — across() for multiple pollutants</a></li>
-  <li><a href="#exercise-6-90th-percentile-per-station" id="toc-exercise-6-90th-percentile-per-station" class="nav-link" data-scroll-target="#exercise-6-90th-percentile-per-station">Exercise 6 — 90th-percentile per station</a></li>
-  <li><a href="#exercise-7-pivottable-parity" id="toc-exercise-7-pivottable-parity" class="nav-link" data-scroll-target="#exercise-7-pivottable-parity">Exercise 7 — PivotTable parity</a>
-  <ul class="collapse">
-  <li><a href="#a-save" id="toc-a-save" class="nav-link" data-scroll-target="#a-save">7a — Save</a></li>
-  <li><a href="#b7c-verify" id="toc-b7c-verify" class="nav-link" data-scroll-target="#b7c-verify">7b/7c — Verify</a></li>
-  </ul></li>
-  <li><a href="#group-lab-sample-completed-pipeline" id="toc-group-lab-sample-completed-pipeline" class="nav-link" data-scroll-target="#group-lab-sample-completed-pipeline">Group lab — sample completed pipeline</a></li>
-  <li><a href="#instructor-notes" id="toc-instructor-notes" class="nav-link" data-scroll-target="#instructor-notes">Instructor notes</a></li>
+  <li><a href="#task-1-agree-on-the-question" id="toc-task-1-agree-on-the-question" class="nav-link active" data-scroll-target="#task-1-agree-on-the-question">Task 1 — Agree on the question</a></li>
+  <li><a href="#task-2-build-the-summary" id="toc-task-2-build-the-summary" class="nav-link" data-scroll-target="#task-2-build-the-summary">Task 2 — Build the summary</a></li>
+  <li><a href="#task-3-reshape-if-useful" id="toc-task-3-reshape-if-useful" class="nav-link" data-scroll-target="#task-3-reshape-if-useful">Task 3 — Reshape if useful</a></li>
+  <li><a href="#task-4-caption-it" id="toc-task-4-caption-it" class="nav-link" data-scroll-target="#task-4-caption-it">Task 4 — Caption it</a></li>
+  <li><a href="#task-5-submit" id="toc-task-5-submit" class="nav-link" data-scroll-target="#task-5-submit">Task 5 — Submit</a></li>
   </ul>
 </nav>
 </div>
@@ -2233,27 +2221,15 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Chapter 7 — Instructor Solutions</h1>
-<p class="subtitle lead">Summarize Forestry Data Overall and by Group — completed</p>
+<h1 class="title">Chapter 7 — Practice Demo Lab: Reference Solution</h1>
+<p class="subtitle lead">Lab: Produce a summary report together</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Instructor reference </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">July 10, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -2263,350 +2239,89 @@ vertical-align: -.125em;
 </header>
 
 
-<section id="about-this-file" class="level1 unnumbered">
-<h1 class="unnumbered">About this file</h1>
-<p>Completed worked answers for Chapter 7. <strong>Do not distribute to learners.</strong></p>
-<hr>
-</section>
-<section id="setup-rebuild-cleaned-tibble" class="level1">
-<h1>Setup — rebuild cleaned tibble</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>station_regions <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>location,                          <span class="sc">~</span>region,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Burnaby South&quot;</span>,                    <span class="st">&quot;Burrard Peninsula&quot;</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Coquitlam Douglas College&quot;</span>,        <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Langley Central&quot;</span>,                  <span class="st">&quot;Fraser Valley West&quot;</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Maple Ridge Golden Ears School&quot;</span>,   <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;New Westminster Sapperton Park&quot;</span>,   <span class="st">&quot;Burrard Peninsula&quot;</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;North Delta&quot;</span>,                      <span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;North Vancouver Second Narrows&quot;</span>,   <span class="st">&quot;North Shore&quot;</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Pitt Meadows Airport&quot;</span>,             <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Port Coquitlam North&quot;</span>,             <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Port Moody Rocky Point Park&quot;</span>,      <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Richmond South&quot;</span>,                   <span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Tsawwassen&quot;</span>,                       <span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver Clark Drive&quot;</span>,            <span class="st">&quot;Vancouver&quot;</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver International Airport #2&quot;</span>,<span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver Kitsilano&quot;</span>,              <span class="st">&quot;Vancouver&quot;</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;West Vancouver Lions Gate&quot;</span>,        <span class="st">&quot;North Shore&quot;</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;airdata3.csv&quot;</span>),</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                          <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;Unnamed&quot;</span>), <span class="sc">-</span><span class="fu">any_of</span>(<span class="st">&quot;...1&quot;</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(\(col) <span class="sc">!</span><span class="fu">all</span>(<span class="fu">is.na</span>(col)))) <span class="sc">|&gt;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date_parsed =</span> <span class="fu">mdy</span>(Date),</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date_parsed),</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> <span class="fu">month</span>(date_parsed),</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>         <span class="at">day =</span> <span class="fu">day</span>(date_parsed)) <span class="sc">|&gt;</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(O3)) <span class="sc">|&gt;</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">o3_band =</span> <span class="fu">case_when</span>(</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    O3 <span class="sc">&lt;</span> <span class="dv">10</span>  <span class="sc">~</span> <span class="st">&quot;low&quot;</span>,</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    O3 <span class="sc">&lt;</span> <span class="dv">20</span>  <span class="sc">~</span> <span class="st">&quot;moderate&quot;</span>,</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    O3 <span class="sc">&lt;</span> <span class="dv">30</span>  <span class="sc">~</span> <span class="st">&quot;high&quot;</span>,</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>       <span class="sc">~</span> <span class="st">&quot;very high&quot;</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(station_regions, <span class="at">by =</span> <span class="st">&quot;location&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>New names:
-• `` -&gt; `...1`</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(airdata_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5677   17</code></pre>
-</div>
-</div>
-<p>Expected: ~742 rows × 17 columns.</p>
-<hr>
-</section>
-<section id="exercise-1-overall-summary" class="level1">
-<h1>Exercise 1 — Overall summary</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs       =</span> <span class="fu">n</span>(),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_stations  =</span> <span class="fu">n_distinct</span>(location),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_o3   =</span> <span class="fu">mean</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_o3 =</span> <span class="fu">median</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_o3     =</span> <span class="fu">sd</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_o3    =</span> <span class="fu">min</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_o3    =</span> <span class="fu">max</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 7
-  n_obs n_stations mean_o3 median_o3 sd_o3 min_o3 max_o3
-  &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-1  5677          8    10.3         6  10.8      0     39</code></pre>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Interpretation.</strong> The overall mean O₃ across the cleaned tibble is roughly <strong>10 ppb</strong>, while the maximum single-hour reading is <strong>39 ppb</strong> — about 4× the mean. This is consistent with O₃ being highly skewed: most hours are clean air, a few hours are sharply elevated.</p>
-</blockquote>
-<hr>
-</section>
-<section id="exercise-2-by-station-summary" class="level1">
-<h1>Exercise 2 — By-station summary</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(location) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs       =</span> <span class="fu">n</span>(),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_o3   =</span> <span class="fu">mean</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_o3 =</span> <span class="fu">median</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_o3    =</span> <span class="fu">max</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_o3)) <span class="sc">|&gt;</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 5
-  location                           n_obs mean_o3 median_o3 max_o3
-  &lt;chr&gt;                              &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-1 Langley Central                      732   17.8         19     38
-2 Maple Ridge Golden Ears School       564   11.3         10     35
-3 Richmond South                       732   10.5          5     37
-4 North Delta                          731   10.3          6     37
-5 Vancouver International Airport #2   727   10.2          4     37
-6 Burnaby South                        732    9.05         5     35
-7 Vancouver Kitsilano                  731    7.49         2     37
-8 Port Moody Rocky Point Park          728    6.13         2     39</code></pre>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Interpretation.</strong> Only ~6 of the 16 stations measured O₃ in January 2000. The station with the highest mean is typically in the <strong>Fraser Valley West</strong> or <strong>South of Fraser</strong> regions (e.g., Langley Central or North Delta), where smoke and inversions tend to concentrate. The station with the lowest mean is typically on the North Shore (Second Narrows), where the prevailing westerlies clear the air.</p>
-</blockquote>
-<hr>
-</section>
-<section id="exercise-3-by-day-summary" class="level1">
-<h1>Exercise 3 — By-day summary</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(day) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs     =</span> <span class="fu">n</span>(),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_o3 =</span> <span class="fu">mean</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_o3)) <span class="sc">|&gt;</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_o3 =</span> <span class="fu">round</span>(mean_o3, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-     day n_obs mean_o3
-   &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;
- 1     9   190    25.5
- 2     8   189    25.2
- 3     4   188    21.9
- 4     1   190    18.0
- 5     2   189    17.6
- 6    16   166    17.4
- 7    15   165    16.8
- 8    12   188    16.2
- 9    14   167    15.0
-10    17   165    14.0</code></pre>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Interpretation.</strong> The worst air-quality day in this dataset falls in late January 2000 — typically during a multi-day inversion when cool air pooled in the Lower Mainland. The exact day depends on the dataset, but it is usually supported by ~25–30 observations (across the ~6 measuring stations).</p>
-</blockquote>
-<hr>
-</section>
-<section id="exercise-4-cross-tab" class="level1">
-<h1>Exercise 4 — Cross-tab</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(region, o3_band) <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> o3_band,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> n,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 5
-  region              high   low moderate `very high`
-  &lt;chr&gt;              &lt;int&gt; &lt;int&gt;    &lt;int&gt;       &lt;int&gt;
-1 Burrard Peninsula    110   459      136          27
-2 Fraser Valley West   248   189      194         101
-3 North-East Sector    170   845      232          45
-4 South of Fraser      301  1301      373         215
-5 Vancouver             76   533       78          44</code></pre>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Interpretation.</strong> Most observations are in the <code>&quot;low&quot;</code> band, as expected for ambient air. The <code>&quot;high&quot;</code> and <code>&quot;very high&quot;</code> bands are populated almost exclusively by stations in the Fraser Valley West and South of Fraser regions. The North Shore region has no <code>&quot;high&quot;</code> hours at all in this month.</p>
-</blockquote>
-<hr>
-</section>
-<section id="exercise-5-across-for-multiple-pollutants" class="level1">
-<h1>Exercise 5 — across() for multiple pollutants</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(O3, PM10, O3, NO2),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                   \(x) <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 4
-  region                O3  PM10   NO2
-  &lt;chr&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1 Burrard Peninsula   9.05 10.6   26.0
-2 Fraser Valley West 17.8   8.15  10.2
-3 North-East Sector   8.4  10.9   18.3
-4 South of Fraser    10.4  12.4   23.4
-5 Vancouver           7.49 12.0   29.8</code></pre>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Interpretation.</strong> NO2 (a traffic-related pollutant) shows the highest regional variability — the Burrard Peninsula (downtown / urban) typically has 2–3× the NO2 of the Fraser Valley West. PM10 and O₃ are more uniform across regions because their main January source (wood smoke from residential burning + interior inversion) reaches all stations roughly equally.</p>
-</blockquote>
-<hr>
-</section>
-<section id="exercise-6-90th-percentile-per-station" class="level1">
-<h1>Exercise 6 — 90th-percentile per station</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(location) <span class="sc">|&gt;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs    =</span> <span class="fu">n</span>(),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_o3 =</span> <span class="fu">mean</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">p90_o3  =</span> <span class="fu">quantile</span>(O3, <span class="fl">0.9</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(p90_o3)) <span class="sc">|&gt;</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 4
-  location                           n_obs mean_o3 p90_o3
-  &lt;chr&gt;                              &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 Langley Central                      732   17.8      31
-2 Richmond South                       732   10.5      30
-3 Vancouver International Airport #2   727   10.2      30
-4 North Delta                          731   10.3      28
-5 Maple Ridge Golden Ears School       564   11.3      26
-6 Burnaby South                        732    9.05     25
-7 Vancouver Kitsilano                  731    7.49     25
-8 Port Moody Rocky Point Park          728    6.13     21</code></pre>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Interpretation.</strong> The 90th-percentile ranking is usually similar to the mean ranking — stations with the highest typical O₃ also have the highest worst-case O₃. But the ratio between them tells you about the <strong>distribution shape</strong>: a station with a low mean and a high p90 is one that is <em>usually</em> clean but has occasional bad days, while a station with a high mean and a moderate p90 has consistently elevated air.</p>
-</blockquote>
-<hr>
-</section>
-<section id="exercise-7-pivottable-parity" class="level1">
-<h1>Exercise 7 — PivotTable parity</h1>
-<section id="a-save" class="level2">
-<h2 class="anchored" data-anchor-id="a-save">7a — Save</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(airdata_clean, <span class="fu">here</span>(<span class="st">&quot;outputs&quot;</span>, <span class="st">&quot;airdata3_clean.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="b7c-verify" class="level2">
-<h2 class="anchored" data-anchor-id="b7c-verify">7b/7c — Verify</h2>
-<blockquote class="blockquote">
-<p><strong>Expected verification.</strong> The Excel PivotTable counts and the dplyr cross-tab counts should match to the unit. If they differ, the most common cause is that the learner re-cleaned the data in Excel (deleting different rows, treating NA cells differently). The cleaned CSV should round-trip exactly: open in Excel, build PivotTable, numbers match. <strong>That is the whole point of this exercise</strong> — to make the Excel-to-R bridge concrete by computing the same number both ways.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="group-lab-sample-completed-pipeline" class="level1">
-<h1>Group lab — sample completed pipeline</h1>
-<p>For the lab question <em>“Which region had the highest mean O₃ in January 2000?”</em>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs     =</span> <span class="fu">n</span>(),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_o3 =</span> <span class="fu">round</span>(<span class="fu">mean</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>),</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_o3))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 3
-  region             n_obs mean_o3
-  &lt;chr&gt;              &lt;int&gt;   &lt;dbl&gt;
-1 Fraser Valley West   732   17.8 
-2 South of Fraser     2190   10.4 
-3 Burrard Peninsula    732    9.05
-4 North-East Sector   1292    8.4 
-5 Vancouver            731    7.49</code></pre>
-</div>
-</div>
-<p><strong>Sample caption:</strong> <em>“In January 2000, the Fraser Valley West region recorded the highest mean O₃ across BC monitoring stations, driven primarily by inversion-related accumulation.”</em></p>
-<hr>
-</section>
-<section id="instructor-notes" class="level1">
-<h1>Instructor notes</h1>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Reference numbers
+Note
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
+<p>Reference solution for the <strong>Chapter 7 Practice Demo Lab</strong> (Tasks 1–5 of <em>Lab: Produce a summary report together</em>). Assumes <code>air_clean</code> from Chapter 6. The graded Canvas lab has its own <strong>private</strong> answer key.</p>
+</div>
+</div>
+<section id="task-1-agree-on-the-question" class="level1">
+<h1>Task 1 — Agree on the question</h1>
+<p>Worked example: <strong>“Which day in January 2000 was the worst air-quality day, on average across all stations?”</strong> (measured by mean hourly O₃). Any of the three suggested questions works.</p>
+</section>
+<section id="task-2-build-the-summary" class="level1">
+<h1>Task 2 — Build the summary</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>worst_days <span class="ot">&lt;-</span> air_clean <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(O3)) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_o3 =</span> <span class="fu">round</span>(<span class="fu">mean</span>(O3), <span class="dv">1</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_readings =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_o3))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(worst_days, <span class="dv">5</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Days with the highest mean hourly O3 (ppb) across all stations, Jan 2000.&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Days with the highest mean hourly O3 (ppb) across all stations, Jan 2000.</caption>
 <thead>
 <tr class="header">
-<th>Quantity</th>
-<th>Approximate value</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">mean_o3</th>
+<th style="text-align: right;">n_readings</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>nrow(airdata_clean)</code></td>
-<td>~742</td>
+<td style="text-align: left;">2000-01-09</td>
+<td style="text-align: right;">25.5</td>
+<td style="text-align: right;">190</td>
 </tr>
 <tr class="even">
-<td><code>n_distinct(location)</code> (with O₃)</td>
-<td>~6</td>
+<td style="text-align: left;">2000-01-08</td>
+<td style="text-align: right;">25.2</td>
+<td style="text-align: right;">189</td>
 </tr>
 <tr class="odd">
-<td><code>n_distinct(region)</code> (with O₃)</td>
-<td>~4</td>
+<td style="text-align: left;">2000-01-04</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">188</td>
 </tr>
 <tr class="even">
-<td>Overall <code>mean(O3)</code></td>
-<td>~10 ppb</td>
+<td style="text-align: left;">2000-01-01</td>
+<td style="text-align: right;">18.0</td>
+<td style="text-align: right;">190</td>
 </tr>
 <tr class="odd">
-<td>Overall <code>median(O3)</code></td>
-<td>~6 ppb</td>
-</tr>
-<tr class="even">
-<td>Overall <code>sd(O3)</code></td>
-<td>~10</td>
-</tr>
-<tr class="odd">
-<td>Overall <code>max(O3)</code></td>
-<td>39</td>
-</tr>
-<tr class="even">
-<td>Highest 90th-percentile station</td>
-<td>usually Langley Central</td>
-</tr>
-<tr class="odd">
-<td>Lowest mean station</td>
-<td>usually Second Narrows</td>
+<td style="text-align: left;">2000-01-02</td>
+<td style="text-align: right;">17.6</td>
+<td style="text-align: right;">189</td>
 </tr>
 </tbody>
 </table>
-<section id="common-errors" class="level2">
-<h2 class="anchored" data-anchor-id="common-errors">Common errors</h2>
-<ul>
-<li><strong>Forgetting <code>na.rm = TRUE</code>.</strong> Symptom: many <code>NA</code> cells in summary tables. Fix: add <code>na.rm = TRUE</code> to every aggregation.</li>
-<li><strong><code>.groups</code> warning.</strong> Without <code>.groups = &quot;drop&quot;</code>, dplyr emits a warning about grouped output. Insist learners adopt the <code>.groups = &quot;drop&quot;</code> habit.</li>
-<li><strong><code>pivot_wider</code> name confusion.</strong> <code>names_from</code> is the column whose <strong>values become new column names</strong>; <code>values_from</code> is the column whose <strong>values fill the cells</strong>. Easy to swap.</li>
-<li><strong>PivotTable parity failure.</strong> The most common cause is the learner re-cleaning the data in Excel after exporting. Insist they do nothing to the CSV between writing it and PivotTable-ing it.</li>
-</ul>
+</div>
+</div>
 </section>
-</div>
-</div>
-</div>
+<section id="task-3-reshape-if-useful" class="level1">
+<h1>Task 3 — Reshape if useful</h1>
+<p>This summary has <strong>one</strong> grouping variable (<code>date</code>), so it is already a readable ranked table — no <code>pivot_wider()</code> needed. (If you had grouped by <em>two</em> variables — say <code>date</code> × <code>location</code> — you would <code>pivot_wider()</code> so each station is a column.)</p>
+</section>
+<section id="task-4-caption-it" class="level1">
+<h1>Task 4 — Caption it</h1>
+<blockquote class="blockquote">
+<p><strong>January 09, 2000 was the worst average-ozone day of the month, at 25.5 ppb mean across stations.</strong></p>
+</blockquote>
+</section>
+<section id="task-5-submit" class="level1">
+<h1>Task 5 — Submit</h1>
+<p>Submit the dplyr pipeline (Task 2), the rendered table, the one-sentence caption, and all group members’ names. (Graded lab: follow Canvas.)</p>
 </section>
 
 </main>

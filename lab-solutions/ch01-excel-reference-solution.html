@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Chapter 4 — Practice Demo Lab: Reference Solution</title>
+<title>Chapter 1 — Practice Demo Lab: Reference Solution</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -19,41 +19,6 @@ ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
-}
-
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-}
-pre.numberSource { margin-left: 3em; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -2207,10 +2172,11 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#tasks-14-setup-expected-outcome" id="toc-tasks-14-setup-expected-outcome" class="nav-link active" data-scroll-target="#tasks-14-setup-expected-outcome">Tasks 1–4 — Setup (expected outcome)</a></li>
-  <li><a href="#task-5-first-import-everyone-gets-the-same-dim" id="toc-task-5-first-import-everyone-gets-the-same-dim" class="nav-link" data-scroll-target="#task-5-first-import-everyone-gets-the-same-dim">Task 5 — First import (everyone gets the same <code>dim</code>)</a></li>
-  <li><a href="#task-6-compute-and-compare-with-chapter-1" id="toc-task-6-compute-and-compare-with-chapter-1" class="nav-link" data-scroll-target="#task-6-compute-and-compare-with-chapter-1">Task 6 — Compute and compare with Chapter 1</a></li>
-  <li><a href="#task-7-submit" id="toc-task-7-submit" class="nav-link" data-scroll-target="#task-7-submit">Task 7 — Submit</a></li>
+  <li><a href="#task-1-inspect-the-workbook" id="toc-task-1-inspect-the-workbook" class="nav-link active" data-scroll-target="#task-1-inspect-the-workbook">Task 1 — Inspect the workbook</a></li>
+  <li><a href="#task-2-small-data-dictionary-two-columns" id="toc-task-2-small-data-dictionary-two-columns" class="nav-link" data-scroll-target="#task-2-small-data-dictionary-two-columns">Task 2 — Small data dictionary (two columns)</a></li>
+  <li><a href="#task-3-compute-a-summary-value-all-three-options-worked" id="toc-task-3-compute-a-summary-value-all-three-options-worked" class="nav-link" data-scroll-target="#task-3-compute-a-summary-value-all-three-options-worked">Task 3 — Compute a summary value (all three options worked)</a></li>
+  <li><a href="#task-4-verify-one-formula" id="toc-task-4-verify-one-formula" class="nav-link" data-scroll-target="#task-4-verify-one-formula">Task 4 — Verify one formula</a></li>
+  <li><a href="#task-5-submit" id="toc-task-5-submit" class="nav-link" data-scroll-target="#task-5-submit">Task 5 — Submit</a></li>
   </ul>
 </nav>
 </div>
@@ -2220,8 +2186,8 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Chapter 4 — Practice Demo Lab: Reference Solution</h1>
-<p class="subtitle lead">Lab: Set up a working R project together</p>
+<h1 class="title">Chapter 1 — Practice Demo Lab: Reference Solution</h1>
+<p class="subtitle lead">Lab: Inspect a real BC dataset together</p>
 </div>
 
 
@@ -2248,52 +2214,91 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Reference solution for the <strong>Chapter 4 Practice Demo Lab</strong> (Tasks 1–7 of <em>Lab: Set up a working R project together</em>). The graded Canvas lab has its own <strong>private</strong> answer key.</p>
+<p>This is the <strong>reference solution for the Chapter 1 Practice Demo Lab</strong> (the five <strong>Tasks</strong> in <em>Lab: Inspect a real BC dataset together</em>). Use it to check your own attempt. The graded Canvas lab has its own <strong>private</strong> answer key — do not copy this into a Canvas submission.</p>
 </div>
 </div>
-<section id="tasks-14-setup-expected-outcome" class="level1">
-<h1>Tasks 1–4 — Setup (expected outcome)</h1>
-<p>These are setup steps; the “answer” is a working project:</p>
-<ol type="1">
-<li><strong>Posit Cloud account</strong> — each member signs in at <code>posit.cloud</code>.</li>
-<li><strong>Create the project</strong> — a project named <code>frst232</code> with <code>data/</code>, <code>outputs/</code>, and <code>R/</code> sub-folders.</li>
-<li><strong>Install packages</strong> — <code>install.packages(c(&quot;tidyverse&quot;, &quot;readxl&quot;, &quot;here&quot;))</code> completes without error (a package is a bundle of reusable functions; there are many because each solves a focused task).</li>
-<li><strong>Upload the data</strong> — <code>bc_disturbance_reforestation.xlsx</code> sits in <code>data/</code>. Confirm with <code>list.files(here(&quot;data&quot;))</code> — the file name should appear.</li>
-</ol>
+<p>Dataset: <code>bc_disturbance_reforestation.xlsx</code> (sheets <strong>About / ReadMe / Data</strong>). On the <strong>Data</strong> sheet the columns sit in these Excel columns: <strong>A</strong> <code>Fiscal_Year</code>, <strong>B</strong> <code>Clearcutting_ha</code>, <strong>C</strong> <code>Clearcutting_with_reserves_ha</code>, <strong>D</strong> <code>Partial_cutting_ha</code>, <strong>E</strong> <code>Harvested_ha</code>, <strong>F</strong> <code>Natural_Disturbance_ha</code>, <strong>G</strong> <code>Total_Disturbance_ha</code>, <strong>H</strong> <code>Reforestation_ha</code>. Data rows are <strong>2–38</strong> (row 1 is the header).</p>
+<section id="task-1-inspect-the-workbook" class="level1">
+<h1>Task 1 — Inspect the workbook</h1>
+<ul>
+<li><strong>Where did the file come from?</strong> Environmental Reporting BC — <em>Trends in Silviculture in B.C.</em>, published by the BC Ministry of Forests and distributed through the <strong>BC Data Catalogue</strong>. Licence: <strong>Open Government Licence — British Columbia</strong>.</li>
+<li><strong>What does each column measure?</strong> One row per <strong>fiscal year</strong>; every area column is in <strong>hectares (ha)</strong>. <code>Harvested_ha</code> is the total of the three cutting types (B+C+D); <code>Total_Disturbance_ha</code> is harvest + natural disturbance (E+F); <code>Reforestation_ha</code> is area reforested.</li>
+<li><strong>How many rows?</strong> <strong>37 rows</strong> of data (fiscal years <strong>1987–2023</strong>), <strong>8 columns</strong>. (Read it off with <code>Ctrl+End</code>, which jumps to the last cell, <strong>H38</strong>.)</li>
+</ul>
 </section>
-<section id="task-5-first-import-everyone-gets-the-same-dim" class="level1">
-<h1>Task 5 — First import (everyone gets the same <code>dim</code>)</h1>
+<section id="task-2-small-data-dictionary-two-columns" class="level1">
+<h1>Task 2 — Small data dictionary (two columns)</h1>
+<p>Example descriptions in plain language (yours may differ in wording):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description (own words)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Reforestation_ha</code></td>
+<td>number</td>
+<td>hectares</td>
+<td>Area reforested (planted or naturally regenerated) in that fiscal year.</td>
+</tr>
+<tr class="even">
+<td><code>Natural_Disturbance_ha</code></td>
+<td>number</td>
+<td>hectares</td>
+<td>Area disturbed by natural causes — fire, insects, wind — in that fiscal year.</td>
+</tr>
+</tbody>
+</table>
+<p>Compared with the ReadMe sheet, the meanings should match; the ReadMe may add that reforestation includes both planting and natural regeneration.</p>
+</section>
+<section id="task-3-compute-a-summary-value-all-three-options-worked" class="level1">
+<h1>Task 3 — Compute a summary value (all three options worked)</h1>
+<p><strong>Option A — Mean <code>Reforestation_ha</code>.</strong> Formula <code>=AVERAGE(H2:H38)</code> → <strong>223,353 ha</strong>. <em>Sanity check:</em> must fall between <code>MIN</code> (189,394) and <code>MAX</code> (274,616) — it does. ✔</p>
+<p><strong>Option B — Maximum <code>Natural_Disturbance_ha</code> and its year.</strong> <code>=MAX(F2:F38)</code> → <strong>218,275 ha</strong>; the year with <code>=INDEX(A2:A38, MATCH(MAX(F2:F38), F2:F38, 0))</code> → <strong>2017</strong> (the record BC wildfire season). <em>Sanity check:</em> equals the single largest value in the column and is ≥ every other row. ✔</p>
+<p><strong>Option C — Total <code>Harvested_ha</code>.</strong> <code>=SUM(E2:E38)</code> → <strong>7,364,971 ha</strong>. <em>Sanity check:</em> at least as large as <code>MAX(E2:E38)</code> (251,557) and never negative — it is. ✔</p>
+</section>
+<section id="task-4-verify-one-formula" class="level1">
+<h1>Task 4 — Verify one formula</h1>
+<p>Pick any data row — take <strong>row 12</strong> (fiscal year 1997). The identity is <code>Harvested_ha + Natural_Disturbance_ha = Total_Disturbance_ha</code>, so <code>=E12 + F12 - G12</code> should return <strong>0</strong>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bc <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;bc_disturbance_reforestation.xlsx&quot;</span>),</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sheet =</span> <span class="st">&quot;Data&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(bc)          <span class="co"># expected: 37 8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 37  8</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Row</th>
+<th style="text-align: left;">E (Harvested)</th>
+<th style="text-align: left;">F (Natural)</th>
+<th style="text-align: left;">G (Total)</th>
+<th style="text-align: right;">E+F-G</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">183,322</td>
+<td style="text-align: left;">5,366</td>
+<td style="text-align: left;">188,688</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(bc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Fiscal_Year&quot;                   &quot;Clearcutting_ha&quot;              
-[3] &quot;Clearcutting_with_reserves_ha&quot; &quot;Partial_cutting_ha&quot;           
-[5] &quot;Harvested_ha&quot;                  &quot;Natural_Disturbance_ha&quot;       
-[7] &quot;Total_Disturbance_ha&quot;          &quot;Reforestation_ha&quot;             </code></pre>
 </div>
-</div>
-<p>Every group member should see <strong><code>dim(bc)</code> = 37 8</strong> — 37 fiscal years, 8 columns. If someone sees something different, the usual cause is the file in the wrong folder or the wrong <code>sheet=</code>.</p>
+<p>The result is <strong>0</strong> (allowing a hectare of rounding), so the file is internally consistent for that row. A quick TRUE/FALSE version: <code>=ROUND(E12+F12,0)=ROUND(G12,0)</code> → <strong>TRUE</strong>.</p>
 </section>
-<section id="task-6-compute-and-compare-with-chapter-1" class="level1">
-<h1>Task 6 — Compute and compare with Chapter 1</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>total_reforested <span class="ot">&lt;-</span> <span class="fu">sum</span>(bc<span class="sc">$</span>Reforestation_ha)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>total_reforested</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 8264064</code></pre>
-</div>
-</div>
-<p><code>sum(bc$Reforestation_ha)</code> = <strong>8,264,064 ha</strong>. Everyone in the group should get this <strong>same</strong> number, and it should <strong>match</strong> the <code>=SUM(H2:H38)</code> total from the Chapter 1 Excel workbook — the whole point of the Excel→R transition: same data, same answer, now reproducible.</p>
-</section>
-<section id="task-7-submit" class="level1">
-<h1>Task 7 — Submit</h1>
-<p>Submit one screenshot showing a member’s RStudio/Posit Cloud with the BC file loaded, the column names visible, and the <code>sum()</code> result — with all group members’ names. (Graded lab: follow Canvas.)</p>
+<section id="task-5-submit" class="level1">
+<h1>Task 5 — Submit</h1>
+<p>Hand in <strong>one</strong> of: a one-page worksheet with your group’s answers to Tasks 1–4, <strong>or</strong> a screenshot of the Data sheet showing your formulas — with all group members’ names. (In the graded Canvas lab, follow the Canvas submission instructions instead.)</p>
 </section>
 
 </main>

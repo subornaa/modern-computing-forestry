@@ -732,7 +732,7 @@ hands-on session.
 
 ::: {.callout-tip}
 ## Reference solution — download
-[**Download the Chapter 1 reference solution (Excel workbook)**](../lab-solutions/ch01-excel-reference-solution.xlsx){download="ch01-excel-reference-solution.xlsx"} — a completed workbook for this demo lab. Open it **after** your own attempt and use it to
+[**Open the Chapter 1 reference solution (HTML answer key)**](../lab-solutions/ch01-excel-reference-solution.html) — the completed, task-by-task answer key for this demo lab. Open it **after** your own attempt and use it to
 check your work.
 
 *This is the **public practice** solution. The **graded lab on Canvas** has

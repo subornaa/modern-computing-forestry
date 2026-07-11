@@ -52,3 +52,6 @@ transition_matrix_files/
 /frontmatter/*.html
 /chapters/*.html
 /index.html
+
+# Demo-lab solution SOURCES (private); rendered HTML is published to lab-solutions/
+/workbooks/demo-lab-solutions/

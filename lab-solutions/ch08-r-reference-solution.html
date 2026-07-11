@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Instructor reference">
-<meta name="dcterms.date" content="2026-07-10">
 
-<title>Chapter 8 — Instructor Solutions</title>
+<title>Chapter 8 — Practice Demo Lab: Reference Solution</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -2209,39 +2207,12 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#about-this-file" id="toc-about-this-file" class="nav-link active" data-scroll-target="#about-this-file">About this file</a></li>
-  <li><a href="#exercise-1-pivot-longer" id="toc-exercise-1-pivot-longer" class="nav-link" data-scroll-target="#exercise-1-pivot-longer">Exercise 1 — Pivot longer</a>
-  <ul class="collapse">
-  <li><a href="#a" id="toc-a" class="nav-link" data-scroll-target="#a">1a</a></li>
-  <li><a href="#b" id="toc-b" class="nav-link" data-scroll-target="#b">1b</a></li>
-  </ul></li>
-  <li><a href="#exercise-2-all-four-joins" id="toc-exercise-2-all-four-joins" class="nav-link" data-scroll-target="#exercise-2-all-four-joins">Exercise 2 — All four joins</a>
-  <ul class="collapse">
-  <li><a href="#a-left_join" id="toc-a-left_join" class="nav-link" data-scroll-target="#a-left_join">2a — left_join</a></li>
-  <li><a href="#b-inner_join" id="toc-b-inner_join" class="nav-link" data-scroll-target="#b-inner_join">2b — inner_join</a></li>
-  <li><a href="#c-right_join" id="toc-c-right_join" class="nav-link" data-scroll-target="#c-right_join">2c — right_join</a></li>
-  <li><a href="#d-full_join" id="toc-d-full_join" class="nav-link" data-scroll-target="#d-full_join">2d — full_join</a></li>
-  <li><a href="#e-interpret" id="toc-e-interpret" class="nav-link" data-scroll-target="#e-interpret">2e — Interpret</a></li>
-  </ul></li>
-  <li><a href="#exercise-3-filtering-joins" id="toc-exercise-3-filtering-joins" class="nav-link" data-scroll-target="#exercise-3-filtering-joins">Exercise 3 — Filtering joins</a>
-  <ul class="collapse">
-  <li><a href="#a-1" id="toc-a-1" class="nav-link" data-scroll-target="#a-1">3a</a></li>
-  <li><a href="#b-1" id="toc-b-1" class="nav-link" data-scroll-target="#b-1">3b</a></li>
-  <li><a href="#c" id="toc-c" class="nav-link" data-scroll-target="#c">3c</a></li>
-  </ul></li>
-  <li><a href="#exercise-4-bind_rows" id="toc-exercise-4-bind_rows" class="nav-link" data-scroll-target="#exercise-4-bind_rows">Exercise 4 — bind_rows</a>
-  <ul class="collapse">
-  <li><a href="#a-2" id="toc-a-2" class="nav-link" data-scroll-target="#a-2">4a</a></li>
-  <li><a href="#b-2" id="toc-b-2" class="nav-link" data-scroll-target="#b-2">4b</a></li>
-  <li><a href="#c-1" id="toc-c-1" class="nav-link" data-scroll-target="#c-1">4c</a></li>
-  </ul></li>
-  <li><a href="#exercise-5-diagnostics" id="toc-exercise-5-diagnostics" class="nav-link" data-scroll-target="#exercise-5-diagnostics">Exercise 5 — Diagnostics</a>
-  <ul class="collapse">
-  <li><a href="#a-3" id="toc-a-3" class="nav-link" data-scroll-target="#a-3">5a</a></li>
-  <li><a href="#b-3" id="toc-b-3" class="nav-link" data-scroll-target="#b-3">5b</a></li>
-  </ul></li>
-  <li><a href="#group-lab-sample-answer" id="toc-group-lab-sample-answer" class="nav-link" data-scroll-target="#group-lab-sample-answer">Group lab — sample answer</a></li>
-  <li><a href="#instructor-notes" id="toc-instructor-notes" class="nav-link" data-scroll-target="#instructor-notes">Instructor notes</a></li>
+  <li><a href="#task-1-inventory" id="toc-task-1-inventory" class="nav-link active" data-scroll-target="#task-1-inventory">Task 1 — Inventory</a></li>
+  <li><a href="#task-2-select-comparable-columns-uniform-schema" id="toc-task-2-select-comparable-columns-uniform-schema" class="nav-link" data-scroll-target="#task-2-select-comparable-columns-uniform-schema">Task 2 — Select comparable columns (uniform schema)</a></li>
+  <li><a href="#task-3-stack-with-bind_rows" id="toc-task-3-stack-with-bind_rows" class="nav-link" data-scroll-target="#task-3-stack-with-bind_rows">Task 3 — Stack with <code>bind_rows()</code></a></li>
+  <li><a href="#task-4-diagnose" id="toc-task-4-diagnose" class="nav-link" data-scroll-target="#task-4-diagnose">Task 4 — Diagnose</a></li>
+  <li><a href="#task-5-reflect-the-decisions-the-code-cannot-make" id="toc-task-5-reflect-the-decisions-the-code-cannot-make" class="nav-link" data-scroll-target="#task-5-reflect-the-decisions-the-code-cannot-make">Task 5 — Reflect (the decisions the code cannot make)</a></li>
+  <li><a href="#task-6-submit" id="toc-task-6-submit" class="nav-link" data-scroll-target="#task-6-submit">Task 6 — Submit</a></li>
   </ul>
 </nav>
 </div>
@@ -2251,27 +2222,15 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Chapter 8 — Instructor Solutions</h1>
-<p class="subtitle lead">Reshape and Combine Forestry Datasets Safely — completed</p>
+<h1 class="title">Chapter 8 — Practice Demo Lab: Reference Solution</h1>
+<p class="subtitle lead">Lab: Combine three forestry sources</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Instructor reference </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">July 10, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -2281,434 +2240,145 @@ vertical-align: -.125em;
 </header>
 
 
-<section id="about-this-file" class="level1 unnumbered">
-<h1 class="unnumbered">About this file</h1>
-<p>Completed worked answers for Chapter 8. <strong>Do not distribute to learners.</strong></p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bc <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;bc_disturbance_reforestation.xlsx&quot;</span>),</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sheet =</span> <span class="st">&quot;Data&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ontario <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;on_forest_statistics_1.xlsx&quot;</span>),</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sheet =</span> <span class="st">&quot;Data&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-<section id="exercise-1-pivot-longer" class="level1">
-<h1>Exercise 1 — Pivot longer</h1>
-<section id="a" class="level2">
-<h2 class="anchored" data-anchor-id="a">1a</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bc_wide <span class="ot">&lt;-</span> bc <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Fiscal_Year, Harvested_ha, Natural_Disturbance_ha)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bc_wide)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  Fiscal_Year Harvested_ha Natural_Disturbance_ha
-        &lt;dbl&gt;        &lt;dbl&gt;                  &lt;dbl&gt;
-1        1987      242182                  20875 
-2        1988      251557.                  9641.
-3        1989      215878.                 10712.
-4        1990      192692.                 28301.
-5        1991      213217.                 14424.
-6        1992      234086.                  5635.</code></pre>
-</div>
-</div>
-</section>
-<section id="b" class="level2">
-<h2 class="anchored" data-anchor-id="b">1b</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bc_long <span class="ot">&lt;-</span> bc_wide <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(Harvested_ha, Natural_Disturbance_ha),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to  =</span> <span class="st">&quot;disturbance_type&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;area_ha&quot;</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bc_long)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  Fiscal_Year disturbance_type       area_ha
-        &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt;
-1        1987 Harvested_ha           242182 
-2        1987 Natural_Disturbance_ha  20875 
-3        1988 Harvested_ha           251557.
-4        1988 Natural_Disturbance_ha   9641.
-5        1989 Harvested_ha           215878.
-6        1989 Natural_Disturbance_ha  10712.</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(bc_long) <span class="sc">==</span> <span class="fu">nrow</span>(bc_wide) <span class="sc">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-</div>
-<hr>
-</section>
-</section>
-<section id="exercise-2-all-four-joins" class="level1">
-<h1>Exercise 2 — All four joins</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>plot_id, <span class="sc">~</span>district,    <span class="sc">~</span>area_ha,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P001&quot;</span>,   <span class="st">&quot;Vancouver&quot;</span>,    <span class="fl">12.0</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P002&quot;</span>,   <span class="st">&quot;Vancouver&quot;</span>,     <span class="fl">8.5</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P003&quot;</span>,   <span class="st">&quot;Squamish&quot;</span>,     <span class="fl">21.2</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P004&quot;</span>,   <span class="st">&quot;Squamish&quot;</span>,     <span class="fl">15.0</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P005&quot;</span>,   <span class="st">&quot;Nanaimo&quot;</span>,       <span class="fl">9.7</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>districts <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>district,         <span class="sc">~</span>bec_zone,</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver&quot;</span>,       <span class="st">&quot;CWHdm&quot;</span>,</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Squamish&quot;</span>,        <span class="st">&quot;CWHvm&quot;</span>,</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Sunshine Coast&quot;</span>,  <span class="st">&quot;CWHvh&quot;</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<section id="a-left_join" class="level2">
-<h2 class="anchored" data-anchor-id="a-left_join">2a — left_join</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>result_left <span class="ot">&lt;-</span> <span class="fu">left_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>result_left</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 4
-  plot_id district  area_ha bec_zone
-  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;   
-1 P001    Vancouver    12   CWHdm   
-2 P002    Vancouver     8.5 CWHdm   
-3 P003    Squamish     21.2 CWHvm   
-4 P004    Squamish     15   CWHvm   
-5 P005    Nanaimo       9.7 &lt;NA&gt;    </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(result_left)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5</code></pre>
-</div>
-</div>
-<p>5 rows. All plots kept; Nanaimo gets NA for bec_zone.</p>
-</section>
-<section id="b-inner_join" class="level2">
-<h2 class="anchored" data-anchor-id="b-inner_join">2b — inner_join</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>result_inner <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>result_inner</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 4
-  plot_id district  area_ha bec_zone
-  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;   
-1 P001    Vancouver    12   CWHdm   
-2 P002    Vancouver     8.5 CWHdm   
-3 P003    Squamish     21.2 CWHvm   
-4 P004    Squamish     15   CWHvm   </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(result_inner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
-</div>
-</div>
-<p>4 rows. Nanaimo dropped (no match in districts).</p>
-</section>
-<section id="c-right_join" class="level2">
-<h2 class="anchored" data-anchor-id="c-right_join">2c — right_join</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>result_right <span class="ot">&lt;-</span> <span class="fu">right_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>result_right</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 4
-  plot_id district       area_ha bec_zone
-  &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;   
-1 P001    Vancouver         12   CWHdm   
-2 P002    Vancouver          8.5 CWHdm   
-3 P003    Squamish          21.2 CWHvm   
-4 P004    Squamish          15   CWHvm   
-5 &lt;NA&gt;    Sunshine Coast    NA   CWHvh   </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(result_right)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5</code></pre>
-</div>
-</div>
-<p>5 rows. Sunshine Coast appears with NA plot columns.</p>
-</section>
-<section id="d-full_join" class="level2">
-<h2 class="anchored" data-anchor-id="d-full_join">2d — full_join</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>result_full <span class="ot">&lt;-</span> <span class="fu">full_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>result_full</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 4
-  plot_id district       area_ha bec_zone
-  &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;   
-1 P001    Vancouver         12   CWHdm   
-2 P002    Vancouver          8.5 CWHdm   
-3 P003    Squamish          21.2 CWHvm   
-4 P004    Squamish          15   CWHvm   
-5 P005    Nanaimo            9.7 &lt;NA&gt;    
-6 &lt;NA&gt;    Sunshine Coast    NA   CWHvh   </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(result_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 6</code></pre>
-</div>
-</div>
-<p>6 rows. Both unmatched sides appear.</p>
-</section>
-<section id="e-interpret" class="level2">
-<h2 class="anchored" data-anchor-id="e-interpret">2e — Interpret</h2>
-<blockquote class="blockquote">
-<p><strong>Most rows: full_join (6).</strong> <strong>Fewest rows: inner_join (4).</strong> <code>left_join</code> keeps all 5 plots; <code>inner_join</code> keeps only the 4 plots whose district matches; <code>right_join</code> keeps all 3 districts plus matched plots (5 rows because Vancouver and Squamish each have multiple plots); <code>full_join</code> keeps everything (6 rows = 5 plot rows + Sunshine Coast).</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="exercise-3-filtering-joins" class="level1">
-<h1>Exercise 3 — Filtering joins</h1>
-<section id="a-1" class="level2">
-<h2 class="anchored" data-anchor-id="a-1">3a</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 3
-  plot_id district area_ha
-  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;
-1 P005    Nanaimo      9.7</code></pre>
-</div>
-</div>
-<p>One row (Nanaimo). It is the only plot whose district has no entry in the reference table.</p>
-</section>
-<section id="b-1" class="level2">
-<h2 class="anchored" data-anchor-id="b-1">3b</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semi_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 3
-  plot_id district  area_ha
-  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-1 P001    Vancouver    12  
-2 P002    Vancouver     8.5
-3 P003    Squamish     21.2
-4 P004    Squamish     15  </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(<span class="fu">semi_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
-</div>
-</div>
-<p>4 rows — the 2 Vancouver plots plus the 2 Squamish plots.</p>
-</section>
-<section id="c" class="level2">
-<h2 class="anchored" data-anchor-id="c">3c</h2>
-<blockquote class="blockquote">
-<p><code>nrow(plots) = 5</code>. <code>nrow(anti_join) + nrow(semi_join) = 1 + 4 = 5</code>. The two filtering joins <strong>partition</strong> the left tibble: every row is either matched or unmatched. They must sum to the original row count.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="exercise-4-bind_rows" class="level1">
-<h1>Exercise 4 — bind_rows</h1>
-<section id="a-2" class="level2">
-<h2 class="anchored" data-anchor-id="a-2">4a</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>bc_tagged <span class="ot">&lt;-</span> bc <span class="sc">|&gt;</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Fiscal_Year, Harvested_ha) <span class="sc">|&gt;</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">province =</span> <span class="st">&quot;BC&quot;</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>ontario_sample <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>Fiscal_Year, <span class="sc">~</span>Harvested_ha,</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2018</span>,        <span class="dv">160000</span>,</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2019</span>,        <span class="dv">158000</span>,</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2020</span>,        <span class="dv">155000</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">province =</span> <span class="st">&quot;ON&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="b-2" class="level2">
-<h2 class="anchored" data-anchor-id="b-2">4b</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(bc_tagged, ontario_sample)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(combined, <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  Fiscal_Year Harvested_ha province
-        &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;   
-1        2021      144033. BC      
-2        2022      119100. BC      
-3        2023       78961. BC      
-4        2018      160000  ON      
-5        2019      158000  ON      
-6        2020      155000  ON      </code></pre>
-</div>
-</div>
-</section>
-<section id="c-1" class="level2">
-<h2 class="anchored" data-anchor-id="c-1">4c</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>combined <span class="sc">|&gt;</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(province) <span class="sc">|&gt;</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_harvest =</span> <span class="fu">mean</span>(Harvested_ha, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  province mean_harvest
-  &lt;chr&gt;           &lt;dbl&gt;
-1 BC            199053.
-2 ON            157667.</code></pre>
-</div>
-</div>
-<hr>
-</section>
-</section>
-<section id="exercise-5-diagnostics" class="level1">
-<h1>Exercise 5 — Diagnostics</h1>
-<section id="a-3" class="level2">
-<h2 class="anchored" data-anchor-id="a-3">5a</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(plots)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(<span class="fu">left_join</span>(plots, districts, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5</code></pre>
-</div>
-</div>
-<p>Both 5 — left_join preserves the left tibble’s row count when the right tibble has no duplicate keys.</p>
-</section>
-<section id="b-3" class="level2">
-<h2 class="anchored" data-anchor-id="b-3">5b</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>districts_dup <span class="ot">&lt;-</span> districts <span class="sc">|&gt;</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_row</span>(<span class="at">district =</span> <span class="st">&quot;Vancouver&quot;</span>, <span class="at">bec_zone =</span> <span class="st">&quot;CWHxm&quot;</span>)</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>result_dup <span class="ot">&lt;-</span> <span class="fu">left_join</span>(plots, districts_dup, <span class="at">by =</span> <span class="st">&quot;district&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in left_join(plots, districts_dup, by = &quot;district&quot;): Detected an unexpected many-to-many relationship between `x` and `y`.
-ℹ Row 1 of `x` matches multiple rows in `y`.
-ℹ Row 1 of `y` matches multiple rows in `x`.
-ℹ If a many-to-many relationship is expected, set `relationship =
-  &quot;many-to-many&quot;` to silence this warning.</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(result_dup)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 7</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>result_dup</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 4
-  plot_id district  area_ha bec_zone
-  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;   
-1 P001    Vancouver    12   CWHdm   
-2 P001    Vancouver    12   CWHxm   
-3 P002    Vancouver     8.5 CWHdm   
-4 P002    Vancouver     8.5 CWHxm   
-5 P003    Squamish     21.2 CWHvm   
-6 P004    Squamish     15   CWHvm   
-7 P005    Nanaimo       9.7 &lt;NA&gt;    </code></pre>
-</div>
-</div>
-<p>7 rows now (was 5). The 2 Vancouver plots each match 2 rows in districts_dup, fanning out to 4 Vancouver rows in the result. <strong>A row count larger than the left tibble is the signature of duplicate keys in the right tibble.</strong></p>
-<hr>
-</section>
-</section>
-<section id="group-lab-sample-answer" class="level1">
-<h1>Group lab — sample answer</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine BC silviculture + a synthetic Ontario sample</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>bc_min <span class="ot">&lt;-</span> bc <span class="sc">|&gt;</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">year =</span> Fiscal_Year, <span class="at">area_ha =</span> Harvested_ha) <span class="sc">|&gt;</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">province =</span> <span class="st">&quot;BC&quot;</span>, <span class="at">source =</span> <span class="st">&quot;silviculture&quot;</span>)</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>ontario_min <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2018</span><span class="sc">:</span><span class="dv">2020</span>,</span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">area_ha =</span> <span class="fu">c</span>(<span class="dv">160000</span>, <span class="dv">158000</span>, <span class="dv">155000</span>),</span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">province =</span> <span class="st">&quot;ON&quot;</span>,</span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">&quot;harvest_estimate&quot;</span></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(bc_min, ontario_min)</span>
-<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>combined <span class="sc">|&gt;</span></span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(province) <span class="sc">|&gt;</span></span>
-<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_years =</span> <span class="fu">n</span>(),</span>
-<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_ha =</span> <span class="fu">mean</span>(area_ha, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_ha  =</span> <span class="fu">min</span>(area_ha, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_ha  =</span> <span class="fu">max</span>(area_ha, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 5
-  province n_years mean_ha  min_ha  max_ha
-  &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-1 BC            37 199053.  78961. 251557.
-2 ON             3 157667. 155000  160000 </code></pre>
-</div>
-</div>
-<p><strong>Sample paragraph of decisions:</strong> <em>“We had to decide whether to use BC’s Fiscal_Year (April–March) as comparable to Ontario’s calendar year — we treated them as equivalent for this exercise but flagged the assumption. We also chose to keep area_ha as hectares without converting, since both sources publish in hectares. The air-quality file was excluded from this combined table because its unit of analysis is hourly station readings, not annual provincial totals — we would need a separate summarise pipeline to bring it onto a comparable footing.”</em></p>
-<hr>
-</section>
-<section id="instructor-notes" class="level1">
-<h1>Instructor notes</h1>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Common mistakes
+Note
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<ul>
-<li><strong>Using <code>bind_cols()</code> when <code>left_join()</code> was needed.</strong> Walk through “by position vs by key”.</li>
-<li><strong>Forgetting to tag the source before <code>bind_rows</code>.</strong> Without a province column, you lose the ability to disaggregate later.</li>
-<li><strong>Trusting a join without diagnostics.</strong> Insist that every join is followed by a row-count spot check.</li>
-<li><strong><code>pivot_longer()</code> on mixed-type columns.</strong> All pivoted columns must be the same type (or coercible). Mixing numeric and character columns errors loudly — usually the fix is to coerce one side first.</li>
-</ul>
-<section id="reference-numbers" class="level2">
-<h2 class="anchored" data-anchor-id="reference-numbers">Reference numbers</h2>
-<table class="caption-top table">
+<p>Reference solution for the <strong>Chapter 8 Practice Demo Lab</strong> (Tasks 1–6 of <em>Lab: Combine three forestry sources</em>). The graded Canvas lab has its own <strong>private</strong> answer key.</p>
+</div>
+</div>
+<section id="task-1-inventory" class="level1">
+<h1>Task 1 — Inventory</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bc <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;bc_disturbance_reforestation.xlsx&quot;</span>), <span class="at">sheet=</span><span class="st">&quot;Data&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>on <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;on_forest_statistics_1.xlsx&quot;</span>), <span class="at">sheet=</span><span class="st">&quot;Data&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>air <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;airdata3.csv&quot;</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">file =</span> <span class="fu">c</span>(<span class="st">&quot;BC silviculture&quot;</span>,<span class="st">&quot;Ontario forest stats&quot;</span>,<span class="st">&quot;BC air quality&quot;</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">rows =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(bc), <span class="fu">nrow</span>(on), <span class="fu">nrow</span>(air)),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">has_area_ha =</span> <span class="fu">c</span>(<span class="st">&quot;Harvested_ha, …&quot;</span>,<span class="st">&quot;SumOfTotalHa&quot;</span>,<span class="st">&quot;—&quot;</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">has_year    =</span> <span class="fu">c</span>(<span class="st">&quot;Fiscal_Year&quot;</span>,<span class="st">&quot;2021 snapshot&quot;</span>,<span class="st">&quot;Date (hourly)&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th>Quantity</th>
-<th>Value</th>
+<th style="text-align: left;">file</th>
+<th style="text-align: right;">rows</th>
+<th style="text-align: left;">has_area_ha</th>
+<th style="text-align: left;">has_year</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>nrow(bc_wide)</code> after select</td>
-<td>37</td>
+<td style="text-align: left;">BC silviculture</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: left;">Harvested_ha, …</td>
+<td style="text-align: left;">Fiscal_Year</td>
 </tr>
 <tr class="even">
-<td><code>nrow(bc_long)</code> after pivot</td>
-<td>74</td>
+<td style="text-align: left;">Ontario forest stats</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: left;">SumOfTotalHa</td>
+<td style="text-align: left;">2021 snapshot</td>
 </tr>
 <tr class="odd">
-<td>Plot–district left_join</td>
-<td>5</td>
-</tr>
-<tr class="even">
-<td>Plot–district inner_join</td>
-<td>4</td>
-</tr>
-<tr class="odd">
-<td>Plot–district right_join</td>
-<td>5</td>
-</tr>
-<tr class="even">
-<td>Plot–district full_join</td>
-<td>6</td>
-</tr>
-<tr class="odd">
-<td>anti_join(plots, districts)</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td>semi_join(plots, districts)</td>
-<td>4</td>
+<td style="text-align: left;">BC air quality</td>
+<td style="text-align: right;">11904</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Date (hourly)</td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<p><strong>Comparable across the two forestry files:</strong> a <strong>year</strong> and an <strong>area in hectares</strong>. The air-quality file has no area — it is measured on a different axis (hourly pollutant concentrations), so it is the odd one out.</p>
 </section>
+<section id="task-2-select-comparable-columns-uniform-schema" class="level1">
+<h1>Task 2 — Select comparable columns (uniform schema)</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bc_h <span class="ot">&lt;-</span> bc <span class="sc">|&gt;</span> <span class="fu">transmute</span>(<span class="at">province =</span> <span class="st">&quot;British Columbia&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">year =</span> Fiscal_Year, <span class="at">area_ha =</span> Harvested_ha)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>on_h <span class="ot">&lt;-</span> on <span class="sc">|&gt;</span> <span class="fu">transmute</span>(<span class="at">province =</span> <span class="st">&quot;Ontario&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">year =</span> <span class="dv">2021</span>L, <span class="at">area_ha =</span> SumOfTotalHa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="task-3-stack-with-bind_rows" class="level1">
+<h1>Task 3 — Stack with <code>bind_rows()</code></h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(bc_h, on_h)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">bind_rows</span>(<span class="fu">head</span>(bc_h, <span class="dv">2</span>), <span class="fu">head</span>(on_h, <span class="dv">2</span>)),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Uniform schema: province, year, area_ha (first rows of each source).&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Uniform schema: province, year, area_ha (first rows of each source).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">province</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">area_ha</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">British Columbia</td>
+<td style="text-align: right;">1987</td>
+<td style="text-align: right;">242182.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">British Columbia</td>
+<td style="text-align: right;">1988</td>
+<td style="text-align: right;">251557.320</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ontario</td>
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">2184.069</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ontario</td>
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">26085.574</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
+</section>
+<section id="task-4-diagnose" class="level1">
+<h1>Task 4 — Diagnose</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(combined, province)          <span class="co"># both provinces present?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  province             n
+  &lt;chr&gt;            &lt;int&gt;
+1 British Columbia    37
+2 Ontario            179</code></pre>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(combined))           <span class="co"># any unexpected NAs after the bind?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>province     year  area_ha 
+       0        0        0 </code></pre>
+</div>
+</div>
+<p>Both provinces appear (BC = 37 rows, Ontario = 179 rows), and there are no unexpected <code>NA</code>s.</p>
+</section>
+<section id="task-5-reflect-the-decisions-the-code-cannot-make" class="level1">
+<h1>Task 5 — Reflect (the decisions the code cannot make)</h1>
+<ul>
+<li><strong>Units:</strong> both areas are hectares — good; if one had been km² we would have had to convert first.</li>
+<li><strong>Time aggregation:</strong> BC is a <strong>yearly time series</strong> (1987–2023); Ontario is a <strong>single 2021 snapshot</strong> cross-classified by category. Stacking them treats very different time scopes as one column — a judgement call.</li>
+<li><strong>Scope:</strong> BC <code>Harvested_ha</code> is <em>area harvested per year</em>; Ontario <code>SumOfTotalHa</code> is <em>total forest area by category</em>. They are not the same quantity — the combined table is only meaningful if the reader is told this.</li>
+</ul>
+</section>
+<section id="task-6-submit" class="level1">
+<h1>Task 6 — Submit</h1>
+<p>Submit the combined tibble (as a <code>kable</code>), a one-paragraph note on the Task 5 decisions, and all group members’ names. (Graded lab: follow Canvas.)</p>
 </section>
 
 </main>

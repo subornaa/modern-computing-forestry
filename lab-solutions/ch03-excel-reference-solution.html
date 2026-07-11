@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Chapter 4 — Practice Demo Lab: Reference Solution</title>
+<title>Chapter 3 — Practice Demo Lab: Reference Solution</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -19,41 +19,6 @@ ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
-}
-
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-}
-pre.numberSource { margin-left: 3em; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -2207,10 +2172,12 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#tasks-14-setup-expected-outcome" id="toc-tasks-14-setup-expected-outcome" class="nav-link active" data-scroll-target="#tasks-14-setup-expected-outcome">Tasks 1–4 — Setup (expected outcome)</a></li>
-  <li><a href="#task-5-first-import-everyone-gets-the-same-dim" id="toc-task-5-first-import-everyone-gets-the-same-dim" class="nav-link" data-scroll-target="#task-5-first-import-everyone-gets-the-same-dim">Task 5 — First import (everyone gets the same <code>dim</code>)</a></li>
-  <li><a href="#task-6-compute-and-compare-with-chapter-1" id="toc-task-6-compute-and-compare-with-chapter-1" class="nav-link" data-scroll-target="#task-6-compute-and-compare-with-chapter-1">Task 6 — Compute and compare with Chapter 1</a></li>
-  <li><a href="#task-7-submit" id="toc-task-7-submit" class="nav-link" data-scroll-target="#task-7-submit">Task 7 — Submit</a></li>
+  <li><a href="#task-1-choose-the-question" id="toc-task-1-choose-the-question" class="nav-link active" data-scroll-target="#task-1-choose-the-question">Task 1 — Choose the question</a></li>
+  <li><a href="#task-2-build-the-pivottable" id="toc-task-2-build-the-pivottable" class="nav-link" data-scroll-target="#task-2-build-the-pivottable">Task 2 — Build the PivotTable</a></li>
+  <li><a href="#task-3-build-the-pivotchart" id="toc-task-3-build-the-pivotchart" class="nav-link" data-scroll-target="#task-3-build-the-pivotchart">Task 3 — Build the PivotChart</a></li>
+  <li><a href="#task-4-add-a-slicer" id="toc-task-4-add-a-slicer" class="nav-link" data-scroll-target="#task-4-add-a-slicer">Task 4 — Add a slicer</a></li>
+  <li><a href="#task-5-export-and-caption" id="toc-task-5-export-and-caption" class="nav-link" data-scroll-target="#task-5-export-and-caption">Task 5 — Export and caption</a></li>
+  <li><a href="#task-6-submit" id="toc-task-6-submit" class="nav-link" data-scroll-target="#task-6-submit">Task 6 — Submit</a></li>
   </ul>
 </nav>
 </div>
@@ -2220,8 +2187,8 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Chapter 4 — Practice Demo Lab: Reference Solution</h1>
-<p class="subtitle lead">Lab: Set up a working R project together</p>
+<h1 class="title">Chapter 3 — Practice Demo Lab: Reference Solution</h1>
+<p class="subtitle lead">Lab: Build a chart-and-PivotTable deliverable together</p>
 </div>
 
 
@@ -2248,52 +2215,82 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Reference solution for the <strong>Chapter 4 Practice Demo Lab</strong> (Tasks 1–7 of <em>Lab: Set up a working R project together</em>). The graded Canvas lab has its own <strong>private</strong> answer key.</p>
+<p>Reference solution for the <strong>Chapter 3 Practice Demo Lab</strong> (Tasks 1–6 of <em>Lab: Build a chart-and-PivotTable deliverable together</em>). The graded Canvas lab has its own <strong>private</strong> answer key.</p>
 </div>
 </div>
-<section id="tasks-14-setup-expected-outcome" class="level1">
-<h1>Tasks 1–4 — Setup (expected outcome)</h1>
-<p>These are setup steps; the “answer” is a working project:</p>
-<ol type="1">
-<li><strong>Posit Cloud account</strong> — each member signs in at <code>posit.cloud</code>.</li>
-<li><strong>Create the project</strong> — a project named <code>frst232</code> with <code>data/</code>, <code>outputs/</code>, and <code>R/</code> sub-folders.</li>
-<li><strong>Install packages</strong> — <code>install.packages(c(&quot;tidyverse&quot;, &quot;readxl&quot;, &quot;here&quot;))</code> completes without error (a package is a bundle of reusable functions; there are many because each solves a focused task).</li>
-<li><strong>Upload the data</strong> — <code>bc_disturbance_reforestation.xlsx</code> sits in <code>data/</code>. Confirm with <code>list.files(here(&quot;data&quot;))</code> — the file name should appear.</li>
-</ol>
+<section id="task-1-choose-the-question" class="level1">
+<h1>Task 1 — Choose the question</h1>
+<p>Worked example: <strong>“Which forest type has the most <em>mature</em> area in Region 3E?”</strong> (Any of the three suggested questions is fine.)</p>
 </section>
-<section id="task-5-first-import-everyone-gets-the-same-dim" class="level1">
-<h1>Task 5 — First import (everyone gets the same <code>dim</code>)</h1>
+<section id="task-2-build-the-pivottable" class="level1">
+<h1>Task 2 — Build the PivotTable</h1>
+<p>On <code>on_forest_statistics_1_clean.xlsx</code>: <strong>Insert → PivotTable</strong>. For this question:</p>
+<ul>
+<li><strong>Filters:</strong> <code>SERAL_NAME</code> → set to <strong>Mature</strong></li>
+<li><strong>Rows:</strong> <code>PFTName</code> (forest type)</li>
+<li><strong>Values:</strong> <code>SumOfTotalHa</code> → <strong>Sum</strong> (label it “Sum of area (ha)”)</li>
+</ul>
+<p>Sort the Values column largest-to-smallest. The PivotTable answer:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bc <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;bc_disturbance_reforestation.xlsx&quot;</span>),</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sheet =</span> <span class="st">&quot;Data&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(bc)          <span class="co"># expected: 37 8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 37  8</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Top mature forest types in Region 3E (PivotTable, Sum of SumOfTotalHa).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Forest type (PFTName)</th>
+<th style="text-align: left;">Mature area (ha)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Conifer Lowland</td>
+<td style="text-align: left;">903,009</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Conifer Upland</td>
+<td style="text-align: left;">745,944</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mixedwood</td>
+<td style="text-align: left;">471,449</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">White Birch</td>
+<td style="text-align: left;">242,519</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Poplar</td>
+<td style="text-align: left;">219,451</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(bc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Fiscal_Year&quot;                   &quot;Clearcutting_ha&quot;              
-[3] &quot;Clearcutting_with_reserves_ha&quot; &quot;Partial_cutting_ha&quot;           
-[5] &quot;Harvested_ha&quot;                  &quot;Natural_Disturbance_ha&quot;       
-[7] &quot;Total_Disturbance_ha&quot;          &quot;Reforestation_ha&quot;             </code></pre>
 </div>
-</div>
-<p>Every group member should see <strong><code>dim(bc)</code> = 37 8</strong> — 37 fiscal years, 8 columns. If someone sees something different, the usual cause is the file in the wrong folder or the wrong <code>sheet=</code>.</p>
+<p><strong>Answer:</strong> the forest type with the most mature area in Region 3E is <strong>Conifer Lowland</strong> (~<strong>903,009 ha</strong>).</p>
 </section>
-<section id="task-6-compute-and-compare-with-chapter-1" class="level1">
-<h1>Task 6 — Compute and compare with Chapter 1</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>total_reforested <span class="ot">&lt;-</span> <span class="fu">sum</span>(bc<span class="sc">$</span>Reforestation_ha)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>total_reforested</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 8264064</code></pre>
-</div>
-</div>
-<p><code>sum(bc$Reforestation_ha)</code> = <strong>8,264,064 ha</strong>. Everyone in the group should get this <strong>same</strong> number, and it should <strong>match</strong> the <code>=SUM(H2:H38)</code> total from the Chapter 1 Excel workbook — the whole point of the Excel→R transition: same data, same answer, now reproducible.</p>
+<section id="task-3-build-the-pivotchart" class="level1">
+<h1>Task 3 — Build the PivotChart</h1>
+<p>Select the PivotTable → <strong>PivotTable Analyze → PivotChart</strong> → <strong>Clustered Column</strong>. Then:</p>
+<ul>
+<li><strong>Chart title:</strong> “Mature area by forest type, Region 3E”</li>
+<li><strong>Y-axis title:</strong> “Area (hectares)” — units must appear</li>
+<li><strong>X-axis:</strong> forest type</li>
+</ul>
 </section>
-<section id="task-7-submit" class="level1">
-<h1>Task 7 — Submit</h1>
-<p>Submit one screenshot showing a member’s RStudio/Posit Cloud with the BC file loaded, the column names visible, and the <code>sum()</code> result — with all group members’ names. (Graded lab: follow Canvas.)</p>
+<section id="task-4-add-a-slicer" class="level1">
+<h1>Task 4 — Add a slicer</h1>
+<p><strong>PivotTable Analyze → Insert Slicer</strong> → tick a categorical field (e.g., <code>AC_10</code> age class, or <code>LGDS</code> seral code). Click a slicer button and confirm <strong>both</strong> the PivotTable and the PivotChart update together.</p>
+</section>
+<section id="task-5-export-and-caption" class="level1">
+<h1>Task 5 — Export and caption</h1>
+<p>Right-click the chart → <strong>Save as Picture</strong> → PNG into <code>outputs/</code>. Example caption:</p>
+<blockquote class="blockquote">
+<p><em>Mature forest area by provincial forest type, Region 3E. Source: Government of Ontario — Forest Resources of Ontario 2021 (Open Government Licence — Ontario).</em></p>
+</blockquote>
+</section>
+<section id="task-6-submit" class="level1">
+<h1>Task 6 — Submit</h1>
+<p>Submit a one-page worksheet with your question, your Rows/Columns/Values choices, and the exported PNG + caption — with all group members’ names. (Graded lab: follow Canvas.)</p>
 </section>
 
 </main>

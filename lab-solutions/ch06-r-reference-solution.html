@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Instructor reference">
-<meta name="dcterms.date" content="2026-07-10">
 
-<title>Chapter 6 — Instructor Solutions</title>
+<title>Chapter 6 — Practice Demo Lab: Reference Solution</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -2209,36 +2207,12 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#about-this-file" id="toc-about-this-file" class="nav-link active" data-scroll-target="#about-this-file">About this file</a></li>
-  <li><a href="#exercise-1-import-and-inspect" id="toc-exercise-1-import-and-inspect" class="nav-link" data-scroll-target="#exercise-1-import-and-inspect">Exercise 1 — Import and inspect</a>
-  <ul class="collapse">
-  <li><a href="#a-import" id="toc-a-import" class="nav-link" data-scroll-target="#a-import">1a — Import</a></li>
-  <li><a href="#b-six-move-inspection" id="toc-b-six-move-inspection" class="nav-link" data-scroll-target="#b-six-move-inspection">1b — Six-move inspection</a></li>
-  <li><a href="#c-findings" id="toc-c-findings" class="nav-link" data-scroll-target="#c-findings">1c — Findings</a></li>
-  </ul></li>
-  <li><a href="#exercise-2-select" id="toc-exercise-2-select" class="nav-link" data-scroll-target="#exercise-2-select">Exercise 2 — Select</a>
-  <ul class="collapse">
-  <li><a href="#a-drop-upstream-tool-columns" id="toc-a-drop-upstream-tool-columns" class="nav-link" data-scroll-target="#a-drop-upstream-tool-columns">2a — Drop upstream-tool columns</a></li>
-  <li><a href="#b-drop-all-na-columns" id="toc-b-drop-all-na-columns" class="nav-link" data-scroll-target="#b-drop-all-na-columns">2b — Drop all-NA columns</a></li>
-  <li><a href="#c-confirm" id="toc-c-confirm" class="nav-link" data-scroll-target="#c-confirm">2c — Confirm</a></li>
-  </ul></li>
-  <li><a href="#exercise-3-parse-the-date" id="toc-exercise-3-parse-the-date" class="nav-link" data-scroll-target="#exercise-3-parse-the-date">Exercise 3 — Parse the date</a>
-  <ul class="collapse">
-  <li><a href="#a-add-parsed-date" id="toc-a-add-parsed-date" class="nav-link" data-scroll-target="#a-add-parsed-date">3a — Add parsed date</a></li>
-  <li><a href="#b-verify" id="toc-b-verify" class="nav-link" data-scroll-target="#b-verify">3b — Verify</a></li>
-  </ul></li>
-  <li><a href="#exercise-4-filter" id="toc-exercise-4-filter" class="nav-link" data-scroll-target="#exercise-4-filter">Exercise 4 — Filter</a></li>
-  <li><a href="#exercise-5-case_when" id="toc-exercise-5-case_when" class="nav-link" data-scroll-target="#exercise-5-case_when">Exercise 5 — case_when</a></li>
-  <li><a href="#exercise-6-left_join" id="toc-exercise-6-left_join" class="nav-link" data-scroll-target="#exercise-6-left_join">Exercise 6 — left_join</a>
-  <ul class="collapse">
-  <li><a href="#a-lookup-tibble" id="toc-a-lookup-tibble" class="nav-link" data-scroll-target="#a-lookup-tibble">6a — Lookup tibble</a></li>
-  <li><a href="#b-join" id="toc-b-join" class="nav-link" data-scroll-target="#b-join">6b — Join</a></li>
-  <li><a href="#c-confirm-preservation" id="toc-c-confirm-preservation" class="nav-link" data-scroll-target="#c-confirm-preservation">6c — Confirm preservation</a></li>
-  </ul></li>
-  <li><a href="#exercise-7-save-cleaned-tibble" id="toc-exercise-7-save-cleaned-tibble" class="nav-link" data-scroll-target="#exercise-7-save-cleaned-tibble">Exercise 7 — Save cleaned tibble</a></li>
-  <li><a href="#exercise-8-per-station-summary" id="toc-exercise-8-per-station-summary" class="nav-link" data-scroll-target="#exercise-8-per-station-summary">Exercise 8 — Per-station summary</a></li>
-  <li><a href="#sample-cleaning-log" id="toc-sample-cleaning-log" class="nav-link" data-scroll-target="#sample-cleaning-log">Sample cleaning log</a></li>
-  <li><a href="#instructor-notes" id="toc-instructor-notes" class="nav-link" data-scroll-target="#instructor-notes">Instructor notes</a></li>
+  <li><a href="#task-1-inspect-together-the-six-moves" id="toc-task-1-inspect-together-the-six-moves" class="nav-link active" data-scroll-target="#task-1-inspect-together-the-six-moves">Task 1 — Inspect together (the six moves)</a></li>
+  <li><a href="#task-2-drop-the-redundant-columns" id="toc-task-2-drop-the-redundant-columns" class="nav-link" data-scroll-target="#task-2-drop-the-redundant-columns">Task 2 — Drop the redundant columns</a></li>
+  <li><a href="#task-3-parse-the-date" id="toc-task-3-parse-the-date" class="nav-link" data-scroll-target="#task-3-parse-the-date">Task 3 — Parse the date</a></li>
+  <li><a href="#task-4-filter-and-group-mean-o₃-per-station-sorted" id="toc-task-4-filter-and-group-mean-o₃-per-station-sorted" class="nav-link" data-scroll-target="#task-4-filter-and-group-mean-o₃-per-station-sorted">Task 4 — Filter and group: mean O₃ per station (sorted)</a></li>
+  <li><a href="#task-5-discuss-the-result" id="toc-task-5-discuss-the-result" class="nav-link" data-scroll-target="#task-5-discuss-the-result">Task 5 — Discuss the result</a></li>
+  <li><a href="#task-6-submit" id="toc-task-6-submit" class="nav-link" data-scroll-target="#task-6-submit">Task 6 — Submit</a></li>
   </ul>
 </nav>
 </div>
@@ -2248,27 +2222,15 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Chapter 6 — Instructor Solutions</h1>
-<p class="subtitle lead">Clean and Prepare Forestry Data in R — completed</p>
+<h1 class="title">Chapter 6 — Practice Demo Lab: Reference Solution</h1>
+<p class="subtitle lead">Lab: Clean the air-quality file together</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Instructor reference </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">July 10, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -2278,380 +2240,142 @@ vertical-align: -.125em;
 </header>
 
 
-<section id="about-this-file" class="level1 unnumbered">
-<h1 class="unnumbered">About this file</h1>
-<p>Completed worked answers for Chapter 6. <strong>Do not distribute to learners.</strong></p>
-<hr>
-</section>
-<section id="exercise-1-import-and-inspect" class="level1">
-<h1>Exercise 1 — Import and inspect</h1>
-<section id="a-import" class="level2">
-<h2 class="anchored" data-anchor-id="a-import">1a — Import</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>airdata_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;airdata3.csv&quot;</span>),</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>New names:
-• `` -&gt; `...1`</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
 </div>
 </div>
-</section>
-<section id="b-six-move-inspection" class="level2">
-<h2 class="anchored" data-anchor-id="b-six-move-inspection">1b — Six-move inspection</h2>
+<div class="callout-body-container callout-body">
+<p>Reference solution for the <strong>Chapter 6 Practice Demo Lab</strong> (Tasks 1–6 of <em>Lab: Clean the air-quality file together</em>). Check your own attempt against it. The graded Canvas lab has its own <strong>private</strong> answer key.</p>
+</div>
+</div>
+<section id="task-1-inspect-together-the-six-moves" class="level1">
+<h1>Task 1 — Inspect together (the six moves)</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(airdata_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>air <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;airdata3.csv&quot;</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(air)                       <span class="co"># rows x columns</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 11904    27</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(airdata_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_all_na <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">map_lgl</span>(air, <span class="sc">~</span> <span class="fu">all</span>(<span class="fu">is.na</span>(.))))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_with_data <span class="ot">&lt;-</span> <span class="fu">ncol</span>(air) <span class="sc">-</span> n_all_na</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">columns =</span> <span class="fu">ncol</span>(air), <span class="at">all_NA_columns =</span> n_all_na, <span class="at">columns_with_data =</span> n_with_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] &quot;...1&quot;          &quot;Unnamed: 0&quot;    &quot;WSPD_VECT&quot;     &quot;WDIR_SCLR&quot;    
- [5] &quot;WSPD_SCLR&quot;     &quot;PM10&quot;          &quot;SO2&quot;           &quot;NOx&quot;          
- [9] &quot;WDIR_VECT&quot;     &quot;TEMP_MEAN&quot;     &quot;CO&quot;            &quot;NO&quot;           
-[13] &quot;NO2&quot;           &quot;PM25&quot;          &quot;PRECIP_TOTAL&quot;  &quot;O3&quot;           
-[17] &quot;ATM_PRESS_1HR&quot; &quot;HUMIDITY&quot;      &quot;location&quot;      &quot;Date&quot;         
-[21] &quot;Time&quot;          &quot;RAD_TOTAL&quot;     &quot;NH3&quot;           &quot;PM25_5030i&quot;   
-[25] &quot;TRS&quot;           &quot;RAD_NET&quot;       &quot;PM25_SHARP&quot;   </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(airdata_raw)) <span class="sc">|&gt;</span> <span class="fu">sort</span>(<span class="at">decreasing =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    WSPD_VECT     WDIR_SCLR     WSPD_SCLR           NOx     WDIR_VECT 
-        11904         11904         11904         11904         11904 
-    TEMP_MEAN  PRECIP_TOTAL ATM_PRESS_1HR      HUMIDITY     RAD_TOTAL 
-        11904         11904         11904         11904         11904 
-          NH3    PM25_5030i       RAD_NET    PM25_SHARP           TRS 
-        11904         11904         11904         11904         11173 </code></pre>
+<pre><code>          columns    all_NA_columns columns_with_data 
+               27                14                13 </code></pre>
 </div>
 </div>
+<p>The file has <strong>11904 rows × 27 columns</strong>; <strong>14 columns are 100 % missing</strong> and <strong>13</strong> carry data. <code>glimpse(air)</code> shows the key columns: <code>location</code> (the monitoring station), <code>Date</code>, <code>Time</code>, and pollutant columns including <strong><code>O3</code></strong>.</p>
 </section>
-<section id="c-findings" class="level2">
-<h2 class="anchored" data-anchor-id="c-findings">1c — Findings</h2>
-<blockquote class="blockquote">
-<p>The raw file has <strong>11,904 rows × 27 columns</strong>. About <strong>12 columns are 100% missing</strong> in this extract (every value is NA): the wind, temperature, humidity, radiation, and several PM-related instrument columns. Two more columns are pandas export artefacts (<code>Unnamed: 0</code> and <code>Unnamed: 0.1</code>). The useful columns are <code>location</code>, <code>Date</code>, <code>Time</code>, and the pollutants <code>PM10</code>, <code>SO2</code>, <code>NOx</code>, <code>CO</code>, <code>NO</code>, <code>NO2</code>, <code>O3</code>, and <code>O3</code>.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="exercise-2-select" class="level1">
-<h1>Exercise 2 — Select</h1>
-<section id="a-drop-upstream-tool-columns" class="level2">
-<h2 class="anchored" data-anchor-id="a-drop-upstream-tool-columns">2a — Drop upstream-tool columns</h2>
+<section id="task-2-drop-the-redundant-columns" class="level1">
+<h1>Task 2 — Drop the redundant columns</h1>
+<p>Drop the two spreadsheet index columns and every 100 %-missing column:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>airdata_step1 <span class="ot">&lt;-</span> airdata_raw <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;Unnamed&quot;</span>), <span class="sc">-</span><span class="fu">any_of</span>(<span class="st">&quot;...1&quot;</span>))</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(airdata_step1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 25</code></pre>
-</div>
-</div>
-</section>
-<section id="b-drop-all-na-columns" class="level2">
-<h2 class="anchored" data-anchor-id="b-drop-all-na-columns">2b — Drop all-NA columns</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>airdata_step2 <span class="ot">&lt;-</span> airdata_step1 <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(\(col) <span class="sc">!</span><span class="fu">all</span>(<span class="fu">is.na</span>(col))))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(airdata_step2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>air2 <span class="ot">&lt;-</span> air <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">...1</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">Unnamed: 0</span><span class="st">`</span>) <span class="sc">|&gt;</span>       <span class="co"># drop the spreadsheet index columns</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(<span class="fu">is.na</span>(.))))         <span class="co"># drop columns that are entirely NA</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(air2)                                 <span class="co"># columns remaining</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 11</code></pre>
 </div>
-</div>
-</section>
-<section id="c-confirm" class="level2">
-<h2 class="anchored" data-anchor-id="c-confirm">2c — Confirm</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(airdata_step2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(air2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] &quot;PM10&quot;     &quot;SO2&quot;      &quot;CO&quot;       &quot;NO&quot;       &quot;NO2&quot;      &quot;PM25&quot;    
  [7] &quot;O3&quot;       &quot;location&quot; &quot;Date&quot;     &quot;Time&quot;     &quot;TRS&quot;     </code></pre>
 </div>
 </div>
-<hr>
+<p>That leaves the <strong>11 columns that actually contain data</strong> — <code>location</code>, <code>Date</code>, <code>Time</code>, <code>O3</code>, and the other measured pollutants.</p>
 </section>
-</section>
-<section id="exercise-3-parse-the-date" class="level1">
-<h1>Exercise 3 — Parse the date</h1>
-<section id="a-add-parsed-date" class="level2">
-<h2 class="anchored" data-anchor-id="a-add-parsed-date">3a — Add parsed date</h2>
+<section id="task-3-parse-the-date" class="level1">
+<h1>Task 3 — Parse the date</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>airdata_step3 <span class="ot">&lt;-</span> airdata_step2 <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date_parsed =</span> <span class="fu">mdy</span>(Date))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="b-verify" class="level2">
-<h2 class="anchored" data-anchor-id="b-verify">3b — Verify</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(airdata_step3 <span class="sc">|&gt;</span> <span class="fu">select</span>(Date, date_parsed))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>air3 <span class="ot">&lt;-</span> air2 <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">mdy</span>(Date))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(air3<span class="sc">$</span>date))          <span class="co"># how many dates failed to parse?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 11,904
-Columns: 2
-$ Date        &lt;chr&gt; &quot;1/1/2000&quot;, &quot;1/1/2000&quot;, &quot;1/1/2000&quot;, &quot;1/1/2000&quot;, &quot;1/1/2000&quot;…
-$ date_parsed &lt;date&gt; 2000-01-01, 2000-01-01, 2000-01-01, 2000-01-01, 2000-01-0…</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(airdata_step3<span class="sc">$</span>date_parsed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
-&quot;2000-01-01&quot; &quot;2000-01-08&quot; &quot;2000-01-16&quot; &quot;2000-01-16&quot; &quot;2000-01-24&quot; &quot;2000-01-31&quot; </code></pre>
+<pre><code>[1] 0</code></pre>
 </div>
 </div>
-<p>Expected: all 11,904 rows parsed; date range is the full month of January 2000.</p>
-<hr>
+<p><code>mdy(Date)</code> parses <strong>every</strong> row — the failure count is <strong>0</strong> — because the file stores dates as month/day/year (e.g., <code>1/1/2000</code>). If any had failed, they would show up as <code>NA</code> in this count.</p>
 </section>
-</section>
-<section id="exercise-4-filter" class="level1">
-<h1>Exercise 4 — Filter</h1>
+<section id="task-4-filter-and-group-mean-o₃-per-station-sorted" class="level1">
+<h1>Task 4 — Filter and group: mean O₃ per station (sorted)</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>airdata_step4 <span class="ot">&lt;-</span> airdata_step3 <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(O3))</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(airdata_step4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5677</code></pre>
-</div>
-</div>
-<p>Expected: about <strong>742 rows</strong> with measured O₃ (only a few stations measure O₃, and only some hours have valid readings).</p>
-<hr>
-</section>
-<section id="exercise-5-case_when" class="level1">
-<h1>Exercise 5 — case_when</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>airdata_step5 <span class="ot">&lt;-</span> airdata_step4 <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">o3_band =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    O3 <span class="sc">&lt;</span> <span class="dv">10</span>  <span class="sc">~</span> <span class="st">&quot;low&quot;</span>,</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    O3 <span class="sc">&lt;</span> <span class="dv">20</span>  <span class="sc">~</span> <span class="st">&quot;moderate&quot;</span>,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    O3 <span class="sc">&lt;</span> <span class="dv">30</span>  <span class="sc">~</span> <span class="st">&quot;high&quot;</span>,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>       <span class="sc">~</span> <span class="st">&quot;very high&quot;</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(airdata_step5, o3_band)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 2
-  o3_band       n
-  &lt;chr&gt;     &lt;int&gt;
-1 high        905
-2 low        3327
-3 moderate   1013
-4 very high   432</code></pre>
-</div>
-</div>
-<hr>
-</section>
-<section id="exercise-6-left_join" class="level1">
-<h1>Exercise 6 — left_join</h1>
-<section id="a-lookup-tibble" class="level2">
-<h2 class="anchored" data-anchor-id="a-lookup-tibble">6a — Lookup tibble</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>station_regions <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>location,                          <span class="sc">~</span>region,</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Burnaby South&quot;</span>,                    <span class="st">&quot;Burrard Peninsula&quot;</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Coquitlam Douglas College&quot;</span>,        <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Langley Central&quot;</span>,                  <span class="st">&quot;Fraser Valley West&quot;</span>,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Maple Ridge Golden Ears School&quot;</span>,   <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;New Westminster Sapperton Park&quot;</span>,   <span class="st">&quot;Burrard Peninsula&quot;</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;North Delta&quot;</span>,                      <span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;North Vancouver Second Narrows&quot;</span>,   <span class="st">&quot;North Shore&quot;</span>,</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Pitt Meadows Airport&quot;</span>,             <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Port Coquitlam North&quot;</span>,             <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Port Moody Rocky Point Park&quot;</span>,      <span class="st">&quot;North-East Sector&quot;</span>,</span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Richmond South&quot;</span>,                   <span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Tsawwassen&quot;</span>,                       <span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver Clark Drive&quot;</span>,            <span class="st">&quot;Vancouver&quot;</span>,</span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver International Airport #2&quot;</span>,<span class="st">&quot;South of Fraser&quot;</span>,</span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Vancouver Kitsilano&quot;</span>,              <span class="st">&quot;Vancouver&quot;</span>,</span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;West Vancouver Lions Gate&quot;</span>,        <span class="st">&quot;North Shore&quot;</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="b-join" class="level2">
-<h2 class="anchored" data-anchor-id="b-join">6b — Join</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>airdata_clean <span class="ot">&lt;-</span> airdata_step5 <span class="sc">|&gt;</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(station_regions, <span class="at">by =</span> <span class="st">&quot;location&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="c-confirm-preservation" class="level2">
-<h2 class="anchored" data-anchor-id="c-confirm-preservation">6c — Confirm preservation</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(airdata_step5)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5677</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(airdata_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5677</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">nrow</span>(airdata_step5), <span class="fu">nrow</span>(airdata_clean))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-</div>
-<hr>
-</section>
-</section>
-<section id="exercise-7-save-cleaned-tibble" class="level1">
-<h1>Exercise 7 — Save cleaned tibble</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(airdata_clean, <span class="fu">here</span>(<span class="st">&quot;outputs&quot;</span>, <span class="st">&quot;airdata3_clean.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-<section id="exercise-8-per-station-summary" class="level1">
-<h1>Exercise 8 — Per-station summary</h1>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>station_summary <span class="ot">&lt;-</span> airdata_clean <span class="sc">|&gt;</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(location) <span class="sc">|&gt;</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs =</span> <span class="fu">n</span>(),</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_o3 =</span> <span class="fu">mean</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_o3  =</span> <span class="fu">max</span>(O3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_o3))</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>station_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 4
-  location                           n_obs mean_o3 max_o3
-  &lt;chr&gt;                              &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 Langley Central                      732   17.7      38
-2 Maple Ridge Golden Ears School       564   11.3      35
-3 Richmond South                       732   10.5      37
-4 North Delta                          731   10.3      37
-5 Vancouver International Airport #2   727   10.2      37
-6 Burnaby South                        732    9.05     35
-7 Vancouver Kitsilano                  731    7.49     37
-8 Port Moody Rocky Point Park          728    6.13     39</code></pre>
-</div>
-</div>
-<p>The station with the highest mean O₃ in this month tends to be one in the <strong>Fraser Valley West</strong> or <strong>South of Fraser</strong> regions, where smoke from interior wildfires settles more often than on the North Shore.</p>
-<hr>
-</section>
-<section id="sample-cleaning-log" class="level1">
-<h1>Sample cleaning log</h1>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>by_station <span class="ot">&lt;-</span> air3 <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(O3)) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(location) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_o3 =</span> <span class="fu">round</span>(<span class="fu">mean</span>(O3), <span class="dv">1</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_hours =</span> <span class="fu">n</span>(),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_o3))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(by_station, <span class="at">caption =</span> <span class="st">&quot;Mean hourly ozone (O3, ppb) by station, January 2000, highest first.&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Mean hourly ozone (O3, ppb) by station, January 2000, highest first.</caption>
 <thead>
 <tr class="header">
-<th>Date</th>
-<th>Step</th>
-<th>What I did</th>
-<th>Why</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: right;">mean_o3</th>
+<th style="text-align: right;">n_hours</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>2026-09-22</td>
-<td>1</td>
-<td>Dropped 2 redundant index columns (<code>Unnamed: 0.1</code>, <code>Unnamed: 0</code>)</td>
-<td>Pandas export artefacts; no meaning.</td>
+<td style="text-align: left;">Langley Central</td>
+<td style="text-align: right;">17.7</td>
+<td style="text-align: right;">732</td>
 </tr>
 <tr class="even">
-<td>2026-09-22</td>
-<td>2</td>
-<td>Dropped 12 columns that were 100% missing</td>
-<td>No measurements at any station for this month.</td>
+<td style="text-align: left;">Maple Ridge Golden Ears School</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">564</td>
 </tr>
 <tr class="odd">
-<td>2026-09-22</td>
-<td>3</td>
-<td>Parsed <code>Date</code> from text to <code>&lt;date&gt;</code> using <code>lubridate::mdy()</code></td>
-<td>Original was <code>M/D/YYYY</code> text.</td>
+<td style="text-align: left;">Richmond South</td>
+<td style="text-align: right;">10.5</td>
+<td style="text-align: right;">732</td>
 </tr>
 <tr class="even">
-<td>2026-09-22</td>
-<td>4</td>
-<td>Filtered to rows where O3 was measured</td>
-<td>Reduced rows from 11,904 to ~742.</td>
+<td style="text-align: left;">North Delta</td>
+<td style="text-align: right;">10.3</td>
+<td style="text-align: right;">731</td>
 </tr>
 <tr class="odd">
-<td>2026-09-22</td>
-<td>5</td>
-<td>Recoded O3 into 4 bands using <code>case_when</code></td>
-<td>For the air-quality summary table.</td>
+<td style="text-align: left;">Vancouver International Airport #2</td>
+<td style="text-align: right;">10.2</td>
+<td style="text-align: right;">727</td>
 </tr>
 <tr class="even">
-<td>2026-09-22</td>
-<td>6</td>
-<td>Left-joined a station→region reference table</td>
-<td>To enable regional summaries.</td>
+<td style="text-align: left;">Burnaby South</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">732</td>
 </tr>
 <tr class="odd">
-<td>2026-09-22</td>
-<td>7</td>
-<td>Wrote <code>outputs/airdata3_clean.csv</code></td>
-<td>Final cleaned tibble.</td>
+<td style="text-align: left;">Vancouver Kitsilano</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">731</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Port Moody Rocky Point Park</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">728</td>
 </tr>
 </tbody>
 </table>
-<hr>
+</div>
+</div>
 </section>
-<section id="instructor-notes" class="level1">
-<h1>Instructor notes</h1>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Sample numbers (reference)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Quantity</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>nrow(airdata_raw)</code></td>
-<td>11,904</td>
-</tr>
-<tr class="even">
-<td><code>ncol(airdata_raw)</code></td>
-<td>27</td>
-</tr>
-<tr class="odd">
-<td>Columns that are 100% NA</td>
-<td>~12</td>
-</tr>
-<tr class="even">
-<td><code>ncol(airdata_step2)</code> (after select)</td>
-<td>~13</td>
-</tr>
-<tr class="odd">
-<td><code>nrow(airdata_step4)</code> (after O3 filter)</td>
-<td>~742</td>
-</tr>
-<tr class="even">
-<td>Distinct stations with measured O3</td>
-<td>~6</td>
-</tr>
-<tr class="odd">
-<td>Date range</td>
-<td>2000-01-01 to 2000-01-31</td>
-</tr>
-</tbody>
-</table>
-<section id="common-errors-to-grade-for" class="level2">
-<h2 class="anchored" data-anchor-id="common-errors-to-grade-for">Common errors to grade for</h2>
-<ul>
-<li><code>mdy()</code> not loaded — learner forgot <code>library(lubridate)</code> in setup. Symptom: <em>“could not find function ‘mdy’”</em>.</li>
-<li><code>select(-Unnamed: 0)</code> — illegal R syntax for the column name. Fix: <code>select(-</code>Unnamed: 0<code>)</code> with backticks, or <code>select(-starts_with(&quot;Unnamed&quot;))</code>.</li>
-<li>Forgetting <code>na.rm = TRUE</code> in <code>summarise(mean(O3))</code> — gives <code>NA</code> for every group.</li>
-<li>Using <code>==</code> to compare with a vector: <code>filter(location == c(&quot;A&quot;,&quot;B&quot;))</code> silently does element-wise comparison. Correct: <code>%in%</code>.</li>
-<li>Building the pipeline as separate scripts instead of one pipe. Both are valid, but the chapter point is fluency with the pipe.</li>
-</ul>
+<section id="task-5-discuss-the-result" class="level1">
+<h1>Task 5 — Discuss the result</h1>
+<p><strong>Langley Central</strong> has the highest mean O₃ (<strong>17.7 ppb</strong>) for the month. That is consistent with Metro Vancouver geography: ozone is a <em>secondary</em> pollutant that forms downwind of traffic emissions, so cleaner-air / more suburban or elevated sites often record <strong>higher</strong> ozone than the busiest downtown stations — the opposite of what many students expect.</p>
 </section>
-</div>
-</div>
-</div>
+<section id="task-6-submit" class="level1">
+<h1>Task 6 — Submit</h1>
+<p>Each group submits: the final pipeline (Tasks 2–4 as one Quarto chunk), the station-ranked table from Task 4, and a one-sentence interpretation (Task 5), with all members’ names. (For the graded Canvas lab, follow the Canvas instructions.)</p>
 </section>
 
 </main>
