@@ -47,6 +47,10 @@ transition_matrix_files/
 # Private project handoff doc — inventories confidential materials; keep local
 /HANDOFF.md
 
+# Working syllabus drafts (Round 2, v4/v5, transition matrix) — keep local, post to Canvas.
+# (Three older syllabus files were committed before this rule and stay tracked.)
+/syllabus/
+
 # Per-file HTML render artifacts that leak next to .qmd sources
 # (the real site is built to docs/ by CI; these are not source)
 /frontmatter/*.html
