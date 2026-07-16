@@ -19,6 +19,13 @@ book:
   date: today
   repo-url: https://github.com/subornaa/modern-computing-forestry
   repo-actions: [edit, issue]
+  # Website analytics. GA4 already discards IPs; anonymize-ip is belt-and-braces.
+  # cookie-consent: express => the tag stays blocked until a reader opts in.
+  google-analytics:
+    tracking-id: "G-C3T7WND9D5"
+    anonymize-ip: true
+    storage: cookies
+  cookie-consent: express
   chapters:
     - index.qmd
     - part: "Front matter"
@@ -28,6 +35,7 @@ book:
         - frontmatter/land-acknowledgment.qmd
         - frontmatter/indigenous-data-sovereignty.qmd
         - frontmatter/accessibility.qmd
+        - frontmatter/privacy.qmd
         - frontmatter/edi-commitment.qmd
         - frontmatter/how-to-use.qmd
         - datasets.qmd

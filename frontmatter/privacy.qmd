@@ -1,0 +1,65 @@
+# Privacy and analytics {.unnumbered}
+
+This book is a free, open educational resource. We use a small
+amount of website analytics to understand which chapters are
+actually used, so we can improve the book and report on its reach
+as an OER. This page explains exactly what that means.
+
+## What we collect
+
+The site uses **Google Analytics 4**. When you accept analytics
+cookies, it records:
+
+- **which pages you visit** and how long you stay;
+- **which files you download** (for example the datasets and the
+  PDF edition);
+- your **approximate location** (country or region — not your
+  street address);
+- the **site or search engine that referred you**, if any;
+- your **browser and device type** (e.g., "Chrome on Windows").
+
+## What we do **not** collect
+
+- **No names, emails, or student records.** Nothing in this book
+  asks who you are, and analytics is not connected to Canvas or to
+  any UBC system.
+- **No IP addresses are stored.** Google Analytics 4 does not log
+  or retain IP addresses; location is derived and then discarded.
+- **No quiz answers.** The self-assessment quizzes run entirely in
+  your browser. Your answers are never sent anywhere.
+- **No advertising.** We do not run ads, and analytics data is not
+  used for ad targeting.
+
+## Your choice
+
+When you first visit, a banner asks whether to allow analytics
+cookies.
+
+- **Decline, and no analytics cookies are set and nothing about
+  your visit is recorded** — no page views, no downloads, nothing.
+  The entire book — every chapter, dataset, and quiz — works
+  exactly the same either way. No content is gated behind consent.
+  (To be precise: your browser still fetches Google's analytics
+  script file, as it would any script on a page, but if you decline
+  it never runs and no measurement takes place.)
+- You can also block analytics with a browser extension, or with
+  Google's own [opt-out
+  add-on](https://tools.google.com/dlpage/gaoptout). We consider
+  this entirely reasonable.
+
+## Where the data goes, and for how long
+
+Analytics data is processed by **Google**, which stores it on
+servers **outside Canada** (primarily the United States). It is
+retained for **14 months** and then deleted automatically. Only
+the author has access to the reports, which show **aggregate
+totals** (for example, "Chapter 5 was viewed 240 times last
+month") — never individual readers.
+
+## Questions or concerns
+
+If you would rather this book collected nothing at all, or you
+have a privacy question, please open an issue on the [GitHub
+repository](https://github.com/subornaa/modern-computing-forestry)
+or email the author. We take the point seriously — analytics here
+exists to improve a teaching resource, nothing more.
