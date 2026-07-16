@@ -19,6 +19,9 @@ book:
   date: today
   repo-url: https://github.com/subornaa/modern-computing-forestry
   repo-actions: [edit, issue]
+  # Sidebar "Download PDF" button. Requires the pdf format to be rendered in the
+  # SAME `quarto render` pass as the html, or the link 404s.
+  downloads: [pdf]
   # Website analytics. GA4 already discards IPs; anonymize-ip is belt-and-braces.
   # cookie-consent: express => the tag stays blocked until a reader opts in.
   google-analytics:

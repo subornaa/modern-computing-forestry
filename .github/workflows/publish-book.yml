@@ -35,8 +35,10 @@ jobs:
           sudo apt-get install -y \
             libgdal-dev libproj-dev libgeos-dev libudunits2-dev
 
-      - name: Set up Quarto
+      - name: Set up Quarto (with TinyTeX, needed for the PDF edition)
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
@@ -59,8 +61,13 @@ jobs:
             any::kableExtra
             any::gt
 
-      - name: Render the book (HTML site only)
-        run: quarto render --to html   # PDF is built locally; CI needs no LaTeX
+      # Renders EVERY format in _quarto.yml (html + pdf) in one pass. Do not split
+      # this into `--to html` then `--to pdf`: a single-format book render cleans
+      # output-dir first, so the second pass would delete the whole HTML site and
+      # publish a PDF-only artifact. One pass also executes the R chunks once
+      # rather than twice.
+      - name: Render the book (HTML site + PDF edition)
+        run: quarto render
 
       - name: Upload the rendered site as a Pages artifact
         uses: actions/upload-pages-artifact@v3
